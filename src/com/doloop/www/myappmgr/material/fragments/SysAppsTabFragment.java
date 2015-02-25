@@ -346,6 +346,10 @@ public class SysAppsTabFragment extends BaseFrag {
          */
     }
 
+    public void listBackToTop(){
+        mPinnedSectionListView.smoothScrollToPosition(0);
+    }
+    
     @Override
     public void setFragmentTitle(String title) {
         // TODO Auto-generated method stub

@@ -29,9 +29,8 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
                 android:layout_centerVertical="true"
-                android:background="@drawable/sys_app_icon_bg"
+                android:background="@drawable/backup_app_icon_bg"
                 android:padding="3dp"
-                
                 android:scaleType="centerInside"
                 android:src="@drawable/sysapp_holder" />
 

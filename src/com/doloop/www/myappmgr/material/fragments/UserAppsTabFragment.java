@@ -578,6 +578,10 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
         return true;
     }
 
+    public void listBackToTop(){
+        mActionSlideExpandableListView.smoothScrollToPosition(0);
+    }
+    
     @Override
     public void setFragmentTitle(String title) {
         // TODO Auto-generated method stub

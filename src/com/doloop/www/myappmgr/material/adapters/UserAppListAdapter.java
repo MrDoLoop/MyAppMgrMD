@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.doloop.www.myappmgr.material.MainActivity;
 import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.utils.Constants;
 import com.doloop.www.myappmgrmaterial.R;
@@ -114,6 +115,15 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
             //holder.AppPkgnameTextView.getPaint().setFakeBoldText(true);
             //holder.AppPkgnameTextView.setTypeface(null,Typeface.BOLD);
             holder.AppIconImageView = (ImageView) convertView.findViewById(R.id.app_icon);
+            holder.AppIconImageView.setOnClickListener(new View.OnClickListener() {
+                
+                @Override
+                public void onClick(View v) {
+                    // TODO Auto-generated method stub
+                    int pos = (Integer) v.getTag();
+                    MainActivity.T("用户图标点击了: "+pos);
+                }
+            });
             holder.moreItemBtn = (LinearLayout) convertView.findViewById(R.id.expandable_toggle_button);
             holder.moreItemBtn.setFocusable(false);
             // holder.expandableLinearLayout = (LinearLayout) convertView.findViewById(R.id.expandable);
@@ -130,13 +140,13 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
         holder.AppVersionTextView.setSelected(false);
         holder.AppPkgnameTextView.setText(appInfo.packageName);
         // holder.AppIconImageView.setImageDrawable(appInfo.iconDrawable);
-        holder.AppIconImageView.setTag(appInfo);
+        holder.AppIconImageView.setTag(position);
         if (appInfo.iconBitmap == null) {
             Picasso.with(mCtx).load(appInfo.getAppIconCachePath(mCtx)).noFade().into(holder);
         } else {
             holder.AppIconImageView.setImageBitmap(appInfo.iconBitmap);
         }
-
+        holder.bgLayout.setTag(appInfo);
         if (appInfo.selected) {
             holder.bgLayout.setBackgroundColor(Color.CYAN);
         } else {
@@ -224,8 +234,9 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
             // TODO Auto-generated method stub
             AppIconImageView.setImageBitmap(bitmap);
             if(Constants.SAVE_APP_ICON_IN_OBJ){
-                AppInfo appInfo = (AppInfo) AppIconImageView.getTag();
-                if (appInfo.iconBitmap == null) {
+                AppInfo appInfo = (AppInfo) bgLayout.getTag();
+                //if (appInfo.iconBitmap == null) 
+                {
                     appInfo.iconBitmap = bitmap;
                 }
             }

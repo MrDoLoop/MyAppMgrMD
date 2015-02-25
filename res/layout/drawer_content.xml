@@ -39,6 +39,18 @@
         android:layout_height="@dimen/drawer_item_height"
         android:layout_below="@+id/header"
         android:background="@color/orange_light" >
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textColor="@drawable/text_sel"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:text="NAN MADE" />
+        
+   
     </LinearLayout>
 
     <View

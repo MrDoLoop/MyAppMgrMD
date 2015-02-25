@@ -59,6 +59,10 @@ public class BackupAppTabFragment extends BaseFrag {
         EventBus.getDefault().register(this);
     }
 
+    public void listBackToTop(){
+        mRecyclerView.smoothScrollToPosition(0);
+    }
+    
     private void initData(){
         mAppList.clear();
         File backupFolder = new File(Utilities.getBackUpAPKfileDir(mContext));
@@ -259,6 +263,12 @@ public class BackupAppTabFragment extends BaseFrag {
             return mContext.getString(R.string.backup_apps) + " (" + mAdapter.getItemCount() + ")"; }
     }
 
+    public void filterList(String str){
+        mAdapter.filterList(str);
+        mAdapter.notifyDataSetChanged();
+    }
+    
+    
     public void onEventMainThread(AppBackupSuccEvent ev){
         boolean found = false;
         for(int i = 0;i<mAdapter.getItemCount();i++){

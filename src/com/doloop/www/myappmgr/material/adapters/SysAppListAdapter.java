@@ -15,6 +15,7 @@ import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.doloop.www.myappmgr.material.MainActivity;
@@ -119,6 +120,7 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
                 appItemHolder = new AppItemViewHolder();
                 convertView = LayoutInflater.from(mCtx).inflate(R.layout.sys_app_info_item, parent, false);
 
+                appItemHolder.RootLayout = (RelativeLayout) convertView.findViewById(R.id.rootLayout);
                 appItemHolder.AppNameTextView = (TextView) convertView.findViewById(R.id.app_name);
                 appItemHolder.AppVersionTextView = (TextView) convertView.findViewById(R.id.app_version);
                 appItemHolder.AppIconImageView = (ImageView) convertView.findViewById(R.id.app_icon);
@@ -127,7 +129,8 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
                     @Override
                     public void onClick(View v) {
                         // TODO Auto-generated method stub
-                        MainActivity.T("系统图标被点击了");
+                        int pos = (Integer) v.getTag();
+                        MainActivity.T("系统图标被点击了: "+pos);
                     }
                 });
                 convertView.setTag(appItemHolder);
@@ -145,7 +148,8 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
             // appViewHolder.AppIconImageView.setImageDrawable(appInfo.iconDrawable);
             // Picasso.with(mCtx).load(new File(Utilities.getAppIconCacheDir(mCtx), appInfo.packageName +
             // ".png")).into(appViewHolder.AppIconImageView);
-            appItemHolder.AppIconImageView.setTag(appInfo);
+            appItemHolder.AppIconImageView.setTag(position);
+            appItemHolder.RootLayout.setTag(appInfo);
             if (appInfo.iconBitmap == null) {
                 Picasso.with(mCtx).load(appInfo.getAppIconCachePath(mCtx)).noFade().into(appItemHolder);
             } else {
@@ -194,6 +198,7 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
         TextView AppNameTextView;
         TextView AppVersionTextView;
         ImageView AppIconImageView;
+        RelativeLayout RootLayout;
 
         @Override
         public void onBitmapFailed(Drawable bitmap) {
@@ -205,8 +210,9 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
             // TODO Auto-generated method stub
             AppIconImageView.setImageBitmap(bitmap);
             if(Constants.SAVE_APP_ICON_IN_OBJ){
-                AppInfo appInfo = (AppInfo) AppIconImageView.getTag();
-                if (appInfo.iconBitmap == null) {
+                AppInfo appInfo = (AppInfo) RootLayout.getTag();
+                //if (appInfo.iconBitmap == null) 
+                {
                     appInfo.iconBitmap = bitmap;
                 }
             }

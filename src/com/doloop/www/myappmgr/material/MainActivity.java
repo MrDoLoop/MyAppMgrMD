@@ -241,10 +241,13 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
                 if (mPager.getCurrentItem() == position) {
                     switch (mPager.getCurrentItem()) {
                         case Constants.USR_APPS_TAB_POS:
-                            usrAppsFrg.getListView().smoothScrollToPosition(0);
+                            usrAppsFrg.listBackToTop();
                             break;
                         case Constants.SYS_APPS_TAB_POS:
-                            sysAppsFrg.getListView().smoothScrollToPosition(0);
+                            sysAppsFrg.listBackToTop();
+                            break;
+                        case Constants.BACKUP_APPS_TAB_POS:
+                            backupAppsFrg.listBackToTop();
                             break;
                     // case ALL_APPS_TAB_POS:
                     //
@@ -377,6 +380,9 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
                     case Constants.SYS_APPS_TAB_POS:
                         sysAppsFrg.filterList(mCurFilter);
                         break;
+                    case Constants.BACKUP_APPS_TAB_POS:
+                        backupAppsFrg.filterList(mCurFilter);
+                        break;
                 // case ALL_APPS_TAB_POS:
                 //
                 // break;
@@ -415,7 +421,7 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
                 }
 
                 sysAppsFrg.filterList(null);
-
+                backupAppsFrg.filterList(null);
                 return true;
             }
         });

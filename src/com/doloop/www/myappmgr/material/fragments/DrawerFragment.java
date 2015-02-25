@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import com.doloop.www.mayappmgr.material.events.DrawerItemClickEvent;
 import com.doloop.www.mayappmgr.material.events.DrawerItemClickEvent.DrawerItem;
+import com.doloop.www.myappmgr.material.utils.NanAppMark;
 import com.doloop.www.myappmgrmaterial.R;
 
 import de.greenrobot.event.EventBus;
@@ -50,6 +51,9 @@ public class DrawerFragment extends Fragment {
                 EventBus.getDefault().post(new DrawerItemClickEvent(DrawerItem.REFRESH));
             }
         });
+        
+        View tv = FragmentView.findViewById(R.id.textView);
+        NanAppMark.attach(tv);
         return FragmentView;
     }
 

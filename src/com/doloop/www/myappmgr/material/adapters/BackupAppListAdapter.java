@@ -2,12 +2,14 @@ package com.doloop.www.myappmgr.material.adapters;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import org.apache.commons.io.FileUtils;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +39,24 @@ public class BackupAppListAdapter extends RecyclerView.Adapter<RecyclerView.View
     private ArrayList<AppInfo> mAppListDisplay;
     private ArrayList<AppInfo> mAppListFull;
     private Context mCtx;
+    
+    public void filterList(String str){
+        mAppListDisplay = mAppListFull;
+        if (!TextUtils.isEmpty(str)) {
+            ArrayList<AppInfo> filteredAppList = new ArrayList<AppInfo>();
+            AppInfo appInfo;
+            for(int i = 0;i<mAppListFull.size();i++){
+                appInfo = mAppListFull.get(i);
+                if(appInfo.appName.toLowerCase(Locale.getDefault()).contains(str)
+                        || appInfo.appNamePinyin.toLowerCase(Locale.getDefault()).contains(str)){
+                    filteredAppList.add(appInfo);
+                }
+            }
+            mAppListDisplay = filteredAppList;
+        }
+        
+    }
+    
     
     public BackupAppListAdapter(Context ctx, ArrayList<AppInfo> appList){
         mAppListFull = mAppListDisplay = appList;
@@ -97,11 +117,20 @@ public class BackupAppListAdapter extends RecyclerView.Adapter<RecyclerView.View
                 public void onClick(View v) {
                     // TODO Auto-generated method stub
                     //MainActivity.T("Backup图标被点击了: "+AppIconImageView.getTag());
-                   
-                    if(FileUtils.deleteQuietly(new File(mAppListDisplay.get(getPosition()).apkFilePath))){
-                        /*mAppListDisplay.remove(getPosition());
-                        notifyDataSetChanged();*/
+                    /*mAppListDisplay.remove(getPosition());
+                    notifyDataSetChanged();*/
+                    AppInfo appInfo = mAppListDisplay.get(getPosition());
+                    if(FileUtils.deleteQuietly(new File(appInfo.apkFilePath))){
+                      //从显示的list中删除
                         mAppListDisplay.remove(getPosition());
+                        //从总共的list中删除
+                        for(int i =0;i<mAppListFull.size();i++){
+                            if(mAppListFull.get(i).packageName.equals(appInfo.packageName)){
+                                mAppListFull.remove(i);
+                                break;
+                            }
+                        }
+                        
                         notifyItemRemoved(getPosition());
                         getBackupAppListDataSetChangedListener().OnBackupAppListDataSetChanged();
                     }
