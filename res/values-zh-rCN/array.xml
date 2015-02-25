@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="sort_type">
+        <item>名字升序</item>
+        <item>名字降序</item>
+        <item>大小升序</item>
+        <item>大小降序</item>
+        <item>最后修改时间升序</item>
+        <item>最后修改时间降序</item>
+    </string-array>
+
+</resources>

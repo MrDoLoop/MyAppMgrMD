@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/popText"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:gravity="center"
+        android:text="A"
+        android:background="@drawable/rounded_rectangle_shape_poptxt"
+        android:textColor="@color/theme_blue_light"
+        android:textSize="50sp"
+        android:textStyle="bold" />
+
+</LinearLayout>

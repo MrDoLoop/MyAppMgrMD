@@ -1,0 +1,47 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="AppTheme.Base"></style>
+
+    <style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="colorAccent">@color/primary</item>
+        <!-- Actionbar color -->
+        <item name="colorPrimary">@color/primary</item>
+        <!-- Status bar color -->
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <!-- Window color -->
+        <item name="android:windowBackground">@color/windows_bg</item>
+        
+        <!-- toolbar的title颜色 -->
+		<item name="android:textColorPrimary">@color/primary_text</item>
+		<item name="android:textColorSecondary">@color/secondary_text</item>
+        <!-- 將新加入的風格 AppTheme.MyDrawerStyle 設定給 drawerArrowStyle 這個屬性 -->
+        <item name="drawerArrowStyle">@style/AppTheme.MyDrawerArrowStyle</item>
+        <!-- <item name="searchViewStyle">@style/MySearchViewStyle</item> -->
+    </style>
+
+    <!-- 加入一個新的 navigation drarwer 的風格 -->
+    <style name="AppTheme.MyDrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
+
+        <!-- 將 spinBars 屬性設定為 false -->
+        <item name="spinBars">false</item>
+        <!-- 設定 drawer arrow 的顏色 -->
+        <item name="color">@color/white</item>
+    </style>
+
+    <style name="MySearchViewStyle" parent="Widget.AppCompat.SearchView" />
+
+    <style name="MyCardViewStyle" >
+        <item name="cardBackgroundColor">@color/white</item>
+        <item name="cardCornerRadius">@dimen/gen_corner_radius</item>
+        <item name="cardElevation">@dimen/card_elevation</item>
+        <item name="cardMaxElevation">@dimen/card_max_elevation</item>
+        <item name="cardPreventCornerOverlap">true</item>
+        <item name="cardUseCompatPadding">true</item>
+        <item name="contentPadding">@dimen/card_content_padding</item>   
+        
+    </style>
+    
+    
+</resources>

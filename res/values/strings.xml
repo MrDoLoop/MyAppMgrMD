@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">MyAppMgrMD</string>
+    <string name="sort">Sort</string>
+    <string name="user_apps">USER APPs</string>
+    <string name="sys_apps">SYS APPs</string>
+    <string name="backup_apps">BACKUP APPs</string>
+    <string name="sort_type">Sort Type</string>
+    <string name="search">Search</string>
+    <string name="key_words">Keywords</string>
+    <string name="open">Open</string>
+    <string name="info">Info</string>
+    <string name="backup">Backup</string>
+    <string name="backup_success">Backup success</string>
+    <string name="uninstall">Uninstall</string>
+    <string name="more">More</string>
+    <string name="google_play">Google Play</string>
+    <string name="send">Send</string>
+    <string name="send_by">Send By</string>
+    <string name="nothing_selected">Nothing selected</string>
+    <string name="more_actions">More actions</string>
+    <string name="select_all">Select All</string>
+    <string name="deselect_all">Deselect All</string>
+    <string name="press_back_again_to_exit">press \"BACK\" again to exit</string>
+    <string name="saving_app">Saving App:</string>
+    <string name="saving_apps">Saving Apps</string>
+    <string name="error">Error</string>
+    <string name="loading_apps">Loading Apps&#8230;</string>
+    <string name="new_app_installed">New App Installed:</string>
+    <string name="app_removed">App Removed.</string>
+    <string name="app_removed_name">App Removed:</string>
+    <string name="share_apps">Share apps</string>
+    <string name="email_body">Enjoy apps, thanks</string>
+    <string name="select_all_above">Sel. All Above</string>
+    <string name="deselect_all_above">Desel. All Above</string>
+    <string name="select_all_below">Sel. All Below</string>
+    <string name="deselect_all_below">Desel. All Below</string>
+    <string name="unknown">unknown</string>
+    <string name="drawer_open">Drawer Open</string>
+    <string name="drawer_close">Drawer Close</string>
+    <string name="refresh">Refresh</string>
+    
+
+</resources>

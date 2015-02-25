@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="red_light">#ffff4444</color>
+    <color name="green_light">#ff99cc00</color>
+    <color name="orange_light">#ffffbb33</color>
+    <color name="theme_blue_light">#ff33b5e5</color>
+    <color name="theme_blue_light_pressed">#c813bbf9</color>
+    <color name="green_blue">#ff003344</color>
+    <color name="gray">#ff888888</color>
+    <color name="drawer_item_pressed">#e4e4e4</color>
+    <color name="lt_gray">#ffc9c3c3</color>
+    <color name="theme_blue_light_lt">#cc33b5e5</color>
+    <color name="white">@android:color/white</color>
+    <color name="white2">#fafafa</color>
+    <color name="white3">#96ffffff</color>
+    <color name="black">@android:color/black</color>
+    <color name="background_tab_pressed">@color/theme_blue_light_pressed</color>
+    <color name="divider">#d8d8d8</color>
+    <color name="transparent">@android:color/transparent</color>
+    <color name="windows_bg">#eeeeee</color>
+    <color name="drawer_divider">#e0e0e0</color>
+    
+    
+    <color name="primary">#03A9F4</color>
+    <color name="primary_dark">#c80288D1</color>
+    <color name="primary_light">#B3E5FC</color>
+    <color name="accent">#03A9F4</color>
+    <color name="primary_text">@color/white</color>
+    <color name="secondary_text">#727272</color>
+    <color name="icons">#FFFFFF</color>
+
+    <!-- Went to: $android-sdk > Android:v14 > res > values > colors.xml and copied the colors -->
+
+
+    <!--
+         <drawable name="red_light">#ffff4444</drawable>
+    <drawable name="green_light">#ff99cc00</drawable>
+    <drawable name="orange_light">#ffffbb33</drawable>
+    <drawable name="blue_light">#ff33b5e5</drawable>
+    <drawable name="grey">#c9c3c3</drawable>
+    -->
+
+</resources>

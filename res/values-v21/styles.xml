@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AppTheme" parent="AppTheme.Base">
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <!-- <item name="android:statusBarColor">@color/theme_blue_light_lt</item> -->
+        <!-- 底部导航栏颜色 -->
+        <item name="android:navigationBarColor">@color/primary</item>
+    </style>
+
+</resources>

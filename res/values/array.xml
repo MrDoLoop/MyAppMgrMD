@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="sort_type">
+        <item>Name ASC</item>
+        <item>Name DES</item>
+        <item>Size ASC</item>
+        <item>Size DES</item>
+        <item>LastModified ASC</item>
+        <item>LastModified DES</item>
+    </string-array>
+
+</resources>

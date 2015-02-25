@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white2" >
+
+    <RelativeLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:background="@drawable/ic_user_background" >
+
+        <!--
+             <com.doloop.www.myappmgr.material.widgets.CircularImageView
+            android:id="@+id/header_image"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerInParent="true"
+            android:scaleType="centerInside"
+            android:src="@drawable/header_icon"
+            app:border="true"
+            app:border_width="3dp"
+            app:shadow="false" />
+        -->
+
+        <com.doloop.www.myappmgr.material.widgets.CircleImageView
+            android:id="@+id/header_image"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerInParent="true"
+            android:src="@drawable/header_icon2"
+            app:border_color="@color/white"
+            app:border_width="3dp" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/drawer_item_height"
+        android:layout_below="@+id/header"
+        android:background="@color/orange_light" >
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@+id/drawerRefresh"
+        android:background="@color/drawer_divider" />
+
+    <com.doloop.www.myappmgr.material.widgets.DrawerItem
+        android:id="@+id/drawerRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" >
+    </com.doloop.www.myappmgr.material.widgets.DrawerItem>
+
+</RelativeLayout>
