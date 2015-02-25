@@ -97,7 +97,7 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 	private Locale locale;
 
 	public interface OnTabClickListener{
-	    void onTabClick(int position);
+	    boolean onTabClick(int position);
 	}
 	
 	private OnTabClickListener mTabClickListener;
@@ -254,11 +254,14 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 		tab.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+			    boolean clickHandled = false;
 			    if(mTabClickListener != null){
-			        mTabClickListener.onTabClick(position);
+			        clickHandled = mTabClickListener.onTabClick(position);
 			    }
-			    
-				pager.setCurrentItem(position);
+			    if(!clickHandled){
+			        pager.setCurrentItem(position);
+			    }
+				
 			}
 		});
 

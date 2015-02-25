@@ -45,6 +45,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.doloop.www.mayappmgr.material.events.DrawerItemClickEvent;
+import com.doloop.www.mayappmgr.material.events.ViewNewBackupAppEvent;
 import com.doloop.www.myappmgr.material.adapters.AppListFragAdapter;
 import com.doloop.www.myappmgr.material.adapters.BackupAppListAdapter.BackupAppListDataSetChangedListener;
 import com.doloop.www.myappmgr.material.adapters.SysAppListAdapter.SysAppListDataSetChangedListener;
@@ -236,7 +237,7 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
         mPagerSlidingTabStrip.setOnTabClickListener(new OnTabClickListener() {
 
             @Override
-            public void onTabClick(int position) {
+            public boolean onTabClick(int position) {
                 // TODO Auto-generated method stub
                 if (mPager.getCurrentItem() == position) {
                     switch (mPager.getCurrentItem()) {
@@ -253,7 +254,9 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
                     //
                     // break;
                     }
+                    return true;
                 }
+                return false;
 
             }
         });
@@ -774,6 +777,11 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
                 break;
         }
     }
+    
+    public void onEventMainThread(ViewNewBackupAppEvent ev) {
+        mPager.setCurrentItem(Constants.BACKUP_APPS_TAB_POS);
+    }
+    
 
     private class AppUpdateReceiver extends BroadcastReceiver {
         @Override

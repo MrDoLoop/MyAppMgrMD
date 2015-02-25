@@ -12,6 +12,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -37,6 +38,9 @@ public class BackupAppTabFragment extends BaseFrag {
     private BackupAppListAdapter mAdapter;
     private ArrayList<AppInfo> mAppList = new ArrayList<AppInfo>();
     private AdapterDataObserver mDataSetObserver;
+    
+    @Nullable
+    private View emptyView;
 
     public BackupAppTabFragment() {
 
@@ -118,11 +122,35 @@ public class BackupAppTabFragment extends BaseFrag {
             public void onChanged() {
                 // TODO Auto-generated method stub
                 super.onChanged();
+                checkIfEmpty();
                 mAdapter.getBackupAppListDataSetChangedListener().OnBackupAppListDataSetChanged();
             }
+            
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                checkIfEmpty();
+                mAdapter.getBackupAppListDataSetChangedListener().OnBackupAppListDataSetChanged();
+            }
+
+            @Override
+            public void onItemRangeRemoved(int positionStart, int itemCount) {
+                checkIfEmpty();
+                mAdapter.getBackupAppListDataSetChangedListener().OnBackupAppListDataSetChanged();
+            }
+            
         };
         mAdapter.registerAdapterDataObserver(mDataSetObserver);
         mAdapter.setUserAppListDataSetChangedListener((BackupAppListDataSetChangedListener)mContext);
+    }
+    
+    public void setEmptyView(@Nullable View emptyView) {
+        this.emptyView = emptyView;
+        checkIfEmpty();
+    }
+    private void checkIfEmpty() {
+        if (emptyView != null && mAdapter != null) {
+            emptyView.setVisibility(mAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
+        }
     }
     
     
@@ -131,6 +159,7 @@ public class BackupAppTabFragment extends BaseFrag {
         // Create, or inflate the Fragment¡¯s UI, and return it.
         // If this Fragment has no UI then return null.
         View FragmentView = inflater.inflate(R.layout.backup_app_list_view, container, false);
+        emptyView = FragmentView.findViewById(R.id.emptyView);
         mRecyclerView = (RecyclerView) FragmentView.findViewById(R.id.recyclerview);
         mRecyclerView.setHasFixedSize(true);
         //mRecyclerView = (RecyclerView) FragmentView.findViewById(android.R.id.list);
@@ -139,6 +168,7 @@ public class BackupAppTabFragment extends BaseFrag {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        checkIfEmpty();
         return FragmentView;
         // return null;
     }

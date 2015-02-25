@@ -40,4 +40,5 @@
 	<string name="drawer_open">抽屉打开</string>
     <string name="drawer_close">抽屉关闭</string>
     <string name="refresh">刷新</string>
+    <string name="view">查看</string>
 </resources>

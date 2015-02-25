@@ -16,6 +16,14 @@
         android:id="@android:id/list"
         android:visibility="gone"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" /> 
+        android:layout_height="wrap_content" />
+
+    <ImageView
+        android:id="@+id/emptyView"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:src="@drawable/header_icon" />
 
 </RelativeLayout>

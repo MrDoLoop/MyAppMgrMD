@@ -34,6 +34,7 @@ import android.widget.TextView;
 
 import com.doloop.slideexpandable.library.ActionSlideExpandableListView;
 import com.doloop.www.mayappmgr.material.events.AppBackupSuccEvent;
+import com.doloop.www.mayappmgr.material.events.ViewNewBackupAppEvent;
 import com.doloop.www.myappmgr.material.MainActivity;
 import com.doloop.www.myappmgr.material.adapters.UserAppListAdapter;
 import com.doloop.www.myappmgr.material.adapters.UserAppListAdapter.UserAppListDataSetChangedListener;
@@ -41,6 +42,9 @@ import com.doloop.www.myappmgr.material.adapters.UserAppListAdapter.UserAppListD
 import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.utils.Utilities;
 import com.doloop.www.myappmgrmaterial.R;
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
+import com.nispok.snackbar.listeners.ActionClickListener;
 
 import de.greenrobot.event.EventBus;
 
@@ -199,7 +203,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
                     @Override
                     public void onClick(View listView, View buttonview, int position) {
-                        AppInfo selectItem = mAdapter.getItem(position);
+                        final AppInfo selectItem = mAdapter.getItem(position);
                         String targetpackageName = selectItem.packageName;
                         switch (buttonview.getId()) {
                             case R.id.openActionLayout:
@@ -224,7 +228,20 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                                 String mBackUpFolder = Utilities.getBackUpAPKfileDir(getActivity());
                                 String sdAPKfileName = Utilities.BackupApp(selectItem, mBackUpFolder);
                                 if (sdAPKfileName != null) {
-                                    MainActivity.T(R.string.backup_success);
+                                    //MainActivity.T(R.string.backup_success);
+
+                                    SnackbarManager.show(Snackbar.with(mContext)
+                                            .actionLabel(R.string.view)
+                                            .actionListener(new ActionClickListener() {
+                                        @Override
+                                        public void onActionClicked(Snackbar snackbar) {
+                                            EventBus.getDefault().post(new ViewNewBackupAppEvent());
+                                        }
+                                    }).actionColorResource(R.color.theme_blue_light)
+                                    .duration(Snackbar.SnackbarDuration.LENGTH_SHORT)
+                                            .attachToAbsListView(mActionSlideExpandableListView)
+                                            .text(selectItem.appName+" "+mContext.getString(R.string.backup_success)));
+                                    
                                     EventBus.getDefault().post(new AppBackupSuccEvent(selectItem));
                                 } else {
                                     MainActivity.T(R.string.error);
@@ -341,7 +358,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
     public void onDestroyView() {
         // Clean up resources related to the View.
         super.onDestroyView();
-        
+
     }
 
     // Called at the end of the full lifetime.
@@ -398,7 +415,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
     public void onListItemClick(ListView l, View v, int position, long id) {
         // TODO Auto-generated method stub
         super.onListItemClick(l, v, position, id);
-        AppInfo selectItem = mAdapter.getItem(position);
+        final AppInfo selectItem = mAdapter.getItem(position);
         mActionSlideExpandableListView.collapse(true);
         // ¹ö¶¯text
         TextView appVersion = (TextView) v.findViewById(R.id.app_version);
@@ -406,7 +423,10 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
             appVersion.setSelected(false);
         }
         appVersion.setSelected(true);
-        MainActivity.T(selectItem.apkFilePath);
+        // MainActivity.T(selectItem.apkFilePath);
+
+
+
         /*
          * if (mActionMode != null) { if (selectItem.selected) { UserAppActionModeSelectCnt--; selectItem.selected =
          * false; } else { UserAppActionModeSelectCnt++; selectItem.selected = true; }
@@ -578,10 +598,10 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
         return true;
     }
 
-    public void listBackToTop(){
+    public void listBackToTop() {
         mActionSlideExpandableListView.smoothScrollToPosition(0);
     }
-    
+
     @Override
     public void setFragmentTitle(String title) {
         // TODO Auto-generated method stub

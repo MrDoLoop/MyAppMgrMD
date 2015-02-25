@@ -132,7 +132,7 @@ public class BackupAppListAdapter extends RecyclerView.Adapter<RecyclerView.View
                         }
                         
                         notifyItemRemoved(getPosition());
-                        getBackupAppListDataSetChangedListener().OnBackupAppListDataSetChanged();
+                        //getBackupAppListDataSetChangedListener().OnBackupAppListDataSetChanged();
                     }
                     else{
                         MainActivity.T(R.string.error);
