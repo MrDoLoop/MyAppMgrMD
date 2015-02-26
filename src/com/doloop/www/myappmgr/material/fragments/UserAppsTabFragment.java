@@ -1,12 +1,18 @@
 package com.doloop.www.myappmgr.material.fragments;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
+
+import org.xmlpull.v1.XmlPullParserException;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.content.res.Resources;
+import android.content.res.XmlResourceParser;
 import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Build;
@@ -48,7 +54,6 @@ import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.utils.Utilities;
 import com.doloop.www.myappmgrmaterial.R;
 import com.nispok.snackbar.Snackbar;
-import com.nispok.snackbar.SnackbarManager;
 import com.nispok.snackbar.listeners.ActionClickListener;
 
 import de.greenrobot.event.EventBus;
@@ -255,7 +260,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                                      * .duration(Snackbar.SnackbarDuration.LENGTH_SHORT)
                                      * .attachToAbsListView(mActionSlideExpandableListView) .text(spanString));
                                      */
-
+                                    
                                     Snackbar mSnackbar = MainActivity.getSnackbar(false);
                                     boolean mAniText = false;
                                     boolean mAniSnackBar = true;
@@ -278,7 +283,9 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                                         public void onActionClicked(Snackbar snackbar) {
                                             EventBus.getDefault().post(new ViewNewBackupAppEvent());
                                         }
-                                    }).actionColorResource(R.color.theme_blue_light)
+                                    })
+                                    .actionColorList(mContext.getResources().getColorStateList(R.color.text_sel))
+                                    //.actionColorResource(R.color.text_sel)
                                     .swipeToDismiss(false)
                                     .animation(mAniSnackBar)
                                     .animationText(mAniText)
@@ -449,6 +456,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
             public void onChanged() {
                 // TODO Auto-generated method stub
                 super.onChanged();
+                collapseLastOpenItem(false);
                 mAdapter.getUserAppListDataSetChangedListener().OnUserAppListDataSetChanged();
             }
 

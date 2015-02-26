@@ -191,7 +191,10 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
 
                         searchViewEdt.setFocusable(true);
                         searchViewEdt.setFocusableInTouchMode(true);
-                        // searchViewEdt.setEnabled(true);
+                        if (!MenuItemCompat.isActionViewExpanded(searchMenuItem)) {
+                            searchMenuItem.setVisible(true);
+                            sortMenuItem.setVisible(true);
+                        }
                         // invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
                     }
 
@@ -202,9 +205,10 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
                         hideKeyboard();
                         searchViewEdt.clearFocus();
                         searchViewEdt.setFocusable(false);
-                        // searchViewEdt.setEnabled(false);
-                        // searchViewEdt.setVisibility(View.INVISIBLE);
-
+                        if (!MenuItemCompat.isActionViewExpanded(searchMenuItem)) {
+                            searchMenuItem.setVisible(false);
+                            sortMenuItem.setVisible(false);
+                        }
                         // invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
                     }
                 };
@@ -252,10 +256,18 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
                     } else {
                         sortMenuItem.setVisible(true);
                     }
-                } else {
+                } 
+                else if (position == Constants.SYS_APPS_TAB_POS) {
                     sortMenuItem.setVisible(false);
                 }
-
+                else if (position == Constants.BACKUP_APPS_TAB_POS) {
+                    if (MenuItemCompat.isActionViewExpanded(searchMenuItem)) {
+                        sortMenuItem.setVisible(false);
+                    } else {
+                        sortMenuItem.setVisible(true);
+                    }
+                }
+                
             }
 
             @Override
@@ -452,6 +464,7 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
 
                 switch (mPager.getCurrentItem()) {
                     case Constants.USR_APPS_TAB_POS:
+                    case Constants.BACKUP_APPS_TAB_POS:
                         sortMenuItem.setVisible(true);
                         break;
                     case Constants.SYS_APPS_TAB_POS:
@@ -832,7 +845,7 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
         public void onReceive(Context context, Intent intent) {
             // TODO Auto-generated method stub
             closeDrawerMenu();
-            usrAppsFrg.collapseLastOpenItem(false);
+            //usrAppsFrg.collapseLastOpenItem(false);
 
             if (intent.getAction().equals(Intent.ACTION_PACKAGE_ADDED)) {
                 // app±»°²×°
