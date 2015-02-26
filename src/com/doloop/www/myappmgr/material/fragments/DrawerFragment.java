@@ -12,7 +12,6 @@ import com.doloop.www.mayappmgr.material.events.DrawerItemClickEvent;
 import com.doloop.www.mayappmgr.material.events.DrawerItemClickEvent.DrawerItem;
 import com.doloop.www.myappmgr.material.utils.NanAppMark;
 import com.doloop.www.myappmgrmaterial.R;
-
 import de.greenrobot.event.EventBus;
 
 public class DrawerFragment extends Fragment {
@@ -54,6 +53,16 @@ public class DrawerFragment extends Fragment {
         
         View tv = FragmentView.findViewById(R.id.textView);
         NanAppMark.attach(tv);
+        
+        View headerImg = FragmentView.findViewById(R.id.header_image);
+        headerImg.setOnClickListener(new View.OnClickListener() {
+            
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+            }
+        });
+        
         return FragmentView;
     }
 
@@ -124,6 +133,7 @@ public class DrawerFragment extends Fragment {
         // closing database connections etc.
         super.onDestroy();
         mContext = null;
+        uniqueInstance = null;
     }
 
     // Called when the Fragment has been detached from its parent Activity.

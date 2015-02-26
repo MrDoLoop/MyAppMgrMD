@@ -141,12 +141,12 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
         holder.AppPkgnameTextView.setText(appInfo.packageName);
         // holder.AppIconImageView.setImageDrawable(appInfo.iconDrawable);
         holder.AppIconImageView.setTag(position);
+        holder.bgLayout.setTag(appInfo);
         if (appInfo.iconBitmap == null) {
             Picasso.with(mCtx).load(appInfo.getAppIconCachePath(mCtx)).noFade().into(holder);
         } else {
             holder.AppIconImageView.setImageBitmap(appInfo.iconBitmap);
         }
-        holder.bgLayout.setTag(appInfo);
         if (appInfo.selected) {
             holder.bgLayout.setBackgroundColor(Color.CYAN);
         } else {
@@ -236,8 +236,10 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
             if(Constants.SAVE_APP_ICON_IN_OBJ){
                 AppInfo appInfo = (AppInfo) bgLayout.getTag();
                 //if (appInfo.iconBitmap == null) 
+                //if(appInfo != null)
                 {
                     appInfo.iconBitmap = bitmap;
+                    
                 }
             }
         }

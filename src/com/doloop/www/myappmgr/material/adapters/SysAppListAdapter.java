@@ -212,6 +212,7 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
             if(Constants.SAVE_APP_ICON_IN_OBJ){
                 AppInfo appInfo = (AppInfo) RootLayout.getTag();
                 //if (appInfo.iconBitmap == null) 
+                //if(appInfo != null)
                 {
                     appInfo.iconBitmap = bitmap;
                 }

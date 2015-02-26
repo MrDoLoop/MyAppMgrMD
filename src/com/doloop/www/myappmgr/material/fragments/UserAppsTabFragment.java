@@ -14,7 +14,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -61,6 +66,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
     private int currentSortType = SortTypeDialogFragment.LIST_SORT_TYPE_NAME_ASC;
     private String mfragTitle = "";
     private MenuItem searchMenuItem;
+
     private DataSetObserver mDataSetObserver;
 
     public void setListSortType(int sortType) {
@@ -228,20 +234,59 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                                 String mBackUpFolder = Utilities.getBackUpAPKfileDir(getActivity());
                                 String sdAPKfileName = Utilities.BackupApp(selectItem, mBackUpFolder);
                                 if (sdAPKfileName != null) {
-                                    //MainActivity.T(R.string.backup_success);
+                                    // MainActivity.T(R.string.backup_success);
+                                    SpannableString spanString =
+                                            new SpannableString(selectItem.appName + " "
+                                                    + mContext.getString(R.string.backup_success));
+                                    spanString.setSpan(new UnderlineSpan(), 0, selectItem.appName.length(),
+                                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                                    spanString.setSpan(
+                                            new ForegroundColorSpan(mContext.getResources().getColor(
+                                                    R.color.theme_blue_light)), 0, selectItem.appName.length(),
+                                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-                                    SnackbarManager.show(Snackbar.with(mContext)
-                                            .actionLabel(R.string.view)
-                                            .actionListener(new ActionClickListener() {
+                                    /*
+                                     * SnackbarManager.show(Snackbar.with(mContext) .actionLabel(R.string.view)
+                                     * .actionListener(new ActionClickListener() {
+                                     * 
+                                     * @Override public void onActionClicked(Snackbar snackbar) {
+                                     * EventBus.getDefault().post(new ViewNewBackupAppEvent()); }
+                                     * }).actionColorResource(R.color.theme_blue_light) .swipeToDismiss(false)
+                                     * .duration(Snackbar.SnackbarDuration.LENGTH_SHORT)
+                                     * .attachToAbsListView(mActionSlideExpandableListView) .text(spanString));
+                                     */
+
+                                    Snackbar mSnackbar = MainActivity.getSnackbar(false);
+                                    boolean mAniText = false;
+                                    boolean mAniSnackBar = true;
+                                    if (mSnackbar != null) {
+                                        if (mSnackbar.isShowing()) {
+                                            mSnackbar.animation(false);
+                                            
+                                            if(!spanString.toString().equalsIgnoreCase(mSnackbar.getText().toString())){
+                                                mAniText = true;
+                                            }
+                                            
+                                            mAniSnackBar = false;
+                                            mSnackbar.dismiss();
+                                        }
+                                        mSnackbar = MainActivity.getSnackbar(true);
+                                    }
+                                    mSnackbar.actionLabel(R.string.view)
+                                    .actionListener(new ActionClickListener() {
                                         @Override
                                         public void onActionClicked(Snackbar snackbar) {
                                             EventBus.getDefault().post(new ViewNewBackupAppEvent());
                                         }
                                     }).actionColorResource(R.color.theme_blue_light)
+                                    .swipeToDismiss(false)
+                                    .animation(mAniSnackBar)
+                                    .animationText(mAniText)
                                     .duration(Snackbar.SnackbarDuration.LENGTH_SHORT)
-                                            .attachToAbsListView(mActionSlideExpandableListView)
-                                            .text(selectItem.appName+" "+mContext.getString(R.string.backup_success)));
-                                    
+                                    .attachToAbsListView(mActionSlideExpandableListView)
+                                    .text(spanString)
+                                    .show(getActivity());
+
                                     EventBus.getDefault().post(new AppBackupSuccEvent(selectItem));
                                 } else {
                                     MainActivity.T(R.string.error);
@@ -423,9 +468,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
             appVersion.setSelected(false);
         }
         appVersion.setSelected(true);
-        // MainActivity.T(selectItem.apkFilePath);
-
-
+        MainActivity.T(selectItem.apkFilePath);
 
         /*
          * if (mActionMode != null) { if (selectItem.selected) { UserAppActionModeSelectCnt--; selectItem.selected =

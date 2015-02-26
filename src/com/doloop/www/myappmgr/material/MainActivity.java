@@ -19,6 +19,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -39,6 +40,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
@@ -68,6 +71,9 @@ import com.doloop.www.myappmgr.material.utils.Utilities;
 import com.doloop.www.myappmgr.material.widgets.PagerSlidingTabStrip;
 import com.doloop.www.myappmgr.material.widgets.PagerSlidingTabStrip.OnTabClickListener;
 import com.doloop.www.myappmgrmaterial.R;
+import com.nispok.snackbar.Snackbar;
+import com.readystatesoftware.systembartint.SystemBarTintManager;
+import com.readystatesoftware.systembartint.SystemBarTintManager.SystemBarConfig;
 
 import de.greenrobot.event.EventBus;
 
@@ -99,7 +105,7 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
     private BackupAppTabFragment backupAppsFrg;
 
     private EditText searchViewEdt;
-    private Context thisActivityCtx;
+    private static Context thisActivityCtx;
     private AppListFragAdapter mFragAdapter;
     private int screenWidth = 0;
     private ViewPager mPager;
@@ -115,12 +121,38 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
 
     private LangUpdateReceiver mLangUpdateReceiver;
     private IntentFilter LangIntentFilter;
+    
+    private static Snackbar mSnackbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
+            //setTranslucentStatus(true);
+            
+            Window window = this.getWindow();
+            window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            
+            SystemBarTintManager tintManager = new SystemBarTintManager(this);
+            tintManager.setStatusBarTintEnabled(true);
+            tintManager.setStatusBarTintResource(R.color.transparent);
+            tintManager.setStatusBarAlpha(0.5f);
+            SystemBarConfig config = tintManager.getConfig();
+            //View statusBarHolder = findViewById(R.id.statusbar_holder);
+            
+            View contLinear = findViewById(R.id.content_linear);
+            //contLinear.setPadding(0, config.getPixelInsetTop(true), 0, config.getPixelInsetBottom());
+            contLinear.setPadding(0, config.getStatusBarHeight(), 0, config.getPixelInsetBottom());
+            
+            //statusBarHolder.getLayoutParams().height = config.getStatusBarHeight();
+            //statusBarHolder.setVisibility(View.VISIBLE);
+            
+        }
+        
+        
         AppUpdateStaticReceiver.handleEvent = false;
         thisActivityCtx = MainActivity.this;
         toast = Toast.makeText(thisActivityCtx, "", Toast.LENGTH_SHORT);
@@ -318,13 +350,25 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
         if(progDialog!=null&&progDialog.isShowing()){
             progDialog.dismiss();
         }
+        SysAppFullList.clear();
+        UserAppFullList.clear();
         unregisterReceivers();
         EventBus.getDefault().unregister(this);
         DaoUtils.destroy();
         AppUpdateStaticReceiver.handleEvent = true;
         toast = null;
+        mSnackbar = null;
+        thisActivityCtx = null;
     }
 
+    public static Snackbar getSnackbar(boolean newInstance){
+        if(mSnackbar == null || newInstance){
+            mSnackbar = Snackbar.with(thisActivityCtx);
+        }
+        return mSnackbar; 
+    }
+    
+    
     private void registerReceivers() {
         registerReceiver(mAppUpdateReceiver, AppIntentFilter);
         registerReceiver(mLangUpdateReceiver, LangIntentFilter);

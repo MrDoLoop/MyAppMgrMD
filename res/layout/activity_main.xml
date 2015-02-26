@@ -4,15 +4,24 @@
     android:id="@+id/drawer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clipToPadding="true"
     android:fitsSystemWindows="true"
     tools:context=".MainActivity" >
 
     <!-- Content -->
 
     <LinearLayout
+        android:id="@+id/content_linear"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical" >
+
+<!--         <View
+            android:id="@+id/statusbar_holder"
+            android:layout_width="match_parent"
+            
+            android:background="@color/transparent"
+            android:layout_height="10dp" /> -->
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -46,14 +55,15 @@
     <!-- Side Drawer -->
 
     <FrameLayout
-		android:id="@+id/drawer_content_holder"
+        android:id="@+id/drawer_content_holder"
         android:layout_width="260dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:clickable="true"
         android:fitsSystemWindows="true" >
 
-       <!--  <ImageView
+        <!--
+        <ImageView
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_alignParentTop="true"
@@ -64,7 +74,8 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="cae f e" /> -->
+            android:text="cae f e" />
+        -->
     </FrameLayout>
 
 </android.support.v4.widget.DrawerLayout>

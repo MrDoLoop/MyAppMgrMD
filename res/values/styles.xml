@@ -11,7 +11,7 @@
         <!-- Status bar color -->
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <!-- Window color -->
-        <item name="android:windowBackground">@color/windows_bg</item>
+        <item name="android:windowBackground">@color/primary_dark</item>
         
         <!-- toolbar的title颜色 -->
 		<item name="android:textColorPrimary">@color/primary_text</item>
