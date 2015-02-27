@@ -192,8 +192,25 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
                         searchViewEdt.setFocusable(true);
                         searchViewEdt.setFocusableInTouchMode(true);
                         if (!MenuItemCompat.isActionViewExpanded(searchMenuItem)) {
-                            searchMenuItem.setVisible(true);
-                            sortMenuItem.setVisible(true);
+                            switch (mPager.getCurrentItem()) {
+                                case Constants.USR_APPS_TAB_POS:
+                                    searchMenuItem.setVisible(true);
+                                    sortMenuItem.setVisible(true);
+                                    break;
+                                case Constants.SYS_APPS_TAB_POS:
+                                    searchMenuItem.setVisible(true);
+                                    break;
+                                case Constants.BACKUP_APPS_TAB_POS:
+                                    searchMenuItem.setVisible(true);
+                                    sortMenuItem.setVisible(true);
+                                    break;
+                            }
+                            
+                            //sortMenuItem.setVisible(true);
+                        }
+                        
+                        if(mPager.getCurrentItem() != Constants.USR_APPS_TAB_POS){
+                            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
                         }
                         // invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
                     }
@@ -205,7 +222,8 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
                         hideKeyboard();
                         searchViewEdt.clearFocus();
                         searchViewEdt.setFocusable(false);
-                        if (!MenuItemCompat.isActionViewExpanded(searchMenuItem)) {
+                        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+                       if (!MenuItemCompat.isActionViewExpanded(searchMenuItem)) {
                             searchMenuItem.setVisible(false);
                             sortMenuItem.setVisible(false);
                         }
@@ -244,6 +262,8 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
 
             @Override
             public void onPageSelected(int position) {
+                //禁止在别的tab下从屏幕边缘划出，但是还是可以通过menu按键呼出抽屉，
+                //所以在open的时候记得要解锁
                 if (position == Constants.USR_APPS_TAB_POS) {
                     mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
                 } else {

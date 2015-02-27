@@ -1,18 +1,12 @@
 package com.doloop.www.myappmgr.material.fragments;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
-
-import org.xmlpull.v1.XmlPullParserException;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.content.res.Resources;
-import android.content.res.XmlResourceParser;
 import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Build;
@@ -263,16 +257,14 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                                     
                                     Snackbar mSnackbar = MainActivity.getSnackbar(false);
                                     boolean mAniText = false;
-                                    boolean mAniSnackBar = true;
+                                    boolean mShowAniSnackBar = true;
                                     if (mSnackbar != null) {
                                         if (mSnackbar.isShowing()) {
-                                            mSnackbar.animation(false);
-                                            
                                             if(!spanString.toString().equalsIgnoreCase(mSnackbar.getText().toString())){
                                                 mAniText = true;
-                                            }
-                                            
-                                            mAniSnackBar = false;
+                                            }                                         
+                                            mShowAniSnackBar = false;
+                                            mSnackbar.dismissAnimation(false);
                                             mSnackbar.dismiss();
                                         }
                                         mSnackbar = MainActivity.getSnackbar(true);
@@ -285,9 +277,9 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                                         }
                                     })
                                     .actionColorList(mContext.getResources().getColorStateList(R.color.text_sel))
-                                    //.actionColorResource(R.color.text_sel)
                                     .swipeToDismiss(false)
-                                    .animation(mAniSnackBar)
+                                    .showAnimation(mShowAniSnackBar)
+                                    .dismissAnimation(true)
                                     .animationText(mAniText)
                                     .duration(Snackbar.SnackbarDuration.LENGTH_SHORT)
                                     .attachToAbsListView(mActionSlideExpandableListView)
