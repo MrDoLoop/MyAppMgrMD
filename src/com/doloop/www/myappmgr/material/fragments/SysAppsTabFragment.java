@@ -9,28 +9,41 @@ import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.doloop.www.mayappmgr.material.events.AppBackupSuccEvent;
+import com.doloop.www.mayappmgr.material.events.ViewNewBackupAppEvent;
 import com.doloop.www.myappmgr.material.MainActivity;
 import com.doloop.www.myappmgr.material.adapters.SysAppListAdapter;
 import com.doloop.www.myappmgr.material.adapters.SysAppListAdapter.SysAppListDataSetChangedListener;
 import com.doloop.www.myappmgr.material.utils.SysAppListItem;
+import com.doloop.www.myappmgr.material.utils.Utilities;
 import com.doloop.www.myappmgr.material.widgets.IndexBarView;
 import com.doloop.www.myappmgr.material.widgets.IndexBarView.OnIndexItemClickListener;
 import com.doloop.www.myappmgr.material.widgets.PinnedSectionListView;
 import com.doloop.www.myappmgrmaterial.R;
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.listeners.ActionClickListener;
 
-public class SysAppsTabFragment extends BaseFrag {
+import de.greenrobot.event.EventBus;
+
+public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLongClickListener{
     private SysAppListAdapter mAdapter;
     private PinnedSectionListView mPinnedSectionListView;
     private static Context mContext;
@@ -75,6 +88,7 @@ public class SysAppsTabFragment extends BaseFrag {
         View FragmentView = inflater.inflate(R.layout.sys_app_pinned_section_list, container, false);
         mIndexBarView = (IndexBarView) FragmentView.findViewById(R.id.indexBarView);
         mPinnedSectionListView = (PinnedSectionListView) FragmentView.findViewById(android.R.id.list);
+        mPinnedSectionListView.setOnItemLongClickListener(this);
         PopTextView = (TextView) FragmentView.findViewById(R.id.popTextView);
         mIndexBarView.setOnIndexItemClickListener(new OnIndexItemClickListener() {
 
@@ -363,6 +377,72 @@ public class SysAppsTabFragment extends BaseFrag {
             return mContext.getString(R.string.sys_apps);
         } else {
             return mContext.getString(R.string.sys_apps) + " (" + mAdapter.getAppItemsCount() + ")";
+        }
+    }
+
+    //长按
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        // TODO Auto-generated method stub
+        SysAppListItem item = mAdapter.getItem(position);
+        if(mAdapter.getItemViewType(position) == SysAppListItem.APP_ITEM){
+            //备份app
+            
+            String mBackUpFolder = Utilities.getBackUpAPKfileDir(mContext);
+            String sdAPKfileName = Utilities.BackupApp(item.appinfo, mBackUpFolder);
+            if (sdAPKfileName != null) {
+                // MainActivity.T(R.string.backup_success);
+                SpannableString spanString =
+                        new SpannableString(item.appinfo.appName + " "
+                                + mContext.getString(R.string.backup_success));
+                spanString.setSpan(new UnderlineSpan(), 0, item.appinfo.appName.length(),
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                spanString.setSpan(
+                        new ForegroundColorSpan(mContext.getResources().getColor(
+                                R.color.theme_blue_light)), 0, item.appinfo.appName.length(),
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                Snackbar mSnackbar = MainActivity.getSnackbar(false);
+                boolean mAniText = false;
+                boolean mShowAniSnackBar = true;
+                if (mSnackbar != null) {
+                    if (mSnackbar.isShowing()) {
+                        if(!spanString.toString().equalsIgnoreCase(mSnackbar.getText().toString())){
+                            mAniText = true;
+                        }                                         
+                        mShowAniSnackBar = false;
+                        mSnackbar.dismissAnimation(false);
+                        mSnackbar.dismiss();
+                    }
+                    mSnackbar = MainActivity.getSnackbar(true);
+                }
+                mSnackbar.actionLabel(R.string.view)
+                .actionListener(new ActionClickListener() {
+                    @Override
+                    public void onActionClicked(Snackbar snackbar) {
+                        EventBus.getDefault().post(new ViewNewBackupAppEvent());
+                    }
+                })
+                .actionColorList(mContext.getResources().getColorStateList(R.color.snackbar_action_sel))
+                .swipeToDismiss(false)
+                .showAnimation(mShowAniSnackBar)
+                .dismissAnimation(true)
+                .animationText(mAniText)
+                .duration(Snackbar.SnackbarDuration.LENGTH_SHORT)
+                .attachToAbsListView(mPinnedSectionListView)
+                .text(spanString)
+                .show(getActivity());
+
+                EventBus.getDefault().post(new AppBackupSuccEvent(item.appinfo));
+            } else {
+                MainActivity.T(R.string.error);
+            }
+            
+            
+            return true;
+        }
+        else{
+            return false;
         }
     }
 

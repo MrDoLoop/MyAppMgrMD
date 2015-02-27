@@ -143,10 +143,11 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
             SystemBarConfig config = tintManager.getConfig();
             //View statusBarHolder = findViewById(R.id.statusbar_holder);
             
-            View contLinear = findViewById(R.id.content_linear);
+            View contHolder = findViewById(R.id.content_linear);
+            View drawerHolder = findViewById(R.id.drawer_content_holder);
             //contLinear.setPadding(0, config.getPixelInsetTop(true), 0, config.getPixelInsetBottom());
-            contLinear.setPadding(0, config.getStatusBarHeight(), 0, config.getPixelInsetBottom());
-            
+            contHolder.setPadding(0, config.getStatusBarHeight(), 0, config.getPixelInsetBottom());
+            drawerHolder.setPadding(0, config.getStatusBarHeight(), 0, config.getPixelInsetBottom());
             //statusBarHolder.getLayoutParams().height = config.getStatusBarHeight();
             //statusBarHolder.setVisibility(View.VISIBLE);
             
@@ -163,7 +164,7 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
         }
 
         // 初始化抽屉
-        FragmentTransaction t = this.getSupportFragmentManager().beginTransaction();
+       FragmentTransaction t = this.getSupportFragmentManager().beginTransaction();
         DrawerFragment drawFrag = DrawerFragment.getInstance(thisActivityCtx);
         t.replace(R.id.drawer_content_holder, drawFrag);
         t.commit();
@@ -326,9 +327,12 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
         });
         mPagerSlidingTabStrip.setViewPager(mPager);
         // 选中的文字颜色
-        mPagerSlidingTabStrip.setSelectedTextColorResource(R.color.white);
+        //mPagerSlidingTabStrip.setSelectedTextColorResource(R.color.white);
         // 正常文字颜色
-        mPagerSlidingTabStrip.setTextColorResource(R.color.white3);
+        //mPagerSlidingTabStrip.setTextColorResource(R.color.white3);
+        
+        mPagerSlidingTabStrip.setTextColorList(getResources().getColorStateList(R.color.srtipe_tab_sel));
+        
         // 导航条初始化--end
 
         mAppUpdateReceiver = new AppUpdateReceiver();

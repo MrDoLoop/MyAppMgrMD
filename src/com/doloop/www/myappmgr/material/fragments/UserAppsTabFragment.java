@@ -220,7 +220,13 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                                             getActivity().getPackageManager().getLaunchIntentForPackage(
                                                     targetpackageName);
                                     if (intent != null) {
-                                        startActivity(intent);
+                                        if (intent != null) {
+                                            try{
+                                                startActivity(intent);
+                                            }catch(Exception e){
+                                                MainActivity.T(R.string.error);
+                                            }
+                                        }
                                     } else {
                                         MainActivity.T(R.string.error);
                                     }
@@ -276,7 +282,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                                             EventBus.getDefault().post(new ViewNewBackupAppEvent());
                                         }
                                     })
-                                    .actionColorList(mContext.getResources().getColorStateList(R.color.text_sel))
+                                    .actionColorList(mContext.getResources().getColorStateList(R.color.snackbar_action_sel))
                                     .swipeToDismiss(false)
                                     .showAnimation(mShowAniSnackBar)
                                     .dismissAnimation(true)

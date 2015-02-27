@@ -5,6 +5,7 @@ import java.util.Locale;
 import java.util.TreeMap;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
@@ -130,7 +131,17 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
                     public void onClick(View v) {
                         // TODO Auto-generated method stub
                         int pos = (Integer) v.getTag();
-                        MainActivity.T("系统图标被点击了: "+pos);
+                        Intent intent = mCtx.getPackageManager().getLaunchIntentForPackage(getItem(pos).appinfo.packageName);
+                        if (intent != null) {
+                            try{
+                                mCtx.startActivity(intent);
+                            }catch(Exception e){
+                                MainActivity.T(R.string.error);
+                            }
+                            
+                        } else {
+                            MainActivity.T(R.string.error);
+                        }
                     }
                 });
                 convertView.setTag(appItemHolder);
@@ -150,6 +161,7 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
             // ".png")).into(appViewHolder.AppIconImageView);
             appItemHolder.AppIconImageView.setTag(position);
             appItemHolder.RootLayout.setTag(appInfo);
+  
             if (appInfo.iconBitmap == null) {
                 Picasso.with(mCtx).load(appInfo.getAppIconCachePath(mCtx)).noFade().into(appItemHolder);
             } else {

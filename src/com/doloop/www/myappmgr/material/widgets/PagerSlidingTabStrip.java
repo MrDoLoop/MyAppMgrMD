@@ -21,6 +21,7 @@ import java.util.Locale;
 import com.doloop.www.myappmgrmaterial.R;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -87,6 +88,8 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 	private int tabTextSize = 13;
 	private int tabTextColor = 0xFF666666;
 	private int selectedTabTextColor = 0xFF666666;
+	private ColorStateList tabTextColorList = null;
+	
 	private Typeface tabTypeface = null;
 	private int tabTypefaceStyle = Typeface.NORMAL;
 
@@ -275,14 +278,14 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 
 			View v = tabsContainer.getChildAt(i);
 
-			v.setBackgroundResource(tabBackgroundResId);
+			//v.setBackgroundResource(tabBackgroundResId);
 
 			if (v instanceof TextView) {
 
 				TextView tab = (TextView) v;
 				tab.setTextSize(TypedValue.COMPLEX_UNIT_PX, tabTextSize);
 				tab.setTypeface(tabTypeface, tabTypefaceStyle);
-				tab.setTextColor(tabTextColor);
+				//tab.setTextColor(tabTextColor);
 				//tab.setTextColor(this.getResources().getColor(R.drawable.text_sel));
 				//tab.setTypeface(null,Typeface.BOLD);
 				tab.getPaint().setFakeBoldText(true);
@@ -296,9 +299,28 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 						tab.setText(tab.getText().toString().toUpperCase(locale));
 					}
 				}
-				if (i == selectedPosition) {
-					tab.setTextColor(selectedTabTextColor);
+				
+				if(tabTextColorList != null){
+				    tab.setBackgroundResource(0);
+				    tab.setTextColor(tabTextColorList);
+				    
+				    if (i == selectedPosition) {
+				        tab.setSelected(true);
+                    }
+                    else{
+                        tab.setSelected(false);
+                    }
 				}
+				else{
+				    v.setBackgroundResource(tabBackgroundResId);
+				    if (i == selectedPosition) {
+	                    tab.setTextColor(selectedTabTextColor);
+	                }
+	                else{
+	                    tab.setTextColor(tabTextColor);
+	                }
+				}
+				
 			}
 		}
 
@@ -515,6 +537,11 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 		this.tabTextColor = textColor;
 		updateTabStyles();
 	}
+	
+	public void setTextColorList(ColorStateList textColorList) {
+        this.tabTextColorList = textColorList;
+        updateTabStyles();
+    }
 
 	public void setTextColorResource(int resId) {
 		this.tabTextColor = getResources().getColor(resId);

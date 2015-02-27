@@ -56,14 +56,15 @@
 
     <FrameLayout
         android:id="@+id/drawer_content_holder"
-        android:layout_width="260dp"
+        android:layout_width="300dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:clickable="true"
+        android:background="@color/white2" 
         android:fitsSystemWindows="true" >
 
-        <!--
-        <ImageView
+        
+       <!--  <ImageView
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_alignParentTop="true"
@@ -74,8 +75,8 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="cae f e" />
-        -->
+            android:text="cafe" /> -->
+        
     </FrameLayout>
 
 </android.support.v4.widget.DrawerLayout>

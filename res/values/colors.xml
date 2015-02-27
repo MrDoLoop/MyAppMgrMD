@@ -14,6 +14,7 @@
     <color name="white">@android:color/white</color>
     <color name="white2">#fafafa</color>
     <color name="white3">#96ffffff</color>
+    <color name="white4">#c8ffffff</color>
     <color name="black">@android:color/black</color>
     <color name="background_tab_pressed">@color/theme_blue_light_pressed</color>
     <color name="divider">#d8d8d8</color>
