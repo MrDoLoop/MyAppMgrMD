@@ -67,6 +67,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
     private MenuItem searchMenuItem;
 
     private DataSetObserver mDataSetObserver;
+    private View mEmptyView;
 
     public void setListSortType(int sortType) {
         currentSortType = sortType;
@@ -322,6 +323,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
         mActionSlideExpandableListView.setOnScrollListener(this);
         // mActionSlideExpandableListView.setOnItemLongClickListener(this);
         mDialogText = (TextView) contentView.findViewById(R.id.popTextView);
+        mEmptyView = contentView.findViewById(R.id.emptyView);
         return contentView;
     }
 
@@ -437,6 +439,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
         // mAdapter.setUserAppListFilterResultListener((UserAppListFilterResultListener)mContext);
         mAdapter.setUserAppListDataSetChangedListener((UserAppListDataSetChangedListener) mContext);
         mActionSlideExpandableListView.setAdapter(mAdapter);
+        mActionSlideExpandableListView.setEmptyView(mEmptyView);
         mDataSetObserver = new DataSetObserver() {
 
             @Override

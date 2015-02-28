@@ -89,7 +89,7 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
         View FragmentView = inflater.inflate(R.layout.sys_app_pinned_section_list, container, false);
         mIndexBarView = (IndexBarView) FragmentView.findViewById(R.id.indexBarView);
         mPinnedSectionListView = (PinnedSectionListView) FragmentView.findViewById(android.R.id.list);
-        mEmptyView = FragmentView.findViewById(R.id.empty_view);
+        mEmptyView = FragmentView.findViewById(R.id.emptyView);
         
         mPinnedSectionListView.setOnItemLongClickListener(this);
         PopTextView = (TextView) FragmentView.findViewById(R.id.popTextView);
@@ -294,7 +294,6 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
 
     public void setData(ArrayList<SysAppListItem> datalist, TreeMap<String, Integer> map) {
         mAdapter = new SysAppListAdapter(mContext, datalist, map);
-        //mAdapter.setSysAppListFilterResultListener((SysAppListFilterResultListener)mContext);
         mAdapter.setSysAppListDataSetChangedListener((SysAppListDataSetChangedListener)mContext);
         mPinnedSectionListView.setAdapter(mAdapter);
         mIndexBarView.setExistIndexArray(new ArrayList<String>(map.keySet()));
