@@ -112,7 +112,7 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
         View FragmentView = inflater.inflate(R.layout.backup_app_list_view, container, false);
         mLoadingView = FragmentView.findViewById(R.id.loading_bar);
 
-        emptyView = FragmentView.findViewById(R.id.emptyView);
+        emptyView = FragmentView.findViewById(android.R.id.empty);
         mRecyclerView = (RecyclerView) FragmentView.findViewById(R.id.recyclerview);
         mRecyclerView.setHasFixedSize(true);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
@@ -121,8 +121,7 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mAdapter = new BackupAppListAdapter(mContext, mAppList);
         mRecyclerView.setAdapter(mAdapter);
-
-        // checkIfEmpty();
+        checkIfEmpty();
         return FragmentView;
         // return null;
     }
@@ -291,7 +290,7 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
                 // AppInfo appInfo = Utilities.getLastBackupAppFromSD(mContext);
                 mAdapter.getDisplayList().add(0, ev.AppInfo);
                 mAdapter.notifyDataSetChanged();
-                checkIfEmpty();
+                //checkIfEmpty();
                 // mAdapter.notifyItemInserted(0);
             }
 
@@ -335,7 +334,7 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
             public void onChanged() {
                 // TODO Auto-generated method stub
                 super.onChanged();
-                // checkIfEmpty();
+                checkIfEmpty();
                 mAdapter.getBackupAppListDataSetChangedListener().OnBackupAppListDataSetChanged();
             }
 
