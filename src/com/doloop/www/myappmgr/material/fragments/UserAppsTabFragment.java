@@ -250,17 +250,6 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                                                     R.color.theme_blue_light)), 0, selectItem.appName.length(),
                                             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-                                    /*
-                                     * SnackbarManager.show(Snackbar.with(mContext) .actionLabel(R.string.view)
-                                     * .actionListener(new ActionClickListener() {
-                                     * 
-                                     * @Override public void onActionClicked(Snackbar snackbar) {
-                                     * EventBus.getDefault().post(new ViewNewBackupAppEvent()); }
-                                     * }).actionColorResource(R.color.theme_blue_light) .swipeToDismiss(false)
-                                     * .duration(Snackbar.SnackbarDuration.LENGTH_SHORT)
-                                     * .attachToAbsListView(mActionSlideExpandableListView) .text(spanString));
-                                     */
-                                    
                                     Snackbar mSnackbar = MainActivity.getSnackbar(false);
                                     boolean mAniText = false;
                                     boolean mShowAniSnackBar = true;

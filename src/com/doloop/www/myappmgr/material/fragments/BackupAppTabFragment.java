@@ -101,7 +101,13 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
      */
     private void checkIfEmpty() {
         if (emptyView != null && mAdapter != null) {
-            emptyView.setVisibility(mAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
+            if(mAdapter.getItemCount() > 0) {
+                emptyView.setVisibility(View.GONE);
+            }
+            else{
+                emptyView.setVisibility(View.VISIBLE);
+            }
+            //emptyView.setVisibility(mAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
         }
     }
 
@@ -112,7 +118,7 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
         View FragmentView = inflater.inflate(R.layout.backup_app_list_view, container, false);
         mLoadingView = FragmentView.findViewById(R.id.loading_bar);
 
-        emptyView = FragmentView.findViewById(android.R.id.empty);
+        emptyView = FragmentView.findViewById(R.id.emptyView);
         mRecyclerView = (RecyclerView) FragmentView.findViewById(R.id.recyclerview);
         mRecyclerView.setHasFixedSize(true);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
@@ -121,7 +127,7 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mAdapter = new BackupAppListAdapter(mContext, mAppList);
         mRecyclerView.setAdapter(mAdapter);
-        checkIfEmpty();
+        //checkIfEmpty();
         return FragmentView;
         // return null;
     }
@@ -373,18 +379,15 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
     @Override
     public void onLoaderBackgroundMoreWork(ArrayList<AppInfo> listReadyToDeliver) {
         // TODO Auto-generated method stub
-//        try {
-//            Thread.sleep(30000);
-//        } catch (InterruptedException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
+        try {
+            Thread.sleep(30000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         if (!mPendingNewAppInfo.isEmpty()) {
-            
             for (int i = 0; i < mPendingNewAppInfo.size(); i++) {
-
                 boolean found = false;
-
                 for (AppInfo appInfo : listReadyToDeliver) {
                     if (appInfo.packageName.equals(mPendingNewAppInfo.get(i).packageName)) {
                         found = true;

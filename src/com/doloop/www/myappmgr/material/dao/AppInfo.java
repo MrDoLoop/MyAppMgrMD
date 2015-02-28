@@ -45,6 +45,8 @@ public class AppInfo {
     
     public String getBackupApkFileName(){
         if(!TextUtils.isEmpty(backupFilePath)){
+//            String fileName = backupFilePath.substring(backupFilePath.lastIndexOf("\\/")+1);
+//            return fileName;
             File f = new File(backupFilePath);
             return f.getName();
         }

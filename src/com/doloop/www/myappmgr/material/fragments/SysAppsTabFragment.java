@@ -51,6 +51,7 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
     private String mfragTitle = "";
     private MenuItem searchMenuItem;
     private DataSetObserver mDataSetObserver;
+    private View mEmptyView;
 
    /* private OnSysAppListItemSelectedListener mListener;
 
@@ -88,6 +89,8 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
         View FragmentView = inflater.inflate(R.layout.sys_app_pinned_section_list, container, false);
         mIndexBarView = (IndexBarView) FragmentView.findViewById(R.id.indexBarView);
         mPinnedSectionListView = (PinnedSectionListView) FragmentView.findViewById(android.R.id.list);
+        mEmptyView = FragmentView.findViewById(R.id.empty_view);
+        
         mPinnedSectionListView.setOnItemLongClickListener(this);
         PopTextView = (TextView) FragmentView.findViewById(R.id.popTextView);
         mIndexBarView.setOnIndexItemClickListener(new OnIndexItemClickListener() {
@@ -307,7 +310,7 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
 
         };
         mAdapter.registerDataSetObserver(mDataSetObserver);
-        
+        mPinnedSectionListView.setEmptyView(mEmptyView);
     }
 
     public void resetIndexBarView() {
