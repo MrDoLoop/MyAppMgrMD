@@ -154,7 +154,13 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
         // Fragment¡¯s view to be fully inflated.
         setRetainInstance(false);
         setHasOptionsMenu(false);
-        getLoaderManager().initLoader(LOADER_ID, null, this);
+        
+        if(getLoaderManager().getLoader(LOADER_ID) == null){
+            getLoaderManager().initLoader(LOADER_ID, null, this);
+        }
+        else{
+            getLoaderManager().restartLoader(0, null, this);
+        }
     }
 
     // Called at the start of the visible lifetime.
@@ -324,7 +330,7 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
     @Override
     public Loader<ArrayList<AppInfo>> onCreateLoader(int id, Bundle args) {
         // TODO Auto-generated method stub
-        return mBackupAppListLoader = new BackupAppListLoader(getActivity(), mLoadingView, this);
+        return mBackupAppListLoader = new BackupAppListLoader(getActivity(), mLoadingView, mRecyclerView, this);
     }
 
     @Override
@@ -379,12 +385,12 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
     @Override
     public void onLoaderBackgroundMoreWork(ArrayList<AppInfo> listReadyToDeliver) {
         // TODO Auto-generated method stub
-        try {
+        /*try {
             Thread.sleep(30000);
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        }
+        }*/
         if (!mPendingNewAppInfo.isEmpty()) {
             for (int i = 0; i < mPendingNewAppInfo.size(); i++) {
                 boolean found = false;
