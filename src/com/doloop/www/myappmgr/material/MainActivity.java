@@ -383,7 +383,7 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
     @Override
     public void onBackPressed() {
         if (back_pressed + 2000 > System.currentTimeMillis()) {
-            appDestroyCleanup();
+            
             super.onBackPressed();
         } else {
             // ³éÌë¿ª
@@ -557,6 +557,13 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
         // This bundle will be passed to onCreate, onCreateView, and
         // onCreateView if the parent Activity is killed and restarted.
         // super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    protected void onDestroy() {
+        // TODO Auto-generated method stub
+        super.onDestroy();
+        appDestroyCleanup();
     }
 
     private class GetApps extends AsyncTask<Boolean, String, Void> {
