@@ -7,8 +7,6 @@ import java.util.List;
 
 import org.apache.commons.io.comparator.LastModifiedFileComparator;
 
-import com.doloop.www.myappmgr.material.dao.AppInfo;
-
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -16,6 +14,14 @@ import android.content.pm.PackageManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
 import android.view.View;
+
+import com.doloop.www.myappmgr.material.dao.AppInfo;
+import com.nineoldandroids.animation.Animator;
+import com.nineoldandroids.animation.AnimatorListenerAdapter;
+import com.nineoldandroids.animation.ObjectAnimator;
+import com.nineoldandroids.animation.ValueAnimator;
+import com.nineoldandroids.animation.ValueAnimator.AnimatorUpdateListener;
+import com.nineoldandroids.view.ViewHelper;
 
 /**
  * An implementation of AsyncTaskLoader which loads a {@code List<AppEntry>} containing all installed applications on
@@ -41,10 +47,12 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
     //private Context mContext;
     private boolean mLoadInBackgroundCanceled = false;
     private View mLoadingView;
+    private View mContentView;
     
     private boolean mLoadingFinished = false;
+    
 
-    public BackupAppListLoader(Context ctx, View loadingView, LoaderBackgroundMoreWorkListener l) {
+    public BackupAppListLoader(Context ctx, View loadingView, View contentView, LoaderBackgroundMoreWorkListener l) {
         // Loaders may be used across multiple Activitys (assuming they aren't
         // bound to the LoaderManager), so NEVER hold a reference to the context
         // directly. Doing so will cause you to leak an entire Activity's context.
@@ -52,7 +60,7 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
         // Context instead, and can be retrieved with a call to getContext().
         super(ctx);
         mLoaderBackgroundMoreWorkListener = l;
-        //mContext = ctx;
+        mContentView = contentView;
         pkgMgr = getContext().getPackageManager();
         mLoadingView = loadingView;
     }
@@ -60,13 +68,49 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
     public void showLoadingView() {
         if (mLoadingView != null) {
             mLoadingView.setVisibility(View.VISIBLE);
+            //mContentView.setVisibility(View.INVISIBLE);
+            
+            ObjectAnimator anim = ObjectAnimator.ofFloat(mLoadingView, "alpha", 0f, 1f).setDuration(800);
+            anim.addUpdateListener(new AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    ViewHelper.setAlpha(mContentView, 1 - (Float) animation.getAnimatedValue());
+                }
+            });
+            anim.start();
+            /*ObjectAnimator anim = ObjectAnimator.ofFloat(mLoadingView, "alpha", 0f, 1f);//.start();
+            ObjectAnimator anim1 = ObjectAnimator.ofFloat(mContentView, "alpha", 1f, 0f);
+            AnimatorSet AniSet = new AnimatorSet();
+            AniSet.playTogether(anim,anim1);
+            AniSet.setDuration(150);
+            AniSet.start();*/
         }
 
     }
 
     public void hideLoadingView() {
         if (mLoadingView != null) {
-            mLoadingView.setVisibility(View.GONE);
+            ObjectAnimator anim = ObjectAnimator.ofFloat(mLoadingView, "alpha", 1f, 0f).setDuration(800);
+            anim.addUpdateListener(new AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    ViewHelper.setAlpha(mContentView, 1 - (Float) animation.getAnimatedValue());
+                }
+            });
+            anim.addListener(new AnimatorListenerAdapter(){
+                public void onAnimationEnd(Animator animation){
+                    mLoadingView.setVisibility(View.GONE);
+                }
+            });
+            anim.start();
+            /*mLoadingView.setVisibility(View.GONE);
+            mContentView.setVisibility(View.VISIBLE);
+            ObjectAnimator anim = ObjectAnimator.ofFloat(mLoadingView, "alpha", 1f, 0f);//.start();
+            ObjectAnimator anim1 = ObjectAnimator.ofFloat(mContentView, "alpha", 0f, 1f);
+            AnimatorSet AniSet = new AnimatorSet();
+            AniSet.playTogether(anim,anim1);
+            AniSet.setDuration(1000);
+            AniSet.start();*/
         }
     }
 
