@@ -288,7 +288,11 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 				//tab.setTextColor(tabTextColor);
 				//tab.setTextColor(this.getResources().getColor(R.drawable.text_sel));
 				//tab.setTypeface(null,Typeface.BOLD);
-				tab.getPaint().setFakeBoldText(true);
+				if (i == selectedPosition) {
+				    tab.getPaint().setFakeBoldText(true);
+				}else{
+				    tab.getPaint().setFakeBoldText(false);
+				}
 				// setAllCaps() is only available from API 14, so the upper case
 				// is made manually if we are on a
 				// pre-ICS-build
