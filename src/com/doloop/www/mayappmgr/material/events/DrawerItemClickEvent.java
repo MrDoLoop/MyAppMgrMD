@@ -5,7 +5,7 @@ import com.doloop.www.myappmgrmaterial.R;
 
 public class DrawerItemClickEvent {
     
-    public DrawerItem mDrawerItem;
+    public DrawerItem DrawerItem;
     
     public static enum DrawerItem {
         REFRESH(0, R.string.refresh, R.drawable.ic_refresh),;
@@ -21,7 +21,7 @@ public class DrawerItemClickEvent {
     }
     
     public DrawerItemClickEvent(DrawerItem drawerItem){
-        mDrawerItem = drawerItem;
+        DrawerItem = drawerItem;
     }
     
 }

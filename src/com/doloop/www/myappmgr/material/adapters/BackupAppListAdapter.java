@@ -54,9 +54,8 @@ public class BackupAppListAdapter extends RecyclerView.Adapter<RecyclerView.View
             }
             mAppListDisplay = filteredAppList;
         }
-        
+        notifyDataSetChanged();
     }
-    
     
     public BackupAppListAdapter(Context ctx, ArrayList<AppInfo> appList){
         mAppListFull = mAppListDisplay = appList;
@@ -86,7 +85,7 @@ public class BackupAppListAdapter extends RecyclerView.Adapter<RecyclerView.View
         holder.AppIconImageView.setTag(position);
         holder.AppVersionTextView.setText("v" + appInfo.versionName + " | " + appInfo.appSizeStr + " | "
                 + appInfo.lastModifiedTimeStr);
-        
+        holder.AppFileNameTextView.setText(appInfo.getBackupApkFileName());
         
     }
     @Override
@@ -103,6 +102,7 @@ public class BackupAppListAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         TextView AppNameTextView;
         TextView AppVersionTextView;
+        TextView AppFileNameTextView;
         ImageView AppIconImageView;
         RelativeLayout RootLayout;
 
@@ -110,6 +110,7 @@ public class BackupAppListAdapter extends RecyclerView.Adapter<RecyclerView.View
             super(view);
             AppNameTextView = (TextView) view.findViewById(R.id.app_name);
             AppVersionTextView = (TextView) view.findViewById(R.id.app_version);
+            AppFileNameTextView = (TextView) view.findViewById(R.id.app_filename);
             AppIconImageView = (ImageView) view.findViewById(R.id.app_icon);
             AppIconImageView.setOnClickListener(new View.OnClickListener() {
                 
@@ -120,7 +121,8 @@ public class BackupAppListAdapter extends RecyclerView.Adapter<RecyclerView.View
                     /*mAppListDisplay.remove(getPosition());
                     notifyDataSetChanged();*/
                     AppInfo appInfo = mAppListDisplay.get(getPosition());
-                    if(FileUtils.deleteQuietly(new File(appInfo.apkFilePath))){
+                    //if(FileUtils.deleteQuietly(new File(appInfo.apkFilePath))){
+                    if(FileUtils.deleteQuietly(new File(appInfo.backupFilePath))){
                       //从显示的list中删除
                         mAppListDisplay.remove(getPosition());
                         //从总共的list中删除
@@ -145,7 +147,13 @@ public class BackupAppListAdapter extends RecyclerView.Adapter<RecyclerView.View
                 @Override
                 public void onClick(View v) {
                     // TODO Auto-generated method stub
-                    Utilities.installAPK(mCtx, mAppListDisplay.get(getPosition()).apkFilePath);
+                    AppInfo theApp = mAppListDisplay.get(getPosition());
+                    if(TextUtils.isEmpty(theApp.backupFilePath)){
+                        Utilities.installAPK(mCtx, theApp.apkFilePath);
+                    }
+                    else{
+                        Utilities.installAPK(mCtx, theApp.backupFilePath);
+                    }
                 }
             });
         }

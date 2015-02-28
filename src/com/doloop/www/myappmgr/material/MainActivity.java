@@ -123,6 +123,8 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
     private IntentFilter LangIntentFilter;
     
     private static Snackbar mSnackbar;
+    
+    //private DrawerItemClickEvent mDrawerItemClickEvent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -181,12 +183,17 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
         mDrawerToggle =
                 new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close) {
 
-                    /*
-                     * @Override public void onDrawerSlide(View drawerView, float slideOffset) { // TODO Auto-generated
-                     * method stub super.onDrawerSlide(drawerView, slideOffset); L.d("slideOffset "+slideOffset); }
-                     */
+                    
+                     @Override 
+                     public void onDrawerSlide(View drawerView, float slideOffset) { 
+                         super.onDrawerSlide(drawerView, slideOffset); 
+                         L.d("slideOffset "+slideOffset); 
+                         
+                     }
+                     
 
                     /** Called when a drawer has settled in a completely closed state. */
+                    @Override 
                     public void onDrawerClosed(View view) {
                         super.onDrawerClosed(view);
 
@@ -213,10 +220,22 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
                         if(mPager.getCurrentItem() != Constants.USR_APPS_TAB_POS){
                             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
                         }
+                        
+                        /*//抽屉里面的一项被点击了
+                        if(mDrawerItemClickEvent != null){
+                            switch (mDrawerItemClickEvent.DrawerItem) {
+                                case REFRESH:
+                                    new GetApps().execute(true);
+                                    break;
+                            }
+                            mDrawerItemClickEvent = null;
+                        }*/
+                        
                         // invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
                     }
 
                     /** Called when a drawer has settled in a completely open state. */
+                    @Override 
                     public void onDrawerOpened(View drawerView) {
                         super.onDrawerOpened(drawerView);
 
@@ -397,6 +416,11 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
         thisActivityCtx = null;
     }
 
+    /**
+     * 默认是多行的
+     * @param newInstance
+     * @return
+     */
     public static Snackbar getSnackbar(boolean newInstance){
         if(mSnackbar == null || newInstance){
             mSnackbar = Snackbar.with(thisActivityCtx);
@@ -438,8 +462,8 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
         searchMenuItem = menu.findItem(R.id.menu_search).setVisible(true);
         sortMenuItem = menu.findItem(R.id.menu_sort).setVisible(true);
 
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.menu_search));
-        searchView.setQueryHint(this.getString(R.string.search));
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
+        searchView.setQueryHint(getString(R.string.search));
 
         searchViewEdt = ((EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text));
         searchViewEdt.setHintTextColor(getResources().getColor(R.color.white));
@@ -519,6 +543,7 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        
         /*
          * if (id == R.id.action_settings) { return true; }
          */
@@ -852,7 +877,8 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
 
     public void onEventMainThread(DrawerItemClickEvent ev) {
         toggleDrawerMenu();
-        switch (ev.mDrawerItem) {
+        //mDrawerItemClickEvent = ev;
+        switch (ev.DrawerItem) {
             case REFRESH:
                 new GetApps().execute(true);
                 break;

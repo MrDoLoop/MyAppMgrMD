@@ -53,32 +53,32 @@ import com.doloop.www.myappmgr.material.fragments.SortTypeDialogFragment;
 import com.doloop.www.myappmgrmaterial.R;
 
 public class Utilities {
-    
-    public static AppInfo getLastBackupAppFromSD(Context ctx){
+
+    public static AppInfo getLastBackupAppFromSD(Context ctx) {
         File backupFolder = new File(Utilities.getBackUpAPKfileDir(ctx));
         File[] files = backupFolder.listFiles(new ApkFileFilter());
         Arrays.sort(files, LastModifiedFileComparator.LASTMODIFIED_REVERSE);
-        if(files.length > 0){
+        if (files.length > 0) {
             File theApk = files[0];
-            
+
             PackageManager pkgMgr = ctx.getPackageManager();
-            PackageInfo packageInfo = pkgMgr.getPackageArchiveInfo(theApk.getAbsolutePath(), 
-                    PackageManager.GET_ACTIVITIES);
-            if(packageInfo != null){
+            PackageInfo packageInfo =
+                    pkgMgr.getPackageArchiveInfo(theApk.getAbsolutePath(), PackageManager.GET_ACTIVITIES);
+            if (packageInfo != null) {
                 ApplicationInfo applicationInfo = packageInfo.applicationInfo;
                 applicationInfo.sourceDir = theApk.getAbsolutePath();
                 applicationInfo.publicSourceDir = theApk.getAbsolutePath();
-                
-                AppInfo appInfo = Utilities.buildAppInfoEntry(ctx,packageInfo,pkgMgr,false);
+
+                AppInfo appInfo = Utilities.buildAppInfoEntry(ctx, packageInfo, pkgMgr, false);
+                appInfo.backupFilePath = theApk.getAbsolutePath();
                 return appInfo;
             }
             return null;
-        }
-        else{
+        } else {
             return null;
         }
     }
-    
+
     public static AppInfo createAppInfoCopy(AppInfo appInfo) {
         AppInfo tmpInfo = new AppInfo();
         tmpInfo.appName = new String(appInfo.appName);
@@ -92,12 +92,12 @@ public class Utilities {
 
         tmpInfo.versionCode = Integer.valueOf(tmpInfo.versionCode);
         tmpInfo.iconBitmap = null;
-               
+
         tmpInfo.appSizeStr = new String(appInfo.appSizeStr);
-        tmpInfo.appRawSize = Long.parseLong(""+appInfo.appRawSize);
+        tmpInfo.appRawSize = Long.parseLong("" + appInfo.appRawSize);
 
         tmpInfo.lastModifiedTimeStr = new String(appInfo.lastModifiedTimeStr);
-        tmpInfo.lastModifiedRawTime = Long.parseLong(""+appInfo.lastModifiedRawTime);
+        tmpInfo.lastModifiedRawTime = Long.parseLong("" + appInfo.lastModifiedRawTime);
         tmpInfo.apkFilePath = new String(appInfo.apkFilePath);
         tmpInfo.appSortName = new String(appInfo.appSortName);
         tmpInfo.appNamePinyin = new String(appInfo.appNamePinyin);
@@ -149,17 +149,17 @@ public class Utilities {
 
     public static boolean deleteAppIconDir(File dir) {
         if (dir.exists()) {
-//              if (dir.isDirectory()) { 
-//                  String[] children = dir.list(); 
-//                  for (int i = 0; i < children.length; i++) 
-//                  {
-//                      boolean success = deleteAppIconDir(new File(dir, children[i])); 
-//                      if (!success) { 
-//                          return false; 
-//                      } 
-//                  } 
-//              } //目录此时为空，可以删除 
-//              return dir.delete();
+            // if (dir.isDirectory()) {
+            // String[] children = dir.list();
+            // for (int i = 0; i < children.length; i++)
+            // {
+            // boolean success = deleteAppIconDir(new File(dir, children[i]));
+            // if (!success) {
+            // return false;
+            // }
+            // }
+            // } //目录此时为空，可以删除
+            // return dir.delete();
             return FileUtils.deleteQuietly(dir);
         }
         return false;
@@ -442,10 +442,13 @@ public class Utilities {
      */
     public static String BackupApp(AppInfo appInfo, String destFilePath) {
         if (copyFile(appInfo.apkFilePath, destFilePath + appInfo.getBackupFileName_AppName())) {
-            return destFilePath + appInfo.getBackupFileName_AppName();
+            appInfo.backupFilePath = destFilePath + appInfo.getBackupFileName_AppName();
+            return appInfo.backupFilePath;
         } else if (copyFile(appInfo.apkFilePath, destFilePath + appInfo.getBackupFileName_pkgName())) {
-            return destFilePath + appInfo.getBackupFileName_pkgName();
+            appInfo.backupFilePath = destFilePath + appInfo.getBackupFileName_pkgName();
+            return appInfo.backupFilePath;
         } else {
+            appInfo.backupFilePath = "";
             return null;
         }
     }
@@ -472,24 +475,17 @@ public class Utilities {
      * @return
      */
     public static boolean copyFile(String SrcFile, String DestFile) {
-        
+
         long startTime = System.currentTimeMillis();
-        
-        boolean success = false; 
-       /* File srcFile = new File(SrcFile);
-        File destFile = new File(DestFile);
-        try {
-            FileUtils.copyFile(srcFile, destFile);
-            success = true; 
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            success = false; 
-        }
-        long finishTime = System.currentTimeMillis();
-        L.d("复制用时: "+(finishTime-startTime));*/
-         
-        //boolean success = false;
+
+        boolean success = false;
+        /*
+         * File srcFile = new File(SrcFile); File destFile = new File(DestFile); try { FileUtils.copyFile(srcFile,
+         * destFile); success = true; } catch (IOException e) { // TODO Auto-generated catch block e.printStackTrace();
+         * success = false; } long finishTime = System.currentTimeMillis(); L.d("复制用时: "+(finishTime-startTime));
+         */
+
+        // boolean success = false;
 
         File srcFile = new File(SrcFile);
         File destFile = new File(DestFile);
@@ -508,7 +504,7 @@ public class Utilities {
             e.printStackTrace();
         }
         long finishTime = System.currentTimeMillis();
-        L.d("复制用时: "+(finishTime-startTime));
+        L.d("复制用时: " + (finishTime - startTime));
         return success;
     }
 

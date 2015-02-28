@@ -1,15 +1,8 @@
 package com.doloop.www.myappmgr.material.fragments;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
-import org.apache.commons.io.comparator.LastModifiedFileComparator;
-
 import android.app.Activity;
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
@@ -26,14 +19,14 @@ import com.doloop.www.mayappmgr.material.events.AppBackupSuccEvent;
 import com.doloop.www.myappmgr.material.adapters.BackupAppListAdapter;
 import com.doloop.www.myappmgr.material.adapters.BackupAppListAdapter.BackupAppListDataSetChangedListener;
 import com.doloop.www.myappmgr.material.dao.AppInfo;
-import com.doloop.www.myappmgr.material.utils.ApkFileFilter;
 import com.doloop.www.myappmgr.material.utils.BackupAppListLoader;
-import com.doloop.www.myappmgr.material.utils.Utilities;
+import com.doloop.www.myappmgr.material.utils.BackupAppListLoader.LoaderBackgroundMoreWorkListener;
 import com.doloop.www.myappmgrmaterial.R;
 
 import de.greenrobot.event.EventBus;
 
-public class BackupAppTabFragment extends BaseFrag implements LoaderManager.LoaderCallbacks<ArrayList<AppInfo>> {
+public class BackupAppTabFragment extends BaseFrag implements LoaderManager.LoaderCallbacks<ArrayList<AppInfo>>,
+        LoaderBackgroundMoreWorkListener {
     private static BackupAppTabFragment uniqueInstance = null;
     private static Context mContext;
     private RecyclerView mRecyclerView;
@@ -42,7 +35,9 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
     private AdapterDataObserver mDataSetObserver;
     private static final int LOADER_ID = 1;
     private BackupAppListLoader mBackupAppListLoader;
-    
+    private View mLoadingView;
+    private ArrayList<AppInfo> mPendingNewAppInfo = new ArrayList<AppInfo>();
+
     @Nullable
     private View emptyView;
 
@@ -62,90 +57,61 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
     public void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
-        //initData();
-        
-        
+        // initData();
+        EventBus.getDefault().register(this);
     }
 
-    public void listBackToTop(){
+    public void listBackToTop() {
         mRecyclerView.smoothScrollToPosition(0);
     }
-    
-    private void initData(){
-        mAppList.clear();
-        File backupFolder = new File(Utilities.getBackUpAPKfileDir(mContext));
-        if (!backupFolder.exists()) {
-            backupFolder.mkdir();
-        }
 
-        File[] files = backupFolder.listFiles(new ApkFileFilter());
-        PackageManager pkgMgr;
-        PackageInfo packageInfo;
-        if (files.length > 0) {
-            Arrays.sort(files, LastModifiedFileComparator.LASTMODIFIED_REVERSE);
-            for (File file : files) {
-                //filesArray.add(file.getName());
-                
-                pkgMgr = mContext.getPackageManager();
-                packageInfo = pkgMgr.getPackageArchiveInfo(file.getAbsolutePath(), 
-                        PackageManager.GET_ACTIVITIES);
-                AppInfo appInfo;
-                if(packageInfo != null){
-                    
-                    ApplicationInfo applicationInfo = packageInfo.applicationInfo;
-                    applicationInfo.sourceDir = file.getAbsolutePath();
-                    applicationInfo.publicSourceDir = file.getAbsolutePath();
-                    
-                    appInfo = Utilities.buildAppInfoEntry(mContext,packageInfo,pkgMgr,false);
-                    mAppList.add(appInfo);
-                }
-            }
-        }
+    /*
+     * private void initData(){ mAppList.clear(); File backupFolder = new File(Utilities.getBackUpAPKfileDir(mContext));
+     * if (!backupFolder.exists()) { backupFolder.mkdir(); }
+     * 
+     * File[] files = backupFolder.listFiles(new ApkFileFilter()); PackageManager pkgMgr; PackageInfo packageInfo; if
+     * (files.length > 0) { Arrays.sort(files, LastModifiedFileComparator.LASTMODIFIED_REVERSE); for (File file : files)
+     * { //filesArray.add(file.getName());
+     * 
+     * pkgMgr = mContext.getPackageManager(); packageInfo = pkgMgr.getPackageArchiveInfo(file.getAbsolutePath(),
+     * PackageManager.GET_ACTIVITIES); AppInfo appInfo; if(packageInfo != null){
+     * 
+     * ApplicationInfo applicationInfo = packageInfo.applicationInfo; applicationInfo.sourceDir =
+     * file.getAbsolutePath(); applicationInfo.publicSourceDir = file.getAbsolutePath();
+     * 
+     * appInfo = Utilities.buildAppInfoEntry(mContext,packageInfo,pkgMgr,false); mAppList.add(appInfo); } } }
+     * 
+     * mAdapter = new BackupAppListAdapter(mContext,mAppList); mDataSetObserver = new AdapterDataObserver(){
+     * 
+     * @Override public void onChanged() { // TODO Auto-generated method stub super.onChanged(); checkIfEmpty();
+     * mAdapter.getBackupAppListDataSetChangedListener().OnBackupAppListDataSetChanged(); }
+     * 
+     * @Override public void onItemRangeInserted(int positionStart, int itemCount) { checkIfEmpty();
+     * mAdapter.getBackupAppListDataSetChangedListener().OnBackupAppListDataSetChanged(); }
+     * 
+     * @Override public void onItemRangeRemoved(int positionStart, int itemCount) { checkIfEmpty();
+     * mAdapter.getBackupAppListDataSetChangedListener().OnBackupAppListDataSetChanged(); }
+     * 
+     * }; mAdapter.registerAdapterDataObserver(mDataSetObserver);
+     * mAdapter.setUserAppListDataSetChangedListener((BackupAppListDataSetChangedListener)mContext); }
+     */
 
-        mAdapter = new BackupAppListAdapter(mContext,mAppList);
-        mDataSetObserver = new AdapterDataObserver(){
-
-            @Override
-            public void onChanged() {
-                // TODO Auto-generated method stub
-                super.onChanged();
-                checkIfEmpty();
-                mAdapter.getBackupAppListDataSetChangedListener().OnBackupAppListDataSetChanged();
-            }
-            
-            @Override
-            public void onItemRangeInserted(int positionStart, int itemCount) {
-                checkIfEmpty();
-                mAdapter.getBackupAppListDataSetChangedListener().OnBackupAppListDataSetChanged();
-            }
-
-            @Override
-            public void onItemRangeRemoved(int positionStart, int itemCount) {
-                checkIfEmpty();
-                mAdapter.getBackupAppListDataSetChangedListener().OnBackupAppListDataSetChanged();
-            }
-            
-        };
-        mAdapter.registerAdapterDataObserver(mDataSetObserver);
-        mAdapter.setUserAppListDataSetChangedListener((BackupAppListDataSetChangedListener)mContext);
-    }
-    
-    public void setEmptyView(@Nullable View emptyView) {
-        this.emptyView = emptyView;
-        checkIfEmpty();
-    }
+    /*
+     * public void setEmptyView(@Nullable View emptyView) { this.emptyView = emptyView; checkIfEmpty(); }
+     */
     private void checkIfEmpty() {
         if (emptyView != null && mAdapter != null) {
             emptyView.setVisibility(mAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
         }
     }
-    
-    
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Create, or inflate the Fragment’s UI, and return it.
         // If this Fragment has no UI then return null.
         View FragmentView = inflater.inflate(R.layout.backup_app_list_view, container, false);
+        mLoadingView = FragmentView.findViewById(R.id.loading_bar);
+
         emptyView = FragmentView.findViewById(R.id.emptyView);
         mRecyclerView = (RecyclerView) FragmentView.findViewById(R.id.recyclerview);
         mRecyclerView.setHasFixedSize(true);
@@ -153,32 +119,28 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mAdapter = new BackupAppListAdapter(mContext,mAppList);
+        mAdapter = new BackupAppListAdapter(mContext, mAppList);
         mRecyclerView.setAdapter(mAdapter);
-        checkIfEmpty();
+
+        // checkIfEmpty();
         return FragmentView;
         // return null;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        //也可以试试在这里初始化数据
-        /*LinearLayoutManager layoutManager = new LinearLayoutManager(
-                getActivity());
-         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        mRecyclerView.setLayoutManager(layoutManager);
-
-        String[] dataset = new String[100];
-        for (int i = 0; i < dataset.length; i++) {
-            dataset[i] = "item" + i;
-        }
-
-        RecyclerAdapter mAdapter = new RecyclerAdapter(dataset, getActivity());
-        mRecyclerView.setAdapter(mAdapter);*/
+        // 也可以试试在这里初始化数据
+        /*
+         * LinearLayoutManager layoutManager = new LinearLayoutManager( getActivity());
+         * layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL); mRecyclerView.setLayoutManager(layoutManager);
+         * 
+         * String[] dataset = new String[100]; for (int i = 0; i < dataset.length; i++) { dataset[i] = "item" + i; }
+         * 
+         * RecyclerAdapter mAdapter = new RecyclerAdapter(dataset, getActivity()); mRecyclerView.setAdapter(mAdapter);
+         */
         super.onViewCreated(view, savedInstanceState);
     }
-    
-    
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -246,14 +208,14 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
         // Clean up any resources including ending threads,
         // closing database connections etc.
         super.onDestroy();
-        if(mBackupAppListLoader.isStarted()){
+        if (mBackupAppListLoader.isStarted()) {
             mBackupAppListLoader.stopLoading();
         }
-        if(mAdapter != null){
+        if (mAdapter != null && mDataSetObserver != null) {
             mAdapter.unregisterAdapterDataObserver(mDataSetObserver);
             mAdapter = null;
         }
-        
+
         mContext = null;
         mRecyclerView = null;
         uniqueInstance = null;
@@ -276,48 +238,88 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
          * ClassCastException(activity.toString() + "must implement Listener"); }
          */
     }
+
     @Override
     public String getFragmentTitle() {
         // TODO Auto-generated method stub
-       
-        if (mAdapter == null || mAdapter.getItemCount() == 0) { 
-            return mContext.getString(R.string.backup_apps); 
-        } 
-        else { 
-            return mContext.getString(R.string.backup_apps) + " (" + mAdapter.getItemCount() + ")"; }
+
+        if (mAdapter == null || mAdapter.getItemCount() == 0) {
+            return mContext.getString(R.string.backup_apps);
+        } else {
+            return mContext.getString(R.string.backup_apps) + " (" + mAdapter.getItemCount() + ")";
+        }
     }
 
-    public void filterList(String str){
+    public void filterList(String str) {
         mAdapter.filterList(str);
-        mAdapter.notifyDataSetChanged();
+        // mAdapter.notifyDataSetChanged();
     }
-    
-    
-    public void onEventMainThread(AppBackupSuccEvent ev){
+
+   /* private void processNewBackupApp(AppInfo theAppInfo, ArrayList<AppInfo> list) {
         boolean found = false;
-        for(int i = 0;i<mAdapter.getItemCount();i++){
-            AppInfo appInfo = mAdapter.getItem(i);
-            if(appInfo.packageName.equals(ev.mAppInfo.packageName)){
+        for (int i = 0; i < list.size(); i++) {
+            AppInfo appInfo = list.get(i);
+            if (appInfo.packageName.equals(theAppInfo.packageName)) {
                 found = true;
                 break;
             }
         }
-        if(!found) {
+        if (!found) {
             AppInfo appInfo = Utilities.getLastBackupAppFromSD(mContext);
-            mAdapter.getDisplayList().add(0, appInfo);
-            mAdapter.notifyDataSetChanged();
+            list.add(0, appInfo);
+            // mAdapter.getDisplayList().add(0, appInfo);
+            // mAdapter.notifyItemInserted(0);
+            // mAdapter.notifyDataSetChanged();
         }
-        
-        
-//        initData();
-//        mRecyclerView.setAdapter(mAdapter);
-//        mAdapter.getBackupAppListDataSetChangedListener().OnBackupAppListDataSetChanged();
+    }*/
+
+    public void onEventMainThread(AppBackupSuccEvent ev) {
+
+        if (mBackupAppListLoader.isLoadingFinished()) {// loading 完成了
+            //processNewBackupApp(ev.AppInfo, mAdapter.getDisplayList());
+
+            boolean found = false;
+            //检查是否在显示的list中
+            for (int i = 0, size = mAdapter.getDisplayList().size(); i < size; i++) {
+                AppInfo appInfo = mAdapter.getDisplayList().get(i);
+                if (appInfo.packageName.equals(ev.AppInfo.packageName)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                // AppInfo appInfo = Utilities.getLastBackupAppFromSD(mContext);
+                mAdapter.getDisplayList().add(0, ev.AppInfo);
+                mAdapter.notifyDataSetChanged();
+                checkIfEmpty();
+                // mAdapter.notifyItemInserted(0);
+            }
+
+            
+        } else {// loading 还没完成
+            boolean found = false;
+            //检查是否在pending的list中存在
+            for (int i = 0; i < mPendingNewAppInfo.size(); i++) {
+                AppInfo appInfo = mPendingNewAppInfo.get(i);
+                if (appInfo.packageName.equals(ev.AppInfo.packageName)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                mPendingNewAppInfo.add(ev.AppInfo);
+            }
+        }
+        // processNewBackupApp(ev.AppInfo);
+        // mAdapter.notifyItemInserted(0);
+
     }
-    //LoaderManager.LoaderCallbacks--start
+
+    // LoaderManager.LoaderCallbacks--start
     @Override
     public Loader<ArrayList<AppInfo>> onCreateLoader(int id, Bundle args) {
         // TODO Auto-generated method stub
-        return mBackupAppListLoader = new BackupAppListLoader(getActivity());
+        return mBackupAppListLoader = new BackupAppListLoader(getActivity(), mLoadingView, this);
     }
 
     @Override
@@ -325,17 +327,18 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
         // TODO Auto-generated method stub
         mAppList.clear();
         mAppList = data;
-        mAdapter = new BackupAppListAdapter(mContext,mAppList);
-        mDataSetObserver = new AdapterDataObserver(){
+
+        mAdapter = new BackupAppListAdapter(mContext, mAppList);
+        mDataSetObserver = new AdapterDataObserver() {
 
             @Override
             public void onChanged() {
                 // TODO Auto-generated method stub
                 super.onChanged();
-                checkIfEmpty();
+                // checkIfEmpty();
                 mAdapter.getBackupAppListDataSetChangedListener().OnBackupAppListDataSetChanged();
             }
-            
+
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
                 checkIfEmpty();
@@ -347,25 +350,55 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
                 checkIfEmpty();
                 mAdapter.getBackupAppListDataSetChangedListener().OnBackupAppListDataSetChanged();
             }
-            
+
         };
         mAdapter.registerAdapterDataObserver(mDataSetObserver);
-        mAdapter.setUserAppListDataSetChangedListener((BackupAppListDataSetChangedListener)mContext);
+        mAdapter.setUserAppListDataSetChangedListener((BackupAppListDataSetChangedListener) mContext);
         mRecyclerView.setAdapter(mAdapter);
         checkIfEmpty();
         mAdapter.getBackupAppListDataSetChangedListener().OnBackupAppListDataSetChanged();
-        EventBus.getDefault().register(this);
+        mLoadingView.setVisibility(View.GONE);
     }
 
     @Override
     public void onLoaderReset(Loader<ArrayList<AppInfo>> loader) {
         // TODO Auto-generated method stub
-        if(mRecyclerView != null){
+        if (mRecyclerView != null) {
             mRecyclerView.setAdapter(null);
         }
-        
-        //mAdapter = null;
     }
-  //LoaderManager.LoaderCallbacks--end
-    
+
+    // LoaderManager.LoaderCallbacks--end
+
+    // LoaderBackgroundMoreWorkListener-start
+    @Override
+    public void onLoaderBackgroundMoreWork(ArrayList<AppInfo> listReadyToDeliver) {
+        // TODO Auto-generated method stub
+//        try {
+//            Thread.sleep(30000);
+//        } catch (InterruptedException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
+        if (!mPendingNewAppInfo.isEmpty()) {
+            
+            for (int i = 0; i < mPendingNewAppInfo.size(); i++) {
+
+                boolean found = false;
+
+                for (AppInfo appInfo : listReadyToDeliver) {
+                    if (appInfo.packageName.equals(mPendingNewAppInfo.get(i).packageName)) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    listReadyToDeliver.add(0, mPendingNewAppInfo.get(i));
+                }
+            }
+            mPendingNewAppInfo.clear();
+        }
+    }
+    // LoaderBackgroundMoreWorkListener-end
+
 }

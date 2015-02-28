@@ -4,6 +4,7 @@ import java.io.File;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.doloop.www.myappmgr.material.utils.Utilities;
@@ -39,6 +40,19 @@ public class AppInfo {
     public boolean selected = false;
     //public Drawable iconDrawable = null;
     public Bitmap iconBitmap = null;
+    
+    public String backupFilePath = "";
+    
+    public String getBackupApkFileName(){
+        if(!TextUtils.isEmpty(backupFilePath)){
+            File f = new File(backupFilePath);
+            return f.getName();
+        }
+        else
+            return "";
+    }
+    
+    
     ////////////////
     
     public AppInfo() {
