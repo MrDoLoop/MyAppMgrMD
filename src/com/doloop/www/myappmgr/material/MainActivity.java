@@ -71,6 +71,7 @@ import com.doloop.www.myappmgr.material.utils.Utilities;
 import com.doloop.www.myappmgr.material.widgets.PagerSlidingTabStrip;
 import com.doloop.www.myappmgr.material.widgets.PagerSlidingTabStrip.OnTabClickListener;
 import com.doloop.www.myappmgrmaterial.R;
+import com.nineoldandroids.view.ViewHelper;
 import com.nispok.snackbar.Snackbar;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.readystatesoftware.systembartint.SystemBarTintManager.SystemBarConfig;
@@ -188,7 +189,7 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
                      public void onDrawerSlide(View drawerView, float slideOffset) { 
                          super.onDrawerSlide(drawerView, slideOffset); 
                          L.d("slideOffset "+slideOffset); 
-                         
+                         ViewHelper.setAlpha(MenuItemCompat.getActionView(searchMenuItem), 1-slideOffset);
                      }
                      
 
