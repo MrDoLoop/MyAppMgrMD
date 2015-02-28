@@ -15,17 +15,15 @@
         android:listSelector="@color/transparent"
         android:smoothScrollbar="true" />
 
-    <!--
-         <ImageView
-        android:id="@android:id/empty"
+     <ImageView
+        android:id="@+id/emptyView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:src="@drawable/ic_folder_open"
         android:visibility="gone" />
-    -->
 
-    <include layout="@layout/list_empty_view" />
+    <!-- <include android:id="@+id/emptyView" layout="@layout/list_empty_view" /> -->
 
     <TextView
         android:id="@+id/popTextView"
