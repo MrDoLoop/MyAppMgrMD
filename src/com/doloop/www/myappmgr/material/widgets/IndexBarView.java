@@ -15,6 +15,9 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -45,7 +48,7 @@ public class IndexBarView extends LinearLayout {
     private View mPopView = null;
     private TextView mPopupText;
     private Handler handler = new Handler();
-    int choose = -1;
+    private int choose = -1;
     private int singleIndexHeight = 0;
     private boolean doReset = false;
     private int selectItemTextColor = getResources().getColor(R.color.theme_blue_light);
@@ -204,6 +207,7 @@ public class IndexBarView extends LinearLayout {
         if (mPopView != null)// 如果设定了显示用的view就不用popupwindow显示
         {
             handler.removeCallbacks(dismissRunnable);
+            mPopView.clearAnimation();
             mPopView.setVisibility(View.VISIBLE);
             ((TextView) mPopView).setText(mIndexArray[item]);
             return;
@@ -248,7 +252,28 @@ public class IndexBarView extends LinearLayout {
         public void run() {
             // TODO Auto-generated method stub
             if (mPopView != null) {
-                mPopView.setVisibility(View.INVISIBLE);
+                //mPopView.setVisibility(View.INVISIBLE);
+                Animation ani = new AlphaAnimation(1, 0);
+                ani.setDuration(350);
+                ani.setAnimationListener(new AnimationListener() {
+
+                    public void onAnimationStart(Animation animation) {
+                        // TODO Auto-generated method stub
+
+                    }
+
+                    public void onAnimationRepeat(Animation animation) {
+                        // TODO Auto-generated method stub
+
+                    }
+
+                    public void onAnimationEnd(Animation animation) {
+                        mPopView.setVisibility(View.INVISIBLE);
+                    }
+                });
+                
+                mPopView.startAnimation(ani);
+                
                 return;
             }
             if (mPopupWindow != null) {

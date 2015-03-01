@@ -30,6 +30,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -144,8 +147,29 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
 
     private void removeWindow() {
         if (mShowing) {
-            mShowing = false;
-            mDialogText.setVisibility(View.INVISIBLE);
+//            mShowing = false;
+//            mDialogText.setVisibility(View.INVISIBLE);
+            
+            AlphaAnimation ani = new AlphaAnimation(1, 0);
+            ani.setDuration(350);
+            ani.setAnimationListener(new AnimationListener() {
+
+                public void onAnimationStart(Animation animation) {
+                    // TODO Auto-generated method stub
+
+                }
+
+                public void onAnimationRepeat(Animation animation) {
+                    // TODO Auto-generated method stub
+
+                }
+
+                public void onAnimationEnd(Animation animation) {
+                    mShowing = false;
+                    mDialogText.setVisibility(View.INVISIBLE);
+                }
+            });
+            mDialogText.startAnimation(ani);
         }
     }
 
@@ -557,6 +581,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
             }
 
             mShowing = true;
+            mDialogText.clearAnimation();
             mDialogText.setVisibility(View.VISIBLE);
             mHandler.removeCallbacks(mRemoveWindow);
             mHandler.postDelayed(mRemoveWindow, 1000);

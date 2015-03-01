@@ -125,10 +125,10 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
         return mAdapter;
     }
 
-    public void ResetIndexBar() {
+    /*public void ResetIndexBar() {
         PopTextView.setVisibility(View.INVISIBLE);
         mIndexBarView.InitIndexBar();
-    }
+    }*/
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -439,8 +439,7 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
             } else {
                 MainActivity.T(R.string.error);
             }
-            
-            
+
             return true;
         }
         else{
