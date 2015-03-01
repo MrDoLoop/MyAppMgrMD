@@ -58,7 +58,7 @@ import com.nispok.snackbar.listeners.ActionClickListener;
 import de.greenrobot.event.EventBus;
 
 public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollListener,
-        AdapterView.OnItemLongClickListener,IconClickListener{
+        AdapterView.OnItemLongClickListener, IconClickListener {
 
     private static Context mContext;
     private UserAppListAdapter mAdapter;
@@ -227,9 +227,9 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                                                     targetpackageName);
                                     if (intent != null) {
                                         if (intent != null) {
-                                            try{
+                                            try {
                                                 startActivity(intent);
-                                            }catch(Exception e){
+                                            } catch (Exception e) {
                                                 MainActivity.T(R.string.launch_fail);
                                             }
                                         }
@@ -261,32 +261,35 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                                     boolean mShowAniSnackBar = true;
                                     if (mSnackbar != null) {
                                         if (mSnackbar.isShowing()) {
-                                            if(!spanString.toString().equalsIgnoreCase(mSnackbar.getText().toString())){
+                                            if (!spanString.toString().equalsIgnoreCase(mSnackbar.getText().toString())) {
                                                 mAniText = true;
-                                            }                                         
+                                            }
                                             mShowAniSnackBar = false;
                                             mSnackbar.dismissAnimation(false);
                                             mSnackbar.dismiss();
                                         }
                                         mSnackbar = MainActivity.getSnackbar(true);
                                     }
-                                    mSnackbar.actionLabel(R.string.view)
-                                    .actionListener(new ActionClickListener() {
-                                        @Override
-                                        public void onActionClicked(Snackbar snackbar) {
-                                            EventBus.getDefault().post(new ViewNewBackupAppEvent());
-                                        }
-                                    })
-                                    .actionColorList(mContext.getResources().getColorStateList(R.color.snackbar_action_sel))
-                                    .swipeToDismiss(false)
-                                    .showAnimation(mShowAniSnackBar)
-                                    .dismissAnimation(true)
-                                    .animationText(mAniText)
-                                    .duration(Snackbar.SnackbarDuration.LENGTH_SHORT)
-                                    .attachToAbsListView(mActionSlideExpandableListView)
-                                    .text(spanString)
-                                    .show(getActivity());
+                                    mSnackbar.swipeToDismiss(false)
+                                            .showAnimation(mShowAniSnackBar).dismissAnimation(true)
+                                            .animationText(mAniText).duration(Snackbar.SnackbarDuration.LENGTH_SHORT)
+                                            .attachToAbsListView(mActionSlideExpandableListView).text(spanString);
+                                            
 
+                                    if(!MainActivity.isInActionMode()){
+                                        mSnackbar.actionLabel(R.string.view)
+                                        .actionListener(new ActionClickListener() {
+                                            @Override
+                                            public void onActionClicked(Snackbar snackbar) {
+                                                EventBus.getDefault().post(new ViewNewBackupAppEvent());
+                                            }
+                                        })
+                                        .actionColorList(
+                                                mContext.getResources().getColorStateList(
+                                                        R.color.snackbar_action_sel));
+                                    }
+                                    mSnackbar.show(getActivity());
+                                    
                                     EventBus.getDefault().post(new AppBackupSuccEvent(selectItem));
                                 } else {
                                     MainActivity.T(R.string.error);
@@ -457,22 +460,31 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
 
         };
         mAdapter.registerDataSetObserver(mDataSetObserver);
-        
+
     }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         // TODO Auto-generated method stub
         super.onListItemClick(l, v, position, id);
-        final AppInfo selectItem = mAdapter.getItem(position);
-        mActionSlideExpandableListView.collapse(true);
-        // 滚动text
-        TextView appVersion = (TextView) v.findViewById(R.id.app_version);
-        if (appVersion.isSelected()) {
-            appVersion.setSelected(false);
+        
+        if(MainActivity.isInActionMode()){
+            mAdapter.toggleSelection(position);
+            updateActionModeTitle();
         }
-        appVersion.setSelected(true);
-        MainActivity.T(selectItem.apkFilePath);
+        else{
+            final AppInfo selectItem = mAdapter.getItem(position);
+            mActionSlideExpandableListView.collapse(true);
+            // 滚动text
+            TextView appVersion = (TextView) v.findViewById(R.id.app_version);
+            if (appVersion.isSelected()) {
+                appVersion.setSelected(false);
+            }
+            appVersion.setSelected(true);
+            MainActivity.T(selectItem.apkFilePath);
+        }
+        
+
 
         /*
          * if (mActionMode != null) { if (selectItem.selected) { UserAppActionModeSelectCnt--; selectItem.selected =
@@ -494,6 +506,26 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
         // mItemClickListener.onUserAppItemClick(v, position);
     }
 
+    public void updateActionModeTitle(){
+        MenuItem selItem = MainActivity.sActionMode.getMenu().findItem(Constants.ACTIONMODE_MENU_SELECT);
+        if(mAdapter.getSelectedItemCnt() > 0){
+            MainActivity.sActionMode.setTitle(mAdapter.getSelectedItemCnt() + " / " +mAdapter.getCount());
+            if(mAdapter.getSelectedItemCnt() == mAdapter.getCount()){
+                selItem.setTitle(R.string.deselect_all);
+                selItem.setIcon(0);
+            }
+            else{
+                selItem.setTitle(R.string.select_all);
+                selItem.setIcon(R.drawable.ic_select_all_white);
+            }
+        }
+        else{
+            MainActivity.sActionMode.setTitle("");
+            selItem.setTitle(R.string.select_all);
+            selItem.setIcon(R.drawable.ic_select_all_white);
+        }
+    }
+    
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
         // TODO Auto-generated method stub
@@ -664,44 +696,73 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
             return mContext.getString(R.string.user_apps) + " (" + mAdapter.getCount() + ")";
         }
     }
-    //IconClickListener--start
+
+    // IconClickListener--start
     @Override
     public void OnIconClickListener(int position) {
         // TODO Auto-generated method stub
-        ((ActionBarActivity)getActivity()).startSupportActionMode(new ActionMode.Callback(){
-
-            @Override
-            public boolean onActionItemClicked(ActionMode mode, MenuItem menuItem) {
-                // TODO Auto-generated method stub
-                return true;
-            }
+        if(MainActivity.isInActionMode()){
+            mAdapter.toggleSelection(position);
+            updateActionModeTitle();
             
-            @Override
-            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-                // TODO Auto-generated method stub
-                EventBus.getDefault().post(new ActionModeToggleEvent(true));
-                menu.add(Menu.NONE, Constants.ACTIONMODE_MENU_SELECT, Menu.NONE, R.string.select_all)
-                .setIcon(R.drawable.ic_select_all_white).setShowAsAction(MenuItemCompat.SHOW_AS_ACTION_ALWAYS);
-                menu.add(Menu.NONE, Constants.ACTIONMODE_MENU_BACKUP, Menu.NONE, R.string.backup).setShowAsAction(
-                        MenuItemCompat.SHOW_AS_ACTION_NEVER);
-                menu.add(Menu.NONE, Constants.ACTIONMODE_MENU_SEND, Menu.NONE, R.string.send).setShowAsAction(
-                        MenuItemCompat.SHOW_AS_ACTION_NEVER);
-                menu.add(Menu.NONE, Constants.ACTIONMODE_MENU_UNINSTALL, Menu.NONE, R.string.uninstall).setShowAsAction(
-                        MenuItemCompat.SHOW_AS_ACTION_NEVER);
-                return true;
-            }
+        } 
+        else{
+            MainActivity.sActionMode = ((ActionBarActivity) getActivity()).startSupportActionMode(new ActionMode.Callback() {
 
-            @Override
-            public void onDestroyActionMode(ActionMode mode) {
-                // TODO Auto-generated method stub
-                EventBus.getDefault().post(new ActionModeToggleEvent(false));
-            }
+                @Override
+                public boolean onActionItemClicked(ActionMode mode, MenuItem menuItem) {
+                    // TODO Auto-generated method stub
+                    switch (menuItem.getItemId()) {
+                        case Constants.ACTIONMODE_MENU_SELECT:
+                            if (mAdapter.getSelectedItemCnt() < mAdapter.getCount()) {// 选择全部
+                                mAdapter.selectAll();
+                                //menuItem.setTitle(R.string.deselect_all);
+                                //menuItem.setIcon(R.drawable.ic_action_deselect_all);
+                            } else {// 都不选
+                                mAdapter.deselectAll();
+                                //menuItem.setTitle(R.string.select_all);
+                                //menuItem.setIcon(R.drawable.ic_select_all_white);
+                            }
+                            updateActionModeTitle();
+                            break;
+                    }
+                    return true;
+                }
 
-            @Override
-            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-                // TODO Auto-generated method stub
-                return false;
-            }});
+                @Override
+                public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                    // TODO Auto-generated method stub
+                    EventBus.getDefault().post(new ActionModeToggleEvent(true));
+                    menu.add(Menu.NONE, Constants.ACTIONMODE_MENU_SELECT, Menu.NONE, R.string.select_all)
+                            .setIcon(R.drawable.ic_select_all_white).setShowAsAction(MenuItemCompat.SHOW_AS_ACTION_ALWAYS);
+                    menu.add(Menu.NONE, Constants.ACTIONMODE_MENU_BACKUP, Menu.NONE, R.string.backup).setShowAsAction(
+                            MenuItemCompat.SHOW_AS_ACTION_NEVER);
+                    menu.add(Menu.NONE, Constants.ACTIONMODE_MENU_SEND, Menu.NONE, R.string.send).setShowAsAction(
+                            MenuItemCompat.SHOW_AS_ACTION_NEVER);
+                    menu.add(Menu.NONE, Constants.ACTIONMODE_MENU_UNINSTALL, Menu.NONE, R.string.uninstall)
+                            .setShowAsAction(MenuItemCompat.SHOW_AS_ACTION_NEVER);
+                    return true;
+                }
+
+                @Override
+                public void onDestroyActionMode(ActionMode mode) {
+                    // TODO Auto-generated method stub
+                    mAdapter.deselectAll();
+                    MainActivity.sActionMode = null;
+                    EventBus.getDefault().post(new ActionModeToggleEvent(false));
+                    
+                }
+
+                @Override
+                public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                    // TODO Auto-generated method stub
+                    return false;
+                }
+            });
+            
+            mAdapter.setSelectedItem(position, true);
+            updateActionModeTitle();
+        }
     }
-  //IconClickListener--end
+    // IconClickListener--end
 }

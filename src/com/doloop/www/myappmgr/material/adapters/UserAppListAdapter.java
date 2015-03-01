@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.doloop.www.myappmgr.material.MainActivity;
 import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.utils.Constants;
 import com.doloop.www.myappmgrmaterial.R;
@@ -38,40 +38,74 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
 
     private Context mCtx;
 
-   /* public UserAppListFilterResultListener mFilterResultListener;
+    private SparseBooleanArray mSelectedItemsPos = new SparseBooleanArray();
 
-    // Container Activity must implement this interface
-    public interface UserAppListFilterResultListener {
-        public void onUserAppListFilterResultPublish(ArrayList<AppInfo> resultsList);
-    }
+    /*
+     * public UserAppListFilterResultListener mFilterResultListener;
+     * 
+     * // Container Activity must implement this interface public interface UserAppListFilterResultListener { public
+     * void onUserAppListFilterResultPublish(ArrayList<AppInfo> resultsList); }
+     * 
+     * public void setUserAppListFilterResultListener(UserAppListFilterResultListener userAppListFilterResultListener) {
+     * this.mFilterResultListener = userAppListFilterResultListener; }
+     */
 
-    public void setUserAppListFilterResultListener(UserAppListFilterResultListener userAppListFilterResultListener) {
-        this.mFilterResultListener = userAppListFilterResultListener;
-    }*/
-    
     public IconClickListener mIconClickListener;
+
     public interface IconClickListener {
         public void OnIconClickListener(int position);
     }
+
     public void setIconClickListener(IconClickListener l) {
         this.mIconClickListener = l;
     }
-    
-    
-    
-    
+
+    public void selectAll() {
+        mSelectedItemsPos.clear();
+        for (int i = 0; i < getCount(); i++) {
+            mSelectedItemsPos.put(i, true);
+        }
+        this.notifyDataSetChanged();
+    }
+
+    public void deselectAll() {
+        mSelectedItemsPos.clear();
+        this.notifyDataSetChanged();
+    }
+
+    public void toggleSelection(int position) {
+        setSelectedItem(position, !mSelectedItemsPos.get(position));
+    }
+
+    public void setSelectedItem(int position, boolean val) {
+        if (val)
+            mSelectedItemsPos.put(position, val);
+        else
+            mSelectedItemsPos.delete(position);
+
+        notifyDataSetChanged();
+    }
+
+    public int getSelectedItemCnt() {
+        return mSelectedItemsPos.size();
+    }
+
     public UserAppListDataSetChangedListener mUserAppListDataSetChangedListener;
+
     public interface UserAppListDataSetChangedListener {
         public void OnUserAppListDataSetChanged();
     }
+
     public void setUserAppListDataSetChangedListener(UserAppListDataSetChangedListener l) {
         this.mUserAppListDataSetChangedListener = l;
     }
+
     public UserAppListDataSetChangedListener getUserAppListDataSetChangedListener() {
         return this.mUserAppListDataSetChangedListener;
     }
 
-    public UserAppListAdapter(Context context, int resource, int textViewResourceId, ArrayList<AppInfo> appList, IconClickListener l) {
+    public UserAppListAdapter(Context context, int resource, int textViewResourceId, ArrayList<AppInfo> appList,
+            IconClickListener l) {
         super(context, resource, textViewResourceId, appList);
         // TODO Auto-generated constructor stub
         this.ItemResourceLayout = resource;
@@ -123,25 +157,25 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
             holder.AppNameTextView = (TextView) convertView.findViewById(R.id.app_name);
             holder.AppVersionTextView = (TextView) convertView.findViewById(R.id.app_version);
             holder.AppPkgnameTextView = (TextView) convertView.findViewById(R.id.app_pkgname);
-            //中文粗体fix
-            //holder.AppPkgnameTextView.getPaint().setFakeBoldText(true);
-            //holder.AppPkgnameTextView.setTypeface(null,Typeface.BOLD);
+            // 中文粗体fix
+            // holder.AppPkgnameTextView.getPaint().setFakeBoldText(true);
+            // holder.AppPkgnameTextView.setTypeface(null,Typeface.BOLD);
             holder.AppIconImageView = (ImageView) convertView.findViewById(R.id.app_icon);
             holder.AppIconImageView.setOnClickListener(new View.OnClickListener() {
-                
+
                 @Override
                 public void onClick(View v) {
                     // TODO Auto-generated method stub
                     int pos = (Integer) v.getTag();
                     mIconClickListener.OnIconClickListener(pos);
-                    //MainActivity.T("用户图标点击了: "+pos);
+                    // MainActivity.T("用户图标点击了: "+pos);
                 }
             });
             holder.moreItemBtn = (LinearLayout) convertView.findViewById(R.id.expandable_toggle_button);
             holder.moreItemBtn.setFocusable(false);
             // holder.expandableLinearLayout = (LinearLayout) convertView.findViewById(R.id.expandable);
             holder.bgLayout = (LinearLayout) convertView.findViewById(R.id.bgLayout);
-           
+
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -160,10 +194,12 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
         } else {
             holder.AppIconImageView.setImageBitmap(appInfo.iconBitmap);
         }
-        if (appInfo.selected) {
+        if(mSelectedItemsPos.get(position)) {
             holder.bgLayout.setBackgroundColor(Color.CYAN);
+            holder.AppIconImageView.setBackgroundResource(R.drawable.imageview_border_blue);
         } else {
             holder.bgLayout.setBackgroundResource(R.drawable.list_row_item_bg);
+            holder.AppIconImageView.setBackgroundResource(R.drawable.user_app_icon_bg);
         }
 
         return convertView;
@@ -218,9 +254,10 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
         protected void publishResults(CharSequence constraint, FilterResults results) {
             // TODO Auto-generated method stub
             AppListDisplay = (ArrayList<AppInfo>) results.values;
-            /*if (mFilterResultListener != null) {
-                mFilterResultListener.onUserAppListFilterResultPublish(AppListDisplay);
-            }*/
+            /*
+             * if (mFilterResultListener != null) {
+             * mFilterResultListener.onUserAppListFilterResultPublish(AppListDisplay); }
+             */
             notifyDataSetChanged();
         }
 
@@ -231,7 +268,7 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
         TextView AppVersionTextView;
         TextView AppPkgnameTextView;
         ImageView AppIconImageView;
-        //ImageButton moreItemBtn;
+        // ImageButton moreItemBtn;
         LinearLayout moreItemBtn;
         // LinearLayout expandableLinearLayout;
         LinearLayout bgLayout;
@@ -246,13 +283,13 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
         public void onBitmapLoaded(Bitmap bitmap, LoadedFrom from) {
             // TODO Auto-generated method stub
             AppIconImageView.setImageBitmap(bitmap);
-            if(Constants.SAVE_APP_ICON_IN_OBJ){
+            if (Constants.SAVE_APP_ICON_IN_OBJ) {
                 AppInfo appInfo = (AppInfo) bgLayout.getTag();
-                //if (appInfo.iconBitmap == null) 
-                //if(appInfo != null)
+                // if (appInfo.iconBitmap == null)
+                // if(appInfo != null)
                 {
                     appInfo.iconBitmap = bitmap;
-                    
+
                 }
             }
         }

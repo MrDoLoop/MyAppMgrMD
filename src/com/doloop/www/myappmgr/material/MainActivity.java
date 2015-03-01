@@ -93,7 +93,7 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
 
     private ArrayList<BaseFrag> Fragmentlist;
     private static long back_pressed = 0;
-    private static Toast toast;
+    
 
     // 用户app列表
     private UserAppsTabFragment usrAppsFrg;
@@ -110,7 +110,7 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
     private BackupAppTabFragment backupAppsFrg;
 
     private EditText searchViewEdt;
-    private static Context thisActivityCtx;
+    
     private AppListFragAdapter mFragAdapter;
     private int screenWidth = 0;
     //private ViewPager mPager;
@@ -129,7 +129,9 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
     private IntentFilter LangIntentFilter;
     
     private static Snackbar mSnackbar;
-    private boolean isInActionMode = false;
+    private static Context thisActivityCtx;
+    public static ActionMode sActionMode = null;
+    private static Toast toast;
     
     //private DrawerItemClickEvent mDrawerItemClickEvent;
 
@@ -332,7 +334,10 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
             @Override
             public boolean onTabClick(int position) {
                 // TODO Auto-generated method stub
-                if (mPager.getCurrentItem() == position) {
+                if(isInActionMode()){
+                    return true;
+                }
+                else if (mPager.getCurrentItem() == position) {
                     switch (mPager.getCurrentItem()) {
                         case Constants.USR_APPS_TAB_POS:
                             usrAppsFrg.listBackToTop();
@@ -388,9 +393,16 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
         mDrawerToggle.syncState();
     }
     
+    public static boolean isInActionMode(){
+        if(sActionMode == null) 
+            return false;
+        else
+            return true;
+    }
+    
     @Override
     public void onBackPressed() {
-        if(this.isInActionMode){
+        if(isInActionMode()){
             super.onBackPressed();
         }
         else if (back_pressed + 2000 > System.currentTimeMillis()) {
@@ -422,6 +434,7 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
         DaoUtils.destroy();
         AppUpdateStaticReceiver.handleEvent = true;
         toast = null;
+        sActionMode = null;
         mSnackbar = null;
         thisActivityCtx = null;
     }
@@ -815,7 +828,7 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
         // sysAppsFrg.getListView().dispatchTouchEvent(me);
         // me.recycle();
 
-        if (keyCode == KeyEvent.KEYCODE_MENU && event.getRepeatCount() == 0) {
+        if (keyCode == KeyEvent.KEYCODE_MENU && event.getRepeatCount() == 0 && !isInActionMode()) {
             toggleDrawerMenu();
             return true;
         }
@@ -903,12 +916,14 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
     }
     
     public void onEventMainThread(ActionModeToggleEvent ev) {
-        this.isInActionMode = ev.isInActionMode;
-        if(isInActionMode){
+        
+        if(ev.isInActionMode){
             mPager.setPagingEnabled(false);
+            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         }
         else{
             mPager.setPagingEnabled(true); 
+            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         }
         
     }
