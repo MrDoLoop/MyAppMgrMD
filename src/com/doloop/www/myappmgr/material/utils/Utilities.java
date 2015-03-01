@@ -647,6 +647,18 @@ public class Utilities {
         context.startActivity(intent);
     }
 
+    public static String getSelfVerName(Context context)// ªÒ»°∞Ê±æ∫≈
+    {
+        try {
+            PackageInfo pi = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            return "v "+pi.versionName;
+        } catch (NameNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return "";
+        }
+    }
+
     public static ApplicationInfo getSelfAppInfo(Context ctx) {
         PackageManager pm = ctx.getPackageManager();
         ApplicationInfo appInfo = null;
@@ -655,7 +667,6 @@ public class Utilities {
         } catch (final NameNotFoundException e) {
             appInfo = null;
         }
-
         return appInfo;
     }
 

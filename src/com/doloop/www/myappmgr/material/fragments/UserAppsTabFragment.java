@@ -13,6 +13,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.SearchView;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -38,13 +40,16 @@ import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
 import com.doloop.slideexpandable.library.ActionSlideExpandableListView;
+import com.doloop.www.mayappmgr.material.events.ActionModeToggleEvent;
 import com.doloop.www.mayappmgr.material.events.AppBackupSuccEvent;
 import com.doloop.www.mayappmgr.material.events.ViewNewBackupAppEvent;
 import com.doloop.www.myappmgr.material.MainActivity;
 import com.doloop.www.myappmgr.material.adapters.UserAppListAdapter;
+import com.doloop.www.myappmgr.material.adapters.UserAppListAdapter.IconClickListener;
 import com.doloop.www.myappmgr.material.adapters.UserAppListAdapter.UserAppListDataSetChangedListener;
 //import com.doloop.www.myappmgr.material.adapters.UserAppListAdapter.UserAppListFilterResultListener;
 import com.doloop.www.myappmgr.material.dao.AppInfo;
+import com.doloop.www.myappmgr.material.utils.Constants;
 import com.doloop.www.myappmgr.material.utils.Utilities;
 import com.doloop.www.myappmgrmaterial.R;
 import com.nispok.snackbar.Snackbar;
@@ -53,7 +58,7 @@ import com.nispok.snackbar.listeners.ActionClickListener;
 import de.greenrobot.event.EventBus;
 
 public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollListener,
-        AdapterView.OnItemLongClickListener {
+        AdapterView.OnItemLongClickListener,IconClickListener{
 
     private static Context mContext;
     private UserAppListAdapter mAdapter;
@@ -225,11 +230,11 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                                             try{
                                                 startActivity(intent);
                                             }catch(Exception e){
-                                                MainActivity.T(R.string.error);
+                                                MainActivity.T(R.string.launch_fail);
                                             }
                                         }
                                     } else {
-                                        MainActivity.T(R.string.error);
+                                        MainActivity.T(R.string.launch_fail);
                                     }
                                 }
                                 break;
@@ -435,7 +440,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
     }
 
     public void setData(ArrayList<AppInfo> userAppList) {
-        mAdapter = new UserAppListAdapter(getActivity(), R.layout.user_app_expandable_list_item, 0, userAppList);
+        mAdapter = new UserAppListAdapter(getActivity(), R.layout.user_app_expandable_list_item, 0, userAppList, this);
         // mAdapter.setUserAppListFilterResultListener((UserAppListFilterResultListener)mContext);
         mAdapter.setUserAppListDataSetChangedListener((UserAppListDataSetChangedListener) mContext);
         mActionSlideExpandableListView.setAdapter(mAdapter);
@@ -452,6 +457,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
 
         };
         mAdapter.registerDataSetObserver(mDataSetObserver);
+        
     }
 
     @Override
@@ -658,5 +664,44 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
             return mContext.getString(R.string.user_apps) + " (" + mAdapter.getCount() + ")";
         }
     }
+    //IconClickListener--start
+    @Override
+    public void OnIconClickListener(int position) {
+        // TODO Auto-generated method stub
+        ((ActionBarActivity)getActivity()).startSupportActionMode(new ActionMode.Callback(){
 
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem menuItem) {
+                // TODO Auto-generated method stub
+                return true;
+            }
+            
+            @Override
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                // TODO Auto-generated method stub
+                EventBus.getDefault().post(new ActionModeToggleEvent(true));
+                menu.add(Menu.NONE, Constants.ACTIONMODE_MENU_SELECT, Menu.NONE, R.string.select_all)
+                .setIcon(R.drawable.ic_select_all_white).setShowAsAction(MenuItemCompat.SHOW_AS_ACTION_ALWAYS);
+                menu.add(Menu.NONE, Constants.ACTIONMODE_MENU_BACKUP, Menu.NONE, R.string.backup).setShowAsAction(
+                        MenuItemCompat.SHOW_AS_ACTION_NEVER);
+                menu.add(Menu.NONE, Constants.ACTIONMODE_MENU_SEND, Menu.NONE, R.string.send).setShowAsAction(
+                        MenuItemCompat.SHOW_AS_ACTION_NEVER);
+                menu.add(Menu.NONE, Constants.ACTIONMODE_MENU_UNINSTALL, Menu.NONE, R.string.uninstall).setShowAsAction(
+                        MenuItemCompat.SHOW_AS_ACTION_NEVER);
+                return true;
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode mode) {
+                // TODO Auto-generated method stub
+                EventBus.getDefault().post(new ActionModeToggleEvent(false));
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                // TODO Auto-generated method stub
+                return false;
+            }});
+    }
+  //IconClickListener--end
 }

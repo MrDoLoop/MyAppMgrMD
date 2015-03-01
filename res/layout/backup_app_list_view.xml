@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/windows_bg" >
@@ -13,28 +14,51 @@
         android:scrollbars="vertical"
         tools:context=".MainActivity" />
 
-    <ListView
-        android:id="@android:id/list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone" />
-
-     <ImageView
+    <ImageView
         android:id="@+id/emptyView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:src="@drawable/ic_folder_open"
         android:visibility="gone" />
-    
+
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <!--
+         <com.doloop.www.myappmgr.material.widgets.CircleProgressBar
+        android:id="@+id/loading_bar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        app:mlpb_progress_stoke_width="3dp" />
+    -->
+
+
     <!-- <include layout="@layout/list_empty_view" android:id="@+id/emptyView" /> -->
 
-   <ProgressBar
+
+    <!--
+         <ProgressBar
         android:id="@+id/loading_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_centerInParent="true" >
+        android:layout_centerInParent="true"
+        android:visibility="gone" >
     </ProgressBar>
+    -->
+
+    <com.doloop.www.myappmgr.material.widgets.ProgressWheel
+        android:id="@+id/loading_bar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        app:matProg_barColor="@color/theme_blue_light"
+        app:matProg_progressIndeterminate="true" />
 
 </RelativeLayout>

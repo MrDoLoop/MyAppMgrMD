@@ -18,6 +18,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -47,6 +49,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.doloop.www.mayappmgr.material.events.ActionModeToggleEvent;
 import com.doloop.www.mayappmgr.material.events.DrawerItemClickEvent;
 import com.doloop.www.mayappmgr.material.events.ViewNewBackupAppEvent;
 import com.doloop.www.myappmgr.material.adapters.AppListFragAdapter;
@@ -68,6 +71,7 @@ import com.doloop.www.myappmgr.material.utils.L;
 import com.doloop.www.myappmgr.material.utils.SharpStringComparator;
 import com.doloop.www.myappmgr.material.utils.SysAppListItem;
 import com.doloop.www.myappmgr.material.utils.Utilities;
+import com.doloop.www.myappmgr.material.widgets.MyViewPager;
 import com.doloop.www.myappmgr.material.widgets.PagerSlidingTabStrip;
 import com.doloop.www.myappmgr.material.widgets.PagerSlidingTabStrip.OnTabClickListener;
 import com.doloop.www.myappmgrmaterial.R;
@@ -109,7 +113,8 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
     private static Context thisActivityCtx;
     private AppListFragAdapter mFragAdapter;
     private int screenWidth = 0;
-    private ViewPager mPager;
+    //private ViewPager mPager;
+    private MyViewPager mPager;
     private PagerSlidingTabStrip mPagerSlidingTabStrip;
 
     // public static boolean sDrawerIsOpen = false;
@@ -124,6 +129,7 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
     private IntentFilter LangIntentFilter;
     
     private static Snackbar mSnackbar;
+    private boolean isInActionMode = false;
     
     //private DrawerItemClickEvent mDrawerItemClickEvent;
 
@@ -173,11 +179,13 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
         t.commit();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        
         // toolbar.inflateMenu(R.menu.menu_main);
         setSupportActionBar(toolbar);
 
         mActionBar = getSupportActionBar();
         mActionBar.setDisplayHomeAsUpEnabled(true);
+        //mActionBar.setBackgroundDrawable(new ColorDrawable(this.getResources().getColor(R.color.primary)));
 
         // 抽屉的初始化--start
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
@@ -264,7 +272,7 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
         Fragmentlist.add(sysAppsFrg);
         Fragmentlist.add(backupAppsFrg);
 
-        mPager = (ViewPager) findViewById(R.id.pager);
+        mPager = (MyViewPager) findViewById(R.id.pager);
         mPager.setOffscreenPageLimit(2);
         mFragAdapter = new AppListFragAdapter(this.getSupportFragmentManager(), Fragmentlist);
 
@@ -382,8 +390,10 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
     
     @Override
     public void onBackPressed() {
-        if (back_pressed + 2000 > System.currentTimeMillis()) {
-            
+        if(this.isInActionMode){
+            super.onBackPressed();
+        }
+        else if (back_pressed + 2000 > System.currentTimeMillis()) {
             super.onBackPressed();
         } else {
             // 抽屉开
@@ -398,7 +408,6 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
                 toast.setText(R.string.press_back_again_to_exit);
                 toast.show();
             }
-
         }
     }
 
@@ -892,6 +901,19 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
                 break;
         }
     }
+    
+    public void onEventMainThread(ActionModeToggleEvent ev) {
+        this.isInActionMode = ev.isInActionMode;
+        if(isInActionMode){
+            mPager.setPagingEnabled(false);
+        }
+        else{
+            mPager.setPagingEnabled(true); 
+        }
+        
+    }
+    
+    
     
     public void onEventMainThread(ViewNewBackupAppEvent ev) {
         mPager.setCurrentItem(Constants.BACKUP_APPS_TAB_POS);

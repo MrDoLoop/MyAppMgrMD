@@ -49,6 +49,17 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
         this.mFilterResultListener = userAppListFilterResultListener;
     }*/
     
+    public IconClickListener mIconClickListener;
+    public interface IconClickListener {
+        public void OnIconClickListener(int position);
+    }
+    public void setIconClickListener(IconClickListener l) {
+        this.mIconClickListener = l;
+    }
+    
+    
+    
+    
     public UserAppListDataSetChangedListener mUserAppListDataSetChangedListener;
     public interface UserAppListDataSetChangedListener {
         public void OnUserAppListDataSetChanged();
@@ -60,7 +71,7 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
         return this.mUserAppListDataSetChangedListener;
     }
 
-    public UserAppListAdapter(Context context, int resource, int textViewResourceId, ArrayList<AppInfo> appList) {
+    public UserAppListAdapter(Context context, int resource, int textViewResourceId, ArrayList<AppInfo> appList, IconClickListener l) {
         super(context, resource, textViewResourceId, appList);
         // TODO Auto-generated constructor stub
         this.ItemResourceLayout = resource;
@@ -70,6 +81,7 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
         // this.mContext = context;
         this.mInflater = LayoutInflater.from(context);
         this.mCtx = context;
+        this.mIconClickListener = l;
     }
 
     public ArrayList<AppInfo> getDisplayList() {
@@ -121,7 +133,8 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
                 public void onClick(View v) {
                     // TODO Auto-generated method stub
                     int pos = (Integer) v.getTag();
-                    MainActivity.T("用户图标点击了: "+pos);
+                    mIconClickListener.OnIconClickListener(pos);
+                    //MainActivity.T("用户图标点击了: "+pos);
                 }
             });
             holder.moreItemBtn = (LinearLayout) convertView.findViewById(R.id.expandable_toggle_button);

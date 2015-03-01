@@ -7,11 +7,14 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.doloop.www.mayappmgr.material.events.DrawerItemClickEvent;
 import com.doloop.www.mayappmgr.material.events.DrawerItemClickEvent.DrawerItem;
 import com.doloop.www.myappmgr.material.utils.NanAppMark;
+import com.doloop.www.myappmgr.material.utils.Utilities;
 import com.doloop.www.myappmgrmaterial.R;
+
 import de.greenrobot.event.EventBus;
 
 public class DrawerFragment extends Fragment {
@@ -62,7 +65,8 @@ public class DrawerFragment extends Fragment {
                 // TODO Auto-generated method stub
             }
         });
-        
+        TextView verTv = (TextView) FragmentView.findViewById(R.id.ver);
+        verTv.setText(Utilities.getSelfVerName(getActivity()));
         return FragmentView;
     }
 

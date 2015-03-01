@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    android:background="@color/white2" >
+    android:background="@color/white2"
+    android:fitsSystemWindows="true" >
 
     <RelativeLayout
         android:id="@+id/header"
@@ -22,8 +22,7 @@
             android:src="@drawable/header_icon"
             app:border="true"
             app:border_width="3dp"
-            app:shadow="false" />
-        -->
+            app:shadow="false" />-->
 
         <com.doloop.www.myappmgr.material.widgets.CircleImageView
             android:id="@+id/header_image"
@@ -45,16 +44,25 @@
             android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:textColor="@color/snackbar_action_sel"
             android:gravity="center"
+            android:text="NAN MADE"
+            android:textColor="@color/snackbar_action_sel"
             android:textSize="18sp"
-            android:textStyle="bold"
-            android:text="NAN MADE" />
-        
-   
+            android:textStyle="bold" />
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/ver"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/divider"
+        android:textColor="@color/black"
+        android:textStyle="italic|bold"
+        android:gravity="center_horizontal"
+        android:text="v 1.0" />
+
     <View
+        android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_above="@+id/drawerRefresh"

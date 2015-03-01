@@ -1,8 +1,10 @@
 package com.doloop.www.myappmgr.material.fragments;
 
 import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
@@ -21,6 +23,7 @@ import com.doloop.www.myappmgr.material.adapters.BackupAppListAdapter.BackupAppL
 import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.utils.BackupAppListLoader;
 import com.doloop.www.myappmgr.material.utils.BackupAppListLoader.LoaderBackgroundMoreWorkListener;
+import com.doloop.www.myappmgr.material.widgets.CircleProgressBar;
 import com.doloop.www.myappmgrmaterial.R;
 
 import de.greenrobot.event.EventBus;
@@ -117,6 +120,7 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
         // If this Fragment has no UI then return null.
         View FragmentView = inflater.inflate(R.layout.backup_app_list_view, container, false);
         mLoadingView = FragmentView.findViewById(R.id.loading_bar);
+        //mLoadingView.setColorSchemeColors(Color.BLACK,Color.BLUE,Color.RED);
 
         emptyView = FragmentView.findViewById(R.id.emptyView);
         mRecyclerView = (RecyclerView) FragmentView.findViewById(R.id.recyclerview);
@@ -385,7 +389,7 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
     @Override
     public void onLoaderBackgroundMoreWork(ArrayList<AppInfo> listReadyToDeliver) {
         // TODO Auto-generated method stub
-        /*try {
+       /* try {
             Thread.sleep(30000);
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
