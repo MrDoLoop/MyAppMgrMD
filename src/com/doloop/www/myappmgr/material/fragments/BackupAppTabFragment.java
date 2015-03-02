@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
@@ -23,7 +22,7 @@ import com.doloop.www.myappmgr.material.adapters.BackupAppListAdapter.BackupAppL
 import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.utils.BackupAppListLoader;
 import com.doloop.www.myappmgr.material.utils.BackupAppListLoader.LoaderBackgroundMoreWorkListener;
-import com.doloop.www.myappmgr.material.widgets.CircleProgressBar;
+import com.doloop.www.myappmgr.material.utils.Utilities;
 import com.doloop.www.myappmgrmaterial.R;
 
 import de.greenrobot.event.EventBus;
@@ -104,13 +103,12 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
      */
     private void checkIfEmpty() {
         if (emptyView != null && mAdapter != null) {
-            if(mAdapter.getItemCount() > 0) {
+            if (mAdapter.getItemCount() > 0) {
                 emptyView.setVisibility(View.GONE);
-            }
-            else{
+            } else {
                 emptyView.setVisibility(View.VISIBLE);
             }
-            //emptyView.setVisibility(mAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
+            // emptyView.setVisibility(mAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
         }
     }
 
@@ -120,7 +118,7 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
         // If this Fragment has no UI then return null.
         View FragmentView = inflater.inflate(R.layout.backup_app_list_view, container, false);
         mLoadingView = FragmentView.findViewById(R.id.loading_bar);
-        //mLoadingView.setColorSchemeColors(Color.BLACK,Color.BLUE,Color.RED);
+        // mLoadingView.setColorSchemeColors(Color.BLACK,Color.BLUE,Color.RED);
 
         emptyView = FragmentView.findViewById(R.id.emptyView);
         mRecyclerView = (RecyclerView) FragmentView.findViewById(R.id.recyclerview);
@@ -131,7 +129,7 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mAdapter = new BackupAppListAdapter(mContext, mAppList);
         mRecyclerView.setAdapter(mAdapter);
-        //checkIfEmpty();
+        // checkIfEmpty();
         return FragmentView;
         // return null;
     }
@@ -158,11 +156,10 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
         // Fragment’s view to be fully inflated.
         setRetainInstance(false);
         setHasOptionsMenu(false);
-        
-        if(getLoaderManager().getLoader(LOADER_ID) == null){
+
+        if (getLoaderManager().getLoader(LOADER_ID) == null) {
             getLoaderManager().initLoader(LOADER_ID, null, this);
-        }
-        else{
+        } else {
             getLoaderManager().restartLoader(0, null, this);
         }
     }
@@ -270,64 +267,51 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
         // mAdapter.notifyDataSetChanged();
     }
 
-   /* private void processNewBackupApp(AppInfo theAppInfo, ArrayList<AppInfo> list) {
-        boolean found = false;
-        for (int i = 0; i < list.size(); i++) {
-            AppInfo appInfo = list.get(i);
-            if (appInfo.packageName.equals(theAppInfo.packageName)) {
-                found = true;
-                break;
-            }
-        }
-        if (!found) {
-            AppInfo appInfo = Utilities.getLastBackupAppFromSD(mContext);
-            list.add(0, appInfo);
-            // mAdapter.getDisplayList().add(0, appInfo);
-            // mAdapter.notifyItemInserted(0);
-            // mAdapter.notifyDataSetChanged();
-        }
-    }*/
+    /*
+     * private void processNewBackupApp(AppInfo theAppInfo, ArrayList<AppInfo> list) { boolean found = false; for (int i
+     * = 0; i < list.size(); i++) { AppInfo appInfo = list.get(i); if
+     * (appInfo.packageName.equals(theAppInfo.packageName)) { found = true; break; } } if (!found) { AppInfo appInfo =
+     * Utilities.getLastBackupAppFromSD(mContext); list.add(0, appInfo); // mAdapter.getDisplayList().add(0, appInfo);
+     * // mAdapter.notifyItemInserted(0); // mAdapter.notifyDataSetChanged(); } }
+     */
 
     public void onEventMainThread(AppBackupSuccEvent ev) {
 
         if (mBackupAppListLoader.isLoadingFinished()) {// loading 完成了
-            //processNewBackupApp(ev.AppInfo, mAdapter.getDisplayList());
-
-            boolean found = false;
-            //检查是否在显示的list中
-            for (int i = 0, size = mAdapter.getDisplayList().size(); i < size; i++) {
-                AppInfo appInfo = mAdapter.getDisplayList().get(i);
-                if (appInfo.packageName.equals(ev.AppInfo.packageName)) {
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                // AppInfo appInfo = Utilities.getLastBackupAppFromSD(mContext);
-                mAdapter.getDisplayList().add(0, ev.AppInfo);
-                mAdapter.notifyDataSetChanged();
-                //checkIfEmpty();
-                // mAdapter.notifyItemInserted(0);
-            }
-
             
-        } else {// loading 还没完成
-            boolean found = false;
-            //检查是否在pending的list中存在
-            for (int i = 0; i < mPendingNewAppInfo.size(); i++) {
-                AppInfo appInfo = mPendingNewAppInfo.get(i);
-                if (appInfo.packageName.equals(ev.AppInfo.packageName)) {
-                    found = true;
-                    break;
-                }
+            // 检查是否在显示的list中
+            for (AppInfo aInfo : ev.AppInfoList) {
+                boolean found = Utilities.isAppInfoInList(aInfo, mAdapter.getDisplayList());
+               /* for (int i = 0, size = mAdapter.getDisplayList().size(); i < size; i++) {
+                    AppInfo appInfo = mAdapter.getDisplayList().get(i);
+                    if (aInfo.packageName.equals(appInfo.packageName)) {
+                        found = true;
+                        break;
+                    }
+                }*/
+                if (!found) {
+                    mAdapter.getDisplayList().add(0, aInfo);
+                } 
             }
-            if (!found) {
-                mPendingNewAppInfo.add(ev.AppInfo);
+            mAdapter.notifyDataSetChanged();
+        } else {// loading 还没完成
+            for (AppInfo aInfo : ev.AppInfoList) {
+                // 检查是否在pending的list中存在
+                boolean found = Utilities.isAppInfoInList(aInfo, mPendingNewAppInfo);
+               /* for (int i = 0; i < mPendingNewAppInfo.size(); i++) {
+                    AppInfo appInfo = mPendingNewAppInfo.get(i);
+                    if (aInfo.packageName.equals(appInfo.packageName)) {
+                        found = true;
+                        break;
+                    }
+                }*/
+                if (!found) {
+                    mPendingNewAppInfo.add(aInfo);
+                }
             }
         }
         // processNewBackupApp(ev.AppInfo);
         // mAdapter.notifyItemInserted(0);
-
     }
 
     // LoaderManager.LoaderCallbacks--start
@@ -389,21 +373,19 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
     @Override
     public void onLoaderBackgroundMoreWork(ArrayList<AppInfo> listReadyToDeliver) {
         // TODO Auto-generated method stub
-       /* try {
-            Thread.sleep(30000);
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }*/
+        /*
+         * try { Thread.sleep(30000); } catch (InterruptedException e) { // TODO Auto-generated catch block
+         * e.printStackTrace(); }
+         */
         if (!mPendingNewAppInfo.isEmpty()) {
             for (int i = 0; i < mPendingNewAppInfo.size(); i++) {
-                boolean found = false;
-                for (AppInfo appInfo : listReadyToDeliver) {
+                boolean found = Utilities.isAppInfoInList(mPendingNewAppInfo.get(i), listReadyToDeliver);
+               /* for (AppInfo appInfo : listReadyToDeliver) {
                     if (appInfo.packageName.equals(mPendingNewAppInfo.get(i).packageName)) {
                         found = true;
                         break;
                     }
-                }
+                }*/
                 if (!found) {
                     listReadyToDeliver.add(0, mPendingNewAppInfo.get(i));
                 }

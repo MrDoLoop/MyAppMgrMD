@@ -18,14 +18,13 @@ import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -50,6 +49,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.doloop.www.mayappmgr.material.events.ActionModeToggleEvent;
+import com.doloop.www.mayappmgr.material.events.AppBackupSuccEvent;
+import com.doloop.www.mayappmgr.material.events.BackupAppEvent;
 import com.doloop.www.mayappmgr.material.events.DrawerItemClickEvent;
 import com.doloop.www.mayappmgr.material.events.ViewNewBackupAppEvent;
 import com.doloop.www.myappmgr.material.adapters.AppListFragAdapter;
@@ -82,10 +83,8 @@ import com.readystatesoftware.systembartint.SystemBarTintManager.SystemBarConfig
 
 import de.greenrobot.event.EventBus;
 
-public class MainActivity extends ActionBarActivity implements //UserAppListFilterResultListener,
-    UserAppListDataSetChangedListener,
-    SysAppListDataSetChangedListener,
-    BackupAppListDataSetChangedListener {
+public class MainActivity extends ActionBarActivity implements // UserAppListFilterResultListener,
+        UserAppListDataSetChangedListener, SysAppListDataSetChangedListener, BackupAppListDataSetChangedListener {
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private ActionBar mActionBar;
@@ -93,7 +92,6 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
 
     private ArrayList<BaseFrag> Fragmentlist;
     private static long back_pressed = 0;
-    
 
     // 用户app列表
     private UserAppsTabFragment usrAppsFrg;
@@ -110,10 +108,10 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
     private BackupAppTabFragment backupAppsFrg;
 
     private EditText searchViewEdt;
-    
+
     private AppListFragAdapter mFragAdapter;
     private int screenWidth = 0;
-    //private ViewPager mPager;
+    // private ViewPager mPager;
     private MyViewPager mPager;
     private PagerSlidingTabStrip mPagerSlidingTabStrip;
 
@@ -127,44 +125,43 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
 
     private LangUpdateReceiver mLangUpdateReceiver;
     private IntentFilter LangIntentFilter;
-    
+
     private static Snackbar mSnackbar;
     private static Context thisActivityCtx;
     public static ActionMode sActionMode = null;
     private static Toast toast;
-    
-    //private DrawerItemClickEvent mDrawerItemClickEvent;
+
+    // private DrawerItemClickEvent mDrawerItemClickEvent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
+
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
-            //setTranslucentStatus(true);
-            
+            // setTranslucentStatus(true);
+
             Window window = this.getWindow();
             window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
                     WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            
+
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
             tintManager.setStatusBarTintEnabled(true);
             tintManager.setStatusBarTintResource(R.color.transparent);
             tintManager.setStatusBarAlpha(0.5f);
             SystemBarConfig config = tintManager.getConfig();
-            //View statusBarHolder = findViewById(R.id.statusbar_holder);
-            
+            // View statusBarHolder = findViewById(R.id.statusbar_holder);
+
             View contHolder = findViewById(R.id.content_linear);
             View drawerHolder = findViewById(R.id.drawer_content_holder);
-            //contLinear.setPadding(0, config.getPixelInsetTop(true), 0, config.getPixelInsetBottom());
+            // contLinear.setPadding(0, config.getPixelInsetTop(true), 0, config.getPixelInsetBottom());
             contHolder.setPadding(0, config.getStatusBarHeight(), 0, config.getPixelInsetBottom());
             drawerHolder.setPadding(0, config.getStatusBarHeight(), 0, config.getPixelInsetBottom());
-            //statusBarHolder.getLayoutParams().height = config.getStatusBarHeight();
-            //statusBarHolder.setVisibility(View.VISIBLE);
-            
+            // statusBarHolder.getLayoutParams().height = config.getStatusBarHeight();
+            // statusBarHolder.setVisibility(View.VISIBLE);
+
         }
-        
-        
+
         AppUpdateStaticReceiver.handleEvent = false;
         thisActivityCtx = MainActivity.this;
         toast = Toast.makeText(thisActivityCtx, "", Toast.LENGTH_SHORT);
@@ -175,36 +172,34 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
         }
 
         // 初始化抽屉
-       FragmentTransaction t = this.getSupportFragmentManager().beginTransaction();
+        FragmentTransaction t = this.getSupportFragmentManager().beginTransaction();
         DrawerFragment drawFrag = DrawerFragment.getInstance(thisActivityCtx);
         t.replace(R.id.drawer_content_holder, drawFrag);
         t.commit();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        
+
         // toolbar.inflateMenu(R.menu.menu_main);
         setSupportActionBar(toolbar);
 
         mActionBar = getSupportActionBar();
         mActionBar.setDisplayHomeAsUpEnabled(true);
-        //mActionBar.setBackgroundDrawable(new ColorDrawable(this.getResources().getColor(R.color.primary)));
+        // mActionBar.setBackgroundDrawable(new ColorDrawable(this.getResources().getColor(R.color.primary)));
 
         // 抽屉的初始化--start
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
         mDrawerToggle =
                 new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close) {
 
-                    
-                     @Override 
-                     public void onDrawerSlide(View drawerView, float slideOffset) { 
-                         super.onDrawerSlide(drawerView, slideOffset); 
-                         L.d("slideOffset "+slideOffset); 
-                         ViewHelper.setAlpha(MenuItemCompat.getActionView(searchMenuItem), 1-slideOffset);
-                     }
-                     
+                    @Override
+                    public void onDrawerSlide(View drawerView, float slideOffset) {
+                        super.onDrawerSlide(drawerView, slideOffset);
+                        L.d("slideOffset " + slideOffset);
+                        ViewHelper.setAlpha(MenuItemCompat.getActionView(searchMenuItem), 1 - slideOffset);
+                    }
 
                     /** Called when a drawer has settled in a completely closed state. */
-                    @Override 
+                    @Override
                     public void onDrawerClosed(View view) {
                         super.onDrawerClosed(view);
 
@@ -224,29 +219,24 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
                                     sortMenuItem.setVisible(true);
                                     break;
                             }
-                            
-                            //sortMenuItem.setVisible(true);
+
+                            // sortMenuItem.setVisible(true);
                         }
-                        
-                        if(mPager.getCurrentItem() != Constants.USR_APPS_TAB_POS){
+
+                        if (mPager.getCurrentItem() != Constants.USR_APPS_TAB_POS) {
                             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
                         }
-                        
-                        /*//抽屉里面的一项被点击了
-                        if(mDrawerItemClickEvent != null){
-                            switch (mDrawerItemClickEvent.DrawerItem) {
-                                case REFRESH:
-                                    new GetApps().execute(true);
-                                    break;
-                            }
-                            mDrawerItemClickEvent = null;
-                        }*/
-                        
+
+                        /*
+                         * //抽屉里面的一项被点击了 if(mDrawerItemClickEvent != null){ switch (mDrawerItemClickEvent.DrawerItem) {
+                         * case REFRESH: new GetApps().execute(true); break; } mDrawerItemClickEvent = null; }
+                         */
+
                         // invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
                     }
 
                     /** Called when a drawer has settled in a completely open state. */
-                    @Override 
+                    @Override
                     public void onDrawerOpened(View drawerView) {
                         super.onDrawerOpened(drawerView);
 
@@ -254,14 +244,14 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
                         searchViewEdt.clearFocus();
                         searchViewEdt.setFocusable(false);
                         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-                       if (!MenuItemCompat.isActionViewExpanded(searchMenuItem)) {
+                        if (!MenuItemCompat.isActionViewExpanded(searchMenuItem)) {
                             searchMenuItem.setVisible(false);
                             sortMenuItem.setVisible(false);
                         }
                         // invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
                     }
                 };
-        //mDrawerToggle.syncState();
+        // mDrawerToggle.syncState();
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         // 抽屉的初始化--end
 
@@ -293,8 +283,8 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
 
             @Override
             public void onPageSelected(int position) {
-                //禁止在别的tab下从屏幕边缘划出，但是还是可以通过menu按键呼出抽屉，
-                //所以在open的时候记得要解锁
+                // 禁止在别的tab下从屏幕边缘划出，但是还是可以通过menu按键呼出抽屉，
+                // 所以在open的时候记得要解锁
                 if (position == Constants.USR_APPS_TAB_POS) {
                     mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
                 } else {
@@ -307,18 +297,16 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
                     } else {
                         sortMenuItem.setVisible(true);
                     }
-                } 
-                else if (position == Constants.SYS_APPS_TAB_POS) {
+                } else if (position == Constants.SYS_APPS_TAB_POS) {
                     sortMenuItem.setVisible(false);
-                }
-                else if (position == Constants.BACKUP_APPS_TAB_POS) {
+                } else if (position == Constants.BACKUP_APPS_TAB_POS) {
                     if (MenuItemCompat.isActionViewExpanded(searchMenuItem)) {
                         sortMenuItem.setVisible(false);
                     } else {
                         sortMenuItem.setVisible(true);
                     }
                 }
-                
+
             }
 
             @Override
@@ -334,10 +322,9 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
             @Override
             public boolean onTabClick(int position) {
                 // TODO Auto-generated method stub
-                if(isInActionMode()){
+                if (isInActionMode()) {
                     return true;
-                }
-                else if (mPager.getCurrentItem() == position) {
+                } else if (mPager.getCurrentItem() == position) {
                     switch (mPager.getCurrentItem()) {
                         case Constants.USR_APPS_TAB_POS:
                             usrAppsFrg.listBackToTop();
@@ -360,12 +347,12 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
         });
         mPagerSlidingTabStrip.setViewPager(mPager);
         // 选中的文字颜色
-        //mPagerSlidingTabStrip.setSelectedTextColorResource(R.color.white);
+        // mPagerSlidingTabStrip.setSelectedTextColorResource(R.color.white);
         // 正常文字颜色
-        //mPagerSlidingTabStrip.setTextColorResource(R.color.white3);
-        
+        // mPagerSlidingTabStrip.setTextColorResource(R.color.white3);
+
         mPagerSlidingTabStrip.setTextColorList(getResources().getColorStateList(R.color.srtipe_tab_sel));
-        
+
         // 导航条初始化--end
 
         mAppUpdateReceiver = new AppUpdateReceiver();
@@ -386,26 +373,24 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState)
-    {
+    protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         // Sync the toggle state after onRestoreInstanceState has occurred.
         mDrawerToggle.syncState();
     }
-    
-    public static boolean isInActionMode(){
-        if(sActionMode == null) 
+
+    public static boolean isInActionMode() {
+        if (sActionMode == null)
             return false;
         else
             return true;
     }
-    
+
     @Override
     public void onBackPressed() {
-        if(isInActionMode()){
+        if (isInActionMode()) {
             super.onBackPressed();
-        }
-        else if (back_pressed + 2000 > System.currentTimeMillis()) {
+        } else if (back_pressed + 2000 > System.currentTimeMillis()) {
             super.onBackPressed();
         } else {
             // 抽屉开
@@ -424,7 +409,7 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
     }
 
     private void appDestroyCleanup() {
-        if(progDialog!=null&&progDialog.isShowing()){
+        if (progDialog != null && progDialog.isShowing()) {
             progDialog.dismiss();
         }
         SysAppFullList.clear();
@@ -441,17 +426,17 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
 
     /**
      * 默认是多行的
+     * 
      * @param newInstance
      * @return
      */
-    public static Snackbar getSnackbar(boolean newInstance){
-        if(mSnackbar == null || newInstance){
+    public static Snackbar getSnackbar(boolean newInstance) {
+        if (mSnackbar == null || newInstance) {
             mSnackbar = Snackbar.with(thisActivityCtx);
         }
-        return mSnackbar; 
+        return mSnackbar;
     }
-    
-    
+
     private void registerReceivers() {
         registerReceiver(mAppUpdateReceiver, AppIntentFilter);
         registerReceiver(mLangUpdateReceiver, LangIntentFilter);
@@ -566,7 +551,7 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        
+
         /*
          * if (id == R.id.action_settings) { return true; }
          */
@@ -689,7 +674,7 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
                     // publishProgress("" + (i + 1));
                     Log.i("ttt", "processing app " + (i + 1) + " / " + limit);
                     packageInfo = packages.get(i);
-                    tmpInfo = Utilities.buildAppInfoEntry(thisActivityCtx, packageInfo, pManager,true);
+                    tmpInfo = Utilities.buildAppInfoEntry(thisActivityCtx, packageInfo, pManager, true);
                     if (tmpInfo.isSysApp) {
                         SysAppFullList.add(tmpInfo);
                     } else {
@@ -777,14 +762,13 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
             if (progDialog.isShowing()) {
                 progDialog.dismiss();
             }
-          
+
             // list设置数据
             usrAppsFrg.setListSortType(Utilities.getUserAppListSortType(thisActivityCtx));
             usrAppsFrg.setData(UserAppFullList);
 
             sysAppsFrg.setData(SysAppFullListWapper, mSectionInListPosMap);
 
-            
             mPagerSlidingTabStrip.notifyDataSetChanged();
             registerReceivers();
             // registerReceiver(mAppUpdateReceiver, AppIntentFilter);
@@ -859,19 +843,16 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
     }
 
     // 用户app搜索之后
-    /*@Override
-    public void onUserAppListFilterResultPublish(ArrayList<AppInfo> resultsList) {
-        // TODO Auto-generated method stub
-        updateSlidingTabTitle(Constants.USR_APPS_TAB_POS);
-    }*/
+    /*
+     * @Override public void onUserAppListFilterResultPublish(ArrayList<AppInfo> resultsList) { // TODO Auto-generated
+     * method stub updateSlidingTabTitle(Constants.USR_APPS_TAB_POS); }
+     */
 
-    /*@Override
-    public void onSysAppListFilterResultPublish(ArrayList<SysAppListItem> ResultSysAppList,
-            TreeMap<String, Integer> ResultPosMap) {
-        // TODO Auto-generated method stub
-        updateSlidingTabTitle(Constants.SYS_APPS_TAB_POS);
-        sysAppsFrg.setExistIndexArray(new ArrayList<String>(ResultPosMap.keySet()));
-    }*/
+    /*
+     * @Override public void onSysAppListFilterResultPublish(ArrayList<SysAppListItem> ResultSysAppList, TreeMap<String,
+     * Integer> ResultPosMap) { // TODO Auto-generated method stub updateSlidingTabTitle(Constants.SYS_APPS_TAB_POS);
+     * sysAppsFrg.setExistIndexArray(new ArrayList<String>(ResultPosMap.keySet())); }
+     */
 
     // private void updateSlidingTabTitle(int position, int appNum) {
     // String newTitle = "";
@@ -892,7 +873,7 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
     // }
 
     private void updateSlidingTabTitle(int position) {
-        switch (position) {           
+        switch (position) {
             case Constants.USR_APPS_TAB_POS:
                 mPagerSlidingTabStrip.setTitleForChild(position, usrAppsFrg.getFragmentTitle());
                 break;
@@ -905,42 +886,43 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
         }
     }
 
+    // eventbus 处理
     public void onEventMainThread(DrawerItemClickEvent ev) {
         toggleDrawerMenu();
-        //mDrawerItemClickEvent = ev;
+        // mDrawerItemClickEvent = ev;
         switch (ev.DrawerItem) {
             case REFRESH:
                 new GetApps().execute(true);
                 break;
         }
     }
-    
+
     public void onEventMainThread(ActionModeToggleEvent ev) {
-        
-        if(ev.isInActionMode){
+
+        if (ev.isInActionMode) {
             mPager.setPagingEnabled(false);
             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        }
-        else{
-            mPager.setPagingEnabled(true); 
+        } else {
+            mPager.setPagingEnabled(true);
             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         }
-        
+
     }
-    
-    
-    
+
     public void onEventMainThread(ViewNewBackupAppEvent ev) {
         mPager.setCurrentItem(Constants.BACKUP_APPS_TAB_POS);
     }
-    
+
+    public void onEventMainThread(BackupAppEvent ev) {
+        new BackUpApps(ev.appList, ev.sendAfterBackup).execute();
+    }
 
     private class AppUpdateReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             // TODO Auto-generated method stub
             closeDrawerMenu();
-            //usrAppsFrg.collapseLastOpenItem(false);
+            // usrAppsFrg.collapseLastOpenItem(false);
 
             if (intent.getAction().equals(Intent.ACTION_PACKAGE_ADDED)) {
                 // app被安装
@@ -977,7 +959,7 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
 
                     // ((ActionSlideExpandableListView) usrAppsFrg.getListView()).collapse(false);
                     usrAppsFrg.notifyDataSetChanged();
-                    //updateSlidingTabTitle(Constants.USR_APPS_TAB_POS);
+                    // updateSlidingTabTitle(Constants.USR_APPS_TAB_POS);
 
                 }
 
@@ -1012,7 +994,7 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
 
                 toast.show();
                 usrAppsFrg.notifyDataSetChanged();
-                //updateSlidingTabTitle(Constants.USR_APPS_TAB_POS);
+                // updateSlidingTabTitle(Constants.USR_APPS_TAB_POS);
             } else if (intent.getAction().equals(Intent.ACTION_PACKAGE_CHANGED)) {
                 String PkgName = intent.getDataString().substring(8);
                 String appName = Utilities.pkgNameToAppName(thisActivityCtx, PkgName);
@@ -1055,6 +1037,122 @@ public class MainActivity extends ActionBarActivity implements //UserAppListFilt
     public void OnBackupAppListDataSetChanged() {
         // TODO Auto-generated method stub
         updateSlidingTabTitle(Constants.BACKUP_APPS_TAB_POS);
+    }
+
+    private class BackUpApps extends AsyncTask<Void, String, Void> {
+        private boolean errorHappened = false;
+        private ArrayList<Uri> SnedApkUris = new ArrayList<Uri>();
+        private ArrayList<String> FailedApp = new ArrayList<String>();
+        private ArrayList<AppInfo> AppList;
+        private ArrayList<AppInfo> SuccAppList = new ArrayList<AppInfo>();
+        private boolean SendAfterBackup = false;
+        private String BACK_UP_FOLDER;
+
+        public BackUpApps(ArrayList<AppInfo> list, boolean sendAfterBackup) {
+            AppList = list;
+            SendAfterBackup = sendAfterBackup;
+            BACK_UP_FOLDER = Utilities.getBackUpAPKfileDir(thisActivityCtx);
+        }
+
+        @Override
+        protected void onProgressUpdate(String...values) {
+            // TODO Auto-generated method stub
+            super.onProgressUpdate(values);
+            progDialog.setProgress(Integer.valueOf(values[0]));
+            progDialog.setMessage(getString(R.string.saving_app) + " " + values[1]);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            unregisterReceivers();
+            progDialog = new ProgressDialog(thisActivityCtx);
+            progDialog.setCancelable(false);
+            progDialog.setMessage(getString(R.string.saving_apps));
+            progDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            progDialog.setProgress(0);
+            progDialog.setMax(AppList.size());
+            progDialog.setOnCancelListener(new OnCancelListener() {
+
+                @Override
+                public void onCancel(DialogInterface dialog) {
+                    BackUpApps.this.cancel(true);
+                }
+
+            });
+            progDialog.show();
+        }
+
+        @Override
+        protected Void doInBackground(Void...arg0) {
+            // TODO Auto-generated method stub
+
+            String[] dialogInfo = new String[2];
+            int counter = 0;
+            AppInfo tmpAppInfo = null;
+            for (int i = 0; i < AppList.size(); i++) {
+                tmpAppInfo = AppList.get(i);
+
+                counter++;
+                dialogInfo[0] = "" + counter;
+                dialogInfo[1] = tmpAppInfo.appName;
+                publishProgress(dialogInfo);
+
+                String sdAPKfileName = Utilities.BackupApp(tmpAppInfo, BACK_UP_FOLDER);
+                if (sdAPKfileName != null) {
+                    SuccAppList.add(tmpAppInfo);
+                    if (SendAfterBackup) {
+                        SnedApkUris.add(Uri.parse("file://" + sdAPKfileName));
+                    }
+                    Log.i("ttt", "appBackup succ: " + tmpAppInfo.appName);
+                } else {
+                    errorHappened = true;
+                    FailedApp.add(tmpAppInfo.appName);
+                    Log.i("ttt", "appBackup Fail: " + tmpAppInfo.appName);
+                }
+
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onCancelled() {
+        }
+
+        // can use UI thread here
+        @Override
+        protected void onPostExecute(final Void unused) {
+            if (progDialog.isShowing()) {
+                progDialog.dismiss();
+            }
+
+            if (errorHappened) {// 有错误发生
+                String ErrorApp = "";
+                for (int i = 0; i < FailedApp.size(); i++) {
+                    ErrorApp += FailedApp.get(i) + "\n";
+                }
+
+                ErrorApp = ErrorApp.substring(0, ErrorApp.lastIndexOf("\n"));
+
+                toast.setText(getString(R.string.error) + ":\n" + ErrorApp);
+                toast.show();
+            } else {// 没有错误发生
+                if (SendAfterBackup) {
+                    if (SnedApkUris.size() > 1) {
+                        Utilities.chooseSendByApp(thisActivityCtx, SnedApkUris);
+                    } else {
+                        Utilities.chooseSendByApp(thisActivityCtx, SnedApkUris.get(0));
+                    }
+                } else {
+                    toast.setText(R.string.backup_success);
+                    toast.show();
+                }
+            }
+            registerReceivers();
+            if(SuccAppList.size() > 0){
+                EventBus.getDefault().post(new AppBackupSuccEvent(SuccAppList));
+            }
+        }
     }
 
     /*

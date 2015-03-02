@@ -2,13 +2,13 @@ package com.doloop.www.myappmgr.material.adapters;
 
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.TreeMap;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
-import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,8 +38,8 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
 
     private Context mCtx;
 
-    private SparseBooleanArray mSelectedItemsPos = new SparseBooleanArray();
-
+    //private SparseBooleanArray mSelectedItemsPos = new SparseBooleanArray();
+    private TreeMap<Integer, AppInfo> mSelectedItems = new TreeMap<Integer, AppInfo>();
     /*
      * public UserAppListFilterResultListener mFilterResultListener;
      * 
@@ -61,35 +61,40 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
     }
 
     public void selectAll() {
-        mSelectedItemsPos.clear();
+        mSelectedItems.clear();
         for (int i = 0; i < getCount(); i++) {
-            mSelectedItemsPos.put(i, true);
+            mSelectedItems.put(i, getItem(i));
         }
         this.notifyDataSetChanged();
     }
 
     public void deselectAll() {
-        mSelectedItemsPos.clear();
+        mSelectedItems.clear();
         this.notifyDataSetChanged();
     }
 
     public void toggleSelection(int position) {
-        setSelectedItem(position, !mSelectedItemsPos.get(position));
+        setSelectedItem(position, !mSelectedItems.containsKey(position));
     }
 
     public void setSelectedItem(int position, boolean val) {
         if (val)
-            mSelectedItemsPos.put(position, val);
+            mSelectedItems.put(position, getItem(position));
         else
-            mSelectedItemsPos.delete(position);
+            mSelectedItems.remove(position);
 
         notifyDataSetChanged();
     }
 
     public int getSelectedItemCnt() {
-        return mSelectedItemsPos.size();
+        return mSelectedItems.size();
     }
 
+    public ArrayList<AppInfo> getSelectedItemList(){
+        ArrayList<AppInfo> list = new ArrayList<AppInfo>(mSelectedItems.values());
+        return list;
+    }
+    
     public UserAppListDataSetChangedListener mUserAppListDataSetChangedListener;
 
     public interface UserAppListDataSetChangedListener {
@@ -194,7 +199,7 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
         } else {
             holder.AppIconImageView.setImageBitmap(appInfo.iconBitmap);
         }
-        if(mSelectedItemsPos.get(position)) {
+        if(mSelectedItems.containsKey(position)) {
             holder.bgLayout.setBackgroundColor(Color.CYAN);
             holder.AppIconImageView.setBackgroundResource(R.drawable.imageview_border_blue);
         } else {

@@ -46,6 +46,7 @@
             app:pstsUnderlineHeight="0dp" >
         </com.doloop.www.myappmgr.material.widgets.PagerSlidingTabStrip>
 
+        <!-- android:overScrollMode="never" 去掉滑到边缘的阴影-->
         <com.doloop.www.myappmgr.material.widgets.MyViewPager
             android:id="@+id/pager"
             android:layout_width="match_parent"

@@ -54,6 +54,15 @@ import com.doloop.www.myappmgrmaterial.R;
 
 public class Utilities {
 
+    public static boolean isAppInfoInList(AppInfo appInfo, ArrayList<AppInfo> list){
+        for(AppInfo aEntry : list){
+            if(appInfo.packageName.equals(aEntry.packageName)){
+                return true;
+            }
+        }
+        return false;
+    }
+    
     public static AppInfo getLastBackupAppFromSD(Context ctx) {
         File backupFolder = new File(Utilities.getBackUpAPKfileDir(ctx));
         File[] files = backupFolder.listFiles(new ApkFileFilter());
