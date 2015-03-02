@@ -356,7 +356,7 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
         mRecyclerView.setAdapter(mAdapter);
         checkIfEmpty();
         mAdapter.getBackupAppListDataSetChangedListener().OnBackupAppListDataSetChanged();
-        mLoadingView.setVisibility(View.GONE);
+        //mLoadingView.setVisibility(View.GONE);
     }
 
     @Override

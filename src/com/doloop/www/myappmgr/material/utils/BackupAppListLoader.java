@@ -90,11 +90,13 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
 
     public void hideLoadingView() {
         if (mLoadingView != null) {
-            ObjectAnimator anim = ObjectAnimator.ofFloat(mLoadingView, "alpha", 1f, 0f).setDuration(800);
+            ValueAnimator  anim = ValueAnimator.ofFloat(1f, 0f).setDuration(800);
             anim.addUpdateListener(new AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
-                    ViewHelper.setAlpha(mContentView, 1 - (Float) animation.getAnimatedValue());
+                    Float val = (Float) animation.getAnimatedValue();
+                    ViewHelper.setAlpha(mContentView, 1 - val);
+                    ViewHelper.setAlpha(mLoadingView, val);
                 }
             });
             anim.addListener(new AnimatorListenerAdapter(){

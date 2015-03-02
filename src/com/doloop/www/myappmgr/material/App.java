@@ -32,8 +32,8 @@ public class App extends Application {
         Thread.setDefaultUncaughtExceptionHandler(handler);
     }
 
-    public String printMsg(){
+   /* public String printMsg(){
         return "赵楠";
     }
-    
+    */
 }

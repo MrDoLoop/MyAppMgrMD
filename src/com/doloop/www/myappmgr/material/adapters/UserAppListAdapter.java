@@ -6,7 +6,6 @@ import java.util.TreeMap;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -26,7 +25,7 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Picasso.LoadedFrom;
 import com.squareup.picasso.Target;
 
-public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filterable {
+public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filterable,View.OnClickListener {
 
     private int ItemResourceLayout = 0;
     // private int textViewID = 0;
@@ -166,7 +165,8 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
             // holder.AppPkgnameTextView.getPaint().setFakeBoldText(true);
             // holder.AppPkgnameTextView.setTypeface(null,Typeface.BOLD);
             holder.AppIconImageView = (ImageView) convertView.findViewById(R.id.app_icon);
-            holder.AppIconImageView.setOnClickListener(new View.OnClickListener() {
+            holder.AppIconImageView.setOnClickListener(this);
+/*            holder.AppIconImageView.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View v) {
@@ -175,7 +175,7 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
                     mIconClickListener.OnIconClickListener(pos);
                     // MainActivity.T("用户图标点击了: "+pos);
                 }
-            });
+            });*/
             holder.moreItemBtn = (LinearLayout) convertView.findViewById(R.id.expandable_toggle_button);
             holder.moreItemBtn.setFocusable(false);
             // holder.expandableLinearLayout = (LinearLayout) convertView.findViewById(R.id.expandable);
@@ -294,7 +294,6 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
                 // if(appInfo != null)
                 {
                     appInfo.iconBitmap = bitmap;
-
                 }
             }
         }
@@ -304,5 +303,13 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
             // TODO Auto-generated method stub
             AppIconImageView.setImageResource(R.drawable.userapp_holder);
         }
+    }
+
+    //
+    @Override
+    public void onClick(View v) {
+        // TODO Auto-generated method stub
+        int pos = (Integer) v.getTag();
+        mIconClickListener.OnIconClickListener(pos);
     }
 }
