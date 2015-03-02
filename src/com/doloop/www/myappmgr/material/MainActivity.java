@@ -322,9 +322,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
             @Override
             public boolean onTabClick(int position) {
                 // TODO Auto-generated method stub
-                if (isInActionMode()) {
-                    return true;
-                } else if (mPager.getCurrentItem() == position) {
+                if (mPager.getCurrentItem() == position) {
                     switch (mPager.getCurrentItem()) {
                         case Constants.USR_APPS_TAB_POS:
                             usrAppsFrg.listBackToTop();
@@ -341,6 +339,11 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
                     }
                     return true;
                 }
+                
+                if (isInActionMode()) {
+                    return true;
+                }
+                
                 return false;
 
             }

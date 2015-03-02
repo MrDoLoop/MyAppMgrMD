@@ -200,7 +200,7 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
             holder.AppIconImageView.setImageBitmap(appInfo.iconBitmap);
         }
         if(mSelectedItems.containsKey(position)) {
-            holder.bgLayout.setBackgroundColor(Color.CYAN);
+            holder.bgLayout.setBackgroundResource(R.drawable.list_row_item_pressed_bg);
             holder.AppIconImageView.setBackgroundResource(R.drawable.imageview_border_blue);
         } else {
             holder.bgLayout.setBackgroundResource(R.drawable.list_row_item_bg);
