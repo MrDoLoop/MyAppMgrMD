@@ -297,7 +297,8 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                                     mSnackbar.swipeToDismiss(false).showAnimation(mShowAniSnackBar)
                                             .dismissAnimation(true).animationText(mAniText)
                                             .duration(Snackbar.SnackbarDuration.LENGTH_SHORT)
-                                            .attachToAbsListView(mActionSlideExpandableListView).text(spanString);
+                                            //.attachToAbsListView(mActionSlideExpandableListView)
+                                            .text(spanString);
 
                                     if (!MainActivity.isInActionMode()) {
                                         mSnackbar
@@ -586,6 +587,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
         // TODO Auto-generated method stub
+        MainActivity.getSnackbar(false).dismiss();
         switch (scrollState) {
             case AbsListView.OnScrollListener.SCROLL_STATE_IDLE:
                 mListIsScrolling = false;
