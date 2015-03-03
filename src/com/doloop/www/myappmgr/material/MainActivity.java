@@ -155,8 +155,8 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
             View contHolder = findViewById(R.id.content_linear);
             View drawerHolder = findViewById(R.id.drawer_content_holder);
             // contLinear.setPadding(0, config.getPixelInsetTop(true), 0, config.getPixelInsetBottom());
-            contHolder.setPadding(0, config.getStatusBarHeight(), 0, config.getPixelInsetBottom());
-            drawerHolder.setPadding(0, config.getStatusBarHeight(), 0, config.getPixelInsetBottom());
+            contHolder.setPadding(0, config.getStatusBarHeight(), 0, 0);
+            drawerHolder.setPadding(0, config.getStatusBarHeight(), 0, 0);
             // statusBarHolder.getLayoutParams().height = config.getStatusBarHeight();
             // statusBarHolder.setVisibility(View.VISIBLE);
 
