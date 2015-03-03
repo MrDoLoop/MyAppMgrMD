@@ -53,7 +53,7 @@ import com.doloop.www.myappmgr.material.fragments.SortTypeDialogFragment;
 import com.doloop.www.myappmgrmaterial.R;
 
 public class Utilities {
-
+       
     public static boolean isAppInfoInList(AppInfo appInfo, ArrayList<AppInfo> list){
         for(AppInfo aEntry : list){
             if(appInfo.packageName.equals(aEntry.packageName)){
@@ -138,6 +138,11 @@ public class Utilities {
     }
 
     public static void verifyApp(Context context, AppInfo appInfo) {
+        //检查是不是自己，重新建立自己
+       /* if(appInfo.packageName.equals(Constants.MY_PACKAGE_NAME)){
+            appInfo = buildAppInfoEntry(context,appInfo.packageName);
+        }*/
+        //检查sd上的icon缓存
         File file = appInfo.getAppIconCachePath(context);
         if (!file.exists()) {
             // appInfo.iconDrawable = getIconDrawable(context, appInfo.packageName);
