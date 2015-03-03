@@ -53,7 +53,6 @@ import com.doloop.www.myappmgr.material.adapters.UserAppListAdapter.IconClickLis
 import com.doloop.www.myappmgr.material.adapters.UserAppListAdapter.UserAppListDataSetChangedListener;
 //import com.doloop.www.myappmgr.material.adapters.UserAppListAdapter.UserAppListFilterResultListener;
 import com.doloop.www.myappmgr.material.dao.AppInfo;
-import com.doloop.www.myappmgr.material.utils.Constants;
 import com.doloop.www.myappmgr.material.utils.Utilities;
 import com.doloop.www.myappmgrmaterial.R;
 import com.nispok.snackbar.Snackbar;
@@ -763,6 +762,24 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                                         EventBus.getDefault().post(
                                                 new BackupAppEvent(mAdapter.getSelectedItemList(), true));
 
+                                    }
+                                    break;
+                                    
+                                case R.id.menu_uninstall:
+                                    AppInfo tmpAppInfo = null;
+                                    ArrayList<AppInfo> list = mAdapter.getSelectedItemList();
+                                    for (int i = 0; i < list.size(); i++) {
+                                        tmpAppInfo = list.get(i);
+                                        
+                                        Uri packageUri = Uri.parse("package:" + tmpAppInfo.packageName);
+                                        Intent uninstallIntent;
+                                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                                            uninstallIntent = new Intent(Intent.ACTION_DELETE, packageUri);
+                                        } else {
+                                            uninstallIntent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE, packageUri);
+                                        }
+                                        startActivity(uninstallIntent);
+                                        
                                     }
                                     break;
                             }
