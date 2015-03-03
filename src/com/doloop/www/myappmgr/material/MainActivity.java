@@ -643,21 +643,41 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
             }
             DaoSession appInfoSession = DaoUtils.getDaoSession(MainActivity.this, true);
             if (Utilities.isAppListInDb(MainActivity.this)) {
+
+               
                 UserAppFullList =
                         (ArrayList<AppInfo>) appInfoSession.getAppInfoDao().queryBuilder()
                                 .where(Properties.IsSysApp.eq("false")).list();
-
+                
+                /*AppInfo MyAppInfo = appInfoSession.getAppInfoDao().queryBuilder().where(Properties.PackageName.eq(Constants.MY_PACKAGE_NAME)).unique();
+                if(MyAppInfo == null)
+                {
+                    UserAppFullList.add(Utilities.buildAppInfoEntry(thisActivityCtx, Constants.MY_PACKAGE_NAME));
+                }
+                    
+                */
                 SysAppFullList =
                         (ArrayList<AppInfo>) appInfoSession.queryBuilder(AppInfo.class)
                                 .where(Properties.IsSysApp.eq("true")).list();
 
                 int appCount = 0;
+                int mySelfPos = -1;
                 for (int i = 0; i < UserAppFullList.size(); i++, appCount++) {
                     publishProgress("" + (appCount + 1));
+                    if(Constants.MY_PACKAGE_NAME.equals(UserAppFullList.get(i).packageName)){
+                        mySelfPos = i;
+                    }
                     Utilities.verifyApp(thisActivityCtx, UserAppFullList.get(i));
                     UserAppFullList.get(i).appIconBytes = null;
                 }
-
+                //重新建立自己
+                if(mySelfPos == -1){
+                    UserAppFullList.add(Utilities.buildAppInfoEntry(thisActivityCtx, Constants.MY_PACKAGE_NAME));
+                }
+                else{
+                    UserAppFullList.set(mySelfPos, Utilities.buildAppInfoEntry(thisActivityCtx, Constants.MY_PACKAGE_NAME));
+                }
+                
                 for (int i = 0; i < SysAppFullList.size(); i++, appCount++) {
                     publishProgress("" + (appCount + 1));
                     Utilities.verifyApp(thisActivityCtx, SysAppFullList.get(i));
