@@ -16,12 +16,14 @@
         android:layout_height="match_parent"
         android:orientation="vertical" >
 
-<!--         <View
+        <!--
+             <View
             android:id="@+id/statusbar_holder"
             android:layout_width="match_parent"
             
             android:background="@color/transparent"
-            android:layout_height="10dp" /> -->
+            android:layout_height="10dp" />
+        -->
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -46,7 +48,8 @@
             app:pstsUnderlineHeight="0dp" >
         </com.doloop.www.myappmgr.material.widgets.PagerSlidingTabStrip>
 
-        <!-- android:overScrollMode="never" 去掉滑到边缘的阴影-->
+        <!-- android:overScrollMode="never" 去掉滑到边缘的阴影 -->
+
         <com.doloop.www.myappmgr.material.widgets.MyViewPager
             android:id="@+id/pager"
             android:layout_width="match_parent"
@@ -55,7 +58,9 @@
 
     <!-- Side Drawer -->
 
-    <FrameLayout
+
+    <!--
+         <FrameLayout
         android:id="@+id/drawer_content_holder"
         android:layout_width="@dimen/drawer_width"
         android:layout_height="match_parent"
@@ -65,7 +70,7 @@
         android:fitsSystemWindows="true" >
 
         
-       <!--  <ImageView
+        <ImageView
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_alignParentTop="true"
@@ -76,8 +81,20 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="cafe" /> -->
+            android:text="cafe" />
         
     </FrameLayout>
+    -->
+
+    <com.doloop.www.myappmgr.material.widgets.ScrimInsetsFrameLayout
+        android:id="@+id/drawer_content_holder"
+        android:layout_width="@dimen/drawer_width"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@color/white2"
+        android:clickable="true"
+        android:fitsSystemWindows="true"
+        app:insetForeground="@color/insetForeground" >
+    </com.doloop.www.myappmgr.material.widgets.ScrimInsetsFrameLayout>
 
 </android.support.v4.widget.DrawerLayout>
