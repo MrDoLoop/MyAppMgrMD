@@ -529,7 +529,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
     }
 
     public void updateActionModeTitle() {
-        MenuItem selItem = MainActivity.sActionMode.getMenu().findItem(Constants.ACTIONMODE_MENU_SELECT);
+        MenuItem selItem = MainActivity.sActionMode.getMenu().findItem(R.id.menu_selection);
         if (mAdapter.getSelectedItemCnt() > 0) {
             MainActivity.sActionMode.setTitle(mAdapter.getSelectedItemCnt() + " / " + mAdapter.getCount());
             if (mAdapter.getSelectedItemCnt() == mAdapter.getCount()) {
@@ -734,7 +734,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                         public boolean onActionItemClicked(ActionMode mode, MenuItem menuItem) {
                             // TODO Auto-generated method stub
                             switch (menuItem.getItemId()) {
-                                case Constants.ACTIONMODE_MENU_SELECT:
+                                case R.id.menu_selection:
                                     if (mAdapter.getSelectedItemCnt() < mAdapter.getCount()) {// Ñ¡ÔñÈ«²¿
                                         mAdapter.selectAll();
                                         // menuItem.setTitle(R.string.deselect_all);
@@ -746,7 +746,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                                     }
                                     updateActionModeTitle();
                                     break;
-                                case Constants.ACTIONMODE_MENU_BACKUP:
+                                case R.id.menu_backup:
                                     if (mAdapter.getSelectedItemCnt() == 0) {
 
                                     } else {
@@ -756,7 +756,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                                     }
 
                                     break;
-                                case Constants.ACTIONMODE_MENU_SEND:
+                                case R.id.menu_send:
                                     if (mAdapter.getSelectedItemCnt() == 0) {
 
                                     } else {
@@ -772,16 +772,9 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                         @Override
                         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
                             // TODO Auto-generated method stub
+                            MenuInflater inflater = getActivity().getMenuInflater();
+                            inflater.inflate(R.menu.user_app_action_menu, menu);
                             EventBus.getDefault().post(new ActionModeToggleEvent(true));
-                            menu.add(Menu.NONE, Constants.ACTIONMODE_MENU_SELECT, Menu.NONE, R.string.select_all)
-                                    .setIcon(R.drawable.ic_select_all_white)
-                                    .setShowAsAction(MenuItemCompat.SHOW_AS_ACTION_ALWAYS);
-                            menu.add(Menu.NONE, Constants.ACTIONMODE_MENU_BACKUP, Menu.NONE, R.string.backup)
-                                    .setShowAsAction(MenuItemCompat.SHOW_AS_ACTION_NEVER);
-                            menu.add(Menu.NONE, Constants.ACTIONMODE_MENU_SEND, Menu.NONE, R.string.send)
-                                    .setShowAsAction(MenuItemCompat.SHOW_AS_ACTION_NEVER);
-                            menu.add(Menu.NONE, Constants.ACTIONMODE_MENU_UNINSTALL, Menu.NONE, R.string.uninstall)
-                                    .setShowAsAction(MenuItemCompat.SHOW_AS_ACTION_NEVER);
                             return true;
                         }
 
