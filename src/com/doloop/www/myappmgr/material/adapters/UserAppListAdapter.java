@@ -77,11 +77,12 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
     }
 
     public void setSelectedItem(int position, boolean val) {
-        if (val)
+        if (val){
             mSelectedItems.put(position, getItem(position));
-        else
+        }   
+        else{
             mSelectedItems.remove(position);
-
+        }
         notifyDataSetChanged();
     }
 
