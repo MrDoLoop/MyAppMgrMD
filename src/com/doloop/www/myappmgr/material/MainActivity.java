@@ -654,13 +654,13 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
                 int appCount = 0;
                 for (int i = 0; i < UserAppFullList.size(); i++, appCount++) {
                     publishProgress("" + (appCount + 1));
-                    Utilities.verifyAppIcon(thisActivityCtx, UserAppFullList.get(i));
+                    Utilities.verifyApp(thisActivityCtx, UserAppFullList.get(i));
                     UserAppFullList.get(i).appIconBytes = null;
                 }
 
                 for (int i = 0; i < SysAppFullList.size(); i++, appCount++) {
                     publishProgress("" + (appCount + 1));
-                    Utilities.verifyAppIcon(thisActivityCtx, SysAppFullList.get(i));
+                    Utilities.verifyApp(thisActivityCtx, SysAppFullList.get(i));
                     SysAppFullList.get(i).appIconBytes = null;
                 }
             } else {
