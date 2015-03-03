@@ -137,7 +137,7 @@ public class Utilities {
         }
     }
 
-    public static void verifyAppIcon(Context context, AppInfo appInfo) {
+    public static void verifyApp(Context context, AppInfo appInfo) {
         File file = appInfo.getAppIconCachePath(context);
         if (!file.exists()) {
             // appInfo.iconDrawable = getIconDrawable(context, appInfo.packageName);
