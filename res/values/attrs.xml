@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <declare-styleable name="ScrimInsetsView">
+        <attr name="insetForeground" format="reference|color" />
+    </declare-styleable>
     <declare-styleable name="ProgressWheel">
         <attr name="matProg_progressIndeterminate" format="boolean" />
         <attr name="matProg_barColor" format="color" />
@@ -75,7 +78,7 @@
     </declare-styleable>
     <declare-styleable name="CustomCircularImageViewTheme">
         <attr name="circularImageViewStyle" format="reference" />
-    </declare-styleable>
+    </declare-styleable>
     -->
 
 </resources>

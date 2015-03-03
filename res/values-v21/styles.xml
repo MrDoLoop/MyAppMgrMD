@@ -3,7 +3,7 @@
 
     <style name="AppTheme" parent="AppTheme.Base">
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <!-- <item name="android:statusBarColor">@color/theme_blue_light_lt</item> -->
+        <item name="android:statusBarColor">@color/transparent</item>
         <!-- 底部导航栏颜色 -->
         <item name="android:navigationBarColor">@color/primary</item>
     </style>
