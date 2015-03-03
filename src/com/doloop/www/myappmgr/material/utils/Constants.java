@@ -7,10 +7,7 @@ public class Constants {
     
     public static final boolean SAVE_APP_ICON_IN_OBJ = true;
     
-    public final static int ACTIONMODE_MENU_SELECT = 0;
-    public final static int ACTIONMODE_MENU_BACKUP = 1;
-    public final static int ACTIONMODE_MENU_SEND = 2;
-    public final static int ACTIONMODE_MENU_UNINSTALL = 4;
+    public static String MY_PACKAGE_NAME = "";
     
     
 }
