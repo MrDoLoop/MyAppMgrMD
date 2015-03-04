@@ -959,10 +959,6 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
             if (intent.getAction().equals(Intent.ACTION_PACKAGE_ADDED)) {
                 // app被安装
                 String NewPkgName = intent.getDataString().substring(8);
-                toast.setText(getString(R.string.new_app_installed) + " "
-                        + Utilities.pkgNameToAppName(thisActivityCtx, NewPkgName));
-                toast.show();
-
                 if (DaoUtils.getByPackageName(thisActivityCtx, NewPkgName) != null)// 安装过--更新
                 {
                     for (int i = 0; i < UserAppFullList.size(); i++) {
@@ -994,7 +990,9 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
                     // updateSlidingTabTitle(Constants.USR_APPS_TAB_POS);
 
                 }
-
+                toast.setText(getString(R.string.new_app_installed) + " "
+                        + Utilities.pkgNameToAppName(thisActivityCtx, NewPkgName));
+                toast.show();
                 // startRefreshAppInfoList();
 
             } else if (intent.getAction().equals(Intent.ACTION_PACKAGE_REMOVED)) {
