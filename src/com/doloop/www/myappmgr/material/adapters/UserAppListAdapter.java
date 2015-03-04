@@ -2,7 +2,6 @@ package com.doloop.www.myappmgr.material.adapters;
 
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.TreeMap;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -25,7 +24,7 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Picasso.LoadedFrom;
 import com.squareup.picasso.Target;
 
-public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filterable,View.OnClickListener {
+public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filterable, View.OnClickListener {
 
     private int ItemResourceLayout = 0;
     // private int textViewID = 0;
@@ -36,9 +35,10 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
     private UserAppFilter filter;
 
     private Context mCtx;
+    private int selectedCnt = 0;
 
-    //private SparseBooleanArray mSelectedItemsPos = new SparseBooleanArray();
-    private TreeMap<Integer, AppInfo> mSelectedItems = new TreeMap<Integer, AppInfo>();
+    // private SparseBooleanArray mSelectedItemsPos = new SparseBooleanArray();
+    // private TreeMap<String, AppInfo> mSelectedItems = new TreeMap<String, AppInfo>();
     /*
      * public UserAppListFilterResultListener mFilterResultListener;
      * 
@@ -60,41 +60,75 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
     }
 
     public void selectAll() {
-        mSelectedItems.clear();
-        for (int i = 0; i < getCount(); i++) {
-            mSelectedItems.put(i, getItem(i));
+        // mSelectedItems.clear();
+        int size = getCount();
+        for (int i = 0; i < size; i++) {
+            // mSelectedItems.put(getItem(i).packageName, getItem(i));
+            getItem(i).selected = true;
         }
+        selectedCnt = size;
         this.notifyDataSetChanged();
     }
 
     public void deselectAll() {
-        mSelectedItems.clear();
+        // mSelectedItems.clear();
+        ArrayList<AppInfo> list = getDisplayList();
+        for (AppInfo appInfo : list) {
+            appInfo.selected = false;
+        }
+        selectedCnt = 0;
         this.notifyDataSetChanged();
     }
 
-    public void toggleSelection(int position) {
-        setSelectedItem(position, !mSelectedItems.containsKey(position));
+    public void toggleSelection(int position, boolean refreshList) {
+        // setSelectedItem(position, !mSelectedItems.containsKey(position), refreshList);
+        //String thePkgName = getItem(position).packageName;
+        getItem(position).selected = !getItem(position).selected;
+        setSelectedItem(position, getItem(position).selected, refreshList);
     }
 
-    public void setSelectedItem(int position, boolean val) {
-        if (val){
-            mSelectedItems.put(position, getItem(position));
-        }   
-        else{
-            mSelectedItems.remove(position);
+    public void setSelectedItem(int position, boolean val, boolean refreshList) {
+        if (val) {
+            getItem(position).selected = true;
+            selectedCnt++;
+            //mSelectedItems.put(getItem(position).packageName, getItem(position));
+        } else {
+            getItem(position).selected = false;
+            selectedCnt--;
+            //mSelectedItems.remove(getItem(position).packageName);
         }
-        notifyDataSetChanged();
+        if (refreshList) {
+            notifyDataSetChanged();
+        }
     }
 
     public int getSelectedItemCnt() {
-        return mSelectedItems.size();
+        // int i = 0;
+        // ArrayList<AppInfo> list = getDisplayList();
+        // for (AppInfo appInfo : list) {
+        // if(appInfo.selected){
+        // i++;
+        // }
+        // }
+        // return i;
+        //return mSelectedItems.size();
+        return selectedCnt;
     }
 
-    public ArrayList<AppInfo> getSelectedItemList(){
-        ArrayList<AppInfo> list = new ArrayList<AppInfo>(mSelectedItems.values());
-        return list;
+    public ArrayList<AppInfo> getSelectedItemList() {
+        ArrayList<AppInfo> retList = new ArrayList<AppInfo>();
+        ArrayList<AppInfo> curList = getDisplayList();
+        for (AppInfo appInfo : curList) {
+            if (appInfo.selected) {
+                retList.add(appInfo);
+            }
+        }
+
+        return retList;
+        /*ArrayList<AppInfo> list = new ArrayList<AppInfo>(mSelectedItems.values());
+        return list;*/
     }
-    
+
     public UserAppListDataSetChangedListener mUserAppListDataSetChangedListener;
 
     public interface UserAppListDataSetChangedListener {
@@ -167,16 +201,12 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
             // holder.AppPkgnameTextView.setTypeface(null,Typeface.BOLD);
             holder.AppIconImageView = (ImageView) convertView.findViewById(R.id.app_icon);
             holder.AppIconImageView.setOnClickListener(this);
-/*            holder.AppIconImageView.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    // TODO Auto-generated method stub
-                    int pos = (Integer) v.getTag();
-                    mIconClickListener.OnIconClickListener(pos);
-                    // MainActivity.T("用户图标点击了: "+pos);
-                }
-            });*/
+            /*
+             * holder.AppIconImageView.setOnClickListener(new View.OnClickListener() {
+             * 
+             * @Override public void onClick(View v) { // TODO Auto-generated method stub int pos = (Integer)
+             * v.getTag(); mIconClickListener.OnIconClickListener(pos); // MainActivity.T("用户图标点击了: "+pos); } });
+             */
             holder.moreItemBtn = (LinearLayout) convertView.findViewById(R.id.expandable_toggle_button);
             holder.moreItemBtn.setFocusable(false);
             // holder.expandableLinearLayout = (LinearLayout) convertView.findViewById(R.id.expandable);
@@ -192,7 +222,7 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
                 + appInfo.lastModifiedTimeStr);
         holder.AppVersionTextView.setSelected(false);
         holder.AppPkgnameTextView.setText(appInfo.packageName);
-        // holder.AppIconImageView.setImageDrawable(appInfo.iconDrawable);
+
         holder.AppIconImageView.setTag(position);
         holder.bgLayout.setTag(appInfo);
         if (appInfo.iconBitmap == null) {
@@ -200,7 +230,17 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
         } else {
             holder.AppIconImageView.setImageBitmap(appInfo.iconBitmap);
         }
-        if(mSelectedItems.containsKey(position)) {
+        /*
+         * if (MainActivity.isInActionMode()) { if (mSelectedItems.containsKey(position)) {
+         * holder.bgLayout.setBackgroundResource(R.drawable.list_row_item_pressed_bg);
+         * holder.AppIconImageView.setBackgroundResource(R.drawable.imageview_border_blue); } else {
+         * holder.bgLayout.setBackgroundResource(R.drawable.list_row_item_bg);
+         * holder.AppIconImageView.setBackgroundResource(R.drawable.user_app_icon_bg); } } else {
+         * holder.bgLayout.setBackgroundResource(R.drawable.list_row_item_bg);
+         * holder.AppIconImageView.setBackgroundResource(R.drawable.user_app_icon_bg); }
+         */
+
+        if (appInfo.selected) {
             holder.bgLayout.setBackgroundResource(R.drawable.list_row_item_pressed_bg);
             holder.AppIconImageView.setBackgroundResource(R.drawable.imageview_border_blue);
         } else {
