@@ -34,7 +34,9 @@
         <item name="color">@color/white</item>
     </style>
 
-    <style name="MySearchViewStyle" parent="Widget.AppCompat.SearchView" />
+   <!--  <style name="MySearchViewStyle" parent="Widget.AppCompat.SearchView" >
+        <item name="android:textCursorDrawable">@null</item>
+    </style> -->
 
     <style name="MyCardViewStyle" >
         <item name="cardBackgroundColor">@color/white</item>
