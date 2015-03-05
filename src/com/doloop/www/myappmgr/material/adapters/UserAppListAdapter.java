@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.doloop.www.myappmgr.material.dao.AppInfo;
+import com.doloop.www.myappmgr.material.fragments.UserAppsTabFragment;
 import com.doloop.www.myappmgr.material.utils.Constants;
 import com.doloop.www.myappmgrmaterial.R;
 import com.squareup.picasso.Picasso;
@@ -82,7 +83,7 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
 
     public void toggleSelection(int position, boolean refreshList) {
         // setSelectedItem(position, !mSelectedItems.containsKey(position), refreshList);
-        //String thePkgName = getItem(position).packageName;
+        // String thePkgName = getItem(position).packageName;
         getItem(position).selected = !getItem(position).selected;
         setSelectedItem(position, getItem(position).selected, refreshList);
     }
@@ -91,11 +92,11 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
         if (val) {
             getItem(position).selected = true;
             selectedCnt++;
-            //mSelectedItems.put(getItem(position).packageName, getItem(position));
+            // mSelectedItems.put(getItem(position).packageName, getItem(position));
         } else {
             getItem(position).selected = false;
             selectedCnt--;
-            //mSelectedItems.remove(getItem(position).packageName);
+            // mSelectedItems.remove(getItem(position).packageName);
         }
         if (refreshList) {
             notifyDataSetChanged();
@@ -111,7 +112,7 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
         // }
         // }
         // return i;
-        //return mSelectedItems.size();
+        // return mSelectedItems.size();
         return selectedCnt;
     }
 
@@ -125,8 +126,9 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
         }
 
         return retList;
-        /*ArrayList<AppInfo> list = new ArrayList<AppInfo>(mSelectedItems.values());
-        return list;*/
+        /*
+         * ArrayList<AppInfo> list = new ArrayList<AppInfo>(mSelectedItems.values()); return list;
+         */
     }
 
     public UserAppListDataSetChangedListener mUserAppListDataSetChangedListener;
@@ -239,14 +241,25 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
          * holder.bgLayout.setBackgroundResource(R.drawable.list_row_item_bg);
          * holder.AppIconImageView.setBackgroundResource(R.drawable.user_app_icon_bg); }
          */
-
-        if (appInfo.selected) {
-            holder.bgLayout.setBackgroundResource(R.drawable.list_row_item_pressed_bg);
+        if (UserAppsTabFragment.isInActoinMode) {
+            holder.AppIconImageView.setOnClickListener(null);
+            holder.AppIconImageView.setClickable(false);
             holder.AppIconImageView.setBackgroundResource(R.drawable.imageview_border_blue);
+            if (appInfo.selected) {
+                holder.bgLayout.setBackgroundResource(R.drawable.list_row_item_pressed_bg);
+                //holder.AppIconImageView.setBackgroundResource(R.drawable.imageview_border_blue);
+            } else {
+                holder.bgLayout.setBackgroundResource(R.drawable.list_row_item_bg);
+                //holder.AppIconImageView.setBackgroundResource(R.drawable.user_app_icon_bg);
+            }
         } else {
+            holder.AppIconImageView.setOnClickListener(this);
+            holder.AppIconImageView.setClickable(true);
             holder.bgLayout.setBackgroundResource(R.drawable.list_row_item_bg);
             holder.AppIconImageView.setBackgroundResource(R.drawable.user_app_icon_bg);
         }
+
+       
 
         return convertView;
     }
