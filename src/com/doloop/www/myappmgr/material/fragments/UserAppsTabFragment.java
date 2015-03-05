@@ -76,6 +76,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
 
     private DataSetObserver mDataSetObserver;
     private View mEmptyView;
+    public static boolean isInActoinMode = false;
 
     public void setListSortType(int sortType) {
         currentSortType = sortType;
@@ -300,7 +301,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                                             //.attachToAbsListView(mActionSlideExpandableListView)
                                             .text(spanString);
 
-                                    if (!MainActivity.isInActionMode()) {
+                                    if (!isInActoinMode) {
                                         mSnackbar
                                                 .actionLabel(R.string.view)
                                                 .actionListener(new ActionClickListener() {
@@ -446,6 +447,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
         mActionSlideExpandableListView = null;
         mContext = null;
         uniqueInstance = null;
+        isInActoinMode = false;
     }
 
     // Called when the Fragment has been detached from its parent Activity.
@@ -492,9 +494,23 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
     public void onListItemClick(ListView l, View v, int position, long id) {
         // TODO Auto-generated method stub
         super.onListItemClick(l, v, position, id);
-
-        if (MainActivity.isInActionMode()) {
-            mAdapter.toggleSelection(position);
+        
+/*        Drawable bgDrawable = v.findViewById(R.id.bgLayout).getBackground();
+        if(bgDrawable instanceof TransitionDrawable){
+            ((TransitionDrawable)bgDrawable).reverseTransition(250);
+        }
+        else{
+            TransitionDrawable td = new TransitionDrawable(new Drawable[] { new ColorDrawable(Color.WHITE),
+                  mContext.getResources().getDrawable(R.drawable.list_row_item_pressed_bg) });
+//            TransitionDrawable td = new TransitionDrawable(new Drawable[] { new ColorDrawable(Color.WHITE),
+//                    new ColorDrawable(mContext.getResources().getColor(R.color.theme_blue_light)) });
+            v.findViewById(R.id.bgLayout).setBackgroundDrawable(td);
+            td.startTransition(250);
+        }*/
+        
+        
+        if (isInActoinMode) {
+            mAdapter.toggleSelection(position, true);
             updateActionModeTitle();
         } else {
             final AppInfo selectItem = mAdapter.getItem(position);
@@ -723,10 +739,9 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
     @Override
     public void OnIconClickListener(int position) {
         // TODO Auto-generated method stub
-        if (MainActivity.isInActionMode()) {
-            mAdapter.toggleSelection(position);
-            updateActionModeTitle();
-
+        if (isInActoinMode) {
+            //mAdapter.toggleSelection(position,true);
+            //updateActionModeTitle();
         } else {
             MainActivity.sActionMode =
                     ((ActionBarActivity) getActivity()).startSupportActionMode(new ActionMode.Callback() {
@@ -793,6 +808,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                             // TODO Auto-generated method stub
                             MenuInflater inflater = getActivity().getMenuInflater();
                             inflater.inflate(R.menu.user_app_action_menu, menu);
+                            isInActoinMode = true;
                             EventBus.getDefault().post(new ActionModeToggleEvent(true));
                             return true;
                         }
@@ -802,6 +818,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                             // TODO Auto-generated method stub
                             mAdapter.deselectAll();
                             MainActivity.sActionMode = null;
+                            isInActoinMode = false;
                             EventBus.getDefault().post(new ActionModeToggleEvent(false));
 
                         }
@@ -813,7 +830,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                         }
                     });
 
-            mAdapter.setSelectedItem(position, true);
+            mAdapter.setSelectedItem(position, true,true);
             updateActionModeTitle();
         }
     }
