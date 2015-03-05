@@ -4,8 +4,8 @@
     android:id="@+id/drawer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clipToPadding="true"
-    android:fitsSystemWindows="true"
+    android:clipToPadding="@bool/clipToPadding"
+    android:fitsSystemWindows="@bool/fitsSystemWindows"
     tools:context=".MainActivity" >
 
     <!-- Content -->
