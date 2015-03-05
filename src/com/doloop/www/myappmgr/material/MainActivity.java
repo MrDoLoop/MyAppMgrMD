@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
-
+import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -49,7 +49,6 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.doloop.www.mayappmgr.material.events.ActionModeToggleEvent;
 import com.doloop.www.mayappmgr.material.events.AppBackupSuccEvent;
 import com.doloop.www.mayappmgr.material.events.BackupAppEvent;
@@ -82,7 +81,6 @@ import com.nineoldandroids.view.ViewHelper;
 import com.nispok.snackbar.Snackbar;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.readystatesoftware.systembartint.SystemBarTintManager.SystemBarConfig;
-
 import de.greenrobot.event.EventBus;
 
 public class MainActivity extends ActionBarActivity implements // UserAppListFilterResultListener,
@@ -135,6 +133,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
 
     // private DrawerItemClickEvent mDrawerItemClickEvent;
 
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -152,13 +151,12 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
             tintManager.setStatusBarTintResource(R.color.transparent);
             tintManager.setStatusBarAlpha(0.5f);
             SystemBarConfig config = tintManager.getConfig();
-            // View statusBarHolder = findViewById(R.id.statusbar_holder);
-
+            
             View contHolder = findViewById(R.id.content_linear);
-            View drawerHolder = findViewById(R.id.drawer_content_holder);
-            // contLinear.setPadding(0, config.getPixelInsetTop(true), 0, config.getPixelInsetBottom());
             contHolder.setPadding(0, config.getStatusBarHeight(), 0, 0);
-            drawerHolder.setPadding(0, config.getStatusBarHeight(), 0, 0);
+            //View drawerHolder = findViewById(R.id.drawer_content_holder);
+            //drawerHolder.setPadding(0, config.getStatusBarHeight(), 0, 0);
+            // contLinear.setPadding(0, config.getPixelInsetTop(true), 0, config.getPixelInsetBottom());
             // statusBarHolder.getLayoutParams().height = config.getStatusBarHeight();
             // statusBarHolder.setVisibility(View.VISIBLE);
 
@@ -427,6 +425,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
         sActionMode = null;
         mSnackbar = null;
         thisActivityCtx = null;
+        mDrawerLayout = null;
     }
 
     /**
@@ -872,6 +871,14 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
 
     private void openDrawerMenu() {
         mDrawerLayout.openDrawer(GravityCompat.START);
+    }
+    
+    private void lockDrawerMenuClosed(){
+        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+    }
+    
+    private void unlockDrawerMenu(){
+        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
     }
 
     // 用户app搜索之后
