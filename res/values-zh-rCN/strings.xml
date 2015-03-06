@@ -22,7 +22,7 @@
 	<string name="more_actions">更多操作</string>
 	<string name="select_all">全选</string>
 	<string name="deselect_all">取消全选</string>
-	<string name="press_back_again_to_exit">再次点击 \"后退\" 以退出</string>
+	<string name="press_back_again_to_exit">再次点击 \"后退\" 确认离开</string>
 	<string name="saving_app">保存程序:</string>
 	<string name="saving_apps">保存程序</string>
 	<string name="error">错误</string>
