@@ -21,7 +21,7 @@
     <color name="transparent">@android:color/transparent</color>
     <color name="windows_bg">#eeeeee</color>
     <color name="drawer_divider">#e0e0e0</color>
-    <color name="insetForeground">#4000</color>
+    <color name="insetForeground">#7813bbf9</color>
     
     
     <color name="primary">#03A9F4</color>
