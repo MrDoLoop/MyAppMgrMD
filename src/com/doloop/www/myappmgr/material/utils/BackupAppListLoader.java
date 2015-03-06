@@ -142,30 +142,37 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
         }
 
         File[] files = backupFolder.listFiles(new ApkFileFilter());
-        ArrayList<AppInfo> entries = new ArrayList<AppInfo>(files.length);
-        // PackageManager pkgMgr;
-        PackageInfo packageInfo;
-        if (files.length > 0) {
-            Arrays.sort(files, LastModifiedFileComparator.LASTMODIFIED_REVERSE);
-            for (File file : files) {
+        ArrayList<AppInfo> entries;
+        if(files == null){
+            entries = new ArrayList<AppInfo>();
+        }
+        else{
+            entries = new ArrayList<AppInfo>(files.length);
+            // PackageManager pkgMgr;
+            PackageInfo packageInfo;
+            if (files.length > 0) {
+                Arrays.sort(files, LastModifiedFileComparator.LASTMODIFIED_REVERSE);
+                for (File file : files) {
 
-                packageInfo = pkgMgr.getPackageArchiveInfo(file.getAbsolutePath(), PackageManager.GET_ACTIVITIES);
-                AppInfo appInfo;
-                if (packageInfo != null) {
+                    packageInfo = pkgMgr.getPackageArchiveInfo(file.getAbsolutePath(), PackageManager.GET_ACTIVITIES);
+                    AppInfo appInfo;
+                    if (packageInfo != null) {
 
-                    ApplicationInfo applicationInfo = packageInfo.applicationInfo;
-                    applicationInfo.sourceDir = file.getAbsolutePath();
-                    applicationInfo.publicSourceDir = file.getAbsolutePath();
-                    if (mLoadInBackgroundCanceled) {
-                        entries = new ArrayList<AppInfo>(files.length);
-                        break;
+                        ApplicationInfo applicationInfo = packageInfo.applicationInfo;
+                        applicationInfo.sourceDir = file.getAbsolutePath();
+                        applicationInfo.publicSourceDir = file.getAbsolutePath();
+                        if (mLoadInBackgroundCanceled) {
+                            entries = new ArrayList<AppInfo>(files.length);
+                            break;
+                        }
+                        appInfo = Utilities.buildAppInfoEntry(getContext(), packageInfo, pkgMgr, false);
+                        appInfo.backupFilePath = file.getAbsolutePath();
+                        entries.add(appInfo);
                     }
-                    appInfo = Utilities.buildAppInfoEntry(getContext(), packageInfo, pkgMgr, false);
-                    appInfo.backupFilePath = file.getAbsolutePath();
-                    entries.add(appInfo);
                 }
             }
         }
+       
         if(mLoaderBackgroundMoreWorkListener != null){
             mLoaderBackgroundMoreWorkListener.onLoaderBackgroundMoreWork(entries);
         }
