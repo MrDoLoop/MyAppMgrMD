@@ -355,7 +355,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                 }, R.id.openActionLayout, R.id.infoActionLayout, R.id.backupActionLayout, R.id.uninstallActionLayout,
                 R.id.moreActionLayout);
         mActionSlideExpandableListView.setOnScrollListener(this);
-        // mActionSlideExpandableListView.setOnItemLongClickListener(this);
+        mActionSlideExpandableListView.setOnItemLongClickListener(this);
         mDialogText = (TextView) contentView.findViewById(R.id.popTextView);
         mEmptyView = contentView.findViewById(R.id.emptyView);
         return contentView;
@@ -620,8 +620,15 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         // TODO Auto-generated method stub
-        mItemLongClickListener.onUserAppItemLongClick(parent, view, position, id);
-        return true;
+        //mItemLongClickListener.onUserAppItemLongClick(parent, view, position, id);
+        
+        if(isInActoinMode){
+            return false;
+        }
+        else{
+            view.findViewById(R.id.app_icon).performClick();
+            return true;
+        }
     }
 
     public static void ExpandAnimationFinsh(int ExpandableViewBtm) {
