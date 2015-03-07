@@ -42,5 +42,5 @@
     <string name="refresh">Refresh</string>
     <string name="view">View</string>
     <string name="launch_fail">Launch Fail</string>
-
+	<string name="sdcard_changed">Sdcard changed, pls restart!</string>
 </resources>

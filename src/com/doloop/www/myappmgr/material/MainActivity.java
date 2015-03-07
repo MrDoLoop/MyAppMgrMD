@@ -125,11 +125,17 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
 
     private LangUpdateReceiver mLangUpdateReceiver;
     private IntentFilter LangIntentFilter;
+    
+    private SdcardUpdateReceiver mSdcardUpdateReceiver;
+    private IntentFilter sdcardIntentFilter;
+    
 
     private static Snackbar mSnackbar;
     private static Context thisActivityCtx;
     public static ActionMode sActionMode = null;
     private static Toast toast;
+    
+    private static boolean sIsSdcardReady = false;
 
     // private DrawerItemClickEvent mDrawerItemClickEvent;
 
@@ -371,6 +377,17 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
 
         mLangUpdateReceiver = new LangUpdateReceiver();
         registerReceiver(mLangUpdateReceiver, LangIntentFilter);
+        
+        //http://www.cnblogs.com/crazywenza/archive/2013/01/07/2848913.html
+        mSdcardUpdateReceiver = new SdcardUpdateReceiver();
+        sdcardIntentFilter = new IntentFilter();
+        sdcardIntentFilter.addAction(Intent.ACTION_MEDIA_EJECT);
+        sdcardIntentFilter.addAction(Intent.ACTION_MEDIA_MOUNTED);
+        sdcardIntentFilter.addAction(Intent.ACTION_MEDIA_REMOVED);
+        sdcardIntentFilter.addAction(Intent.ACTION_MEDIA_BAD_REMOVAL);
+        sdcardIntentFilter.addDataScheme("file");
+        registerReceiver(mSdcardUpdateReceiver, sdcardIntentFilter);
+        
 
         new GetApps().execute(false);
     }
@@ -426,6 +443,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
         mSnackbar = null;
         thisActivityCtx = null;
         mDrawerLayout = null;
+        sIsSdcardReady = false;
     }
 
     /**
@@ -444,12 +462,14 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
     private void registerReceivers() {
         registerReceiver(mAppUpdateReceiver, AppIntentFilter);
         registerReceiver(mLangUpdateReceiver, LangIntentFilter);
+        registerReceiver(mSdcardUpdateReceiver, sdcardIntentFilter);
     }
 
     private void unregisterReceivers() {
         try {
             unregisterReceiver(mAppUpdateReceiver);
             unregisterReceiver(mLangUpdateReceiver);
+            unregisterReceiver(mSdcardUpdateReceiver);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -637,63 +657,11 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
             // List<ApplicationInfo> apps = pManager.getInstalledApplications(
             // PackageManager.GET_UNINSTALLED_PACKAGES |
             // PackageManager.GET_DISABLED_COMPONENTS);
-            boolean deleteAllAppInfoDone = false;
-            if (params[0]) {
-                DaoUtils.deleteAllAppInfo(thisActivityCtx);
-                deleteAllAppInfoDone = true;
-            }
-            DaoSession appInfoSession = DaoUtils.getDaoSession(MainActivity.this, true);
-            if (Utilities.isAppListInDb(MainActivity.this)) {
-
-                UserAppFullList =
-                        (ArrayList<AppInfo>) appInfoSession.getAppInfoDao().queryBuilder()
-                                .where(Properties.IsSysApp.eq("false")).list();
-
-                /*
-                 * AppInfo MyAppInfo =
-                 * appInfoSession.getAppInfoDao().queryBuilder().where(Properties.PackageName.eq(Constants
-                 * .MY_PACKAGE_NAME)).unique(); if(MyAppInfo == null) {
-                 * UserAppFullList.add(Utilities.buildAppInfoEntry(thisActivityCtx, Constants.MY_PACKAGE_NAME)); }
-                 */
-                SysAppFullList =
-                        (ArrayList<AppInfo>) appInfoSession.queryBuilder(AppInfo.class)
-                                .where(Properties.IsSysApp.eq("true")).list();
-
-                int appCount = 0;
-                int mySelfPos = -1;
-                for (int i = 0, size = UserAppFullList.size(); i < size; i++, appCount++) {
-                    publishProgress(appCount + 1);
-                    if (Constants.MY_PACKAGE_NAME.equals(UserAppFullList.get(i).packageName)) {
-                        mySelfPos = i;
-                    }
-                    Utilities.verifyApp(thisActivityCtx, UserAppFullList.get(i));
-                    UserAppFullList.get(i).appIconBytes = null;
-                }
-                // 重新建立自己
-                if (mySelfPos == -1) {
-                    UserAppFullList.add(Utilities.buildAppInfoEntry(thisActivityCtx, Constants.MY_PACKAGE_NAME));
-                } else {
-                    UserAppFullList.set(mySelfPos,
-                            Utilities.buildAppInfoEntry(thisActivityCtx, Constants.MY_PACKAGE_NAME));
-                }
-
-                for (int i = 0, size = SysAppFullList.size(); i < size; i++, appCount++) {
-                    publishProgress(appCount + 1);
-                    Utilities.verifyApp(thisActivityCtx, SysAppFullList.get(i));
-                    SysAppFullList.get(i).appIconBytes = null;
-                }
-            } else {
+            sIsSdcardReady = Utilities.getAppIconCacheDir(thisActivityCtx) == null ? false : true;
+            if(!sIsSdcardReady){
                 PackageInfo packageInfo;
                 AppInfo tmpInfo;
-
-                if (!deleteAllAppInfoDone) {
-                    appInfoSession.getAppInfoDao().deleteAll();
-                    Utilities.deleteAppIconDir(Utilities.getAppIconCacheDir(thisActivityCtx));
-                }
-
                 for (int i = 0 ; i < fullAppListSize; i++) {
-
-                    // publishProgress("" + (i + 1));
                     Log.i("ttt", "processing app " + (i + 1) + " / " + fullAppListSize);
                     packageInfo = packages.get(i);
                     tmpInfo = Utilities.buildAppInfoEntry(thisActivityCtx, packageInfo, pManager, true);
@@ -703,18 +671,92 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
                         UserAppFullList.add(tmpInfo);
                     }
                     curAppName = tmpInfo.appName;
-                    publishProgress(i + 1);
-                    try {
-                        // appInfoSession.insertOrReplace(tmpInfo);
-                        appInfoSession.insert(tmpInfo);
-                    } catch (Exception e) {
-                        Log.e("ttt", "app error: " + tmpInfo.appName + ", error: " + e.toString());
-                    } finally {
-                        tmpInfo.appIconBytes = null;
-                    }
+                    publishProgress(i + 1);  
                 }
-                Utilities.setAppListInDb(thisActivityCtx, true);
             }
+            else{
+                boolean deleteAllAppInfoDone = false;
+                if (params[0]) {
+                    DaoUtils.deleteAllAppInfo(thisActivityCtx);
+                    deleteAllAppInfoDone = true;
+                }
+                DaoSession appInfoSession = DaoUtils.getDaoSession(MainActivity.this, true);
+                if (Utilities.isAppListInDb(MainActivity.this)) {
+
+                    UserAppFullList =
+                            (ArrayList<AppInfo>) appInfoSession.getAppInfoDao().queryBuilder()
+                                    .where(Properties.IsSysApp.eq("false")).list();
+
+                    /*
+                     * AppInfo MyAppInfo =
+                     * appInfoSession.getAppInfoDao().queryBuilder().where(Properties.PackageName.eq(Constants
+                     * .MY_PACKAGE_NAME)).unique(); if(MyAppInfo == null) {
+                     * UserAppFullList.add(Utilities.buildAppInfoEntry(thisActivityCtx, Constants.MY_PACKAGE_NAME)); }
+                     */
+                    SysAppFullList =
+                            (ArrayList<AppInfo>) appInfoSession.queryBuilder(AppInfo.class)
+                                    .where(Properties.IsSysApp.eq("true")).list();
+
+                    int appCount = 0;
+                    int mySelfPos = -1;
+                    for (int i = 0, size = UserAppFullList.size(); i < size; i++, appCount++) {
+                        publishProgress((appCount + 1));
+                        if (Constants.MY_PACKAGE_NAME.equals(UserAppFullList.get(i).packageName)) {
+                            mySelfPos = i;
+                        }
+                        Utilities.verifyApp(thisActivityCtx, UserAppFullList.get(i));
+                        UserAppFullList.get(i).appIconBytes = null;
+                    }
+                    // 重新建立自己
+                    if (mySelfPos == -1) {
+                        UserAppFullList.add(Utilities.buildAppInfoEntry(thisActivityCtx, Constants.MY_PACKAGE_NAME));
+                    } else {
+                        UserAppFullList.set(mySelfPos,
+                                Utilities.buildAppInfoEntry(thisActivityCtx, Constants.MY_PACKAGE_NAME));
+                    }
+
+                    for (int i = 0, size = SysAppFullList.size(); i < size; i++, appCount++) {
+                        publishProgress((appCount + 1));
+                        Utilities.verifyApp(thisActivityCtx, SysAppFullList.get(i));
+                        SysAppFullList.get(i).appIconBytes = null;
+                    }
+                } else {
+                    PackageInfo packageInfo;
+                    AppInfo tmpInfo;
+
+                    if (!deleteAllAppInfoDone) {
+                        appInfoSession.getAppInfoDao().deleteAll();
+                        Utilities.deleteAppIconDir(Utilities.getAppIconCacheDir(thisActivityCtx));
+                    }
+
+                    for (int i = 0 ; i < fullAppListSize; i++) {
+
+                        // publishProgress("" + (i + 1));
+                        Log.i("ttt", "processing app " + (i + 1) + " / " + fullAppListSize);
+                        packageInfo = packages.get(i);
+                        tmpInfo = Utilities.buildAppInfoEntry(thisActivityCtx, packageInfo, pManager, true);
+                        if (tmpInfo.isSysApp) {
+                            SysAppFullList.add(tmpInfo);
+                        } else {
+                            UserAppFullList.add(tmpInfo);
+                        }
+                        curAppName = tmpInfo.appName;
+                        publishProgress((i + 1));
+                        try {
+                            // appInfoSession.insertOrReplace(tmpInfo);
+                            appInfoSession.insert(tmpInfo);
+                        } catch (Exception e) {
+                            Log.e("ttt", "app error: " + tmpInfo.appName + ", error: " + e.toString());
+                        } finally {
+                            tmpInfo.appIconBytes = null;
+                        }
+                    }
+                    Utilities.setAppListInDb(thisActivityCtx, true);
+                }
+                appInfoSession.clear();
+            }
+            
+            
 
             // 用户程序排序
             Utilities.sortUserAppList(thisActivityCtx, UserAppFullList);
@@ -769,7 +811,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
             }
             sectionItemsTreeMap.clear();
             sectionItemsTreeMap = null;
-            appInfoSession.clear();
+            //appInfoSession.clear();
             System.gc();
             return null;
         }
@@ -1046,6 +1088,25 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
         }
 
     }
+    
+    private class SdcardUpdateReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // TODO Auto-generated method stub
+            String action = intent.getAction();  
+            T(R.string.sdcard_changed);
+            finish();
+//            if(action.equals(Intent.ACTION_MEDIA_EJECT)){  
+//                finish();
+//            }else if(action.equals(Intent.ACTION_MEDIA_MOUNTED)){  
+//                
+//            } 
+        }
+
+    }
+    
+    
 
     @Override
     public void OnUserAppListDataSetChanged() {
