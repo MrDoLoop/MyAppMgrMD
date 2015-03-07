@@ -200,7 +200,7 @@
                         android:layout_height="42dp"
                         android:layout_gravity="center_horizontal"
                         android:scaleType="centerInside"
-                        android:src="@drawable/download2" />
+                        android:src="@drawable/download" />
 
                     <TextView
                         android:id="@+id/backupTextView"
