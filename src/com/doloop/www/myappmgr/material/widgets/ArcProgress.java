@@ -282,7 +282,7 @@ public class ArcProgress extends View {
         float startAngle = 270 - arcAngle / 2f;
         float finishedSweepAngle = progress / (float) getMax() * arcAngle;
         float finishedStartAngle = startAngle;
-        //没有完成的基地
+        //没有完成的基底
         paint.setColor(unfinishedStrokeColor);
         paint.setStrokeWidth(default_stroke_unfinished_width);
         canvas.drawArc(rectF, startAngle, arcAngle, false, paint);
