@@ -48,6 +48,7 @@ public class ArcProgress extends View {
     private final float default_suffix_padding;
     private final float default_bottom_text_size;
     private final float default_stroke_width;
+    private final float default_stroke_unfinished_width;
     private final String default_suffix_text;
     private final int default_max = 100;
     private final float default_arc_angle = 360 * 0.8f;
@@ -88,6 +89,7 @@ public class ArcProgress extends View {
         default_suffix_text = "%";
         default_bottom_text_size = Utilities.sp2px(getResources(), 10);
         default_stroke_width = Utilities.dp2px(getResources(), 4);
+        default_stroke_unfinished_width = Utilities.dp2px(getResources(), 1);
 
         TypedArray attributes = context.getTheme().obtainStyledAttributes(attrs, R.styleable.ArcProgress, defStyleAttr, 0);
         initByAttributes(attributes);
@@ -280,9 +282,13 @@ public class ArcProgress extends View {
         float startAngle = 270 - arcAngle / 2f;
         float finishedSweepAngle = progress / (float) getMax() * arcAngle;
         float finishedStartAngle = startAngle;
+        //没有完成的基地
         paint.setColor(unfinishedStrokeColor);
+        paint.setStrokeWidth(default_stroke_unfinished_width);
         canvas.drawArc(rectF, startAngle, arcAngle, false, paint);
+        //完成的上层
         paint.setColor(finishedStrokeColor);
+        paint.setStrokeWidth(strokeWidth);
         canvas.drawArc(rectF, finishedStartAngle, finishedSweepAngle, false, paint);
 
         String text = String.valueOf(getProgress());
