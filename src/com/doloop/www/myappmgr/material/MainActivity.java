@@ -10,11 +10,8 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import android.annotation.TargetApi;
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
@@ -38,7 +35,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -52,7 +48,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.doloop.www.mayappmgr.material.events.ActionModeToggleEvent;
 import com.doloop.www.mayappmgr.material.events.AppBackupSuccEvent;
 import com.doloop.www.mayappmgr.material.events.BackupAppEvent;
@@ -77,7 +72,7 @@ import com.doloop.www.myappmgr.material.utils.L;
 import com.doloop.www.myappmgr.material.utils.SharpStringComparator;
 import com.doloop.www.myappmgr.material.utils.SysAppListItem;
 import com.doloop.www.myappmgr.material.utils.Utilities;
-import com.doloop.www.myappmgr.material.widgets.ArcProgress;
+import com.doloop.www.myappmgr.material.widgets.MyProgressDialog;
 import com.doloop.www.myappmgr.material.widgets.MyViewPager;
 import com.doloop.www.myappmgr.material.widgets.PagerSlidingTabStrip;
 import com.doloop.www.myappmgr.material.widgets.PagerSlidingTabStrip.OnTabClickListener;
@@ -94,10 +89,8 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private ActionBar mActionBar;
-    // private ProgressDialog progDialog;
-    private MaterialDialog progDialog;
-    private ArcProgress arcProgress;
-    private TextView progressTxt;
+
+    private MyProgressDialog progDialog;
 
     private ArrayList<BaseFrag> Fragmentlist;
     private static long back_pressed = 0;
@@ -120,11 +113,9 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
 
     private AppListFragAdapter mFragAdapter;
     private int screenWidth = 0;
-    // private ViewPager mPager;
+
     private MyViewPager mPager;
     private PagerSlidingTabStrip mPagerSlidingTabStrip;
-
-    // public static boolean sDrawerIsOpen = false;
 
     private MenuItem searchMenuItem;
     private MenuItem sortMenuItem;
@@ -593,27 +584,23 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
         appDestroyCleanup();
     }
 
-    private class GetApps extends AsyncTask<Boolean, String, Void> {
+    private class GetApps extends AsyncTask<Boolean, Integer, Void> {
         private List<PackageInfo> packages;
         private PackageManager pManager;
         private String curAppName;
         private int fullAppListSize;
 
         @Override
-        protected void onProgressUpdate(String...values) {
+        protected void onProgressUpdate(Integer...values) {
             // TODO Auto-generated method stub
             super.onProgressUpdate(values);
             if (!TextUtils.isEmpty(curAppName)) {
-                //progDialog.setTitle(curAppName);
-                // progDialog.setContent(curAppName);
-                progressTxt.setText(curAppName);
-
+                progDialog.setDialogText(curAppName);
             }
-            // progDialog.setProgress(Integer.valueOf(values[0]));
-            // arcProgress.setProgress(Integer.valueOf(values[0]));
-            int percentage = (int) (((float) Integer.valueOf(values[0]) / (float) fullAppListSize) * 100f);
-            arcProgress.setProgress(percentage);
-            arcProgress.setBottomText(Integer.valueOf(values[0]) + "/" + fullAppListSize);
+
+            int percentage = (int) (((float) values[0] / (float) fullAppListSize) * 100f);
+            progDialog.setArcProgress(percentage);
+            progDialog.setArcBottomText(values[0] + "/" + fullAppListSize);
         }
 
         @Override
@@ -627,34 +614,12 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
             pManager = getPackageManager();
             packages = pManager.getInstalledPackages(0);
             fullAppListSize = packages.size();
-            
-            View pView = LayoutInflater.from(thisActivityCtx).inflate(R.layout.progress_loading, null);
-            arcProgress = (ArcProgress) pView.findViewById(R.id.arc_progress);
-            progressTxt = (TextView) pView.findViewById(R.id.txt);
-            progressTxt.setText(R.string.loading_apps);
-            arcProgress.setMax(100);
-            arcProgress.setBottomText(""+fullAppListSize);
 
-            progDialog = new MaterialDialog.Builder(MainActivity.this)
-            .title(getString(R.string.loading_apps))
-            // .content(getString(R.string.loading_apps))
-            // .progress(false, packages.size())
-                    .customView(pView, false).cancelable(false).show();
-
-            /*
-             * progDialog = new ProgressDialog(MainActivity.this);
-             * progDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL); progDialog.setProgress(0);
-             * progDialog.setMax(packages.size()); progDialog.setCancelable(false);
-             * progDialog.setTitle(getString(R.string.loading_apps));
-             * progDialog.setMessage(getString(R.string.loading_apps)); progDialog.setOnCancelListener(new
-             * OnCancelListener() {
-             * 
-             * @Override public void onCancel(DialogInterface dialog) { GetApps.this.cancel(true); }
-             * 
-             * });
-             */
+            progDialog = new MyProgressDialog(MainActivity.this,getString(R.string.loading_apps),getString(R.string.loading_apps));
+            progDialog.setCancelable(false);
+            progDialog.setArcProgressMax(100);
+            progDialog.setArcBottomText(""+fullAppListSize);
             progDialog.show();
-
         }
 
         @Override
@@ -697,7 +662,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
                 int appCount = 0;
                 int mySelfPos = -1;
                 for (int i = 0, size = UserAppFullList.size(); i < size; i++, appCount++) {
-                    publishProgress("" + (appCount + 1));
+                    publishProgress(appCount + 1);
                     if (Constants.MY_PACKAGE_NAME.equals(UserAppFullList.get(i).packageName)) {
                         mySelfPos = i;
                     }
@@ -713,7 +678,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
                 }
 
                 for (int i = 0, size = SysAppFullList.size(); i < size; i++, appCount++) {
-                    publishProgress("" + (appCount + 1));
+                    publishProgress(appCount + 1);
                     Utilities.verifyApp(thisActivityCtx, SysAppFullList.get(i));
                     SysAppFullList.get(i).appIconBytes = null;
                 }
@@ -738,7 +703,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
                         UserAppFullList.add(tmpInfo);
                     }
                     curAppName = tmpInfo.appName;
-                    publishProgress("" + (i + 1));
+                    publishProgress(i + 1);
                     try {
                         // appInfoSession.insertOrReplace(tmpInfo);
                         appInfoSession.insert(tmpInfo);
@@ -1107,12 +1072,14 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
         private ArrayList<Uri> SnedApkUris = new ArrayList<Uri>();
         private ArrayList<String> FailedApp = new ArrayList<String>();
         private ArrayList<AppInfo> AppList;
+        private int AppListSize;
         private ArrayList<AppInfo> SuccAppList = new ArrayList<AppInfo>();
         private boolean SendAfterBackup = false;
         private String BACK_UP_FOLDER;
 
         public BackUpApps(ArrayList<AppInfo> list, boolean sendAfterBackup) {
             AppList = list;
+            AppListSize = list.size();
             SendAfterBackup = sendAfterBackup;
             BACK_UP_FOLDER = Utilities.getBackUpAPKfileDir(thisActivityCtx);
         }
@@ -1121,8 +1088,13 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
         protected void onProgressUpdate(String...values) {
             // TODO Auto-generated method stub
             super.onProgressUpdate(values);
-            progDialog.setProgress(Integer.valueOf(values[0]));
+            //progDialog.setArcProgress(Integer.valueOf(values[0]));
             // progDialog.setMessage(getString(R.string.saving_app) + " " + values[1]);
+            
+            int percentage = (int) (((float) Integer.valueOf(values[0]) / (float) AppListSize) * 100f);
+            progDialog.setArcProgress(percentage);
+            progDialog.setArcBottomText(values[0] + "/" + AppListSize);
+            progDialog.setDialogText(values[1]);
         }
 
         @Override
@@ -1138,6 +1110,11 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
              * 
              * });
              */
+            
+            progDialog = new MyProgressDialog(MainActivity.this,getString(R.string.saving_apps),getString(R.string.saving_apps));
+            progDialog.setCancelable(false);
+            progDialog.setArcProgressMax(100);
+            progDialog.setArcBottomText(""+AppList.size());
             progDialog.show();
         }
 
