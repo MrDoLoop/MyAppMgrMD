@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+
 import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -37,6 +38,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -49,6 +51,8 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.doloop.www.mayappmgr.material.events.ActionModeToggleEvent;
 import com.doloop.www.mayappmgr.material.events.AppBackupSuccEvent;
 import com.doloop.www.mayappmgr.material.events.BackupAppEvent;
@@ -73,6 +77,7 @@ import com.doloop.www.myappmgr.material.utils.L;
 import com.doloop.www.myappmgr.material.utils.SharpStringComparator;
 import com.doloop.www.myappmgr.material.utils.SysAppListItem;
 import com.doloop.www.myappmgr.material.utils.Utilities;
+import com.doloop.www.myappmgr.material.widgets.ArcProgress;
 import com.doloop.www.myappmgr.material.widgets.MyViewPager;
 import com.doloop.www.myappmgr.material.widgets.PagerSlidingTabStrip;
 import com.doloop.www.myappmgr.material.widgets.PagerSlidingTabStrip.OnTabClickListener;
@@ -81,6 +86,7 @@ import com.nineoldandroids.view.ViewHelper;
 import com.nispok.snackbar.Snackbar;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.readystatesoftware.systembartint.SystemBarTintManager.SystemBarConfig;
+
 import de.greenrobot.event.EventBus;
 
 public class MainActivity extends ActionBarActivity implements // UserAppListFilterResultListener,
@@ -88,7 +94,10 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private ActionBar mActionBar;
-    private ProgressDialog progDialog;
+    // private ProgressDialog progDialog;
+    private MaterialDialog progDialog;
+    private ArcProgress arcProgress;
+    private TextView progressTxt;
 
     private ArrayList<BaseFrag> Fragmentlist;
     private static long back_pressed = 0;
@@ -151,11 +160,11 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
             tintManager.setStatusBarTintResource(R.color.transparent);
             tintManager.setStatusBarAlpha(0.5f);
             SystemBarConfig config = tintManager.getConfig();
-            
+
             View contHolder = findViewById(R.id.content_linear);
             contHolder.setPadding(0, config.getStatusBarHeight(), 0, 0);
-            //View drawerHolder = findViewById(R.id.drawer_content_holder);
-            //drawerHolder.setPadding(0, config.getStatusBarHeight(), 0, 0);
+            // View drawerHolder = findViewById(R.id.drawer_content_holder);
+            // drawerHolder.setPadding(0, config.getStatusBarHeight(), 0, 0);
             // contLinear.setPadding(0, config.getPixelInsetTop(true), 0, config.getPixelInsetBottom());
             // statusBarHolder.getLayoutParams().height = config.getStatusBarHeight();
             // statusBarHolder.setVisibility(View.VISIBLE);
@@ -339,11 +348,11 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
                     }
                     return true;
                 }
-                
+
                 if (isInActionMode()) {
                     return true;
                 }
-                
+
                 return false;
 
             }
@@ -477,12 +486,12 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
         searchView.setQueryHint(getString(R.string.search));
         searchViewEdt = ((EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text));
-        try {//设置光标颜色
-            // https://github.com/android/platform_frameworks_base/blob/kitkat-release/core/java/android/widget/TextView.java#L562-564
-                Field f = TextView.class.getDeclaredField("mCursorDrawableRes");
-                f.setAccessible(true);
-                f.set(searchViewEdt, R.drawable.cursor_white);
-            } catch (Exception ignored) {
+        try {// 设置光标颜色
+             // https://github.com/android/platform_frameworks_base/blob/kitkat-release/core/java/android/widget/TextView.java#L562-564
+            Field f = TextView.class.getDeclaredField("mCursorDrawableRes");
+            f.setAccessible(true);
+            f.set(searchViewEdt, R.drawable.cursor_white);
+        } catch (Exception ignored) {
         }
 
         searchViewEdt.setHintTextColor(getResources().getColor(R.color.white));
@@ -588,15 +597,23 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
         private List<PackageInfo> packages;
         private PackageManager pManager;
         private String curAppName;
+        private int fullAppListSize;
 
         @Override
         protected void onProgressUpdate(String...values) {
             // TODO Auto-generated method stub
             super.onProgressUpdate(values);
             if (!TextUtils.isEmpty(curAppName)) {
-                progDialog.setTitle(curAppName);
+                //progDialog.setTitle(curAppName);
+                // progDialog.setContent(curAppName);
+                progressTxt.setText(curAppName);
+
             }
-            progDialog.setProgress(Integer.valueOf(values[0]));
+            // progDialog.setProgress(Integer.valueOf(values[0]));
+            // arcProgress.setProgress(Integer.valueOf(values[0]));
+            int percentage = (int) (((float) Integer.valueOf(values[0]) / (float) fullAppListSize) * 100f);
+            arcProgress.setProgress(percentage);
+            arcProgress.setBottomText(Integer.valueOf(values[0]) + "/" + fullAppListSize);
         }
 
         @Override
@@ -609,22 +626,33 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
 
             pManager = getPackageManager();
             packages = pManager.getInstalledPackages(0);
+            fullAppListSize = packages.size();
+            
+            View pView = LayoutInflater.from(thisActivityCtx).inflate(R.layout.progress_loading, null);
+            arcProgress = (ArcProgress) pView.findViewById(R.id.arc_progress);
+            progressTxt = (TextView) pView.findViewById(R.id.txt);
+            progressTxt.setText(R.string.loading_apps);
+            arcProgress.setMax(100);
+            arcProgress.setBottomText(""+fullAppListSize);
 
-            progDialog = new ProgressDialog(MainActivity.this);
-            progDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            progDialog.setProgress(0);
-            progDialog.setMax(packages.size());
-            progDialog.setCancelable(false);
-            progDialog.setTitle(getString(R.string.loading_apps));
-            progDialog.setMessage(getString(R.string.loading_apps));
-            progDialog.setOnCancelListener(new OnCancelListener() {
+            progDialog = new MaterialDialog.Builder(MainActivity.this)
+            .title(getString(R.string.loading_apps))
+            // .content(getString(R.string.loading_apps))
+            // .progress(false, packages.size())
+                    .customView(pView, false).cancelable(false).show();
 
-                @Override
-                public void onCancel(DialogInterface dialog) {
-                    GetApps.this.cancel(true);
-                }
-
-            });
+            /*
+             * progDialog = new ProgressDialog(MainActivity.this);
+             * progDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL); progDialog.setProgress(0);
+             * progDialog.setMax(packages.size()); progDialog.setCancelable(false);
+             * progDialog.setTitle(getString(R.string.loading_apps));
+             * progDialog.setMessage(getString(R.string.loading_apps)); progDialog.setOnCancelListener(new
+             * OnCancelListener() {
+             * 
+             * @Override public void onCancel(DialogInterface dialog) { GetApps.this.cancel(true); }
+             * 
+             * });
+             */
             progDialog.show();
 
         }
@@ -652,41 +680,39 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
             DaoSession appInfoSession = DaoUtils.getDaoSession(MainActivity.this, true);
             if (Utilities.isAppListInDb(MainActivity.this)) {
 
-               
                 UserAppFullList =
                         (ArrayList<AppInfo>) appInfoSession.getAppInfoDao().queryBuilder()
                                 .where(Properties.IsSysApp.eq("false")).list();
-                
-                /*AppInfo MyAppInfo = appInfoSession.getAppInfoDao().queryBuilder().where(Properties.PackageName.eq(Constants.MY_PACKAGE_NAME)).unique();
-                if(MyAppInfo == null)
-                {
-                    UserAppFullList.add(Utilities.buildAppInfoEntry(thisActivityCtx, Constants.MY_PACKAGE_NAME));
-                }
-                    
-                */
+
+                /*
+                 * AppInfo MyAppInfo =
+                 * appInfoSession.getAppInfoDao().queryBuilder().where(Properties.PackageName.eq(Constants
+                 * .MY_PACKAGE_NAME)).unique(); if(MyAppInfo == null) {
+                 * UserAppFullList.add(Utilities.buildAppInfoEntry(thisActivityCtx, Constants.MY_PACKAGE_NAME)); }
+                 */
                 SysAppFullList =
                         (ArrayList<AppInfo>) appInfoSession.queryBuilder(AppInfo.class)
                                 .where(Properties.IsSysApp.eq("true")).list();
 
                 int appCount = 0;
                 int mySelfPos = -1;
-                for (int i = 0; i < UserAppFullList.size(); i++, appCount++) {
+                for (int i = 0, size = UserAppFullList.size(); i < size; i++, appCount++) {
                     publishProgress("" + (appCount + 1));
-                    if(Constants.MY_PACKAGE_NAME.equals(UserAppFullList.get(i).packageName)){
+                    if (Constants.MY_PACKAGE_NAME.equals(UserAppFullList.get(i).packageName)) {
                         mySelfPos = i;
                     }
                     Utilities.verifyApp(thisActivityCtx, UserAppFullList.get(i));
                     UserAppFullList.get(i).appIconBytes = null;
                 }
-                //重新建立自己
-                if(mySelfPos == -1){
+                // 重新建立自己
+                if (mySelfPos == -1) {
                     UserAppFullList.add(Utilities.buildAppInfoEntry(thisActivityCtx, Constants.MY_PACKAGE_NAME));
+                } else {
+                    UserAppFullList.set(mySelfPos,
+                            Utilities.buildAppInfoEntry(thisActivityCtx, Constants.MY_PACKAGE_NAME));
                 }
-                else{
-                    UserAppFullList.set(mySelfPos, Utilities.buildAppInfoEntry(thisActivityCtx, Constants.MY_PACKAGE_NAME));
-                }
-                
-                for (int i = 0; i < SysAppFullList.size(); i++, appCount++) {
+
+                for (int i = 0, size = SysAppFullList.size(); i < size; i++, appCount++) {
                     publishProgress("" + (appCount + 1));
                     Utilities.verifyApp(thisActivityCtx, SysAppFullList.get(i));
                     SysAppFullList.get(i).appIconBytes = null;
@@ -700,10 +726,10 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
                     Utilities.deleteAppIconDir(Utilities.getAppIconCacheDir(thisActivityCtx));
                 }
 
-                for (int i = 0, limit = packages.size(); i < limit; i++) {
+                for (int i = 0 ; i < fullAppListSize; i++) {
 
                     // publishProgress("" + (i + 1));
-                    Log.i("ttt", "processing app " + (i + 1) + " / " + limit);
+                    Log.i("ttt", "processing app " + (i + 1) + " / " + fullAppListSize);
                     packageInfo = packages.get(i);
                     tmpInfo = Utilities.buildAppInfoEntry(thisActivityCtx, packageInfo, pManager, true);
                     if (tmpInfo.isSysApp) {
@@ -872,12 +898,12 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
     private void openDrawerMenu() {
         mDrawerLayout.openDrawer(GravityCompat.START);
     }
-    
-    private void lockDrawerMenuClosed(){
+
+    private void lockDrawerMenuClosed() {
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }
-    
-    private void unlockDrawerMenu(){
+
+    private void unlockDrawerMenu() {
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
     }
 
@@ -1096,26 +1122,22 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
             // TODO Auto-generated method stub
             super.onProgressUpdate(values);
             progDialog.setProgress(Integer.valueOf(values[0]));
-            progDialog.setMessage(getString(R.string.saving_app) + " " + values[1]);
+            // progDialog.setMessage(getString(R.string.saving_app) + " " + values[1]);
         }
 
         @Override
         protected void onPreExecute() {
             unregisterReceivers();
-            progDialog = new ProgressDialog(thisActivityCtx);
-            progDialog.setCancelable(false);
-            progDialog.setMessage(getString(R.string.saving_apps));
-            progDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            progDialog.setProgress(0);
-            progDialog.setMax(AppList.size());
-            progDialog.setOnCancelListener(new OnCancelListener() {
-
-                @Override
-                public void onCancel(DialogInterface dialog) {
-                    BackUpApps.this.cancel(true);
-                }
-
-            });
+            /*
+             * progDialog = new ProgressDialog(thisActivityCtx); progDialog.setCancelable(false);
+             * progDialog.setMessage(getString(R.string.saving_apps));
+             * progDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL); progDialog.setProgress(0);
+             * progDialog.setMax(AppList.size()); progDialog.setOnCancelListener(new OnCancelListener() {
+             * 
+             * @Override public void onCancel(DialogInterface dialog) { BackUpApps.this.cancel(true); }
+             * 
+             * });
+             */
             progDialog.show();
         }
 
@@ -1186,7 +1208,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
                 }
             }
             registerReceivers();
-            if(SuccAppList.size() > 0){
+            if (SuccAppList.size() > 0) {
                 EventBus.getDefault().post(new AppBackupSuccEvent(SuccAppList));
             }
         }
