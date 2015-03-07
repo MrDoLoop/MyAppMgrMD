@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="150dp"
     android:gravity="center"
-    android:paddingBottom="5dp"
+    android:paddingBottom="8dp"
     android:orientation="vertical" >
 
     <com.doloop.www.myappmgr.material.widgets.ArcProgress
@@ -14,6 +14,8 @@
         app:arc_bottom_text_size="15sp"
         app:arc_finished_color="@color/theme_blue_light"
 		app:arc_angle="270.0"
+		app:arc_suffix_text="%"
+		app:arc_suffix_text_padding="6dp"
         app:arc_text_color="@color/theme_blue_light"
         app:arc_unfinished_color="#96214193" />
 
