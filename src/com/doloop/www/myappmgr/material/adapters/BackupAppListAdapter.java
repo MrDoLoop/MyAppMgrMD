@@ -7,6 +7,8 @@ import java.util.Locale;
 import org.apache.commons.io.FileUtils;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.text.TextUtils;
@@ -19,8 +21,12 @@ import android.widget.TextView;
 
 import com.doloop.www.myappmgr.material.MainActivity;
 import com.doloop.www.myappmgr.material.dao.AppInfo;
+import com.doloop.www.myappmgr.material.utils.Constants;
 import com.doloop.www.myappmgr.material.utils.Utilities;
 import com.doloop.www.myappmgrmaterial.R;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
+import com.squareup.picasso.Picasso.LoadedFrom;
 
 public class BackupAppListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     
@@ -81,11 +87,19 @@ public class BackupAppListAdapter extends RecyclerView.Adapter<RecyclerView.View
         AppInfo appInfo = mAppListDisplay.get(position);
         ItemViewHolder holder = (ItemViewHolder) viewHolder;
         holder.AppNameTextView.setText(appInfo.appName);
-        holder.AppIconImageView.setImageBitmap(appInfo.iconBitmap);
+        //holder.AppIconImageView.setImageBitmap(appInfo.iconBitmap);
         holder.AppIconImageView.setTag(position);
         holder.AppVersionTextView.setText("v" + appInfo.versionName + " | " + appInfo.appSizeStr + " | "
                 + appInfo.lastModifiedTimeStr);
         holder.AppFileNameTextView.setText(appInfo.getBackupApkFileName());
+        holder.RootLayout.setTag(appInfo);
+        
+        
+        if (appInfo.iconBitmap == null) {
+            Picasso.with(mCtx).load(appInfo.getAppIconCachePath(mCtx)).noFade().into(holder);
+        } else {
+            holder.AppIconImageView.setImageBitmap(appInfo.iconBitmap);
+        }
         
     }
     @Override
@@ -98,7 +112,7 @@ public class BackupAppListAdapter extends RecyclerView.Adapter<RecyclerView.View
         return holder;
     }
 
-    public class ItemViewHolder extends RecyclerView.ViewHolder {
+    public class ItemViewHolder extends RecyclerView.ViewHolder implements Target {
 
         TextView AppNameTextView;
         TextView AppVersionTextView;
@@ -106,6 +120,33 @@ public class BackupAppListAdapter extends RecyclerView.Adapter<RecyclerView.View
         ImageView AppIconImageView;
         RelativeLayout RootLayout;
 
+        @Override
+        public void onBitmapFailed(Drawable bitmap) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void onBitmapLoaded(Bitmap bitmap, LoadedFrom from) {
+            // TODO Auto-generated method stub
+            AppIconImageView.setImageBitmap(bitmap);
+            if (Constants.SAVE_APP_ICON_IN_OBJ) {
+                AppInfo appInfo = (AppInfo) RootLayout.getTag();
+                // if (appInfo.iconBitmap == null)
+                // if(appInfo != null)
+                {
+                    appInfo.iconBitmap = bitmap;
+                }
+            }
+        }
+
+        @Override
+        public void onPrepareLoad(Drawable placeHolderDrawable) {
+            // TODO Auto-generated method stub
+            AppIconImageView.setImageResource(R.drawable.backupapp_holder);
+        }
+        
+        
         public ItemViewHolder(View view) {
             super(view);
             AppNameTextView = (TextView) view.findViewById(R.id.app_name);

@@ -1319,10 +1319,10 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
                 sortMenuItem.setIcon(R.drawable.name_des);
                 break;
             case SortTypeDialogFragment.LIST_SORT_TYPE_SIZE_ASC:
-                sortMenuItem.setIcon(R.drawable.size_asc);
+                sortMenuItem.setIcon(R.drawable.size_asc_white);
                 break;
             case SortTypeDialogFragment.LIST_SORT_TYPE_SIZE_DES:
-                sortMenuItem.setIcon(R.drawable.size_des);
+                sortMenuItem.setIcon(R.drawable.size_des_white);
                 break;
             case SortTypeDialogFragment.LIST_SORT_TYPE_LAST_MOD_TIME_ASC:
                 sortMenuItem.setIcon(R.drawable.time_asc);
