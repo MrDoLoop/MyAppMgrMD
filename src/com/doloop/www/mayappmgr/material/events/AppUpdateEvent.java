@@ -4,11 +4,10 @@ import com.doloop.www.myappmgr.material.dao.AppInfo;
 
 import android.content.Intent;
 /**
- * Ð§ÂÊ²»¼Ñ
+ * 
  * @author zhaonan07
  *
  */
-@Deprecated 
 public class AppUpdateEvent {
     public AppState mAppState;
     public String mPkgName;

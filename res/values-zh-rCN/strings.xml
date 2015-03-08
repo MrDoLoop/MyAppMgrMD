@@ -43,4 +43,6 @@
     <string name="view">查看</string>
     <string name="launch_fail">无法启动</string>
     <string name="sdcard_changed">Sdcard有变化，请重启！</string>
+    <string name="cancel">取消</string>
+    <string name="ok">确定</string>
 </resources>

@@ -92,10 +92,16 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
         if (val) {
             getItem(position).selected = true;
             selectedCnt++;
+            if(selectedCnt > getCount()){
+                selectedCnt = getCount();
+            }
             // mSelectedItems.put(getItem(position).packageName, getItem(position));
         } else {
             getItem(position).selected = false;
             selectedCnt--;
+            if(selectedCnt < 0){
+                selectedCnt = 0;
+            }
             // mSelectedItems.remove(getItem(position).packageName);
         }
         if (refreshList) {
@@ -228,7 +234,7 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
         holder.AppIconImageView.setTag(position);
         holder.bgLayout.setTag(appInfo);
         if (appInfo.iconBitmap == null) {
-            Picasso.with(mCtx).load(appInfo.getAppIconCachePath(mCtx)).noFade().into(holder);
+            Picasso.with(mCtx).load(appInfo.getAppIconCachePath(mCtx)).noFade().into(holder);//.memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
         } else {
             holder.AppIconImageView.setImageBitmap(appInfo.iconBitmap);
         }

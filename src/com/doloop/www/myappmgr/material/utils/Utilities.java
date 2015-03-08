@@ -45,6 +45,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.Settings;
+import android.support.v4.app.DialogFragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
@@ -54,7 +55,13 @@ import com.doloop.www.myappmgr.material.fragments.SortTypeDialogFragment;
 import com.doloop.www.myappmgrmaterial.R;
 
 public class Utilities {
-       
+      
+    public static void DismissDialog(DialogFragment D_fragment) {
+        if (D_fragment != null && D_fragment.getDialog() != null && D_fragment.getDialog().isShowing()) {
+            D_fragment.dismiss();
+        }
+    }
+    
     public static boolean isAppInfoInList(AppInfo appInfo, ArrayList<AppInfo> list){
         for(AppInfo aEntry : list){
             if(appInfo.packageName.equals(aEntry.packageName)){

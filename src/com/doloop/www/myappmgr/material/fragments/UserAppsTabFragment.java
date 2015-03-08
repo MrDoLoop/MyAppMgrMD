@@ -6,6 +6,7 @@ import java.util.Locale;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.DataSetObserver;
 import android.net.Uri;
@@ -45,6 +46,7 @@ import android.widget.TextView;
 import com.doloop.slideexpandable.library.ActionSlideExpandableListView;
 import com.doloop.www.mayappmgr.material.events.ActionModeToggleEvent;
 import com.doloop.www.mayappmgr.material.events.AppBackupSuccEvent;
+import com.doloop.www.mayappmgr.material.events.AppUpdateEvent;
 import com.doloop.www.mayappmgr.material.events.BackupAppEvent;
 import com.doloop.www.mayappmgr.material.events.ViewNewBackupAppEvent;
 import com.doloop.www.myappmgr.material.MainActivity;
@@ -53,6 +55,8 @@ import com.doloop.www.myappmgr.material.adapters.UserAppListAdapter.IconClickLis
 import com.doloop.www.myappmgr.material.adapters.UserAppListAdapter.UserAppListDataSetChangedListener;
 //import com.doloop.www.myappmgr.material.adapters.UserAppListAdapter.UserAppListFilterResultListener;
 import com.doloop.www.myappmgr.material.dao.AppInfo;
+import com.doloop.www.myappmgr.material.fragments.SelectionDialogFragment.SelectionDialogClickListener;
+import com.doloop.www.myappmgr.material.fragments.UserAppListMoreActionDialogFragment.UserAppMoreActionListItemClickListener;
 import com.doloop.www.myappmgr.material.utils.Utilities;
 import com.doloop.www.myappmgrmaterial.R;
 import com.nispok.snackbar.Snackbar;
@@ -61,14 +65,14 @@ import com.nispok.snackbar.listeners.ActionClickListener;
 import de.greenrobot.event.EventBus;
 
 public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollListener,
-        AdapterView.OnItemLongClickListener, IconClickListener {
+        UserAppMoreActionListItemClickListener, SelectionDialogClickListener,AdapterView.OnItemLongClickListener, IconClickListener {
 
     private static Context mContext;
     private UserAppListAdapter mAdapter;
     private static ActionSlideExpandableListView mActionSlideExpandableListView;
     private static UserAppsTabFragment uniqueInstance = null;
     private String thisAppPackageName = "";// 避免点击自己，启动自己
-    private boolean isAnyStoreInstalled = false;
+    //private boolean isAnyStoreInstalled = false;
 
     private int currentSortType = SortTypeDialogFragment.LIST_SORT_TYPE_NAME_ASC;
     private String mfragTitle = "";
@@ -77,6 +81,8 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
     private DataSetObserver mDataSetObserver;
     private View mEmptyView;
     public static boolean isInActoinMode = false;
+    private UserAppListMoreActionDialogFragment UserAppListMoreActionDialog;
+    private SelectionDialogFragment SelectionDialog;
 
     public void setListSortType(int sortType) {
         currentSortType = sortType;
@@ -230,7 +236,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        isAnyStoreInstalled = Utilities.isAnyStoreInstalled(getActivity());
+        //isAnyStoreInstalled = Utilities.isAnyStoreInstalled(getActivity());
         thisAppPackageName = Utilities.getSelfAppInfo(getActivity()).packageName;
         View contentView = inflater.inflate(R.layout.user_app_slide_expandable_list, container, false);
         mActionSlideExpandableListView = (ActionSlideExpandableListView) contentView.findViewById(android.R.id.list);
@@ -298,7 +304,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                                     mSnackbar.swipeToDismiss(false).showAnimation(mShowAniSnackBar)
                                             .dismissAnimation(true).animationText(mAniText)
                                             .duration(Snackbar.SnackbarDuration.LENGTH_SHORT)
-                                            //.attachToAbsListView(mActionSlideExpandableListView)
+                                            // .attachToAbsListView(mActionSlideExpandableListView)
                                             .text(spanString);
 
                                     if (!isInActoinMode) {
@@ -337,12 +343,10 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                                             Utilities.getIconBitmap(getActivity(), selectItem.packageName);
                                 }
 
-                                /*
-                                 * UserAppListMoreActionDialog =
-                                 * UserAppListMoreActionDialogFragment.newInstance(selectItem);
-                                 * UserAppListMoreActionDialog.show(getSupportFragmentManager(),
-                                 * UserAppListMoreActionDialogFragment.DialogTag);
-                                 */
+                                UserAppListMoreActionDialog = new UserAppListMoreActionDialogFragment();
+                                UserAppListMoreActionDialog.setArgs(selectItem, UserAppsTabFragment.this);
+                                UserAppListMoreActionDialog.show(getActivity().getSupportFragmentManager(),
+                                        UserAppListMoreActionDialogFragment.DialogTag);
 
                                 break;
                         }
@@ -369,6 +373,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
         // Fragment’s view to be fully inflated.
         setRetainInstance(false);
         setHasOptionsMenu(false);
+        EventBus.getDefault().register(this);
         // setEmptyText("No applications");
 
         // setListShown(false);
@@ -442,6 +447,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
         // Clean up any resources including ending threads,
         // closing database connections etc.
         super.onDestroy();
+        EventBus.getDefault().unregister(this);
         mAdapter.unregisterDataSetObserver(mDataSetObserver);
         mAdapter = null;
         mActionSlideExpandableListView = null;
@@ -494,21 +500,17 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
     public void onListItemClick(ListView l, View v, int position, long id) {
         // TODO Auto-generated method stub
         super.onListItemClick(l, v, position, id);
-        
-/*        Drawable bgDrawable = v.findViewById(R.id.bgLayout).getBackground();
-        if(bgDrawable instanceof TransitionDrawable){
-            ((TransitionDrawable)bgDrawable).reverseTransition(250);
-        }
-        else{
-            TransitionDrawable td = new TransitionDrawable(new Drawable[] { new ColorDrawable(Color.WHITE),
-                  mContext.getResources().getDrawable(R.drawable.list_row_item_pressed_bg) });
-//            TransitionDrawable td = new TransitionDrawable(new Drawable[] { new ColorDrawable(Color.WHITE),
-//                    new ColorDrawable(mContext.getResources().getColor(R.color.theme_blue_light)) });
-            v.findViewById(R.id.bgLayout).setBackgroundDrawable(td);
-            td.startTransition(250);
-        }*/
-        
-        
+
+        /*
+         * Drawable bgDrawable = v.findViewById(R.id.bgLayout).getBackground(); if(bgDrawable instanceof
+         * TransitionDrawable){ ((TransitionDrawable)bgDrawable).reverseTransition(250); } else{ TransitionDrawable td =
+         * new TransitionDrawable(new Drawable[] { new ColorDrawable(Color.WHITE),
+         * mContext.getResources().getDrawable(R.drawable.list_row_item_pressed_bg) }); // TransitionDrawable td = new
+         * TransitionDrawable(new Drawable[] { new ColorDrawable(Color.WHITE), // new
+         * ColorDrawable(mContext.getResources().getColor(R.color.theme_blue_light)) });
+         * v.findViewById(R.id.bgLayout).setBackgroundDrawable(td); td.startTransition(250); }
+         */
+
         if (isInActoinMode) {
             mAdapter.toggleSelection(position, true);
             updateActionModeTitle();
@@ -620,12 +622,15 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         // TODO Auto-generated method stub
-        //mItemLongClickListener.onUserAppItemLongClick(parent, view, position, id);
-        
-        if(isInActoinMode){
-            return false;
-        }
-        else{
+        // mItemLongClickListener.onUserAppItemLongClick(parent, view, position, id);
+
+        if (isInActoinMode) {
+            
+            SelectionDialog = new SelectionDialogFragment();
+            SelectionDialog.setArgs(mAdapter.getItem(position), position, mAdapter.getCount(), UserAppsTabFragment.this);
+            SelectionDialog.show(getActivity().getSupportFragmentManager(), SelectionDialogFragment.DialogTag);
+            return true;
+        } else {
             view.findViewById(R.id.app_icon).performClick();
             return true;
         }
@@ -747,8 +752,8 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
     public void OnIconClickListener(int position) {
         // TODO Auto-generated method stub
         if (isInActoinMode) {
-            //mAdapter.toggleSelection(position,true);
-            //updateActionModeTitle();
+            // mAdapter.toggleSelection(position,true);
+            // updateActionModeTitle();
         } else {
             MainActivity.sActionMode =
                     ((ActionBarActivity) getActivity()).startSupportActionMode(new ActionMode.Callback() {
@@ -788,13 +793,13 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
 
                                     }
                                     break;
-                                    
+
                                 case R.id.menu_uninstall:
                                     AppInfo tmpAppInfo = null;
                                     ArrayList<AppInfo> list = mAdapter.getSelectedItemList();
                                     for (int i = 0; i < list.size(); i++) {
                                         tmpAppInfo = list.get(i);
-                                        
+
                                         Uri packageUri = Uri.parse("package:" + tmpAppInfo.packageName);
                                         Intent uninstallIntent;
                                         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
@@ -803,7 +808,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                                             uninstallIntent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE, packageUri);
                                         }
                                         startActivity(uninstallIntent);
-                                        
+
                                     }
                                     break;
                             }
@@ -837,9 +842,106 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                         }
                     });
 
-            mAdapter.setSelectedItem(position, true,true);
+            mAdapter.setSelectedItem(position, true, true);
             updateActionModeTitle();
         }
     }
+
     // IconClickListener--end
+
+    @Override
+    public void onUserAppMoreActionListItemClickListener(DialogInterface dialog, int item, AppInfo appInfo) {
+        // TODO Auto-generated method stub
+        if (item == 0)// google play
+        {
+            if (Utilities.isAnyStoreInstalled(getActivity())) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appInfo.packageName)));
+            } else {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id="
+                        + appInfo.packageName)));
+            }
+        } else if (item == 1) // send
+        {
+            String BACK_UP_FOLDER = Utilities.getBackUpAPKfileDir(getActivity());
+            String sdAPKfileName = Utilities.BackupApp(appInfo, BACK_UP_FOLDER);
+            if (sdAPKfileName != null) {
+                ArrayList<AppInfo> list = new ArrayList<AppInfo>();
+                list.add(appInfo);
+                EventBus.getDefault().post(new AppBackupSuccEvent(list));
+                Utilities.chooseSendByApp(getActivity(), Uri.parse("file://" + sdAPKfileName));
+            } else {
+                MainActivity.T(R.string.error);
+            }
+        }
+    }
+
+    @Override
+    public void onSelectionDialogClick(DialogInterface dialog, int selectType, int curPos) {
+        // TODO Auto-generated method stub
+        switch (selectType) {
+            case SelectionDialogFragment.SELECT_ALL_ABOVE:
+                for (int i = 0; i < curPos; i++) {
+                    if (!mAdapter.getItem(i).selected) {
+                        //mAdapter.getItem(i).selected = true;
+                        mAdapter.setSelectedItem(i, true, false);
+                    }
+                }
+                break;
+            case SelectionDialogFragment.DESELECT_ALL_ABOVE:
+                for (int i = 0; i < curPos; i++) {
+                    if (mAdapter.getItem(i).selected) {
+                        //mAdapter.getItem(i).selected = false;
+                        mAdapter.setSelectedItem(i, false, false);
+                    }
+                }
+                break;
+            case SelectionDialogFragment.SELECT_ALL_BELOW:
+                for (int i = curPos + 1; i < mAdapter.getCount(); i++) {
+                    if (!mAdapter.getItem(i).selected) {
+                        //mAdapter.getItem(i).selected = true;
+                        mAdapter.setSelectedItem(i, true, false);
+                        //UserAppActionModeSelectCnt++;
+                    }
+                }
+                break;
+            case SelectionDialogFragment.DESELECT_ALL_BELOW:
+                for (int i = curPos + 1; i < mAdapter.getCount(); i++) {
+                    if (mAdapter.getItem(i).selected) {
+                        mAdapter.setSelectedItem(i, false, false);
+                        //mAdapter.getItem(i).selected = false;
+                        //UserAppActionModeSelectCnt--;
+                    }
+                }
+                break;
+        }
+
+        /*if (UserAppActionModeSelectCnt < mUserAppListAdapter.getCount()) {
+            mActionMode.getMenu().getItem(ACTIONMODE_MENU_SELECT).setTitle(R.string.select_all);
+            mActionMode.getMenu().getItem(ACTIONMODE_MENU_SELECT).setIcon(R.drawable.ic_action_select_all);
+        } else {
+            mActionMode.getMenu().getItem(ACTIONMODE_MENU_SELECT).setTitle(R.string.deselect_all);
+            mActionMode.getMenu().getItem(ACTIONMODE_MENU_SELECT).setIcon(R.drawable.ic_action_deselect_all);
+        }
+
+        mActionMode.setTitle("" + UserAppActionModeSelectCnt);*/
+        //mAdapter.notifyDataSetChanged();
+        
+        updateActionModeTitle();
+        mAdapter.notifyDataSetChanged();
+    }
+    
+    
+    
+    public void onEventMainThread(AppUpdateEvent ev) {
+        switch (ev.mAppState) {
+            case APP_ADDED:
+            case APP_REMOVED:
+                Utilities.DismissDialog(UserAppListMoreActionDialog);
+                Utilities.DismissDialog(SelectionDialog);
+                break;
+            default:
+                break;
+        }
+    }
+
 }

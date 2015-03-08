@@ -12,6 +12,7 @@ import java.util.TreeMap;
 import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
@@ -50,6 +51,8 @@ import android.widget.Toast;
 
 import com.doloop.www.mayappmgr.material.events.ActionModeToggleEvent;
 import com.doloop.www.mayappmgr.material.events.AppBackupSuccEvent;
+import com.doloop.www.mayappmgr.material.events.AppUpdateEvent;
+import com.doloop.www.mayappmgr.material.events.AppUpdateEvent.AppState;
 import com.doloop.www.mayappmgr.material.events.BackupAppEvent;
 import com.doloop.www.mayappmgr.material.events.DrawerItemClickEvent;
 import com.doloop.www.mayappmgr.material.events.ViewNewBackupAppEvent;
@@ -64,6 +67,8 @@ import com.doloop.www.myappmgr.material.dao.DaoUtils;
 import com.doloop.www.myappmgr.material.fragments.BackupAppTabFragment;
 import com.doloop.www.myappmgr.material.fragments.BaseFrag;
 import com.doloop.www.myappmgr.material.fragments.DrawerFragment;
+import com.doloop.www.myappmgr.material.fragments.SortTypeDialogFragment;
+import com.doloop.www.myappmgr.material.fragments.SortTypeDialogFragment.SortTypeListItemClickListener;
 import com.doloop.www.myappmgr.material.fragments.SysAppsTabFragment;
 import com.doloop.www.myappmgr.material.fragments.UserAppsTabFragment;
 import com.doloop.www.myappmgr.material.utils.AppPinYinComparator;
@@ -85,7 +90,8 @@ import com.readystatesoftware.systembartint.SystemBarTintManager.SystemBarConfig
 import de.greenrobot.event.EventBus;
 
 public class MainActivity extends ActionBarActivity implements // UserAppListFilterResultListener,
-        UserAppListDataSetChangedListener, SysAppListDataSetChangedListener, BackupAppListDataSetChangedListener {
+        UserAppListDataSetChangedListener, SysAppListDataSetChangedListener, 
+        SortTypeListItemClickListener,BackupAppListDataSetChangedListener {
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private ActionBar mActionBar;
@@ -137,6 +143,10 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
     
     private static boolean sIsSdcardReady = false;
 
+    private SortTypeDialogFragment SortTypeDialog;
+//    private UserAppListMoreActionDialogFragment UserAppListMoreActionDialog;
+//    private SelectionDialogFragment SelectionDialog;
+    
     // private DrawerItemClickEvent mDrawerItemClickEvent;
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
@@ -167,7 +177,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
             // statusBarHolder.setVisibility(View.VISIBLE);
 
         }
-
+        
         AppUpdateStaticReceiver.handleEvent = false;
         thisActivityCtx = MainActivity.this;
         toast = Toast.makeText(thisActivityCtx, "", Toast.LENGTH_SHORT);
@@ -493,6 +503,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
 
         searchMenuItem = menu.findItem(R.id.menu_search).setVisible(true);
         sortMenuItem = menu.findItem(R.id.menu_sort).setVisible(true);
+        processSortMenuIcon(Utilities.getUserAppListSortType(thisActivityCtx));
 
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
         searchView.setQueryHint(getString(R.string.search));
@@ -582,7 +593,18 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        switch (id) {
+           
+            case R.id.menu_sort:
 
+                SortTypeDialog = new SortTypeDialogFragment();
+                Bundle bundle = new Bundle();
+                bundle.putInt(SortTypeDialogFragment.SELECTED_ITEM, usrAppsFrg.getListSortType());
+                SortTypeDialog.setArguments(bundle);
+                SortTypeDialog.show(getSupportFragmentManager(), SortTypeDialogFragment.DialogTag);
+
+                return true;
+        }
         /*
          * if (id == R.id.action_settings) { return true; }
          */
@@ -994,14 +1016,16 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
         public void onReceive(Context context, Intent intent) {
             // TODO Auto-generated method stub
             closeDrawerMenu();
+            DismissAllDialog();
             // usrAppsFrg.collapseLastOpenItem(false);
 
             if (intent.getAction().equals(Intent.ACTION_PACKAGE_ADDED)) {
                 // app被安装
                 String NewPkgName = intent.getDataString().substring(8);
+                AppInfo newAppInfo = null;
                 if (DaoUtils.getByPackageName(thisActivityCtx, NewPkgName) != null)// 安装过--更新
                 {
-                    for (int i = 0; i < UserAppFullList.size(); i++) {
+                    for (int i = 0, size = UserAppFullList.size(); i < size; i++) {
                         if (UserAppFullList.get(i).getPackageName().equals(NewPkgName)) {
 
                             DaoUtils.deleteAppInfo(thisActivityCtx, UserAppFullList.get(i));
@@ -1009,8 +1033,8 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
                             AppInfo tmpAppInfo = Utilities.buildAppInfoEntry(thisActivityCtx, NewPkgName);
                             DaoUtils.insert(thisActivityCtx, tmpAppInfo);
 
-                            AppInfo tmp = DaoUtils.getByPackageName(thisActivityCtx, NewPkgName);
-                            UserAppFullList.set(i, tmp);
+                            newAppInfo = DaoUtils.getByPackageName(thisActivityCtx, NewPkgName);
+                            UserAppFullList.set(i, newAppInfo);
 
                             // ((ActionSlideExpandableListView) usrAppsFrg.getListView()).collapse(false);
                             usrAppsFrg.notifyDataSetChanged();
@@ -1020,9 +1044,9 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
                 } else// 没有安装过, 重新来过
                 {
                     // startRefreshAppInfoList();
-                    AppInfo tmpAppInfo = Utilities.buildAppInfoEntry(thisActivityCtx, NewPkgName);
-                    DaoUtils.insert(thisActivityCtx, tmpAppInfo);
-                    UserAppFullList.add(tmpAppInfo);
+                    newAppInfo = Utilities.buildAppInfoEntry(thisActivityCtx, NewPkgName);
+                    DaoUtils.insert(thisActivityCtx, newAppInfo);
+                    UserAppFullList.add(newAppInfo);
                     Utilities.sortUserAppList(thisActivityCtx, UserAppFullList);
 
                     // ((ActionSlideExpandableListView) usrAppsFrg.getListView()).collapse(false);
@@ -1033,6 +1057,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
                 toast.setText(getString(R.string.new_app_installed) + " "
                         + Utilities.pkgNameToAppName(thisActivityCtx, NewPkgName));
                 toast.show();
+                EventBus.getDefault().post(new AppUpdateEvent(AppState.APP_ADDED,NewPkgName,newAppInfo));
                 // startRefreshAppInfoList();
 
             } else if (intent.getAction().equals(Intent.ACTION_PACKAGE_REMOVED)) {
@@ -1040,7 +1065,8 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
                 toast.setText(R.string.app_removed);
                 String RemovedPkgName = intent.getDataString().substring(8);
                 ArrayList<AppInfo> tmpUserDisplayList = usrAppsFrg.getDisplayList();
-                for (int i = 0; i < UserAppFullList.size(); i++) {
+                AppInfo targetAppInfo = null;
+                for (int i = 0,size = UserAppFullList.size(); i < size; i++) {
                     if (UserAppFullList.get(i).packageName.equals(RemovedPkgName)) {
                         /*
                          * if (mActionMode != null) { if (UserAppFullList.get(i).selected) {
@@ -1050,9 +1076,9 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
                          * UserAppListMoreActionDialog.getCurrentAppInfo().packageName.equals(RemovedPkgName)) {
                          * UserAppListMoreActionDialog.dismiss(); }
                          */
-
-                        DaoUtils.deleteAppInfo(thisActivityCtx, UserAppFullList.get(i));
-                        toast.setText(getString(R.string.app_removed_name) + " " + UserAppFullList.get(i).appName);
+                        targetAppInfo = UserAppFullList.get(i);
+                        DaoUtils.deleteAppInfo(thisActivityCtx, targetAppInfo);
+                        toast.setText(getString(R.string.app_removed_name) + " " + targetAppInfo.appName);
                         UserAppFullList.remove(i);
                     }
                     if (i < tmpUserDisplayList.size()) {
@@ -1060,16 +1086,21 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
                             tmpUserDisplayList.remove(i);
                         }
                     }
+                    if(targetAppInfo != null){
+                        break;
+                    }
                 }
 
                 toast.show();
                 usrAppsFrg.notifyDataSetChanged();
+                EventBus.getDefault().post(new AppUpdateEvent(AppState.APP_REMOVED,RemovedPkgName,targetAppInfo));
                 // updateSlidingTabTitle(Constants.USR_APPS_TAB_POS);
             } else if (intent.getAction().equals(Intent.ACTION_PACKAGE_CHANGED)) {
                 String PkgName = intent.getDataString().substring(8);
                 String appName = Utilities.pkgNameToAppName(thisActivityCtx, PkgName);
                 toast.setText("PACKAGE_CHANGED: " + appName);
                 toast.show();
+                EventBus.getDefault().post(new AppUpdateEvent(AppState.APP_CHANGED,PkgName,null));
                 Log.i("ttt", "PACKAGE_CHANGED: " + PkgName);
                 // startRefreshAppInfoList();
             }
@@ -1252,6 +1283,62 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
         }
     }
 
+    //排序图表点击
+    @Override
+    public void onSortTypeListItemClick(DialogInterface dialog, int which) {
+        // TODO Auto-generated method stub
+        switch (mPager.getCurrentItem()) {
+            case Constants.USR_APPS_TAB_POS:
+                if (usrAppsFrg.getListSortType() == which)
+                    return;
+                Utilities.setUserAppListSortType(thisActivityCtx, which);
+                Utilities.sortUserAppList(thisActivityCtx, UserAppFullList);
+                processSortMenuIcon(which);
+                
+                usrAppsFrg.setListSortType(which);
+                usrAppsFrg.collapseLastOpenItem(false);
+                usrAppsFrg.notifyDataSetChanged();
+                
+
+                break;
+            case Constants.SYS_APPS_TAB_POS:
+                
+                break;
+            case Constants.BACKUP_APPS_TAB_POS:
+               
+                break;
+        }
+    }
+    
+    private void processSortMenuIcon(int which){
+        switch (which) {
+            case SortTypeDialogFragment.LIST_SORT_TYPE_NAME_ASC:
+                sortMenuItem.setIcon(R.drawable.name_asc);
+                break;
+            case SortTypeDialogFragment.LIST_SORT_TYPE_NAME_DES:
+                sortMenuItem.setIcon(R.drawable.name_des);
+                break;
+            case SortTypeDialogFragment.LIST_SORT_TYPE_SIZE_ASC:
+                sortMenuItem.setIcon(R.drawable.size_asc);
+                break;
+            case SortTypeDialogFragment.LIST_SORT_TYPE_SIZE_DES:
+                sortMenuItem.setIcon(R.drawable.size_des);
+                break;
+            case SortTypeDialogFragment.LIST_SORT_TYPE_LAST_MOD_TIME_ASC:
+                sortMenuItem.setIcon(R.drawable.time_asc);
+                break;
+            case SortTypeDialogFragment.LIST_SORT_TYPE_LAST_MOD_TIME_DES:
+                sortMenuItem.setIcon(R.drawable.time_des);
+                break;
+        }
+    }
+    
+    private void DismissAllDialog(){
+        Utilities.DismissDialog(SortTypeDialog);
+        //(UserAppListMoreActionDialog);
+        //DismissDialog(SelectionDialog);
+    }
+    
     /*
      * public void onEventMainThread(AppUpdateEvent ev) { toggleDrawerMenu(); usrAppsFrg.collapseLastOpenItem(false);
      * closeDrawerMenu(); switch (ev.mAppState){ case APP_ADDED:

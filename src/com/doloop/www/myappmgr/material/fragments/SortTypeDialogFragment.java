@@ -1,19 +1,20 @@
 package com.doloop.www.myappmgr.material.fragments;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.doloop.www.myappmgrmaterial.R;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.view.View;
 
 public class SortTypeDialogFragment extends DialogFragment {
 	
 	public final static String DialogTag = "SortTypeDialogFragment";
 	
-	private static String[] sortTypeStr = {"Name ASC","Name DES","Size ASC","Size DES","LastModified Time ASC","LastModified Time DES"};
+	//private static String[] sortTypeStr = {"Name ASC","Name DES","Size ASC","Size DES","LastModified Time ASC","LastModified Time DES"};
 	
 	public final static int LIST_SORT_TYPE_NAME_ASC = 0;
 	public final static int LIST_SORT_TYPE_NAME_DES = 1;
@@ -44,20 +45,21 @@ public class SortTypeDialogFragment extends DialogFragment {
 	 }
 	    @Override
 	    public Dialog onCreateDialog(Bundle savedInstanceState) {
-	        // Build the dialog and set up the button click handlers
-	    	sortTypeStr = getActivity().getResources().getStringArray(R.array.sort_type); 
-	    	int checkedItem = getArguments().getInt(SELECTED_ITEM, 0); 
-	        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-	        builder.setTitle(R.string.sort_type).setSingleChoiceItems(sortTypeStr, checkedItem, new DialogInterface.OnClickListener(){
+	    	int checkedItem = getArguments().getInt(SELECTED_ITEM, 0);
+	    	MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
+	        .title(R.string.sort_type)
+	        .items(R.array.sort_type)
+	        .itemsCallbackSingleChoice(checkedItem, new MaterialDialog.ListCallback() {
 
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					// TODO Auto-generated method stub
-					mSortTypeListItemClickListener.onSortTypeListItemClick(dialog, which);
-					dialog.dismiss();
-				}});
-	        AlertDialog dialog = builder.create();
-	        dialog.setCanceledOnTouchOutside(true);
+                @Override
+                public void onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
+                    // TODO Auto-generated method stub
+                    mSortTypeListItemClickListener.onSortTypeListItemClick(dialog, which);
+                }
+	        })
+	        .autoDismiss(true)
+	        .negativeText(R.string.cancel).build();
+	    	
 	        return dialog;
 	    }
 }
