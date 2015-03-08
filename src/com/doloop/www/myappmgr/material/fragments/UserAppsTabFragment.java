@@ -550,7 +550,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
             MainActivity.sActionMode.setTitle(mAdapter.getSelectedItemCnt() + " / " + mAdapter.getCount());
             if (mAdapter.getSelectedItemCnt() == mAdapter.getCount()) {
                 selItem.setTitle(R.string.deselect_all);
-                selItem.setIcon(0);
+                selItem.setIcon(R.drawable.ic_deselect_all_white);
             } else {
                 selItem.setTitle(R.string.select_all);
                 selItem.setIcon(R.drawable.ic_select_all_white);
