@@ -915,17 +915,6 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                 break;
         }
 
-        /*if (UserAppActionModeSelectCnt < mUserAppListAdapter.getCount()) {
-            mActionMode.getMenu().getItem(ACTIONMODE_MENU_SELECT).setTitle(R.string.select_all);
-            mActionMode.getMenu().getItem(ACTIONMODE_MENU_SELECT).setIcon(R.drawable.ic_action_select_all);
-        } else {
-            mActionMode.getMenu().getItem(ACTIONMODE_MENU_SELECT).setTitle(R.string.deselect_all);
-            mActionMode.getMenu().getItem(ACTIONMODE_MENU_SELECT).setIcon(R.drawable.ic_action_deselect_all);
-        }
-
-        mActionMode.setTitle("" + UserAppActionModeSelectCnt);*/
-        //mAdapter.notifyDataSetChanged();
-        
         updateActionModeTitle();
         mAdapter.notifyDataSetChanged();
     }

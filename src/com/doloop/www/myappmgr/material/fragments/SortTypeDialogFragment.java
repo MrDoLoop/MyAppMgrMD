@@ -59,7 +59,7 @@ public class SortTypeDialogFragment extends DialogFragment {
 	        })
 	        .autoDismiss(true)
 	        .negativeText(R.string.cancel).build();
-	    	
+	    	dialog.setCanceledOnTouchOutside(true);
 	        return dialog;
 	    }
 }

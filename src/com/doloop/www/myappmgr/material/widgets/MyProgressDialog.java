@@ -1,7 +1,6 @@
 package com.doloop.www.myappmgr.material.widgets;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
@@ -14,7 +13,7 @@ public class MyProgressDialog {
     private TextView progressTxt;
 
     public MyProgressDialog(Context ctx, String title, String contentTxt) {
-        View pView = LayoutInflater.from(ctx).inflate(R.layout.progress_loading, null);
+        View pView = View.inflate(ctx, R.layout.progress_loading, null);
         arcProgress = (ArcProgress) pView.findViewById(R.id.arc_progress);
         progressTxt = (TextView) pView.findViewById(R.id.txt);
 

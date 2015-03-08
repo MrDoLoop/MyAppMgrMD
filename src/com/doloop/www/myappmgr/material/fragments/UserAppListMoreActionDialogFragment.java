@@ -6,11 +6,8 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.doloop.www.myappmgr.material.adapters.ArrayAdapterWithIcon;
 import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.utils.Utilities;
 import com.doloop.www.myappmgrmaterial.R;
@@ -23,8 +20,8 @@ public class UserAppListMoreActionDialogFragment extends DialogFragment {
 	
 	private AppInfo mAppinfo;
 	
-	private String[] moreActionOpt;// = {"Google Play","Send"};
-	private final static int[] moreActionOptIcon = {R.drawable.google_paly_80x80,R.drawable.send1_80x80};
+//	private String[] moreActionOpt;// = {"Google Play","Send"};
+//	private final static int[] moreActionOptIcon = {R.drawable.google_paly_80x80,R.drawable.send1_80x80};
 
 	public final static String ArgumentsTag = "ArgumentsTag";
 	
@@ -64,25 +61,32 @@ public class UserAppListMoreActionDialogFragment extends DialogFragment {
 	    @Override
 	    public Dialog onCreateDialog(Bundle savedInstanceState) {
 	        // Build the dialog and set up the button click handlers
-	    	moreActionOpt = new String[] {getActivity().getString(R.string.google_play), getActivity().getString(R.string.send)};
-	    	ArrayAdapterWithIcon adapter = new ArrayAdapterWithIcon(getActivity(), moreActionOpt, moreActionOptIcon);
-
+	        View pView = View.inflate(getActivity(), R.layout.user_more_action_dia, null);
 	    	final MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
             .title(mAppinfo.appName)
-            .icon(Utilities.ZoomDrawable(mAppinfo.iconBitmap,getActivity()))
-            .adapter(adapter)
-            .negativeText(R.string.cancel)
+            .icon(Utilities.ZoomDrawable(mAppinfo.iconBitmap,getActivity())).customView(pView, false)
+            //.negativeText(R.string.cancel)
             .build();
-	    	ListView listView = dialog.getListView();
-	    	if (listView != null) {
-	    	    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-	    	        @Override
-	    	        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-	    	            mUserAppMoreActionListItemClickListener.onUserAppMoreActionListItemClickListener(dialog, position, mAppinfo);
-	    	            dialog.dismiss();
-	    	        }
-	    	    });
-	    	}
+	    	
+	    	pView.findViewById(R.id.marketLayout).setOnClickListener(new View.OnClickListener() {
+                
+                @Override
+                public void onClick(View v) {
+                    // TODO Auto-generated method stub
+                    mUserAppMoreActionListItemClickListener.onUserAppMoreActionListItemClickListener(dialog, 0, mAppinfo);
+                    dialog.dismiss();
+                }
+            });
+	    	pView.findViewById(R.id.sendLayout).setOnClickListener(new View.OnClickListener() {
+                
+                @Override
+                public void onClick(View v) {
+                    // TODO Auto-generated method stub
+                    mUserAppMoreActionListItemClickListener.onUserAppMoreActionListItemClickListener(dialog, 1, mAppinfo);
+                    dialog.dismiss();
+                }
+            });
+	    	dialog.setCanceledOnTouchOutside(true);
 	        return dialog;
 	    }
 }

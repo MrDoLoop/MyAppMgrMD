@@ -120,7 +120,14 @@ public class BackupAppListAdapter extends RecyclerView.Adapter<RecyclerView.View
                     //MainActivity.T("Backup图标被点击了: "+AppIconImageView.getTag());
                     /*mAppListDisplay.remove(getPosition());
                     notifyDataSetChanged();*/
-                    AppInfo appInfo = mAppListDisplay.get(getPosition());
+                    AppInfo appInfo = null;
+                    try{//因为添加了动画，点击过快的话，删除动画还没有完成，此处就崩溃了
+                        appInfo = mAppListDisplay.get(getPosition());
+                    }catch(Exception e){
+                        return ;
+                    }
+                    
+                    
                     //if(FileUtils.deleteQuietly(new File(appInfo.apkFilePath))){
                     if(FileUtils.deleteQuietly(new File(appInfo.backupFilePath))){
                       //从显示的list中删除

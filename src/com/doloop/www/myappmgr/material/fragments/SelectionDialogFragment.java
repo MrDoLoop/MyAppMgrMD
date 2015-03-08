@@ -148,7 +148,7 @@ public class SelectionDialogFragment extends DialogFragment {
                 }
             });
         }
-
+        dialog.setCanceledOnTouchOutside(true);
         return dialog;
     }
 }
