@@ -136,7 +136,7 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
         if (DEBUG)
             Log.i(TAG, "+++ loadInBackground() called! +++");
 
-        File backupFolder = new File(Utilities.getBackUpAPKfileDir(getContext()));
+        File backupFolder = new File(Utils.getBackUpAPKfileDir(getContext()));
         if (!backupFolder.exists()) {
             backupFolder.mkdir();
         }
@@ -165,7 +165,7 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
                             entries = new ArrayList<AppInfo>(files.length);
                             break;
                         }
-                        appInfo = Utilities.buildAppInfoEntry(getContext(), packageInfo, pkgMgr, false);
+                        appInfo = Utils.buildAppInfoEntry(getContext(), packageInfo, pkgMgr, false);
                         appInfo.backupFilePath = file.getAbsolutePath();
                         entries.add(appInfo);
                     }

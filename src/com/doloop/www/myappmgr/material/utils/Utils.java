@@ -14,18 +14,16 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
 import net.sourceforge.pinyin4j.PinyinHelper;
 import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
 import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.comparator.LastModifiedFileComparator;
-
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -44,18 +42,62 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.StatFs;
 import android.provider.Settings;
 import android.support.v4.app.DialogFragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
-
 import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.fragments.SortTypeDialogFragment;
 import com.doloop.www.myappmgrmaterial.R;
 
-public class Utilities {
-      
+public class Utils {
+      //http://stackoverflow.com/questions/3394765/how-to-check-available-space-on-android-device-on-mini-sd-card
+    
+    public static String calculateTotalFileSize(ArrayList<AppInfo> list){
+        long size = 0;
+        for(AppInfo appInfo : list){
+            size += appInfo.appRawSize;
+        }
+        return formatFileSize(size);
+    }
+    
+    
+    public static String getBackupDirSize(Context ctx){
+        return FileUtils.byteCountToDisplaySize(FileUtils.sizeOfDirectory(new File(getBackUpAPKfileDir(ctx))));
+    }
+    
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+    public static String getSdFreeSpace(){
+        long availableSpace = -1L;
+        StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
+        if(android.os.Build.VERSION.SDK_INT >= 18){
+            availableSpace = (long) stat.getAvailableBlocksLong() * (long) stat.getBlockSizeLong();
+        }
+        else{
+            availableSpace = (long) stat.getAvailableBlocks() * (long) stat.getBlockSize();
+        }   
+        String retVal = formatFileSize(availableSpace);
+        //Formatter.formatFileSize(ctx, availableSpace);
+        return retVal;
+    }
+    
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+    public static String getSdTotalSpace(){
+        long availableSpace = -1L;
+        StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
+        if(android.os.Build.VERSION.SDK_INT >= 18){
+            availableSpace = (long) stat.getBlockCountLong() * (long) stat.getBlockSizeLong();
+        }
+        else{
+            availableSpace = (long) stat.getBlockCount() * (long) stat.getBlockSize();
+        }   
+        String retVal = formatFileSize(availableSpace);
+        //Formatter.formatFileSize(ctx, availableSpace);
+        return retVal;
+    }
+    
     public static void DismissDialog(DialogFragment D_fragment) {
         if (D_fragment != null && D_fragment.getDialog() != null && D_fragment.getDialog().isShowing()) {
             D_fragment.dismiss();
@@ -72,7 +114,7 @@ public class Utilities {
     }
     
     public static AppInfo getLastBackupAppFromSD(Context ctx) {
-        File backupFolder = new File(Utilities.getBackUpAPKfileDir(ctx));
+        File backupFolder = new File(Utils.getBackUpAPKfileDir(ctx));
         File[] files = backupFolder.listFiles(new ApkFileFilter());
         Arrays.sort(files, LastModifiedFileComparator.LASTMODIFIED_REVERSE);
         if (files.length > 0) {
@@ -86,7 +128,7 @@ public class Utilities {
                 applicationInfo.sourceDir = theApk.getAbsolutePath();
                 applicationInfo.publicSourceDir = theApk.getAbsolutePath();
 
-                AppInfo appInfo = Utilities.buildAppInfoEntry(ctx, packageInfo, pkgMgr, false);
+                AppInfo appInfo = Utils.buildAppInfoEntry(ctx, packageInfo, pkgMgr, false);
                 appInfo.backupFilePath = theApk.getAbsolutePath();
                 return appInfo;
             }
@@ -160,7 +202,7 @@ public class Utilities {
     }
 
     public static boolean deleteAppIconInCache(Context context, String pkgName) {
-        File file = new File(Utilities.getAppIconCacheDir(context), pkgName + ".png");
+        File file = new File(Utils.getAppIconCacheDir(context), pkgName + ".png");
         if (file.exists()) {
             if (file.isFile()) {
                 return file.delete();
@@ -279,14 +321,14 @@ public class Utilities {
         // tmpInfo.firstTimeInstallDate =
         // dateformat.format(packageInfo.firstInstallTime);
         File tmpAPKfile = new File(packageInfo.applicationInfo.publicSourceDir);
-        tmpInfo.appSizeStr = Utilities.formatFileSize(tmpAPKfile.length()).toString();
+        tmpInfo.appSizeStr = Utils.formatFileSize(tmpAPKfile.length()).toString();
         tmpInfo.appRawSize = tmpAPKfile.length();
 
-        SimpleDateFormat simpleDateFormat = Utilities.getLocalDataDigitalDisplayFormat();
+        SimpleDateFormat simpleDateFormat = Utils.getLocalDataDigitalDisplayFormat();
         tmpInfo.lastModifiedTimeStr = simpleDateFormat.format(new Date(tmpAPKfile.lastModified()));
         tmpInfo.lastModifiedRawTime = tmpAPKfile.lastModified();
         tmpInfo.apkFilePath = packageInfo.applicationInfo.publicSourceDir;
-        Utilities.GetPingYin(tmpInfo);
+        Utils.GetPingYin(tmpInfo);
         // ÅÅÐò×ö´¦Àí
         if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
             tmpInfo.isSysApp = false;
