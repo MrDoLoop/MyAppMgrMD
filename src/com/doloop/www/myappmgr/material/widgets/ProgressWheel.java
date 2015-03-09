@@ -13,7 +13,6 @@ import android.os.Parcelable;
 import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 
