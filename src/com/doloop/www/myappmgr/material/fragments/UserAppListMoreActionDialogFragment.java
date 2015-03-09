@@ -9,7 +9,7 @@ import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.doloop.www.myappmgr.material.dao.AppInfo;
-import com.doloop.www.myappmgr.material.utils.Utilities;
+import com.doloop.www.myappmgr.material.utils.Utils;
 import com.doloop.www.myappmgrmaterial.R;
 
 
@@ -64,7 +64,7 @@ public class UserAppListMoreActionDialogFragment extends DialogFragment {
 	        View pView = View.inflate(getActivity(), R.layout.user_more_action_dia, null);
 	    	final MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
             .title(mAppinfo.appName)
-            .icon(Utilities.ZoomDrawable(mAppinfo.iconBitmap,getActivity())).customView(pView, false)
+            .icon(Utils.ZoomDrawable(mAppinfo.iconBitmap,getActivity())).customView(pView, false)
             //.negativeText(R.string.cancel)
             .build();
 	    	

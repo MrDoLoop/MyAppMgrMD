@@ -33,7 +33,7 @@ import com.doloop.www.myappmgr.material.MainActivity;
 import com.doloop.www.myappmgr.material.adapters.SysAppListAdapter;
 import com.doloop.www.myappmgr.material.adapters.SysAppListAdapter.SysAppListDataSetChangedListener;
 import com.doloop.www.myappmgr.material.utils.SysAppListItem;
-import com.doloop.www.myappmgr.material.utils.Utilities;
+import com.doloop.www.myappmgr.material.utils.Utils;
 import com.doloop.www.myappmgr.material.widgets.IndexBarView;
 import com.doloop.www.myappmgr.material.widgets.IndexBarView.OnIndexItemClickListener;
 import com.doloop.www.myappmgr.material.widgets.PinnedSectionListView;
@@ -390,8 +390,8 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
         if(mAdapter.getItemViewType(position) == SysAppListItem.APP_ITEM){
             //±¸·Ýapp
             
-            String mBackUpFolder = Utilities.getBackUpAPKfileDir(mContext);
-            String sdAPKfileName = Utilities.BackupApp(item.appinfo, mBackUpFolder);
+            String mBackUpFolder = Utils.getBackUpAPKfileDir(mContext);
+            String sdAPKfileName = Utils.BackupApp(item.appinfo, mBackUpFolder);
             if (sdAPKfileName != null) {
                 // MainActivity.T(R.string.backup_success);
                 SpannableString spanString =

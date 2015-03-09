@@ -22,7 +22,7 @@ import android.widget.TextView;
 import com.doloop.www.myappmgr.material.MainActivity;
 import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.utils.Constants;
-import com.doloop.www.myappmgr.material.utils.Utilities;
+import com.doloop.www.myappmgr.material.utils.Utils;
 import com.doloop.www.myappmgrmaterial.R;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -197,10 +197,10 @@ public class BackupAppListAdapter extends RecyclerView.Adapter<RecyclerView.View
                     // TODO Auto-generated method stub
                     AppInfo theApp = mAppListDisplay.get(getPosition());
                     if(TextUtils.isEmpty(theApp.backupFilePath)){
-                        Utilities.installAPK(mCtx, theApp.apkFilePath);
+                        Utils.installAPK(mCtx, theApp.apkFilePath);
                     }
                     else{
-                        Utilities.installAPK(mCtx, theApp.backupFilePath);
+                        Utils.installAPK(mCtx, theApp.backupFilePath);
                     }
                 }
             });

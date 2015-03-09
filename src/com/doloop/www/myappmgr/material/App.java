@@ -1,7 +1,7 @@
 package com.doloop.www.myappmgr.material;
 
 import com.doloop.www.myappmgr.material.utils.Constants;
-import com.doloop.www.myappmgr.material.utils.Utilities;
+import com.doloop.www.myappmgr.material.utils.Utils;
 
 import android.app.Application;
 
@@ -19,7 +19,7 @@ public class App extends Application {
         // 崩溃处理初始化
         //InitCrashHandler();
         
-        Constants.MY_PACKAGE_NAME = Utilities.getSelfAppInfo(this).packageName;
+        Constants.MY_PACKAGE_NAME = Utils.getSelfAppInfo(this).packageName;
     }
 
     /**

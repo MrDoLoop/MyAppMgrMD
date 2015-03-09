@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.doloop.www.myappmgr.material.dao.AppInfoDao.Properties;
 import com.doloop.www.myappmgr.material.dao.DaoMaster.OpenHelper;
-import com.doloop.www.myappmgr.material.utils.Utilities;
+import com.doloop.www.myappmgr.material.utils.Utils;
 
 import de.greenrobot.dao.query.DeleteQuery;
 import de.greenrobot.dao.query.QueryBuilder;
@@ -73,7 +73,7 @@ public class DaoUtils {
     // }
 
     public static void deleteAppInfo(Context context, AppInfo appInfo) {
-        Utilities.deleteAppIconInCache(context, appInfo.packageName);
+        Utils.deleteAppIconInCache(context, appInfo.packageName);
         getDaoSession(context, false).getAppInfoDao().deleteByKey(appInfo.id);
     }
 
@@ -81,12 +81,12 @@ public class DaoUtils {
         QueryBuilder<AppInfo> qb = getDaoSession(context, false).getAppInfoDao().queryBuilder();
         DeleteQuery<AppInfo> bd = qb.where(Properties.PackageName.eq(pkName)).buildDelete();
         bd.executeDeleteWithoutDetachingEntities();
-        Utilities.deleteAppIconInCache(context, pkName);
+        Utils.deleteAppIconInCache(context, pkName);
     }
 
     public static void deleteAllAppInfo(Context context) {
-        Utilities.setAppListInDb(context, false);
-        Utilities.deleteAppIconDir(Utilities.getAppIconCacheDir(context));
+        Utils.setAppListInDb(context, false);
+        Utils.deleteAppIconDir(Utils.getAppIconCacheDir(context));
         getDaoSession(context, false).getAppInfoDao().deleteAll();
         if (daoSession != null) {
             daoSession.clear();

@@ -12,7 +12,7 @@ import android.widget.ListView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.doloop.www.myappmgr.material.adapters.ArrayAdapterWithIcon;
 import com.doloop.www.myappmgr.material.dao.AppInfo;
-import com.doloop.www.myappmgr.material.utils.Utilities;
+import com.doloop.www.myappmgr.material.utils.Utils;
 import com.doloop.www.myappmgrmaterial.R;
 
 //@SuppressLint("ValidFragment")
@@ -115,7 +115,7 @@ public class SelectionDialogFragment extends DialogFragment {
         // AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         MaterialDialog.Builder builder =
                 new MaterialDialog.Builder(getActivity()).title(mAppinfo.appName)
-                        .icon(Utilities.ZoomDrawable(mAppinfo.iconBitmap, getActivity())).adapter(adapter);
+                        .icon(Utils.ZoomDrawable(mAppinfo.iconBitmap, getActivity())).adapter(adapter);
         final MaterialDialog dialog = builder.build();
 
         ListView listView = dialog.getListView();

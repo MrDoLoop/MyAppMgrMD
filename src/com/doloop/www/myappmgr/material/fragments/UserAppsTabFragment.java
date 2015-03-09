@@ -57,7 +57,7 @@ import com.doloop.www.myappmgr.material.adapters.UserAppListAdapter.UserAppListD
 import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.fragments.SelectionDialogFragment.SelectionDialogClickListener;
 import com.doloop.www.myappmgr.material.fragments.UserAppListMoreActionDialogFragment.UserAppMoreActionListItemClickListener;
-import com.doloop.www.myappmgr.material.utils.Utilities;
+import com.doloop.www.myappmgr.material.utils.Utils;
 import com.doloop.www.myappmgrmaterial.R;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.listeners.ActionClickListener;
@@ -237,7 +237,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //isAnyStoreInstalled = Utilities.isAnyStoreInstalled(getActivity());
-        thisAppPackageName = Utilities.getSelfAppInfo(getActivity()).packageName;
+        thisAppPackageName = Utils.getSelfAppInfo(getActivity()).packageName;
         View contentView = inflater.inflate(R.layout.user_app_slide_expandable_list, container, false);
         mActionSlideExpandableListView = (ActionSlideExpandableListView) contentView.findViewById(android.R.id.list);
         mActionSlideExpandableListView.setItemActionListener(
@@ -270,11 +270,11 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                                 }
                                 break;
                             case R.id.infoActionLayout:
-                                Utilities.showInstalledAppDetails(getActivity(), targetpackageName);
+                                Utils.showInstalledAppDetails(getActivity(), targetpackageName);
                                 break;
                             case R.id.backupActionLayout:
-                                String mBackUpFolder = Utilities.getBackUpAPKfileDir(getActivity());
-                                String sdAPKfileName = Utilities.BackupApp(selectItem, mBackUpFolder);
+                                String mBackUpFolder = Utils.getBackUpAPKfileDir(getActivity());
+                                String sdAPKfileName = Utils.BackupApp(selectItem, mBackUpFolder);
                                 if (sdAPKfileName != null) {
                                     // MainActivity.T(R.string.backup_success);
                                     SpannableString spanString =
@@ -340,7 +340,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                             case R.id.moreActionLayout:
                                 if (selectItem.iconBitmap == null) {
                                     selectItem.iconBitmap =
-                                            Utilities.getIconBitmap(getActivity(), selectItem.packageName);
+                                            Utils.getIconBitmap(getActivity(), selectItem.packageName);
                                 }
 
                                 UserAppListMoreActionDialog = new UserAppListMoreActionDialogFragment();
@@ -854,7 +854,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
         // TODO Auto-generated method stub
         if (item == 0)// google play
         {
-            if (Utilities.isAnyStoreInstalled(getActivity())) {
+            if (Utils.isAnyStoreInstalled(getActivity())) {
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appInfo.packageName)));
             } else {
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id="
@@ -862,13 +862,13 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
             }
         } else if (item == 1) // send
         {
-            String BACK_UP_FOLDER = Utilities.getBackUpAPKfileDir(getActivity());
-            String sdAPKfileName = Utilities.BackupApp(appInfo, BACK_UP_FOLDER);
+            String BACK_UP_FOLDER = Utils.getBackUpAPKfileDir(getActivity());
+            String sdAPKfileName = Utils.BackupApp(appInfo, BACK_UP_FOLDER);
             if (sdAPKfileName != null) {
                 ArrayList<AppInfo> list = new ArrayList<AppInfo>();
                 list.add(appInfo);
                 EventBus.getDefault().post(new AppBackupSuccEvent(list));
-                Utilities.chooseSendByApp(getActivity(), Uri.parse("file://" + sdAPKfileName));
+                Utils.chooseSendByApp(getActivity(), Uri.parse("file://" + sdAPKfileName));
             } else {
                 MainActivity.T(R.string.error);
             }
@@ -925,8 +925,8 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
         switch (ev.mAppState) {
             case APP_ADDED:
             case APP_REMOVED:
-                Utilities.DismissDialog(UserAppListMoreActionDialog);
-                Utilities.DismissDialog(SelectionDialog);
+                Utils.DismissDialog(UserAppListMoreActionDialog);
+                Utils.DismissDialog(SelectionDialog);
                 break;
             default:
                 break;

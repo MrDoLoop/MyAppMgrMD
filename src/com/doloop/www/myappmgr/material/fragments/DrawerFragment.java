@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.doloop.www.mayappmgr.material.events.DrawerItemClickEvent;
 import com.doloop.www.mayappmgr.material.events.DrawerItemClickEvent.DrawerItem;
 import com.doloop.www.myappmgr.material.utils.NanAppMark;
-import com.doloop.www.myappmgr.material.utils.Utilities;
+import com.doloop.www.myappmgr.material.utils.Utils;
 import com.doloop.www.myappmgrmaterial.R;
 
 import de.greenrobot.event.EventBus;
@@ -66,7 +66,7 @@ public class DrawerFragment extends Fragment {
             }
         });
         TextView verTv = (TextView) FragmentView.findViewById(R.id.ver);
-        verTv.setText(Utilities.getSelfVerName(getActivity()));
+        verTv.setText(Utils.getSelfVerName(getActivity()));
         return FragmentView;
     }
 

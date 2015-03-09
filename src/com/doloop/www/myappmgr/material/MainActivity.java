@@ -76,7 +76,7 @@ import com.doloop.www.myappmgr.material.utils.Constants;
 import com.doloop.www.myappmgr.material.utils.L;
 import com.doloop.www.myappmgr.material.utils.SharpStringComparator;
 import com.doloop.www.myappmgr.material.utils.SysAppListItem;
-import com.doloop.www.myappmgr.material.utils.Utilities;
+import com.doloop.www.myappmgr.material.utils.Utils;
 import com.doloop.www.myappmgr.material.widgets.MyProgressDialog;
 import com.doloop.www.myappmgr.material.widgets.MyViewPager;
 import com.doloop.www.myappmgr.material.widgets.PagerSlidingTabStrip;
@@ -503,7 +503,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
 
         searchMenuItem = menu.findItem(R.id.menu_search).setVisible(true);
         sortMenuItem = menu.findItem(R.id.menu_sort).setVisible(true);
-        processSortMenuIcon(Utilities.getUserAppListSortType(thisActivityCtx));
+        processSortMenuIcon(Utils.getUserAppListSortType(thisActivityCtx));
 
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
         searchView.setQueryHint(getString(R.string.search));
@@ -679,14 +679,14 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
             // List<ApplicationInfo> apps = pManager.getInstalledApplications(
             // PackageManager.GET_UNINSTALLED_PACKAGES |
             // PackageManager.GET_DISABLED_COMPONENTS);
-            sIsSdcardReady = Utilities.getAppIconCacheDir(thisActivityCtx) == null ? false : true;
+            sIsSdcardReady = Utils.getAppIconCacheDir(thisActivityCtx) == null ? false : true;
             if(!sIsSdcardReady){
                 PackageInfo packageInfo;
                 AppInfo tmpInfo;
                 for (int i = 0 ; i < fullAppListSize; i++) {
                     Log.i("ttt", "processing app " + (i + 1) + " / " + fullAppListSize);
                     packageInfo = packages.get(i);
-                    tmpInfo = Utilities.buildAppInfoEntry(thisActivityCtx, packageInfo, pManager, true);
+                    tmpInfo = Utils.buildAppInfoEntry(thisActivityCtx, packageInfo, pManager, true);
                     if (tmpInfo.isSysApp) {
                         SysAppFullList.add(tmpInfo);
                     } else {
@@ -703,7 +703,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
                     deleteAllAppInfoDone = true;
                 }
                 DaoSession appInfoSession = DaoUtils.getDaoSession(MainActivity.this, true);
-                if (Utilities.isAppListInDb(MainActivity.this)) {
+                if (Utils.isAppListInDb(MainActivity.this)) {
 
                     UserAppFullList =
                             (ArrayList<AppInfo>) appInfoSession.getAppInfoDao().queryBuilder()
@@ -726,20 +726,20 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
                         if (Constants.MY_PACKAGE_NAME.equals(UserAppFullList.get(i).packageName)) {
                             mySelfPos = i;
                         }
-                        Utilities.verifyApp(thisActivityCtx, UserAppFullList.get(i));
+                        Utils.verifyApp(thisActivityCtx, UserAppFullList.get(i));
                         UserAppFullList.get(i).appIconBytes = null;
                     }
                     // 重新建立自己
                     if (mySelfPos == -1) {
-                        UserAppFullList.add(Utilities.buildAppInfoEntry(thisActivityCtx, Constants.MY_PACKAGE_NAME));
+                        UserAppFullList.add(Utils.buildAppInfoEntry(thisActivityCtx, Constants.MY_PACKAGE_NAME));
                     } else {
                         UserAppFullList.set(mySelfPos,
-                                Utilities.buildAppInfoEntry(thisActivityCtx, Constants.MY_PACKAGE_NAME));
+                                Utils.buildAppInfoEntry(thisActivityCtx, Constants.MY_PACKAGE_NAME));
                     }
 
                     for (int i = 0, size = SysAppFullList.size(); i < size; i++, appCount++) {
                         publishProgress((appCount + 1));
-                        Utilities.verifyApp(thisActivityCtx, SysAppFullList.get(i));
+                        Utils.verifyApp(thisActivityCtx, SysAppFullList.get(i));
                         SysAppFullList.get(i).appIconBytes = null;
                     }
                 } else {
@@ -748,7 +748,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
 
                     if (!deleteAllAppInfoDone) {
                         appInfoSession.getAppInfoDao().deleteAll();
-                        Utilities.deleteAppIconDir(Utilities.getAppIconCacheDir(thisActivityCtx));
+                        Utils.deleteAppIconDir(Utils.getAppIconCacheDir(thisActivityCtx));
                     }
 
                     for (int i = 0 ; i < fullAppListSize; i++) {
@@ -756,7 +756,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
                         // publishProgress("" + (i + 1));
                         Log.i("ttt", "processing app " + (i + 1) + " / " + fullAppListSize);
                         packageInfo = packages.get(i);
-                        tmpInfo = Utilities.buildAppInfoEntry(thisActivityCtx, packageInfo, pManager, true);
+                        tmpInfo = Utils.buildAppInfoEntry(thisActivityCtx, packageInfo, pManager, true);
                         if (tmpInfo.isSysApp) {
                             SysAppFullList.add(tmpInfo);
                         } else {
@@ -773,7 +773,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
                             tmpInfo.appIconBytes = null;
                         }
                     }
-                    Utilities.setAppListInDb(thisActivityCtx, true);
+                    Utils.setAppListInDb(thisActivityCtx, true);
                 }
                 appInfoSession.clear();
             }
@@ -781,7 +781,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
             
 
             // 用户程序排序
-            Utilities.sortUserAppList(thisActivityCtx, UserAppFullList);
+            Utils.sortUserAppList(thisActivityCtx, UserAppFullList);
 
             // build 系统applist
             TreeMap<String, ArrayList<AppInfo>> sectionItemsTreeMap =
@@ -793,7 +793,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
             for (int i = 0; i < SysAppFullList.size(); i++) {
                 curAppInfo = SysAppFullList.get(i);
                 // curSectionStr = curAppInfo.appName.substring(0, 1).toUpperCase(Locale.getDefault());
-                curSectionStr = Utilities.GetFirstChar(curAppInfo.appName);// .substring(0,
+                curSectionStr = Utils.GetFirstChar(curAppInfo.appName);// .substring(0,
                                                                            // 1).toUpperCase(Locale.getDefault());
                 if (!Character.isLetter(curSectionStr.charAt(0)))// 其他的开始的字母，放入#未分类
                 {
@@ -850,7 +850,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
             }
 
             // list设置数据
-            usrAppsFrg.setListSortType(Utilities.getUserAppListSortType(thisActivityCtx));
+            usrAppsFrg.setListSortType(Utils.getUserAppListSortType(thisActivityCtx));
             usrAppsFrg.setData(UserAppFullList);
 
             sysAppsFrg.setData(SysAppFullListWapper, mSectionInListPosMap);
@@ -1030,7 +1030,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
 
                             DaoUtils.deleteAppInfo(thisActivityCtx, UserAppFullList.get(i));
 
-                            AppInfo tmpAppInfo = Utilities.buildAppInfoEntry(thisActivityCtx, NewPkgName);
+                            AppInfo tmpAppInfo = Utils.buildAppInfoEntry(thisActivityCtx, NewPkgName);
                             DaoUtils.insert(thisActivityCtx, tmpAppInfo);
 
                             newAppInfo = DaoUtils.getByPackageName(thisActivityCtx, NewPkgName);
@@ -1044,10 +1044,10 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
                 } else// 没有安装过, 重新来过
                 {
                     // startRefreshAppInfoList();
-                    newAppInfo = Utilities.buildAppInfoEntry(thisActivityCtx, NewPkgName);
+                    newAppInfo = Utils.buildAppInfoEntry(thisActivityCtx, NewPkgName);
                     DaoUtils.insert(thisActivityCtx, newAppInfo);
                     UserAppFullList.add(newAppInfo);
-                    Utilities.sortUserAppList(thisActivityCtx, UserAppFullList);
+                    Utils.sortUserAppList(thisActivityCtx, UserAppFullList);
 
                     // ((ActionSlideExpandableListView) usrAppsFrg.getListView()).collapse(false);
                     usrAppsFrg.notifyDataSetChanged();
@@ -1055,7 +1055,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
 
                 }
                 toast.setText(getString(R.string.new_app_installed) + " "
-                        + Utilities.pkgNameToAppName(thisActivityCtx, NewPkgName));
+                        + Utils.pkgNameToAppName(thisActivityCtx, NewPkgName));
                 toast.show();
                 EventBus.getDefault().post(new AppUpdateEvent(AppState.APP_ADDED,NewPkgName,newAppInfo));
                 // startRefreshAppInfoList();
@@ -1097,7 +1097,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
                 // updateSlidingTabTitle(Constants.USR_APPS_TAB_POS);
             } else if (intent.getAction().equals(Intent.ACTION_PACKAGE_CHANGED)) {
                 String PkgName = intent.getDataString().substring(8);
-                String appName = Utilities.pkgNameToAppName(thisActivityCtx, PkgName);
+                String appName = Utils.pkgNameToAppName(thisActivityCtx, PkgName);
                 toast.setText("PACKAGE_CHANGED: " + appName);
                 toast.show();
                 EventBus.getDefault().post(new AppUpdateEvent(AppState.APP_CHANGED,PkgName,null));
@@ -1173,7 +1173,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
             AppList = list;
             AppListSize = list.size();
             SendAfterBackup = sendAfterBackup;
-            BACK_UP_FOLDER = Utilities.getBackUpAPKfileDir(thisActivityCtx);
+            BACK_UP_FOLDER = Utils.getBackUpAPKfileDir(thisActivityCtx);
         }
 
         @Override
@@ -1225,7 +1225,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
                 dialogInfo[1] = tmpAppInfo.appName;
                 publishProgress(dialogInfo);
 
-                String sdAPKfileName = Utilities.BackupApp(tmpAppInfo, BACK_UP_FOLDER);
+                String sdAPKfileName = Utils.BackupApp(tmpAppInfo, BACK_UP_FOLDER);
                 if (sdAPKfileName != null) {
                     SuccAppList.add(tmpAppInfo);
                     if (SendAfterBackup) {
@@ -1267,9 +1267,9 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
             } else {// 没有错误发生
                 if (SendAfterBackup) {
                     if (SnedApkUris.size() > 1) {
-                        Utilities.chooseSendByApp(thisActivityCtx, SnedApkUris);
+                        Utils.chooseSendByApp(thisActivityCtx, SnedApkUris);
                     } else {
-                        Utilities.chooseSendByApp(thisActivityCtx, SnedApkUris.get(0));
+                        Utils.chooseSendByApp(thisActivityCtx, SnedApkUris.get(0));
                     }
                 } else {
                     toast.setText(R.string.backup_success);
@@ -1291,8 +1291,8 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
             case Constants.USR_APPS_TAB_POS:
                 if (usrAppsFrg.getListSortType() == which)
                     return;
-                Utilities.setUserAppListSortType(thisActivityCtx, which);
-                Utilities.sortUserAppList(thisActivityCtx, UserAppFullList);
+                Utils.setUserAppListSortType(thisActivityCtx, which);
+                Utils.sortUserAppList(thisActivityCtx, UserAppFullList);
                 processSortMenuIcon(which);
                 
                 usrAppsFrg.setListSortType(which);
@@ -1334,7 +1334,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
     }
     
     private void DismissAllDialog(){
-        Utilities.DismissDialog(SortTypeDialog);
+        Utils.DismissDialog(SortTypeDialog);
         //(UserAppListMoreActionDialog);
         //DismissDialog(SelectionDialog);
     }

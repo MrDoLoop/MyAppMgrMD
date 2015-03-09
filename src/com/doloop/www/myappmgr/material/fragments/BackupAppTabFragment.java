@@ -22,7 +22,7 @@ import com.doloop.www.myappmgr.material.adapters.BackupAppListAdapter.BackupAppL
 import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.utils.BackupAppListLoader;
 import com.doloop.www.myappmgr.material.utils.BackupAppListLoader.LoaderBackgroundMoreWorkListener;
-import com.doloop.www.myappmgr.material.utils.Utilities;
+import com.doloop.www.myappmgr.material.utils.Utils;
 import com.doloop.www.myappmgrmaterial.R;
 
 import de.greenrobot.event.EventBus;
@@ -281,7 +281,7 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
             
             // 检查是否在显示的list中
             for (AppInfo aInfo : ev.AppInfoList) {
-                boolean found = Utilities.isAppInfoInList(aInfo, mAdapter.getDisplayList());
+                boolean found = Utils.isAppInfoInList(aInfo, mAdapter.getDisplayList());
                /* for (int i = 0, size = mAdapter.getDisplayList().size(); i < size; i++) {
                     AppInfo appInfo = mAdapter.getDisplayList().get(i);
                     if (aInfo.packageName.equals(appInfo.packageName)) {
@@ -297,7 +297,7 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
         } else {// loading 还没完成
             for (AppInfo aInfo : ev.AppInfoList) {
                 // 检查是否在pending的list中存在
-                boolean found = Utilities.isAppInfoInList(aInfo, mPendingNewAppInfo);
+                boolean found = Utils.isAppInfoInList(aInfo, mPendingNewAppInfo);
                /* for (int i = 0; i < mPendingNewAppInfo.size(); i++) {
                     AppInfo appInfo = mPendingNewAppInfo.get(i);
                     if (aInfo.packageName.equals(appInfo.packageName)) {
@@ -379,7 +379,7 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
          */
         if (!mPendingNewAppInfo.isEmpty()) {
             for (int i = 0; i < mPendingNewAppInfo.size(); i++) {
-                boolean found = Utilities.isAppInfoInList(mPendingNewAppInfo.get(i), listReadyToDeliver);
+                boolean found = Utils.isAppInfoInList(mPendingNewAppInfo.get(i), listReadyToDeliver);
                /* for (AppInfo appInfo : listReadyToDeliver) {
                     if (appInfo.packageName.equals(mPendingNewAppInfo.get(i).packageName)) {
                         found = true;

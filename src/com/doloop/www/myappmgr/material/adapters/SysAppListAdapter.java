@@ -206,7 +206,7 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
         TextView sectionTextView;
     }
 
-    private static class AppItemViewHolder implements Target {
+    static class AppItemViewHolder implements Target {
         TextView AppNameTextView;
         TextView AppVersionTextView;
         ImageView AppIconImageView;
