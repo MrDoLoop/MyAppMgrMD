@@ -45,4 +45,5 @@
     <string name="sdcard_changed">Sdcard有变化，请重启！</string>
     <string name="cancel">取消</string>
     <string name="ok">确定</string>
+    <string name="version_name">初心版 1.0</string>
 </resources>
