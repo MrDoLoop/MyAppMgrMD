@@ -720,7 +720,7 @@ public class Utils {
     {
         try {
             PackageInfo pi = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-            return "v "+pi.versionName;
+            return pi.versionName;
         } catch (NameNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
