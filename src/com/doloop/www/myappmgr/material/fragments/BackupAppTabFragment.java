@@ -103,7 +103,7 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
      */
     private void checkIfEmpty() {
         if (emptyView != null && mAdapter != null) {
-            if (mAdapter.getItemCount() > 0) {
+            if (mAdapter.getAppItemCount() > 0) {
                 emptyView.setVisibility(View.GONE);
             } else {
                 emptyView.setVisibility(View.VISIBLE);
@@ -122,14 +122,30 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
 
         emptyView = FragmentView.findViewById(R.id.emptyView);
         mRecyclerView = (RecyclerView) FragmentView.findViewById(R.id.recyclerview);
-        mRecyclerView.setHasFixedSize(true);
+        //mRecyclerView.setHasFixedSize(true);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mAdapter = new BackupAppListAdapter(mContext, mAppList);
-        mRecyclerView.setAdapter(mAdapter);
+        //mRecyclerView.setAdapter(mAdapter);
         // checkIfEmpty();
+        
+        //mAdapter.setShouldClipView(true);
+        View header = inflater.inflate(R.layout.backup_list_header, mRecyclerView, false);
+        mAdapter.setParallaxHeader(header, mRecyclerView);
+        //mAdapter.setData(mAppList);
+        
+        
+        //HeaderLayoutManagerFixed layoutManagerFixed = new HeaderLayoutManagerFixed(getActivity());
+        //mRecyclerView.setLayoutManager(layoutManagerFixed);
+        
+        //mAdapter.setShouldClipView(true);
+        //layoutManagerFixed.setHeaderIncrementFixer(header);
+        
+        
+        
+        mRecyclerView.setAdapter(mAdapter);
         return FragmentView;
         // return null;
     }
@@ -255,10 +271,10 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
     public String getFragmentTitle() {
         // TODO Auto-generated method stub
 
-        if (mAdapter == null || mAdapter.getItemCount() == 0) {
+        if (mAdapter == null || mAdapter.getAppItemCount() == 0) {
             return mContext.getString(R.string.backup_apps);
         } else {
-            return mContext.getString(R.string.backup_apps) + " (" + mAdapter.getItemCount() + ")";
+            return mContext.getString(R.string.backup_apps) + " (" + mAdapter.getAppItemCount() + ")";
         }
     }
 
@@ -326,8 +342,8 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
         // TODO Auto-generated method stub
         mAppList.clear();
         mAppList = data;
-
-        mAdapter = new BackupAppListAdapter(mContext, mAppList);
+        
+        //mAdapter = new BackupAppListAdapter(mContext, mAppList);
         mDataSetObserver = new AdapterDataObserver() {
 
             @Override
@@ -353,7 +369,8 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
         };
         mAdapter.registerAdapterDataObserver(mDataSetObserver);
         mAdapter.setUserAppListDataSetChangedListener((BackupAppListDataSetChangedListener) mContext);
-        mRecyclerView.setAdapter(mAdapter);
+        //mRecyclerView.setAdapter(mAdapter);
+        mAdapter.setData(mAppList);
         checkIfEmpty();
         mAdapter.getBackupAppListDataSetChangedListener().OnBackupAppListDataSetChanged();
         //mLoadingView.setVisibility(View.GONE);
