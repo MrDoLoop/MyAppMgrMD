@@ -107,7 +107,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
             case SortTypeDialogFragment.LIST_SORT_TYPE_LAST_MOD_TIME_ASC:
             case SortTypeDialogFragment.LIST_SORT_TYPE_LAST_MOD_TIME_DES:
                 int padding =
-                        (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources()
+                        (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 7, getResources()
                                 .getDisplayMetrics());
                 LayoutParams paramsWrapContent = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
                 paramsWrapContent.alignWithParent = true;
