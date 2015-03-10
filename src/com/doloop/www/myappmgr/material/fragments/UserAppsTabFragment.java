@@ -51,12 +51,12 @@ import com.doloop.www.mayappmgr.material.events.BackupAppEvent;
 import com.doloop.www.mayappmgr.material.events.ViewNewBackupAppEvent;
 import com.doloop.www.myappmgr.material.MainActivity;
 import com.doloop.www.myappmgr.material.adapters.UserAppListAdapter;
-import com.doloop.www.myappmgr.material.adapters.UserAppListAdapter.IconClickListener;
 import com.doloop.www.myappmgr.material.adapters.UserAppListAdapter.UserAppListDataSetChangedListener;
 //import com.doloop.www.myappmgr.material.adapters.UserAppListAdapter.UserAppListFilterResultListener;
 import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.fragments.SelectionDialogFragment.SelectionDialogClickListener;
 import com.doloop.www.myappmgr.material.fragments.UserAppListMoreActionDialogFragment.UserAppMoreActionListItemClickListener;
+import com.doloop.www.myappmgr.material.interfaces.IconClickListener;
 import com.doloop.www.myappmgr.material.utils.Utils;
 import com.doloop.www.myappmgrmaterial.R;
 import com.nispok.snackbar.Snackbar;
@@ -625,11 +625,13 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
         // mItemLongClickListener.onUserAppItemLongClick(parent, view, position, id);
 
         if (isInActoinMode) {
-            
-            SelectionDialog = new SelectionDialogFragment();
-            SelectionDialog.setArgs(mAdapter.getItem(position), position, mAdapter.getCount(), UserAppsTabFragment.this);
-            SelectionDialog.show(getActivity().getSupportFragmentManager(), SelectionDialogFragment.DialogTag);
-            return true;
+            if(mAdapter.getCount() > 1){//只有一项的时候不显示选择对话框
+                SelectionDialog = new SelectionDialogFragment();
+                SelectionDialog.setArgs(mAdapter.getItem(position), position, position == 0 ? true:false, position == mAdapter.getCount()-1 ? true:false, UserAppsTabFragment.this);
+                SelectionDialog.show(getActivity().getSupportFragmentManager(), SelectionDialogFragment.DialogTag);
+                return true;
+            } 
+            return false;
         } else {
             view.findViewById(R.id.app_icon).performClick();
             return true;
@@ -776,7 +778,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                                     break;
                                 case R.id.menu_backup:
                                     if (mAdapter.getSelectedItemCnt() == 0) {
-
+                                        MainActivity.T(R.string.nothing_selected);
                                     } else {
                                         EventBus.getDefault().post(
                                                 new BackupAppEvent(mAdapter.getSelectedItemList(), false));
@@ -786,7 +788,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                                     break;
                                 case R.id.menu_send:
                                     if (mAdapter.getSelectedItemCnt() == 0) {
-
+                                        MainActivity.T(R.string.nothing_selected);
                                     } else {
                                         EventBus.getDefault().post(
                                                 new BackupAppEvent(mAdapter.getSelectedItemList(), true));
@@ -795,20 +797,24 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                                     break;
 
                                 case R.id.menu_uninstall:
-                                    AppInfo tmpAppInfo = null;
-                                    ArrayList<AppInfo> list = mAdapter.getSelectedItemList();
-                                    for (int i = 0; i < list.size(); i++) {
-                                        tmpAppInfo = list.get(i);
+                                    if (mAdapter.getSelectedItemCnt() == 0) {
+                                        MainActivity.T(R.string.nothing_selected);
+                                    } else {
+                                        AppInfo tmpAppInfo = null;
+                                        ArrayList<AppInfo> list = mAdapter.getSelectedItemList();
+                                        for (int i = 0; i < list.size(); i++) {
+                                            tmpAppInfo = list.get(i);
 
-                                        Uri packageUri = Uri.parse("package:" + tmpAppInfo.packageName);
-                                        Intent uninstallIntent;
-                                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-                                            uninstallIntent = new Intent(Intent.ACTION_DELETE, packageUri);
-                                        } else {
-                                            uninstallIntent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE, packageUri);
+                                            Uri packageUri = Uri.parse("package:" + tmpAppInfo.packageName);
+                                            Intent uninstallIntent;
+                                            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                                                uninstallIntent = new Intent(Intent.ACTION_DELETE, packageUri);
+                                            } else {
+                                                uninstallIntent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE, packageUri);
+                                            }
+                                            startActivity(uninstallIntent);
+
                                         }
-                                        startActivity(uninstallIntent);
-
                                     }
                                     break;
                             }

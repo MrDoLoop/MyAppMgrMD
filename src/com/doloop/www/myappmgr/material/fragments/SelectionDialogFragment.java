@@ -39,7 +39,8 @@ public class SelectionDialogFragment extends DialogFragment {
 
     private AppInfo mAppinfo;
     private int mCurPos;
-    private int mListTotleSize;
+    private boolean mListFirst;
+    private boolean mListLast;
 
     /*
      * public static SelectionDialogFragment newInstance(AppInfo appInfo, int curPos, int listTotleSize) {
@@ -55,10 +56,11 @@ public class SelectionDialogFragment extends DialogFragment {
      * return fragmentInstance; }
      */
 
-    public void setArgs(AppInfo appInfo, int curPos, int listTotleSize, SelectionDialogClickListener l) {
+    public void setArgs(AppInfo appInfo, int curPos, boolean isListFirst, boolean isListLast, SelectionDialogClickListener l) {
         mAppinfo = appInfo;
         mCurPos = curPos;
-        mListTotleSize = listTotleSize;
+        mListFirst = isListFirst;
+        mListLast = isListLast;
         mSelectionDialogClickListener = l;
     }
 
@@ -78,7 +80,7 @@ public class SelectionDialogFragment extends DialogFragment {
          * int[] arguments = getArguments().getIntArray(ArgumentsTag); //0当前位置, 1,列表长度 final int curPos = arguments[0];
          * final int listTotleSize = arguments[1];
          */
-        if (mCurPos == 0)// 列表第一项
+        if (mListFirst)// 列表第一项
         {
             selectionOpt = new String[2];
             selectionOpt[0] = getActivity().getString(R.string.select_all_below);
@@ -87,7 +89,7 @@ public class SelectionDialogFragment extends DialogFragment {
             selectionOptIcon = new int[2];
             selectionOptIcon[0] = R.drawable.select_all_below;
             selectionOptIcon[1] = R.drawable.deselect_all_below;
-        } else if (mCurPos == mListTotleSize - 1)// 列表最后一项
+        } else if (mListLast)// 列表最后一项
         {
             selectionOpt = new String[2];
             selectionOpt[0] = getActivity().getString(R.string.select_all_above);
@@ -126,7 +128,7 @@ public class SelectionDialogFragment extends DialogFragment {
                     if (selectionOpt.length == 4) {
                         mSelectionDialogClickListener.onSelectionDialogClick(dialog, position, mCurPos);
                     } else if (selectionOpt.length == 2) {
-                        if (mCurPos == 0)// 列表第一项
+                        if (mListFirst)// 列表第一项
                         {
                             if (position == 0) {
                                 mSelectionDialogClickListener.onSelectionDialogClick(dialog, SELECT_ALL_BELOW, mCurPos);
@@ -134,7 +136,7 @@ public class SelectionDialogFragment extends DialogFragment {
                                 mSelectionDialogClickListener.onSelectionDialogClick(dialog, DESELECT_ALL_BELOW,
                                         mCurPos);
                             }
-                        } else if (mCurPos == mListTotleSize - 1)// 列表最后一项
+                        } else if (mListLast)// 列表最后一项
                         {
                             if (position == 0) {
                                 mSelectionDialogClickListener.onSelectionDialogClick(dialog, SELECT_ALL_ABOVE, mCurPos);

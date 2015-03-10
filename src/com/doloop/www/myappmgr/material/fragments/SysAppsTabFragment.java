@@ -5,9 +5,12 @@ import java.util.TreeMap;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.SearchView;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -27,11 +30,16 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.doloop.www.mayappmgr.material.events.ActionModeToggleEvent;
 import com.doloop.www.mayappmgr.material.events.AppBackupSuccEvent;
+import com.doloop.www.mayappmgr.material.events.AppUpdateEvent;
+import com.doloop.www.mayappmgr.material.events.BackupAppEvent;
 import com.doloop.www.mayappmgr.material.events.ViewNewBackupAppEvent;
 import com.doloop.www.myappmgr.material.MainActivity;
 import com.doloop.www.myappmgr.material.adapters.SysAppListAdapter;
 import com.doloop.www.myappmgr.material.adapters.SysAppListAdapter.SysAppListDataSetChangedListener;
+import com.doloop.www.myappmgr.material.fragments.SelectionDialogFragment.SelectionDialogClickListener;
+import com.doloop.www.myappmgr.material.interfaces.IconClickListener;
 import com.doloop.www.myappmgr.material.utils.SysAppListItem;
 import com.doloop.www.myappmgr.material.utils.Utils;
 import com.doloop.www.myappmgr.material.widgets.IndexBarView;
@@ -43,7 +51,7 @@ import com.nispok.snackbar.listeners.ActionClickListener;
 
 import de.greenrobot.event.EventBus;
 
-public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLongClickListener{
+public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLongClickListener, IconClickListener,SelectionDialogClickListener {
     private SysAppListAdapter mAdapter;
     private PinnedSectionListView mPinnedSectionListView;
     private static Context mContext;
@@ -52,18 +60,20 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
     private MenuItem searchMenuItem;
     private DataSetObserver mDataSetObserver;
     private View mEmptyView;
+    public static boolean isInActoinMode = false;
+    private SelectionDialogFragment SelectionDialog;
 
-   /* private OnSysAppListItemSelectedListener mListener;
-
-    // Container Activity must implement this interface
-    public interface OnSysAppListItemSelectedListener {
-        public void onSysAppItemClick(View v, int position);
-    }*/
+    /*
+     * private OnSysAppListItemSelectedListener mListener;
+     * 
+     * // Container Activity must implement this interface public interface OnSysAppListItemSelectedListener { public
+     * void onSysAppItemClick(View v, int position); }
+     */
 
     private IndexBarView mIndexBarView;
 
     private static SysAppsTabFragment uniqueInstance = null;
-    
+
     public SysAppsTabFragment() {
 
     }
@@ -90,7 +100,7 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
         mIndexBarView = (IndexBarView) FragmentView.findViewById(R.id.indexBarView);
         mPinnedSectionListView = (PinnedSectionListView) FragmentView.findViewById(android.R.id.list);
         mEmptyView = FragmentView.findViewById(R.id.emptyView);
-        
+
         mPinnedSectionListView.setOnItemLongClickListener(this);
         PopTextView = (TextView) FragmentView.findViewById(R.id.popTextView);
         mIndexBarView.setOnIndexItemClickListener(new OnIndexItemClickListener() {
@@ -115,20 +125,19 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
         return mPinnedSectionListView;
     }
 
-    public void filterList(String str){
+    public void filterList(String str) {
         mAdapter.getFilter().filter(str);
     }
-    
+
     @Override
     public ListAdapter getListAdapter() {
         // TODO Auto-generated method stub
         return mAdapter;
     }
 
-    /*public void ResetIndexBar() {
-        PopTextView.setVisibility(View.INVISIBLE);
-        mIndexBarView.InitIndexBar();
-    }*/
+    /*
+     * public void ResetIndexBar() { PopTextView.setVisibility(View.INVISIBLE); mIndexBarView.InitIndexBar(); }
+     */
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -142,31 +151,22 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
 
         // setListShown(false);
         // 监听back按钮事件
-       /* getView().setFocusableInTouchMode(true);
-        getView().requestFocus();
-        getView().setOnKeyListener(new OnKeyListener() {
-
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                // TODO Auto-generated method stub
-                if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                    if (keyCode == KeyEvent.KEYCODE_BACK) {
-                        if (MenuItemCompat.isActionViewExpanded(searchMenuItem)) {
-                            MenuItemCompat.collapseActionView(searchMenuItem);
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            }
-        });*/
+        /*
+         * getView().setFocusableInTouchMode(true); getView().requestFocus(); getView().setOnKeyListener(new
+         * OnKeyListener() {
+         * 
+         * @Override public boolean onKey(View v, int keyCode, KeyEvent event) { // TODO Auto-generated method stub if
+         * (event.getAction() == KeyEvent.ACTION_DOWN) { if (keyCode == KeyEvent.KEYCODE_BACK) { if
+         * (MenuItemCompat.isActionViewExpanded(searchMenuItem)) { MenuItemCompat.collapseActionView(searchMenuItem);
+         * return true; } } } return false; } });
+         */
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // TODO Auto-generated method stub
         super.onCreateOptionsMenu(menu, inflater);
-        //inflater.inflate(R.menu.sys_applist_menu, menu);
+        // inflater.inflate(R.menu.sys_applist_menu, menu);
 
         searchMenuItem = menu.findItem(R.id.menu_search).setVisible(true);
 
@@ -273,6 +273,7 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
         mPinnedSectionListView = null;
         mContext = null;
         uniqueInstance = null;
+        isInActoinMode = false;
     }
 
     // Called when the Fragment has been detached from its parent Activity.
@@ -293,8 +294,8 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
     }
 
     public void setData(ArrayList<SysAppListItem> datalist, TreeMap<String, Integer> map) {
-        mAdapter = new SysAppListAdapter(mContext, datalist, map);
-        mAdapter.setSysAppListDataSetChangedListener((SysAppListDataSetChangedListener)mContext);
+        mAdapter = new SysAppListAdapter(mContext, datalist, map, this);
+        mAdapter.setSysAppListDataSetChangedListener((SysAppListDataSetChangedListener) mContext);
         mPinnedSectionListView.setAdapter(mAdapter);
         mIndexBarView.setExistIndexArray(new ArrayList<String>(map.keySet()));
         mDataSetObserver = new DataSetObserver() {
@@ -303,8 +304,8 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
             public void onChanged() {
                 // TODO Auto-generated method stub
                 super.onChanged();
-                mAdapter.getSysAppListDataSetChangedListener().OnSysAppListDataSetChanged(mAdapter.getSysAppListWapperDisplay(),
-                        mAdapter.getSectionInListPosMapDisplay());
+                mAdapter.getSysAppListDataSetChangedListener().OnSysAppListDataSetChanged(
+                        mAdapter.getSysAppListWapperDisplay(), mAdapter.getSectionInListPosMapDisplay());
             }
 
         };
@@ -315,8 +316,8 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
     public void resetIndexBarView() {
         mIndexBarView.reset();
     }
-    
-    public void setExistIndexArray(ArrayList<String> list){
+
+    public void setExistIndexArray(ArrayList<String> list) {
         mIndexBarView.setExistIndexArray(list);
     }
 
@@ -330,16 +331,21 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
             if (item.type == SysAppListItem.LIST_SECTION) {
                 getListView().setSelection(position);
             } else if (item.type == SysAppListItem.APP_ITEM) {
-                String toastMsg = item.appinfo.appName + " \n"
-                        + item.appinfo.packageName + " \n"
-                        + item.appinfo.apkFilePath;              
-                MainActivity.T(toastMsg);              
-             // 滚动text
-                TextView appVersion = (TextView) v.findViewById(R.id.app_version);
-                if (appVersion.isSelected()) {
-                    appVersion.setSelected(false);
+
+                if (isInActoinMode) {
+                    mAdapter.toggleSelection(position, true);
+                    updateActionModeTitle();
+                } else {
+                    String toastMsg =
+                            item.appinfo.appName + " \n" + item.appinfo.packageName + " \n" + item.appinfo.apkFilePath;
+                    MainActivity.T(toastMsg);
+                    // 滚动text
+                    TextView appVersion = (TextView) v.findViewById(R.id.app_version);
+                    if (appVersion.isSelected()) {
+                        appVersion.setSelected(false);
+                    }
+                    appVersion.setSelected(true);
                 }
-                appVersion.setSelected(true);               
             }
         } else {
             MainActivity.T("SysApp Item " + position);
@@ -362,10 +368,28 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
          */
     }
 
-    public void listBackToTop(){
+    public void updateActionModeTitle() {
+        MenuItem selItem = MainActivity.sActionMode.getMenu().findItem(R.id.menu_selection);
+        if (mAdapter.getSelectedItemCnt() > 0) {
+            MainActivity.sActionMode.setTitle(mAdapter.getSelectedItemCnt() + " / " + mAdapter.getAppItemsCount());
+            if (mAdapter.getSelectedItemCnt() == mAdapter.getAppItemsCount()) {
+                selItem.setTitle(R.string.deselect_all);
+                selItem.setIcon(R.drawable.ic_deselect_all_white);
+            } else {
+                selItem.setTitle(R.string.select_all);
+                selItem.setIcon(R.drawable.ic_select_all_white);
+            }
+        } else {
+            MainActivity.sActionMode.setTitle("");
+            selItem.setTitle(R.string.select_all);
+            selItem.setIcon(R.drawable.ic_select_all_white);
+        }
+    }
+
+    public void listBackToTop() {
         mPinnedSectionListView.smoothScrollToPosition(0);
     }
-    
+
     @Override
     public void setFragmentTitle(String title) {
         // TODO Auto-generated method stub
@@ -382,69 +406,213 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
         }
     }
 
-    //长按
+    // 长按
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         // TODO Auto-generated method stub
         SysAppListItem item = mAdapter.getItem(position);
-        if(mAdapter.getItemViewType(position) == SysAppListItem.APP_ITEM){
-            //备份app
-            
-            String mBackUpFolder = Utils.getBackUpAPKfileDir(mContext);
-            String sdAPKfileName = Utils.BackupApp(item.appinfo, mBackUpFolder);
-            if (sdAPKfileName != null) {
-                // MainActivity.T(R.string.backup_success);
-                SpannableString spanString =
-                        new SpannableString(item.appinfo.appName + " "
-                                + mContext.getString(R.string.backup_success));
-                spanString.setSpan(new UnderlineSpan(), 0, item.appinfo.appName.length(),
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                spanString.setSpan(
-                        new ForegroundColorSpan(mContext.getResources().getColor(
-                                R.color.theme_blue_light)), 0, item.appinfo.appName.length(),
-                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-                Snackbar mSnackbar = MainActivity.getSnackbar(false);
-                boolean mAniText = false;
-                boolean mShowAniSnackBar = true;
-                if (mSnackbar != null) {
-                    if (mSnackbar.isShowing()) {
-                        if(!spanString.toString().equalsIgnoreCase(mSnackbar.getText().toString())){
-                            mAniText = true;
-                        }                                         
-                        mShowAniSnackBar = false;
-                        mSnackbar.dismissAnimation(false);
-                        mSnackbar.dismiss();
-                    }
-                    mSnackbar = MainActivity.getSnackbar(true);
+        if (mAdapter.getItemViewType(position) == SysAppListItem.APP_ITEM) {
+            if (isInActoinMode) {
+                if(mAdapter.getCount() > 2){//只有一项的时候不显示选择对话框
+                    SelectionDialog = new SelectionDialogFragment();
+                    SelectionDialog.setArgs(item.appinfo, position,position==1?true:false, position == mAdapter.getCount()-1?true:false,
+                            SysAppsTabFragment.this);
+                    SelectionDialog.show(getActivity().getSupportFragmentManager(), SelectionDialogFragment.DialogTag);
+                    return true;
                 }
-                mSnackbar.actionLabel(R.string.view)
-                .actionListener(new ActionClickListener() {
-                    @Override
-                    public void onActionClicked(Snackbar snackbar) {
-                        EventBus.getDefault().post(new ViewNewBackupAppEvent());
-                    }
-                })
-                .actionColorList(mContext.getResources().getColorStateList(R.color.snackbar_action_sel))
-                .swipeToDismiss(false)
-                .showAnimation(mShowAniSnackBar)
-                .dismissAnimation(true)
-                .animationText(mAniText)
-                .duration(Snackbar.SnackbarDuration.LENGTH_SHORT)
-                .attachToAbsListView(mPinnedSectionListView)
-                .text(spanString)
-                .show(getActivity());
-
-                EventBus.getDefault().post(new AppBackupSuccEvent(item.appinfo));
+                return false;
             } else {
-                MainActivity.T(R.string.error);
+                view.findViewById(R.id.app_icon).performClick();
+                return true;
             }
-
-            return true;
-        }
-        else{
+        } else {
             return false;
         }
+    }
+
+    // 备份app
+    private void backupApp(SysAppListItem item) {
+        String mBackUpFolder = Utils.getBackUpAPKfileDir(mContext);
+        String sdAPKfileName = Utils.BackupApp(item.appinfo, mBackUpFolder);
+        if (sdAPKfileName != null) {
+            // MainActivity.T(R.string.backup_success);
+            SpannableString spanString =
+                    new SpannableString(item.appinfo.appName + " " + mContext.getString(R.string.backup_success));
+            spanString.setSpan(new UnderlineSpan(), 0, item.appinfo.appName.length(),
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spanString.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color.theme_blue_light)), 0,
+                    item.appinfo.appName.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            Snackbar mSnackbar = MainActivity.getSnackbar(false);
+            boolean mAniText = false;
+            boolean mShowAniSnackBar = true;
+            if (mSnackbar != null) {
+                if (mSnackbar.isShowing()) {
+                    if (!spanString.toString().equalsIgnoreCase(mSnackbar.getText().toString())) {
+                        mAniText = true;
+                    }
+                    mShowAniSnackBar = false;
+                    mSnackbar.dismissAnimation(false);
+                    mSnackbar.dismiss();
+                }
+                mSnackbar = MainActivity.getSnackbar(true);
+            }
+            mSnackbar.actionLabel(R.string.view).actionListener(new ActionClickListener() {
+                @Override
+                public void onActionClicked(Snackbar snackbar) {
+                    EventBus.getDefault().post(new ViewNewBackupAppEvent());
+                }
+            }).actionColorList(mContext.getResources().getColorStateList(R.color.snackbar_action_sel))
+                    .swipeToDismiss(false).showAnimation(mShowAniSnackBar).dismissAnimation(true)
+                    .animationText(mAniText).duration(Snackbar.SnackbarDuration.LENGTH_SHORT)
+                    .attachToAbsListView(mPinnedSectionListView).text(spanString).show(getActivity());
+
+            EventBus.getDefault().post(new AppBackupSuccEvent(item.appinfo));
+        }
+    }
+
+    @Override
+    public void OnIconClickListener(int position) {
+        // TODO Auto-generated method stub
+        if (isInActoinMode) {
+            // mAdapter.toggleSelection(position,true);
+            // updateActionModeTitle();
+        } else {
+            MainActivity.sActionMode =
+                    ((ActionBarActivity) getActivity()).startSupportActionMode(new ActionMode.Callback() {
+
+                        @Override
+                        public boolean onActionItemClicked(ActionMode mode, MenuItem menuItem) {
+                            // TODO Auto-generated method stub
+                            switch (menuItem.getItemId()) {
+                                case R.id.menu_selection:
+                                    if (mAdapter.getSelectedItemCnt() < mAdapter.getAppItemsCount()) {// 选择全部
+                                        mAdapter.selectAll();
+                                        // menuItem.setTitle(R.string.deselect_all);
+                                        // menuItem.setIcon(R.drawable.ic_action_deselect_all);
+                                    } else {// 都不选
+                                        mAdapter.deselectAll();
+                                        // menuItem.setTitle(R.string.select_all);
+                                        // menuItem.setIcon(R.drawable.ic_select_all_white);
+                                    }
+                                    updateActionModeTitle();
+                                    break;
+                                case R.id.menu_backup:
+                                    if (mAdapter.getSelectedItemCnt() == 0) {
+                                        MainActivity.T(R.string.nothing_selected);
+                                    } else {
+                                        EventBus.getDefault().post(
+                                                new BackupAppEvent(mAdapter.getSelectedItemList(), false));
+
+                                    }
+
+                                    break;
+                                case R.id.menu_send:
+                                    if (mAdapter.getSelectedItemCnt() == 0) {
+                                        MainActivity.T(R.string.nothing_selected);
+                                    } else {
+                                        EventBus.getDefault().post(
+                                                new BackupAppEvent(mAdapter.getSelectedItemList(), true));
+
+                                    }
+                                    break;
+                            }
+                            return true;
+                        }
+
+                        @Override
+                        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                            // TODO Auto-generated method stub
+                            MenuInflater inflater = getActivity().getMenuInflater();
+                            inflater.inflate(R.menu.sys_app_action_menu, menu);
+                            isInActoinMode = true;
+                            EventBus.getDefault().post(new ActionModeToggleEvent(true));
+                            return true;
+                        }
+
+                        @Override
+                        public void onDestroyActionMode(ActionMode mode) {
+                            // TODO Auto-generated method stub
+                            mAdapter.deselectAll();
+                            MainActivity.sActionMode = null;
+                            isInActoinMode = false;
+                            EventBus.getDefault().post(new ActionModeToggleEvent(false));
+
+                        }
+
+                        @Override
+                        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                            // TODO Auto-generated method stub
+                            return false;
+                        }
+                    });
+
+            mAdapter.setSelectedItem(position, true, true);
+            updateActionModeTitle();
+        }
+    }
+
+    public void onEventMainThread(AppUpdateEvent ev) {
+        switch (ev.mAppState) {
+            case APP_ADDED:
+            case APP_REMOVED:
+                Utils.DismissDialog(SelectionDialog);
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public void onSelectionDialogClick(DialogInterface dialog, int selectType, int curPos) {
+        // TODO Auto-generated method stub
+        switch (selectType) {
+            case SelectionDialogFragment.SELECT_ALL_ABOVE:
+                for (int i = 0; i < curPos; i++) {
+                    if(mAdapter.isAppItem(i)){
+                        if (!mAdapter.getItem(i).appinfo.selected) {
+                            //mAdapter.getItem(i).selected = true;
+                            mAdapter.setSelectedItem(i, true, false);
+                        }
+                    }   
+                }
+                break;
+            case SelectionDialogFragment.DESELECT_ALL_ABOVE:
+                for (int i = 0; i < curPos; i++) {
+                    if(mAdapter.isAppItem(i)){
+                        if (mAdapter.getItem(i).appinfo.selected) {
+                            //mAdapter.getItem(i).selected = false;
+                            mAdapter.setSelectedItem(i, false, false);
+                        }
+                    }
+                }
+                break;
+            case SelectionDialogFragment.SELECT_ALL_BELOW:
+                for (int i = curPos + 1; i < mAdapter.getCount(); i++) {
+                    if(mAdapter.isAppItem(i)){
+                        if (!mAdapter.getItem(i).appinfo.selected) {
+                            //mAdapter.getItem(i).selected = true;
+                            mAdapter.setSelectedItem(i, true, false);
+                            //UserAppActionModeSelectCnt++;
+                        }
+                    } 
+                }
+                break;
+            case SelectionDialogFragment.DESELECT_ALL_BELOW:
+                for (int i = curPos + 1; i < mAdapter.getCount(); i++) {
+                    if(mAdapter.isAppItem(i)){
+                        if (mAdapter.getItem(i).appinfo.selected) {
+                            mAdapter.setSelectedItem(i, false, false);
+                            //mAdapter.getItem(i).selected = false;
+                            //UserAppActionModeSelectCnt--;
+                        }
+                    }
+                }
+                break;
+        }
+
+        updateActionModeTitle();
+        mAdapter.notifyDataSetChanged();
     }
 
 }
