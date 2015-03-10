@@ -18,6 +18,8 @@ import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -35,6 +37,7 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -81,6 +84,7 @@ import com.doloop.www.myappmgr.material.widgets.MyProgressDialog;
 import com.doloop.www.myappmgr.material.widgets.MyViewPager;
 import com.doloop.www.myappmgr.material.widgets.PagerSlidingTabStrip;
 import com.doloop.www.myappmgr.material.widgets.PagerSlidingTabStrip.OnTabClickListener;
+import com.doloop.www.myappmgr.material.widgets.ScrimUtil;
 import com.doloop.www.myappmgrmaterial.R;
 import com.nineoldandroids.view.ViewHelper;
 import com.nispok.snackbar.Snackbar;
@@ -187,6 +191,12 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
             L.d("savedInstanceState != null" + savedInstanceState.toString());
         }
 
+        Drawable shadow = ScrimUtil.makeCubicGradientScrimDrawable(
+                Color.GRAY,//"#55000000"
+                8, //渐变层数
+                Gravity.TOP);
+        this.findViewById(R.id.shadow).setBackgroundDrawable(shadow);
+        
         // 初始化抽屉
         FragmentTransaction t = this.getSupportFragmentManager().beginTransaction();
         DrawerFragment drawFrag = DrawerFragment.getInstance(thisActivityCtx);
