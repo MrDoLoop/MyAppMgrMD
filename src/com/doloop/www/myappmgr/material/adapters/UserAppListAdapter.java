@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.fragments.UserAppsTabFragment;
+import com.doloop.www.myappmgr.material.interfaces.IconClickListener;
 import com.doloop.www.myappmgr.material.utils.Constants;
 import com.doloop.www.myappmgrmaterial.R;
 import com.squareup.picasso.Picasso;
@@ -52,9 +53,9 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
 
     public IconClickListener mIconClickListener;
 
-    public interface IconClickListener {
-        public void OnIconClickListener(int position);
-    }
+//    public interface IconClickListener {
+//        public void OnIconClickListener(int position);
+//    }
 
     public void setIconClickListener(IconClickListener l) {
         this.mIconClickListener = l;
