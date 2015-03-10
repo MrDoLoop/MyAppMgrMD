@@ -10,25 +10,16 @@
 
     <!-- Content -->
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/content_linear"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical" >
-
-        <!--
-             <View
-            android:id="@+id/statusbar_holder"
-            android:layout_width="match_parent"
-            
-            android:background="@color/transparent"
-            android:layout_height="10dp" />
-        -->
+        android:layout_height="match_parent" >
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
             android:background="?attr/colorPrimary"
             android:minHeight="?attr/actionBarSize"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
@@ -39,6 +30,7 @@
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="40dp"
+            android:layout_below="@+id/toolbar"
             android:background="?attr/colorPrimary"
             app:pstsDividerColor="@color/transparent"
             app:pstsIndicatorColor="#b6daeb"
@@ -53,38 +45,18 @@
         <com.doloop.www.myappmgr.material.widgets.MyViewPager
             android:id="@+id/pager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </LinearLayout>
+            android:layout_height="match_parent"
+            android:layout_below="@+id/tabs" />
+
+        <View
+            android:id="@+id/shadow"
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:layout_below="@+id/tabs"
+            android:background="@drawable/shadow" />
+    </RelativeLayout>
 
     <!-- Side Drawer -->
-
-
-    <!--
-         <FrameLayout
-        android:id="@+id/drawer_content_holder"
-        android:layout_width="@dimen/drawer_width"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:clickable="true"
-        android:background="@color/white2" 
-        android:fitsSystemWindows="true" >
-
-        
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_alignParentTop="true"
-            android:background="@color/orange_light"
-            android:scaleType="fitStart"
-            android:src="@drawable/ic_user_background" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="cafe" />
-        
-    </FrameLayout>
-    -->
 
     <com.doloop.www.myappmgr.material.widgets.ScrimInsetsFrameLayout
         android:id="@+id/drawer_content_holder"
