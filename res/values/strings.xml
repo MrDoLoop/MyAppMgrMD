@@ -45,5 +45,7 @@
     <string name="sdcard_changed">Sdcard changed, pls restart!</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
+    <string name="version_name">1.0</string>
+    
 
 </resources>
