@@ -147,6 +147,7 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
         // Fragment¡¯s view to be fully inflated.
         setRetainInstance(false);
         setHasOptionsMenu(false);
+        EventBus.getDefault().register(this);
         // setEmptyText("No applications");
 
         // setListShown(false);
@@ -268,6 +269,7 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
         // Clean up any resources including ending threads,
         // closing database connections etc.
         super.onDestroy();
+        EventBus.getDefault().unregister(this);
         mAdapter.unregisterDataSetObserver(mDataSetObserver);
         mAdapter = null;
         mPinnedSectionListView = null;
