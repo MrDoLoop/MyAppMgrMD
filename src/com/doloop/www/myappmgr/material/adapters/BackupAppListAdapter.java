@@ -214,8 +214,9 @@ public class BackupAppListAdapter extends ParallaxRecyclerAdapter<AppInfo> {
 
                     // if(FileUtils.deleteQuietly(new File(appInfo.apkFilePath))){
                     if (FileUtils.deleteQuietly(new File(appInfo.backupFilePath))) {
+                        
                         // 从显示的list中删除
-                        mAppListDisplay.remove(getPosition());
+                        mAppListDisplay.remove(getPosition() - (hasHeader() ? 1 : 0));
                         // 从总共的list中删除
                         for (int i = 0; i < mAppListFull.size(); i++) {
                             if (mAppListFull.get(i).packageName.equals(appInfo.packageName)) {
