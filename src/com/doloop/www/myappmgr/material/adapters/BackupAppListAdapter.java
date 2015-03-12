@@ -64,11 +64,22 @@ public class BackupAppListAdapter extends RecyclerView.Adapter<RecyclerView.View
             }
             mAppListDisplay = filteredAppList;
         }
+        if(mAppListDisplay.size() == 0){
+            mAppListDisplay.add(AppInfo.DUMMY_APPINFO);
+        }
+        else if(mAppListDisplay.get(0) != AppInfo.DUMMY_APPINFO){
+            mAppListDisplay.add(0, AppInfo.DUMMY_APPINFO);
+        }
+        
         notifyDataSetChanged();
     }
 
+    public void checkHeader(){
+        
+    }
+    
     public BackupAppListAdapter(Context ctx, ArrayList<AppInfo> appList) {
-        appList.add(0, new AppInfo());
+        appList.add(0, AppInfo.DUMMY_APPINFO);
         mAppListFull = mAppListDisplay = appList;
         mCtx = ctx;
     }
@@ -129,7 +140,7 @@ public class BackupAppListAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public int getItemViewType(int position) {
-        if (position == 0) {
+        if (mAppListDisplay.get(position) == AppInfo.DUMMY_APPINFO) {
             return TYPE_HEADER;
         } else {
             return TYPE_ITEM;
