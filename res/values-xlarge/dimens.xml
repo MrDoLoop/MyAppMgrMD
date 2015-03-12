@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="drawer_width">500dp</dimen>
+    <dimen name="drawer_width">550dp</dimen>
+    <dimen name="arc_process_size">160dp</dimen>
+    <dimen name="arc_suffix_text_padding">8dp</dimen>
 </resources>
