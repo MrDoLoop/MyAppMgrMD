@@ -90,25 +90,30 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
             case SortTypeDialogFragment.LIST_SORT_TYPE_NAME_ASC:
             case SortTypeDialogFragment.LIST_SORT_TYPE_NAME_DES:
                 // mDialogText = nameText;
-                int size =
+                /*int size =
                         (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 80, getResources()
                                 .getDisplayMetrics());
                 // 放在list的中间
                 LayoutParams paramsFixSize = new LayoutParams(size, size);
                 paramsFixSize.alignWithParent = true;
                 paramsFixSize.addRule(RelativeLayout.CENTER_IN_PARENT);
-
+                
                 mDialogText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 40);
                 mDialogText.setPadding(0, 0, 0, 0);
-                mDialogText.setLayoutParams(paramsFixSize);
+                mDialogText.setLayoutParams(paramsFixSize);*/
+                //mCentralDialogText.setVisibility(View.VISIBLE);
+                mTopDialogText.setVisibility(View.INVISIBLE);
                 break;
             case SortTypeDialogFragment.LIST_SORT_TYPE_SIZE_ASC:
             case SortTypeDialogFragment.LIST_SORT_TYPE_SIZE_DES:
             case SortTypeDialogFragment.LIST_SORT_TYPE_LAST_MOD_TIME_ASC:
             case SortTypeDialogFragment.LIST_SORT_TYPE_LAST_MOD_TIME_DES:
-                int padding =
+                mCentralDialogText.setVisibility(View.INVISIBLE);
+                //mTopDialogText.setVisibility(View.VISIBLE);
+                /*int padding =
                         (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 7, getResources()
                                 .getDisplayMetrics());
+
                 LayoutParams paramsWrapContent = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
                 paramsWrapContent.alignWithParent = true;
                 // paramsWrapContent.addRule(RelativeLayout.CENTER_IN_PARENT);
@@ -119,7 +124,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
 
                 mDialogText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
                 mDialogText.setPadding(padding, 0, padding, 0);
-                mDialogText.setLayoutParams(paramsWrapContent);
+                mDialogText.setLayoutParams(paramsWrapContent);*/
                 break;
         }
     }
@@ -148,7 +153,8 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
 
     private RemoveWindow mRemoveWindow = new RemoveWindow();
     private Handler mHandler = new Handler();
-    private TextView mDialogText;
+    private TextView mCentralDialogText;
+    private TextView mTopDialogText;
     private boolean mShowing = false;
     private boolean mListIsScrolling = false;
 
@@ -173,10 +179,22 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
 
                 public void onAnimationEnd(Animation animation) {
                     mShowing = false;
-                    mDialogText.setVisibility(View.INVISIBLE);
+                    if(mTopDialogText.isShown()){
+                        mTopDialogText.setVisibility(View.INVISIBLE);
+                    }
+                    else if(mCentralDialogText.isShown()){
+                        mCentralDialogText.setVisibility(View.INVISIBLE);
+                    }
                 }
             });
-            mDialogText.startAnimation(ani);
+            
+            if(mTopDialogText.isShown()){
+                mTopDialogText.startAnimation(ani);
+            }
+            else if(mCentralDialogText.isShown()){
+                mCentralDialogText.startAnimation(ani);
+            }
+            
         }
     }
 
@@ -355,7 +373,8 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                 R.id.moreActionLayout);
         mActionSlideExpandableListView.setOnScrollListener(this);
         mActionSlideExpandableListView.setOnItemLongClickListener(this);
-        mDialogText = (TextView) contentView.findViewById(R.id.popTextView);
+        mTopDialogText = (TextView) contentView.findViewById(R.id.topPopTextView);
+        mCentralDialogText = (TextView) contentView.findViewById(R.id.centralPopTextView);
         mEmptyView = contentView.findViewById(R.id.emptyView);
         return contentView;
     }
@@ -577,21 +596,25 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                 case SortTypeDialogFragment.LIST_SORT_TYPE_NAME_ASC:
                 case SortTypeDialogFragment.LIST_SORT_TYPE_NAME_DES:
                     char firstLetter = firstVisiableApp.appName.charAt(0);
-                    mDialogText.setText(((Character) firstLetter).toString().toUpperCase(Locale.getDefault()));
+                    mCentralDialogText.setText(((Character) firstLetter).toString().toUpperCase(Locale.getDefault()));
+                    mCentralDialogText.clearAnimation();
+                    mCentralDialogText.setVisibility(View.VISIBLE);
                     break;
                 case SortTypeDialogFragment.LIST_SORT_TYPE_SIZE_ASC:
                 case SortTypeDialogFragment.LIST_SORT_TYPE_SIZE_DES:
-                    mDialogText.setText(firstVisiableApp.appSizeStr);
+                    mTopDialogText.setText(firstVisiableApp.appSizeStr);
+                    mTopDialogText.clearAnimation();
+                    mTopDialogText.setVisibility(View.VISIBLE);
                     break;
                 case SortTypeDialogFragment.LIST_SORT_TYPE_LAST_MOD_TIME_ASC:
                 case SortTypeDialogFragment.LIST_SORT_TYPE_LAST_MOD_TIME_DES:
-                    mDialogText.setText(firstVisiableApp.lastModifiedTimeStr);
+                    mTopDialogText.setText(firstVisiableApp.lastModifiedTimeStr);
+                    mTopDialogText.clearAnimation();
+                    mTopDialogText.setVisibility(View.VISIBLE);
                     break;
             }
 
             mShowing = true;
-            mDialogText.clearAnimation();
-            mDialogText.setVisibility(View.VISIBLE);
             mHandler.removeCallbacks(mRemoveWindow);
             mHandler.postDelayed(mRemoveWindow, 1000);
         }
