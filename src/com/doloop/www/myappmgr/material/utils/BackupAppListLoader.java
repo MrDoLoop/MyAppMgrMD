@@ -278,6 +278,7 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
         // The Loader has been put in a stopped state, so we should attempt to
         // cancel the current load (if there is one).
         mLoadInBackgroundCanceled = true;
+        
         hideLoadingView();
         cancelLoad();
 
@@ -339,6 +340,7 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
         // we would close it in this method. All resources associated with the
         // Loader should be released here.
         apps.clear();
+        System.gc();
         mLoadingFinished = false;
     }
 
