@@ -9,13 +9,13 @@
 
     <com.doloop.www.myappmgr.material.widgets.ArcProgress
         android:id="@+id/arc_progress"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="@dimen/arc_process_size"
+        android:layout_height="@dimen/arc_process_size"
         app:arc_bottom_text_size="15sp"
         app:arc_finished_color="@color/theme_blue_light"
 		app:arc_angle="270.0"
 		app:arc_suffix_text="%"
-		app:arc_suffix_text_padding="6dp"
+		app:arc_suffix_text_padding="@dimen/arc_suffix_text_padding"
         app:arc_text_color="@color/theme_blue_light"
         app:arc_unfinished_color="#96214193" />
 

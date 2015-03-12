@@ -27,8 +27,8 @@
 
     <!-- <include android:id="@+id/emptyView" layout="@layout/list_empty_view" /> -->
 
-    <TextView
-        android:id="@+id/popTextView"
+   <TextView
+        android:id="@+id/centralPopTextView"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_centerInParent="true"
@@ -37,6 +37,23 @@
         android:text="A"
         android:textColor="#ffffff"
         android:textSize="40sp"
+        android:textStyle="bold"
+        android:visibility="invisible" />
+    
+     <TextView
+        android:id="@+id/topPopTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/rounded_rectangle_shape_poptxt_blue"
+        android:gravity="center"
+        android:layout_marginTop="7dp"
+        android:paddingLeft="7dp"
+        android:paddingRight="7dp"
+        android:text="A"
+        android:textColor="#ffffff"
+        android:textSize="25sp"
         android:textStyle="bold"
         android:visibility="invisible" />
 
