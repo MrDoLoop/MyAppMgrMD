@@ -20,19 +20,47 @@
             android:descendantFocusability="beforeDescendants"
             android:orientation="vertical" >
 
-            <TextView
-                android:id="@+id/textView1"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:gravity="center"
-                android:text="backup dir / sd free space / sd total space"
-                android:textColor="@color/black"
-                android:textSize="16sp" />
+                android:layout_height="wrap_content"
+                android:weightSum="3"
+                android:orientation="horizontal" >
 
-            <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
+                <TextView
+                    android:id="@+id/textBackupDir"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:text="backup dir"
+                    android:textColor="@color/orange_light"
+                    android:textSize="16sp" />
+                
+                <TextView
+                    android:id="@+id/textFree"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:text="sd free space"
+                    android:textColor="@color/green_light"
+                    android:textSize="16sp" />
+                
+                <TextView
+                    android:id="@+id/textTotal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:text="sd total"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <com.doloop.www.myappmgr.material.widgets.RoundCornerProgressBar
                 android:id="@+id/capacity_bar"
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
+                android:layout_height="25dp"
                 android:layout_alignParentBottom="true"
                 app:rcBackgroundColor="@color/black"
                 app:rcBackgroundPadding="4dp"
