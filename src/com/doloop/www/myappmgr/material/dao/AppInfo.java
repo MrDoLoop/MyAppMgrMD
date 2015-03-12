@@ -17,24 +17,24 @@ public class AppInfo {
 
     public Long id;
     /** Not-null value. */
-    public String appName;
-    public String appNamePinyin;
-    public String appSortName;
+    public String appName = "";
+    public String appNamePinyin = "";
+    public String appSortName = "";
     /** Not-null value. */
-    public String packageName;
-    public String versionName;
-    public int versionCode;
-    public byte[] appIconBytes;
+    public String packageName = "";
+    public String versionName = "";
+    public int versionCode = -1;
+    public byte[] appIconBytes = null;
     /** Not-null value. */
-    public String appSizeStr;
-    public long appRawSize;
-    public String firstTimeInstallDate;
+    public String appSizeStr = "";
+    public long appRawSize = 0;
+    public String firstTimeInstallDate = "";
     /** Not-null value. */
-    public String lastModifiedTimeStr;
-    public long lastModifiedRawTime;
+    public String lastModifiedTimeStr = "";
+    public long lastModifiedRawTime = 0;
     /** Not-null value. */
-    public String apkFilePath;
-    public boolean isSysApp;
+    public String apkFilePath = "";
+    public boolean isSysApp = false;
     
     //自己添加的
     public boolean selected = false;
