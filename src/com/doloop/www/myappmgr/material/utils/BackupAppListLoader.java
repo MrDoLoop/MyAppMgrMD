@@ -49,7 +49,8 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
     private View mLoadingView;
     private View mContentView;
     
-    private boolean mLoadingFinished = false;
+    //private boolean mLoadingFinished = false;
+    private boolean mLoadingRunning = false;
     
 
     public BackupAppListLoader(Context ctx, View loadingView, View contentView, LoaderBackgroundMoreWorkListener l) {
@@ -116,8 +117,8 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
         }
     }
 
-    public boolean isLoadingFinished(){
-        return mLoadingFinished;
+    public boolean isLoadingRunning(){
+        return mLoadingRunning;
     }
     
     /****************************************************/
@@ -131,7 +132,8 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
     @Override
     public ArrayList<AppInfo> loadInBackground() {
         
-        mLoadingFinished = false;
+        mLoadingRunning = true;
+        mLoadInBackgroundCanceled = false;
         
         if (DEBUG)
             Log.i(TAG, "+++ loadInBackground() called! +++");
@@ -162,6 +164,7 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
                         applicationInfo.sourceDir = file.getAbsolutePath();
                         applicationInfo.publicSourceDir = file.getAbsolutePath();
                         if (mLoadInBackgroundCanceled) {
+                            entries.clear();
                             entries = new ArrayList<AppInfo>(files.length);
                             break;
                         }
@@ -191,7 +194,7 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
     @Override
     public void deliverResult(ArrayList<AppInfo> apps) {
         hideLoadingView();
-        mLoadingFinished = true;
+        mLoadingRunning = false;
         if (isReset()) {
             if (DEBUG)
                 Log.w(TAG, "+++ Warning! An async query came in while the Loader was reset! +++");
@@ -234,7 +237,12 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
 
     @Override
     protected void onStartLoading() {
-        mLoadingFinished = false;
+        
+        if(mLoadingRunning){
+            return ;
+        }
+        
+        mLoadingRunning = true;
         if (DEBUG)
             Log.i(TAG, "+++ onStartLoading() called! +++");
         mLoadInBackgroundCanceled = false;
@@ -277,10 +285,8 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
 
         // The Loader has been put in a stopped state, so we should attempt to
         // cancel the current load (if there is one).
-        mLoadInBackgroundCanceled = true;
-        
-        hideLoadingView();
-        cancelLoad();
+        //hideLoadingView();
+        //cancelLoad();
 
         // Note that we leave the observer as is; Loaders in a stopped state
         // should still monitor the data source for changes so that the Loader
@@ -288,8 +294,15 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
     }
 
     @Override
+    public boolean cancelLoad() {
+        // TODO Auto-generated method stub
+        mLoadInBackgroundCanceled = true;
+        return super.cancelLoad();
+    }
+
+    @Override
     protected void onReset() {
-        mLoadingFinished = false;
+        mLoadingRunning = false;
         if (DEBUG)
             Log.i(TAG, "+++ onReset() called! +++");
 
@@ -312,7 +325,7 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
 
     @Override
     public void onCanceled(ArrayList<AppInfo> apps) {
-        mLoadingFinished = false;
+        mLoadingRunning = false;
         if (DEBUG)
             Log.i(TAG, "+++ onCanceled() called! +++");
 
@@ -341,7 +354,7 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
         // Loader should be released here.
         apps.clear();
         System.gc();
-        mLoadingFinished = false;
+        mLoadingRunning = false;
     }
 
     /*********************************************************************/
