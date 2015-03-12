@@ -220,14 +220,14 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
         // Clean up any resources including ending threads,
         // closing database connections etc.
         super.onDestroy();
-        if (!mBackupAppListLoader.isLoadingFinished()) {
-            mBackupAppListLoader.stopLoading();
+        if (!mBackupAppListLoader.isLoadingRunning()) {
+            mBackupAppListLoader.cancelLoad();
         }
         if (mAdapter != null && mDataSetObserver != null) {
             mAdapter.unregisterAdapterDataObserver(mDataSetObserver);
             mAdapter = null;
         }
-
+        mBackupAppListLoader = null;
         mContext = null;
         mRecyclerView = null;
         uniqueInstance = null;
@@ -277,7 +277,7 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
 
     public void onEventMainThread(AppBackupSuccEvent ev) {
 
-        if (mBackupAppListLoader.isLoadingFinished()) {// loading 完成了
+        if (mBackupAppListLoader.isLoadingRunning()) {// loading 完成了
             
             // 检查是否在显示的list中
             for (AppInfo aInfo : ev.AppInfoList) {
