@@ -106,7 +106,7 @@ public class Utils {
     
     public static boolean isAppInfoInList(AppInfo appInfo, ArrayList<AppInfo> list){
         for(AppInfo aEntry : list){
-            if(appInfo.packageName.equals(aEntry.packageName)){
+            if(appInfo.packageName.equals(aEntry.packageName) && (appInfo.versionCode == aEntry.versionCode)){
                 return true;
             }
         }
