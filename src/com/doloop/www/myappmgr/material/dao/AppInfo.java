@@ -54,7 +54,7 @@ public class AppInfo {
             return "";
     }
     
-    
+    public final static AppInfo DUMMY_APPINFO = new AppInfo();
     ////////////////
     
     public AppInfo() {
