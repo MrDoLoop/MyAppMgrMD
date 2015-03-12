@@ -314,7 +314,7 @@ public class Utils {
         }
 
         tmpInfo.versionCode = packageInfo.versionCode;
-        tmpInfo.iconBitmap = drawableToBitmap(packageInfo.applicationInfo.loadIcon(pManager));
+        //tmpInfo.iconBitmap = drawableToBitmap(packageInfo.applicationInfo.loadIcon(pManager));
         // tmpInfo.iconDrawable = packageInfo.applicationInfo.loadIcon(pManager);
         // tmpInfo.appIconBytes = Utilities.DrawableToByteArray(tmpInfo.iconDrawable);
         // tmpInfo.firstTimeInstallDate = simpleDateFormat.format(new Date(packageInfo.firstInstallTime));
@@ -337,6 +337,7 @@ public class Utils {
             tmpInfo.isSysApp = true;
         }
         if (saveAppIconOnSd) {
+            tmpInfo.iconBitmap = drawableToBitmap(packageInfo.applicationInfo.loadIcon(pManager));
             saveAppIconOnSd(context, tmpInfo);
         }
 
