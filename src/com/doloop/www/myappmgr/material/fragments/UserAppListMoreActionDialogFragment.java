@@ -9,6 +9,7 @@ import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.doloop.www.myappmgr.material.dao.AppInfo;
+import com.doloop.www.myappmgr.material.utils.Constants;
 import com.doloop.www.myappmgr.material.utils.Utils;
 import com.doloop.www.myappmgrmaterial.R;
 
@@ -49,6 +50,15 @@ public class UserAppListMoreActionDialogFragment extends DialogFragment {
 	}
 	
 	 @Override
+    public void onDismiss(DialogInterface dialog) {
+        // TODO Auto-generated method stub
+        super.onDismiss(dialog);
+        if(!Constants.SAVE_APP_ICON_IN_OBJ){
+            mAppinfo.iconBitmap = null;
+        }
+    }
+
+    @Override
 	 public void onAttach(Activity activity) {
 		 super.onAttach(activity);
 //	     try {
@@ -62,6 +72,10 @@ public class UserAppListMoreActionDialogFragment extends DialogFragment {
 	    public Dialog onCreateDialog(Bundle savedInstanceState) {
 	        // Build the dialog and set up the button click handlers
 	        View pView = View.inflate(getActivity(), R.layout.user_more_action_dia, null);
+	        if (mAppinfo.iconBitmap == null) {
+	            mAppinfo.iconBitmap =
+	                    Utils.getIconBitmap(getActivity(), mAppinfo.packageName);
+	        }
 	    	final MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
             .title(mAppinfo.appName)
             .icon(Utils.ZoomDrawable(mAppinfo.iconBitmap,getActivity())).customView(pView, false)

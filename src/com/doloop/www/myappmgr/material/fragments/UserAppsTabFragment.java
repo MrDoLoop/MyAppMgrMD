@@ -338,11 +338,6 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                                 startActivity(uninstallIntent);
                                 break;
                             case R.id.moreActionLayout:
-                                if (selectItem.iconBitmap == null) {
-                                    selectItem.iconBitmap =
-                                            Utils.getIconBitmap(getActivity(), selectItem.packageName);
-                                }
-
                                 UserAppListMoreActionDialog = new UserAppListMoreActionDialogFragment();
                                 UserAppListMoreActionDialog.setArgs(selectItem, UserAppsTabFragment.this);
                                 UserAppListMoreActionDialog.show(getActivity().getSupportFragmentManager(),

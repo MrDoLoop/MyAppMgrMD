@@ -12,6 +12,7 @@ import android.widget.ListView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.doloop.www.myappmgr.material.adapters.ArrayAdapterWithIcon;
 import com.doloop.www.myappmgr.material.dao.AppInfo;
+import com.doloop.www.myappmgr.material.utils.Constants;
 import com.doloop.www.myappmgr.material.utils.Utils;
 import com.doloop.www.myappmgrmaterial.R;
 
@@ -74,6 +75,15 @@ public class SelectionDialogFragment extends DialogFragment {
     }
 
     @Override
+    public void onDismiss(DialogInterface dialog) {
+        // TODO Auto-generated method stub
+        super.onDismiss(dialog);
+        if(!Constants.SAVE_APP_ICON_IN_OBJ){
+            mAppinfo.iconBitmap = null;
+        }
+    }
+    
+    @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Build the dialog and set up the button click handlers
         /*
@@ -114,7 +124,10 @@ public class SelectionDialogFragment extends DialogFragment {
 
         ArrayAdapterWithIcon adapter = new ArrayAdapterWithIcon(getActivity(), selectionOpt, selectionOptIcon);
 
-        // AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        if (mAppinfo.iconBitmap == null) {
+            mAppinfo.iconBitmap =
+                    Utils.getIconBitmap(getActivity(), mAppinfo.packageName);
+        }
         MaterialDialog.Builder builder =
                 new MaterialDialog.Builder(getActivity()).title(mAppinfo.appName)
                         .icon(Utils.ZoomDrawable(mAppinfo.iconBitmap, getActivity())).adapter(adapter);
