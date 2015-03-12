@@ -5,7 +5,6 @@ import java.util.Locale;
 import java.util.TreeMap;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
@@ -19,10 +18,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.doloop.www.myappmgr.material.MainActivity;
 import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.fragments.SysAppsTabFragment;
-import com.doloop.www.myappmgr.material.fragments.UserAppsTabFragment;
 import com.doloop.www.myappmgr.material.interfaces.IconClickListener;
 import com.doloop.www.myappmgr.material.utils.Constants;
 import com.doloop.www.myappmgr.material.utils.SysAppListItem;
@@ -274,6 +271,7 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
   
             if (appInfo.iconBitmap == null) {
                 Picasso.with(mCtx).load(appInfo.getAppIconCachePath(mCtx)).noFade().into(appItemHolder);
+                //appItemHolder.AppIconImageView.setImageDrawable(Utils.getIconDrawable(mCtx, appInfo.packageName));
             } else {
                 appItemHolder.AppIconImageView.setImageBitmap(appInfo.iconBitmap);
             }
