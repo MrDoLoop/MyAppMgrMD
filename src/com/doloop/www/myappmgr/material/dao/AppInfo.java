@@ -229,7 +229,7 @@ public class AppInfo {
     }
     
     public File getAppIconCachePath(Context context){
-        return new File(Utils.getAppIconCacheDir(context), packageName + ".png");
+        return new File(Utils.getAppIconCacheDir(context), packageName + "-" +versionCode +".png");
     }
     
 }

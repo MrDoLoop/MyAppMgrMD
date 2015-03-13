@@ -73,15 +73,18 @@ public class DaoUtils {
     // }
 
     public static void deleteAppInfo(Context context, AppInfo appInfo) {
-        Utils.deleteAppIconInCache(context, appInfo.packageName);
+        Utils.deleteAppIconInCache(context, appInfo);
         getDaoSession(context, false).getAppInfoDao().deleteByKey(appInfo.id);
     }
 
     public static void deleteAppInfo(Context context, String pkName) {
         QueryBuilder<AppInfo> qb = getDaoSession(context, false).getAppInfoDao().queryBuilder();
+        AppInfo theApp = qb.where(Properties.PackageName.eq(pkName)).unique();
+        if(theApp != null){
+            Utils.deleteAppIconInCache(context, theApp);
+        }
         DeleteQuery<AppInfo> bd = qb.where(Properties.PackageName.eq(pkName)).buildDelete();
         bd.executeDeleteWithoutDetachingEntities();
-        Utils.deleteAppIconInCache(context, pkName);
     }
 
     public static void deleteAllAppInfo(Context context) {
