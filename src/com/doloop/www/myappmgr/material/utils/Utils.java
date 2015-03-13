@@ -55,7 +55,18 @@ import com.doloop.www.myappmgrmaterial.R;
 public class Utils {
       //http://stackoverflow.com/questions/3394765/how-to-check-available-space-on-android-device-on-mini-sd-card
     
-    public static String calculateTotalFileSize(ArrayList<AppInfo> list){
+    public static String[] calculateTotalFileInfo(ArrayList<AppInfo> list){
+        long size = 0;
+        for(AppInfo appInfo : list){
+            size += appInfo.appRawSize;
+        }
+        String[] retVal = new String[2]; 
+        retVal[0] = ""+size;
+        retVal[1] = formatFileSize(size);
+        return retVal;
+    }
+    
+    public static String calculateTotalFileSizeStr(ArrayList<AppInfo> list){
         long size = 0;
         for(AppInfo appInfo : list){
             size += appInfo.appRawSize;
@@ -63,13 +74,94 @@ public class Utils {
         return formatFileSize(size);
     }
     
+    public static long calculateTotalFileRawSize(ArrayList<AppInfo> list){
+        long size = 0;
+        for(AppInfo appInfo : list){
+            size += appInfo.appRawSize;
+        }
+        return size;
+    }
     
-    public static String getBackupDirSize(Context ctx){
+    public static String getBackupDirSizeStr(Context ctx){
         return FileUtils.byteCountToDisplaySize(FileUtils.sizeOfDirectory(new File(getBackUpAPKfileDir(ctx))));
     }
     
+    /**
+     * 
+     * @return [0]:rawSize [1]: ÏÔÊ¾string
+     */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
-    public static String getSdFreeSpace(){
+    public static String[] getSdUsedSpaceInfo(){
+        long usedSpace = -1L;
+        StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
+        if(android.os.Build.VERSION.SDK_INT >= 18){
+            usedSpace = (stat.getBlockCountLong() - stat.getAvailableBlocksLong()) * stat.getBlockSizeLong();
+        }
+        else{
+            usedSpace = ((long) stat.getBlockCount() - (long) stat.getAvailableBlocks()) * (long) stat.getBlockSize();
+        }   
+        String[] retVal = new String[2]; 
+        retVal[0] = ""+usedSpace;
+        retVal[1] = formatFileSize(usedSpace);
+        //Formatter.formatFileSize(ctx, availableSpace);
+        return retVal;
+    }
+    
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+    public static String getSdUsedSpaceStr(){
+        long usedSpace = -1L;
+        StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
+        if(android.os.Build.VERSION.SDK_INT >= 18){
+            usedSpace = (stat.getBlockCountLong() - stat.getAvailableBlocksLong()) * stat.getBlockSizeLong();
+        }
+        else{
+            usedSpace = ((long) stat.getBlockCount() - (long) stat.getAvailableBlocks()) * (long) stat.getBlockSize();
+        }   
+       
+        return formatFileSize(usedSpace);
+    }
+    
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+    public static long getSdUsedSpaceRawSize(){
+        long usedSpace = -1L;
+        StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
+        if(android.os.Build.VERSION.SDK_INT >= 18){
+            usedSpace = (stat.getBlockCountLong() - stat.getAvailableBlocksLong()) * stat.getBlockSizeLong();
+        }
+        else{
+            usedSpace = ((long) stat.getBlockCount() - (long) stat.getAvailableBlocks()) * (long) stat.getBlockSize();
+        }   
+       
+        return usedSpace;
+    }
+    
+    
+    
+    
+    /**
+     * 
+     * @return [0]:rawSize [1]: ÏÔÊ¾string
+     */
+    /*@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+    public static String[] getSdFreeSpaceInfo(){
+        long availableSpace = -1L;
+        StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
+        if(android.os.Build.VERSION.SDK_INT >= 18){
+            availableSpace = (long) stat.getAvailableBlocksLong() * (long) stat.getBlockSizeLong();
+        }
+        else{
+            availableSpace = (long) stat.getAvailableBlocks() * (long) stat.getBlockSize();
+        }   
+        String[] retVal = new String[2]; 
+        retVal[0] = ""+availableSpace;
+        retVal[1] = formatFileSize(availableSpace);
+        //Formatter.formatFileSize(ctx, availableSpace);
+        return retVal;
+    }
+    
+    
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+    public static String getSdFreeSpaceStr(){
         long availableSpace = -1L;
         StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
         if(android.os.Build.VERSION.SDK_INT >= 18){
@@ -84,16 +176,61 @@ public class Utils {
     }
     
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
-    public static String getSdTotalSpace(){
+    public static long getSdFreeSpaceRawSize(){
         long availableSpace = -1L;
         StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
         if(android.os.Build.VERSION.SDK_INT >= 18){
-            availableSpace = (long) stat.getBlockCountLong() * (long) stat.getBlockSizeLong();
+            availableSpace = (long) stat.getAvailableBlocksLong() * (long) stat.getBlockSizeLong();
         }
         else{
-            availableSpace = (long) stat.getBlockCount() * (long) stat.getBlockSize();
+            availableSpace = (long) stat.getAvailableBlocks() * (long) stat.getBlockSize();
+        }
+        //Formatter.formatFileSize(ctx, availableSpace);
+        return availableSpace;
+    }*/
+    
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+    public static String[] getSdTotalSpaceInfo(){
+        long totalSpace = -1L;
+        StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
+        if(android.os.Build.VERSION.SDK_INT >= 18){
+            totalSpace = (long) stat.getBlockCountLong() * (long) stat.getBlockSizeLong();
+        }
+        else{
+            totalSpace = (long) stat.getBlockCount() * (long) stat.getBlockSize();
         }   
-        String retVal = formatFileSize(availableSpace);
+        String[] retVal = new String[2]; 
+        retVal[0] = ""+totalSpace;
+        retVal[1] = formatFileSize(totalSpace);
+        return retVal;
+    }
+    
+    
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+    public static long getSdTotalSpaceRawSize(){
+        long totalSpace = -1L;
+        StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
+        if(android.os.Build.VERSION.SDK_INT >= 18){
+            totalSpace = (long) stat.getBlockCountLong() * (long) stat.getBlockSizeLong();
+        }
+        else{
+            totalSpace = (long) stat.getBlockCount() * (long) stat.getBlockSize();
+        }   
+       
+        return totalSpace;
+    }
+    
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+    public static String getSdTotalSpace(){
+        long totalSpace = -1L;
+        StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
+        if(android.os.Build.VERSION.SDK_INT >= 18){
+            totalSpace = (long) stat.getBlockCountLong() * (long) stat.getBlockSizeLong();
+        }
+        else{
+            totalSpace = (long) stat.getBlockCount() * (long) stat.getBlockSize();
+        }   
+        String retVal = formatFileSize(totalSpace);
         //Formatter.formatFileSize(ctx, availableSpace);
         return retVal;
     }
