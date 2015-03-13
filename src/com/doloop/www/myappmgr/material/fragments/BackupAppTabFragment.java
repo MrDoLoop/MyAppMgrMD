@@ -326,8 +326,8 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
         // TODO Auto-generated method stub
         mAppList.clear();
         mAppList = data;
-
-        mAdapter = new BackupAppListAdapter(mContext, mAppList);
+        mAdapter.setDataSource(mAppList);
+        //mAdapter = new BackupAppListAdapter(mContext, mAppList);
         mDataSetObserver = new AdapterDataObserver() {
 
             @Override
@@ -353,7 +353,8 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
         };
         mAdapter.registerAdapterDataObserver(mDataSetObserver);
         mAdapter.setUserAppListDataSetChangedListener((BackupAppListDataSetChangedListener) mContext);
-        mRecyclerView.setAdapter(mAdapter);
+        //mRecyclerView.setAdapter(mAdapter);
+        mAdapter.notifyDataSetChanged();
         checkIfEmpty();
         mAdapter.getBackupAppListDataSetChangedListener().OnBackupAppListDataSetChanged();
         //mAdapter.animateProgress(0, Utils.calculateTotalFileRawSize(mAppList), 0, Utils.getSdFreeSpaceRawSize());
@@ -375,7 +376,7 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
     public void onLoaderBackgroundMoreWork(ArrayList<AppInfo> listReadyToDeliver) {
         // TODO Auto-generated method stub
         
-         /*try { Thread.sleep(30000); } catch (InterruptedException e) { // TODO Auto-generated catch block
+         /*try { Thread.sleep(10000); } catch (InterruptedException e) { // TODO Auto-generated catch block
          e.printStackTrace(); }*/
          
         if (!mPendingNewAppInfo.isEmpty()) {
