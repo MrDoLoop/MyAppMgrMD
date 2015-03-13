@@ -24,7 +24,6 @@ import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.UnderlineSpan;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -39,8 +38,6 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
 import com.doloop.slideexpandable.library.ActionSlideExpandableListView;
@@ -75,7 +72,6 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
     //private boolean isAnyStoreInstalled = false;
 
     private int currentSortType = SortTypeDialogFragment.LIST_SORT_TYPE_NAME_ASC;
-    private String mfragTitle = "";
     private MenuItem searchMenuItem;
 
     private DataSetObserver mDataSetObserver;
@@ -102,13 +98,13 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                 mDialogText.setPadding(0, 0, 0, 0);
                 mDialogText.setLayoutParams(paramsFixSize);*/
                 //mCentralDialogText.setVisibility(View.VISIBLE);
-                mTopDialogText.setVisibility(View.INVISIBLE);
+                mTopDialogText.setVisibility(View.GONE);
                 break;
             case SortTypeDialogFragment.LIST_SORT_TYPE_SIZE_ASC:
             case SortTypeDialogFragment.LIST_SORT_TYPE_SIZE_DES:
             case SortTypeDialogFragment.LIST_SORT_TYPE_LAST_MOD_TIME_ASC:
             case SortTypeDialogFragment.LIST_SORT_TYPE_LAST_MOD_TIME_DES:
-                mCentralDialogText.setVisibility(View.INVISIBLE);
+                mCentralDialogText.setVisibility(View.GONE);
                 //mTopDialogText.setVisibility(View.VISIBLE);
                 /*int padding =
                         (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 7, getResources()
@@ -180,10 +176,10 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                 public void onAnimationEnd(Animation animation) {
                     mShowing = false;
                     if(mTopDialogText.isShown()){
-                        mTopDialogText.setVisibility(View.INVISIBLE);
+                        mTopDialogText.setVisibility(View.GONE);
                     }
                     else if(mCentralDialogText.isShown()){
-                        mCentralDialogText.setVisibility(View.INVISIBLE);
+                        mCentralDialogText.setVisibility(View.GONE);
                     }
                 }
             });
@@ -768,6 +764,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
     }
 
     // IconClickListener--start
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     @Override
     public void OnIconClickListener(int position) {
         // TODO Auto-generated method stub
