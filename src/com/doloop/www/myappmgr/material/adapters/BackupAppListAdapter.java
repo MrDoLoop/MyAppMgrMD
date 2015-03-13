@@ -89,6 +89,11 @@ public class BackupAppListAdapter extends RecyclerView.Adapter<RecyclerView.View
         mAppListFull = mAppListDisplay = appList;
         mCtx = ctx;
     }
+    
+    public void setDataSource(ArrayList<AppInfo> appList){
+        appList.add(0, AppInfo.DUMMY_APPINFO);
+        mAppListFull = mAppListDisplay = appList;
+    }
 
     public ArrayList<AppInfo> getDisplayList() {
         return mAppListDisplay;
@@ -196,6 +201,15 @@ public class BackupAppListAdapter extends RecyclerView.Adapter<RecyclerView.View
         mHeaderViewHolder.headerProcessbar.setSecondaryProgress(secondaryProgress);
     }
     
+    private AnimatorSet buildHeaderTextItemAni(View targetView){
+        int playTime = 1200;
+        AnimatorSet AniSet = new AnimatorSet();
+        ObjectAnimator ani1 = ObjectAnimator.ofFloat(targetView, "rotationX", -90, 15, 0).setDuration(playTime);//.setDuration(500);
+        ObjectAnimator ani2 = ObjectAnimator.ofFloat(targetView, "alpha", 0.5f, 0.75f, 1).setDuration(playTime);//.setDuration(500);
+        AniSet.playTogether(ani1,ani2);
+        return AniSet;
+    }
+    
     public class HeaderViewHolder extends RecyclerView.ViewHolder {
 
         TextView backupDirTv;
@@ -218,25 +232,10 @@ public class BackupAppListAdapter extends RecyclerView.Adapter<RecyclerView.View
 
                 @Override
                 public void onClick(View v) {
-                    // TODO Auto-generated method stub
-                    int playTime = 1200;
-                    AnimatorSet AniSet1 = new AnimatorSet();
-                    ObjectAnimator ani1 = ObjectAnimator.ofFloat(backupDirTv, "rotationX", -90, 15, 0).setDuration(playTime);//.setDuration(500);
-                    ObjectAnimator ani2 = ObjectAnimator.ofFloat(backupDirTv, "alpha", 0.5f, 0.75f, 1).setDuration(playTime);//.setDuration(500);
-                    //AniSet1.setDuration(5000);
-                    AniSet1.playTogether(ani1,ani2);
                     
-                    AnimatorSet AniSet2 = new AnimatorSet();
-                    ObjectAnimator ani3 = ObjectAnimator.ofFloat(sdUsedTv, "rotationX", -90, -15, 0).setDuration(playTime);
-                    ObjectAnimator ani4 = ObjectAnimator.ofFloat(sdUsedTv, "alpha", 0.5f, 0.75f, 1).setDuration(playTime);
-                    //AniSet2.setDuration(5000);
-                    AniSet2.playTogether(ani3,ani4);
-                    
-                    AnimatorSet AniSet3 = new AnimatorSet();
-                    ObjectAnimator ani5 = ObjectAnimator.ofFloat(sdTotalTv, "rotationX", -90, -15, 0).setDuration(playTime);
-                    ObjectAnimator ani6 = ObjectAnimator.ofFloat(sdTotalTv, "alpha", 0.5f, 0.75f, 1).setDuration(playTime);
-                    //AniSet3.setDuration(5000);
-                    AniSet3.playTogether(ani5,ani6);
+                    AnimatorSet AniSet1 = buildHeaderTextItemAni(backupDirTv);
+                    AnimatorSet AniSet2 = buildHeaderTextItemAni(sdUsedTv);
+                    AnimatorSet AniSet3 = buildHeaderTextItemAni(sdTotalTv);
                     
                     AniSet1.start();
                     AniSet2.setStartDelay(200);
