@@ -14,14 +14,17 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
 import net.sourceforge.pinyin4j.PinyinHelper;
 import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
 import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.comparator.LastModifiedFileComparator;
+
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -48,6 +51,7 @@ import android.support.v4.app.DialogFragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
+
 import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.fragments.SortTypeDialogFragment;
 import com.doloop.www.myappmgrmaterial.R;
@@ -325,17 +329,17 @@ public class Utils {
     }
 
     public static void verifyApp(Context context, AppInfo appInfo) {
-        //检查是不是自己，重新建立自己
-       /* if(appInfo.packageName.equals(Constants.MY_PACKAGE_NAME)){
-            appInfo = buildAppInfoEntry(context,appInfo.packageName);
-        }*/
         //检查sd上的icon缓存
-        File file = appInfo.getAppIconCachePath(context);
+        if(!isAppIconOnSd(context,appInfo)){
+            appInfo.iconBitmap = drawableToBitmap(getIconDrawable(context, appInfo.packageName));
+            saveAppIconOnSd(context, appInfo);
+        }
+        /*File file = appInfo.getAppIconCachePath(context);
         if (!file.exists()) {
             // appInfo.iconDrawable = getIconDrawable(context, appInfo.packageName);
             appInfo.iconBitmap = drawableToBitmap(getIconDrawable(context, appInfo.packageName));
             saveAppIconOnSd(context, appInfo);
-        }
+        }*/
     }
 
     public static boolean deleteAppIconInCache(Context context, AppInfo appInfo) {
@@ -404,33 +408,43 @@ public class Utils {
         return theAppName;
     }
 
-    private static boolean saveAppIconOnSd(Context context, AppInfo appInfo) {
+    public static boolean isAppIconOnSd(Context ctx, AppInfo appInfo){
+        File file = appInfo.getAppIconCachePath(ctx);
+        if (file.exists()) {
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    
+    public static boolean saveAppIconOnSd(Context context, AppInfo appInfo) {
 
         OutputStream outStream = null;
         // String extStorageDirectory = Environment.getExternalStorageDirectory().toString();
         File file = appInfo.getAppIconCachePath(context);
-
+        Bitmap bitmap = null;
         try {
             outStream = new FileOutputStream(file);
-            Bitmap bitmap = appInfo.iconBitmap;
+            if(appInfo.iconBitmap == null){
+                bitmap = Utils.getIconBitmap(context, appInfo.packageName);
+            }
+            else{
+                bitmap = appInfo.iconBitmap; 
+            }
 
             if (bitmap.compress(Bitmap.CompressFormat.PNG, 100, outStream)) {
                 outStream.flush();
                 outStream.close();
+                appInfo.iconBitmap = null;
                 return true;
             }
-            return false;
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return false;
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            appInfo.iconBitmap = null;
             return false;
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+            appInfo.iconBitmap = null;
             return false;
         }
     }
