@@ -277,7 +277,7 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
 
     public void onEventMainThread(AppBackupSuccEvent ev) {
 
-        if (mBackupAppListLoader.isLoadingRunning()) {// loading 完成了
+        if (!mBackupAppListLoader.isLoadingRunning()) {// loading 完成了
             
             // 检查是否在显示的list中
             for (AppInfo aInfo : ev.AppInfoList) {
@@ -356,6 +356,7 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
         mRecyclerView.setAdapter(mAdapter);
         checkIfEmpty();
         mAdapter.getBackupAppListDataSetChangedListener().OnBackupAppListDataSetChanged();
+        //mAdapter.animateProgress(0, Utils.calculateTotalFileRawSize(mAppList), 0, Utils.getSdFreeSpaceRawSize());
         //mLoadingView.setVisibility(View.GONE);
     }
 
