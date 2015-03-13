@@ -46,7 +46,8 @@
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
     <string name="backup_dir">Backup Dir</string>
-    <string name="sd_free">sd Free</string>
+    <string name="sd_free">SD Free</string>
+    <string name="sd_used">SD Used</string>
     <string name="sd_total">SD Total</string>
     <string name="version_name">1.0</string>
 
