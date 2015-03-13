@@ -45,5 +45,8 @@
     <string name="sdcard_changed">Sdcard有变化，请重启！</string>
     <string name="cancel">取消</string>
     <string name="ok">确定</string>
+    <string name="back_dir">备份文件夹</string>
+    <string name="sd_free">sd空闲容量</string>
+    <string name="sd_total">SD总容量</string>
     <string name="version_name">初心版 1.0</string>
 </resources>

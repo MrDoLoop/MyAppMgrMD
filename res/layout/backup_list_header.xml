@@ -37,7 +37,7 @@
                     android:textSize="16sp" />
                 
                 <TextView
-                    android:id="@+id/textFree"
+                    android:id="@+id/textSdFree"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -47,7 +47,7 @@
                     android:textSize="16sp" />
                 
                 <TextView
-                    android:id="@+id/textTotal"
+                    android:id="@+id/textSdTotal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
