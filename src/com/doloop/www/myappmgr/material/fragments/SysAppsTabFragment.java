@@ -56,7 +56,6 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
     private PinnedSectionListView mPinnedSectionListView;
     private static Context mContext;
     private TextView PopTextView;
-    private String mfragTitle = "";
     private MenuItem searchMenuItem;
     private DataSetObserver mDataSetObserver;
     private View mEmptyView;
@@ -395,7 +394,6 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
     @Override
     public void setFragmentTitle(String title) {
         // TODO Auto-generated method stub
-        mfragTitle = title;
     }
 
     @Override
