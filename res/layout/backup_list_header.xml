@@ -21,6 +21,7 @@
             android:orientation="vertical" >
 
             <LinearLayout
+                android:id="@+id/textLinear"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:weightSum="3"
@@ -34,17 +35,17 @@
                     android:layout_weight="1"
                     android:text="backup dir"
                     android:textColor="@color/orange_light"
-                    android:textSize="16sp" />
+                    android:textSize="15sp" />
                 
                 <TextView
-                    android:id="@+id/textSdFree"
+                    android:id="@+id/textSdUsed"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:layout_weight="1"
                     android:text="sd free space"
                     android:textColor="@color/green_light"
-                    android:textSize="16sp" />
+                    android:textSize="15sp" />
                 
                 <TextView
                     android:id="@+id/textSdTotal"
@@ -54,7 +55,7 @@
                     android:layout_weight="1"
                     android:text="sd total"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="15sp" />
             </LinearLayout>
 
             <com.doloop.www.myappmgr.material.widgets.RoundCornerProgressBar
