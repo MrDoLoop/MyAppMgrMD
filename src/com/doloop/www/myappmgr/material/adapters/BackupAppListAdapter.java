@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -23,14 +24,18 @@ import com.doloop.www.myappmgr.material.MainActivity;
 import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.utils.Constants;
 import com.doloop.www.myappmgr.material.utils.Utils;
+import com.doloop.www.myappmgr.material.widgets.RoundCornerProgressBar;
 import com.doloop.www.myappmgrmaterial.R;
+import com.nineoldandroids.animation.AnimatorSet;
+import com.nineoldandroids.animation.ObjectAnimator;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 import com.squareup.picasso.Picasso.LoadedFrom;
+import com.squareup.picasso.Target;
 
 public class BackupAppListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
+    private RoundCornerProgressBar mHeaderProcessbar;
 
     public BackupAppListDataSetChangedListener mBackupAppListDataSetChangedListener;
 
@@ -103,7 +108,20 @@ public class BackupAppListAdapter extends RecyclerView.Adapter<RecyclerView.View
         // TODO Auto-generated method stub
         if (getItemViewType(position) == TYPE_HEADER) {
             HeaderViewHolder holder = (HeaderViewHolder) viewHolder;
-            // holder.AppFileNameTextView.setText("赵楠");
+            String[] sdUsedInfo = Utils.getSdUsedSpaceInfo();
+            String[] sdTotalInfo = Utils.getSdTotalSpaceInfo();
+            String[] backupDirInfo = Utils.calculateTotalFileInfo(mAppListFull);
+                   
+            holder.backupDirTv.setText(mCtx.getString(R.string.back_dir)+"\n"+backupDirInfo[1]);
+            holder.sdUsedTv.setText(mCtx.getString(R.string.sd_used)+"\n"+sdUsedInfo[1]);
+            holder.sdTotalTv.setText(mCtx.getString(R.string.sd_total)+"\n"+sdTotalInfo[1]);
+
+            float[] progressInfo = getHeaderProgress();
+            float process = progressInfo[0];
+            float secProcess = progressInfo[1];
+            mHeaderProcessbar.setProgress(process);
+            mHeaderProcessbar.setSecondaryProgress(secProcess);
+            
         } else if (getItemViewType(position) == TYPE_ITEM) {
             AppInfo appInfo = mAppListDisplay.get(position);
             ItemViewHolder holder = (ItemViewHolder) viewHolder;
@@ -117,6 +135,7 @@ public class BackupAppListAdapter extends RecyclerView.Adapter<RecyclerView.View
 
             if (appInfo.iconBitmap == null) {
                 Picasso.with(mCtx).load(appInfo.getAppIconCachePath(mCtx)).noFade().into(holder);
+                //holder.AppIconImageView.setImageDrawable(Utils.getIconDrawable(mCtx, appInfo.packageName));
             } else {
                 holder.AppIconImageView.setImageBitmap(appInfo.iconBitmap);
             }
@@ -147,18 +166,65 @@ public class BackupAppListAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
 
     }
-
+    /**
+     * 
+     * @param progressFrom 短的
+     * @param progressTo
+     * @param secondaryProgressFrom 长的
+     * @param secondaryProgressTo
+     */
+    public void animateProgress(float progressFrom, float progressTo, float secondaryProgressFrom, float secondaryProgressTo){
+        mHeaderProcessbar.animateProgress(progressFrom, progressTo, secondaryProgressFrom, secondaryProgressTo);
+    }
+    
+    public void setHeaderProgress(float progress){
+        mHeaderProcessbar.setProgress(progress);
+    }
+    
+    public void setHeaderSecProgress(float secondaryProgress){
+        mHeaderProcessbar.setSecondaryProgress(secondaryProgress);
+    }
+    
     public class HeaderViewHolder extends RecyclerView.ViewHolder {
 
-        TextView AppNameTextView;
-        TextView AppVersionTextView;
-        TextView AppFileNameTextView;
-        ImageView AppIconImageView;
-        RelativeLayout RootLayout;
+        TextView backupDirTv;
+        TextView sdUsedTv;
+        TextView sdTotalTv;
+        LinearLayout RootLayout;
+        LinearLayout textLinear;
+        
 
         public HeaderViewHolder(View view) {
             super(view);
-            AppNameTextView = (TextView) view.findViewById(R.id.textView1);
+            textLinear = (LinearLayout) view.findViewById(R.id.textLinear);
+            backupDirTv = (TextView) view.findViewById(R.id.textBackupDir);
+            sdUsedTv = (TextView) view.findViewById(R.id.textSdUsed);
+            sdTotalTv = (TextView) view.findViewById(R.id.textSdTotal);
+            RootLayout = (LinearLayout) view.findViewById(R.id.bgLayout);
+            RootLayout.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    // TODO Auto-generated method stub
+                    ObjectAnimator ani1 = ObjectAnimator.ofFloat(textLinear, "rotationX", 90, -15, 15, 0);//setDuration(500);
+                    ObjectAnimator ani2 = ObjectAnimator.ofFloat(textLinear, "alpha", 0.25f, 0.5f, 0.75f, 1);//.setDuration(500);
+                    //ObjectAnimator.ofFloat(textLinear, "alpha", 0.25f, 0.5f, 0.75f, 1)
+                    
+                    AnimatorSet AniSet = new AnimatorSet();
+                    AniSet.playTogether(ani1,ani2);
+                    AniSet.setDuration(800);
+                    AniSet.start();
+                    
+                    float[] progressInfo = getHeaderProgress();
+                    float process = progressInfo[0];
+                    float secProcess = progressInfo[1];
+                    mHeaderProcessbar.animateProgress(0, process, 0, secProcess);
+                }
+            });
+            
+            mHeaderProcessbar = (RoundCornerProgressBar)view.findViewById(R.id.capacity_bar);
+            
+            
             /*
              * AppNameTextView = (TextView) view.findViewById(R.id.app_name); AppVersionTextView = (TextView)
              * view.findViewById(R.id.app_version); AppFileNameTextView = (TextView)
@@ -244,7 +310,6 @@ public class BackupAppListAdapter extends RecyclerView.Adapter<RecyclerView.View
                         return;
                     }
 
-                    // if(FileUtils.deleteQuietly(new File(appInfo.apkFilePath))){
                     if (FileUtils.deleteQuietly(new File(appInfo.backupFilePath))) {
                         // 从显示的list中删除
                         mAppListDisplay.remove(getPosition());
@@ -256,7 +321,15 @@ public class BackupAppListAdapter extends RecyclerView.Adapter<RecyclerView.View
                             }
                         }
 
+                        float[] progressInfo = getHeaderProgress();
+                        float process = progressInfo[0];
+                        float secProcess = progressInfo[1];
+                        
+                        mHeaderProcessbar.animateProgress(mHeaderProcessbar.getProgress(), process, 
+                                mHeaderProcessbar.getSecondaryProgress(), secProcess);
                         notifyItemRemoved(getPosition());
+                        MainActivity.T("dir: "+Utils.getBackupDirSizeStr(mCtx)+" sd used "+Utils.getSdUsedSpaceStr()
+                                +" sd total: "+Utils.getSdTotalSpace());
                         // getBackupAppListDataSetChangedListener().OnBackupAppListDataSetChanged();
                     } else {
                         MainActivity.T(R.string.error);
@@ -269,6 +342,7 @@ public class BackupAppListAdapter extends RecyclerView.Adapter<RecyclerView.View
                 @Override
                 public void onClick(View v) {
                     // TODO Auto-generated method stub
+                    
                     AppInfo theApp = mAppListDisplay.get(getPosition());
                     if (TextUtils.isEmpty(theApp.backupFilePath)) {
                         Utils.installAPK(mCtx, theApp.apkFilePath);
@@ -279,5 +353,15 @@ public class BackupAppListAdapter extends RecyclerView.Adapter<RecyclerView.View
             });
         }
     }
+    /**
+     * 
+     * @return [0]:process  [1]:secProcess
+     */
+    private float[] getHeaderProgress(){
+        float process = (float)Utils.calculateTotalFileRawSize(mAppListFull) / (float)Utils.getSdTotalSpaceRawSize() * 100;
+        float secProcess = (float)Utils.getSdUsedSpaceRawSize() / (float)Utils.getSdTotalSpaceRawSize() * 100;
+        return new float[]{process,secProcess};
+    }
+    
 
 }
