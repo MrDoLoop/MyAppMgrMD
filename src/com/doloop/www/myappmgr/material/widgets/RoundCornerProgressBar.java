@@ -18,9 +18,8 @@ limitations under the License.
 
 package com.doloop.www.myappmgr.material.widgets;
 
-import com.doloop.www.myappmgrmaterial.R;
-
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -34,8 +33,15 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.OvershootInterpolator;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.doloop.www.myappmgrmaterial.R;
+import com.nineoldandroids.animation.AnimatorSet;
+import com.nineoldandroids.animation.ValueAnimator;
+import com.nineoldandroids.animation.ValueAnimator.AnimatorUpdateListener;
 
 public class RoundCornerProgressBar extends LinearLayout {
     private final static int DEFAULT_PROGRESS_BAR_HEIGHT = 30;
@@ -153,7 +159,7 @@ public class RoundCornerProgressBar extends LinearLayout {
         typedArray.recycle();
     }
 
-    @SuppressWarnings("deprecation")
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void setProgressColor(ViewGroup layout, int color) {
         int radius = this.radius - (padding / 2);
         GradientDrawable gradient = new GradientDrawable();
@@ -167,6 +173,37 @@ public class RoundCornerProgressBar extends LinearLayout {
         }
     }
 
+    public void animateProgress(float progressFrom, float progressTo, float secondaryProgressFrom, float secondaryProgressTo){
+        ValueAnimator progressAni = ValueAnimator.ofFloat(progressFrom, progressTo);
+        progressAni.setDuration(1000);
+        progressAni.addUpdateListener(new AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                //Log.i("update", ((Float) animation.getAnimatedValue()).toString());
+                float val = (Float) animation.getAnimatedValue();
+                setProgress(val);
+            }
+        });
+        progressAni.setInterpolator(new AccelerateInterpolator());
+        
+        ValueAnimator secProgressAni = ValueAnimator.ofFloat(secondaryProgressFrom, secondaryProgressTo);
+        secProgressAni.setDuration(1000);
+        secProgressAni.addUpdateListener(new AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                //Log.i("update", ((Float) animation.getAnimatedValue()).toString());
+                float val = (Float) animation.getAnimatedValue();
+                setSecondaryProgress(val);
+            }
+        });
+        progressAni.setInterpolator(new AccelerateInterpolator());
+        AnimatorSet AniSet = new AnimatorSet();
+        AniSet.playTogether(progressAni,secProgressAni);
+        AniSet.setInterpolator(new OvershootInterpolator());
+        //AniSet.setDuration(arg0)OvershootInterpolator  
+        AniSet.start();
+    }
+    
     public void setProgressColor(int color) {
         progressColor = color;
 
