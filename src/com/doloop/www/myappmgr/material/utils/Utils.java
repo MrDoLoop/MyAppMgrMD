@@ -338,8 +338,9 @@ public class Utils {
         }
     }
 
-    public static boolean deleteAppIconInCache(Context context, String pkgName) {
-        File file = new File(Utils.getAppIconCacheDir(context), pkgName + ".png");
+    public static boolean deleteAppIconInCache(Context context, AppInfo appInfo) {
+        File file = appInfo.getAppIconCachePath(context);
+        //File file = new File(Utils.getAppIconCacheDir(context), pkgName + ".png");
         if (file.exists()) {
             if (file.isFile()) {
                 return file.delete();
