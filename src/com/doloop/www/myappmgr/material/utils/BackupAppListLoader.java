@@ -66,19 +66,21 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
         mLoadingView = loadingView;
     }
 
-    public void showLoadingView() {
+    public void showLoadingView(boolean withAni) {
         if (mLoadingView != null) {
             mLoadingView.setVisibility(View.VISIBLE);
             //mContentView.setVisibility(View.INVISIBLE);
-            
-            ObjectAnimator anim = ObjectAnimator.ofFloat(mLoadingView, "alpha", 0f, 1f).setDuration(800);
-            anim.addUpdateListener(new AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    ViewHelper.setAlpha(mContentView, 1 - (Float) animation.getAnimatedValue());
-                }
-            });
-            anim.start();
+            if(withAni){
+                ObjectAnimator anim = ObjectAnimator.ofFloat(mLoadingView, "alpha", 0f, 1f).setDuration(800);
+                anim.addUpdateListener(new AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        ViewHelper.setAlpha(mContentView, 1 - (Float) animation.getAnimatedValue());
+                    }
+                });
+                anim.start();
+            }
+           
             /*ObjectAnimator anim = ObjectAnimator.ofFloat(mLoadingView, "alpha", 0f, 1f);//.start();
             ObjectAnimator anim1 = ObjectAnimator.ofFloat(mContentView, "alpha", 1f, 0f);
             AnimatorSet AniSet = new AnimatorSet();
@@ -89,23 +91,30 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
 
     }
 
-    public void hideLoadingView() {
+    public void hideLoadingView(boolean withAni) {
         if (mLoadingView != null) {
-            ValueAnimator  anim = ValueAnimator.ofFloat(1f, 0f).setDuration(800);
-            anim.addUpdateListener(new AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    Float val = (Float) animation.getAnimatedValue();
-                    ViewHelper.setAlpha(mContentView, 1 - val);
-                    ViewHelper.setAlpha(mLoadingView, val);
-                }
-            });
-            anim.addListener(new AnimatorListenerAdapter(){
-                public void onAnimationEnd(Animator animation){
-                    mLoadingView.setVisibility(View.GONE);
-                }
-            });
-            anim.start();
+            if(withAni){
+                mContentView.setVisibility(View.VISIBLE);
+                ValueAnimator  anim = ValueAnimator.ofFloat(1f, 0f).setDuration(800);
+                anim.addUpdateListener(new AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        Float val = (Float) animation.getAnimatedValue();
+                        //ViewHelper.setAlpha(mContentView, 1 - val);
+                        ViewHelper.setAlpha(mLoadingView, val);
+                    }
+                });
+                anim.addListener(new AnimatorListenerAdapter(){
+                    public void onAnimationEnd(Animator animation){
+                        mLoadingView.setVisibility(View.GONE);
+                    }
+                });
+                anim.start();
+            }
+            else{
+                mLoadingView.setVisibility(View.GONE);
+                mContentView.setVisibility(View.VISIBLE);
+            }
             /*mLoadingView.setVisibility(View.GONE);
             mContentView.setVisibility(View.VISIBLE);
             ObjectAnimator anim = ObjectAnimator.ofFloat(mLoadingView, "alpha", 1f, 0f);//.start();
@@ -168,9 +177,16 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
                             entries = new ArrayList<AppInfo>(files.length);
                             break;
                         }
+                        
                         appInfo = Utils.buildAppInfoEntry(getContext(), packageInfo, pkgMgr, false);
                         appInfo.backupFilePath = file.getAbsolutePath();
                         entries.add(appInfo);
+                        
+                        if(!Utils.isAppIconOnSd(getContext(),appInfo)){
+                            appInfo.iconBitmap = Utils.drawableToBitmap(packageInfo.applicationInfo.loadIcon(pkgMgr));
+                            Utils.saveAppIconOnSd(getContext(),appInfo);
+                        }
+                        appInfo.iconBitmap = null;
                     }
                 }
             }
@@ -193,7 +209,7 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
      */
     @Override
     public void deliverResult(ArrayList<AppInfo> apps) {
-        hideLoadingView();
+        hideLoadingView(true);
         mLoadingRunning = false;
         if (isReset()) {
             if (DEBUG)
@@ -267,13 +283,13 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
             // the current data is null), we force a new load.
             if (DEBUG)
                 Log.i(TAG, "+++ A content change has been detected... so force load! +++");
-            showLoadingView();
+            showLoadingView(false);
             forceLoad();
         } else if (mApps == null) {
             // If the current data is null... then we should make it non-null! :)
             if (DEBUG)
                 Log.i(TAG, "+++ The current data is data is null... so force load! +++");
-            showLoadingView();
+            showLoadingView(false);
             forceLoad();
         }
     }
@@ -334,7 +350,7 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
 
         // The load has been canceled, so we should release the resources
         // associated with 'mApps'.
-        hideLoadingView();
+        hideLoadingView(false);
         releaseResources(apps);
     }
 
