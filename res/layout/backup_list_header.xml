@@ -65,14 +65,13 @@
                 android:id="@+id/capacity_bar"
                 android:layout_width="match_parent"
                 android:layout_height="25dp"
-                android:layout_alignParentBottom="true"
                 app:rcBackgroundColor="@color/black"
                 app:rcBackgroundPadding="4dp"
                 app:rcBackgroundRadius="5dp"
                 app:rcMax="100"
-                app:rcProgress="50"
+                app:rcProgress="0"
                 app:rcProgressColor="@color/orange_light"
-                app:rcSecondaryProgress="80"
+                app:rcSecondaryProgress="0"
                 app:rcSecondaryProgressColor="@color/green_light" />
         </LinearLayout>
     </android.support.v7.widget.CardView>
