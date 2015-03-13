@@ -35,7 +35,8 @@ import com.squareup.picasso.Target;
 public class BackupAppListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
-    private RoundCornerProgressBar mHeaderProcessbar;
+    //private RoundCornerProgressBar mHeaderProcessbar;
+    private HeaderViewHolder mHeaderViewHolder;
 
     public BackupAppListDataSetChangedListener mBackupAppListDataSetChangedListener;
 
@@ -119,8 +120,8 @@ public class BackupAppListAdapter extends RecyclerView.Adapter<RecyclerView.View
             float[] progressInfo = getHeaderProgress();
             float process = progressInfo[0];
             float secProcess = progressInfo[1];
-            mHeaderProcessbar.setProgress(process);
-            mHeaderProcessbar.setSecondaryProgress(secProcess);
+            mHeaderViewHolder.headerProcessbar.setProgress(process);
+            mHeaderViewHolder.headerProcessbar.setSecondaryProgress(secProcess);
             
         } else if (getItemViewType(position) == TYPE_ITEM) {
             AppInfo appInfo = mAppListDisplay.get(position);
@@ -148,7 +149,7 @@ public class BackupAppListAdapter extends RecyclerView.Adapter<RecyclerView.View
         Context context = parent.getContext();
         if (viewType == TYPE_HEADER) {
             final View view = LayoutInflater.from(context).inflate(R.layout.backup_list_header, parent, false);
-            return new HeaderViewHolder(view);
+            return mHeaderViewHolder = new HeaderViewHolder(view);
         } else if (viewType == TYPE_ITEM) {
             final View view = LayoutInflater.from(context).inflate(R.layout.back_app_info_item, parent, false);
             return new ItemViewHolder(view);
@@ -174,15 +175,15 @@ public class BackupAppListAdapter extends RecyclerView.Adapter<RecyclerView.View
      * @param secondaryProgressTo
      */
     public void animateProgress(float progressFrom, float progressTo, float secondaryProgressFrom, float secondaryProgressTo){
-        mHeaderProcessbar.animateProgress(progressFrom, progressTo, secondaryProgressFrom, secondaryProgressTo);
+        mHeaderViewHolder.headerProcessbar.animateProgress(progressFrom, progressTo, secondaryProgressFrom, secondaryProgressTo);
     }
     
     public void setHeaderProgress(float progress){
-        mHeaderProcessbar.setProgress(progress);
+        mHeaderViewHolder.headerProcessbar.setProgress(progress);
     }
     
     public void setHeaderSecProgress(float secondaryProgress){
-        mHeaderProcessbar.setSecondaryProgress(secondaryProgress);
+        mHeaderViewHolder.headerProcessbar.setSecondaryProgress(secondaryProgress);
     }
     
     public class HeaderViewHolder extends RecyclerView.ViewHolder {
@@ -192,10 +193,12 @@ public class BackupAppListAdapter extends RecyclerView.Adapter<RecyclerView.View
         TextView sdTotalTv;
         LinearLayout RootLayout;
         LinearLayout textLinear;
+        RoundCornerProgressBar headerProcessbar;
         
 
         public HeaderViewHolder(View view) {
             super(view);
+            headerProcessbar = (RoundCornerProgressBar)view.findViewById(R.id.capacity_bar);
             textLinear = (LinearLayout) view.findViewById(R.id.textLinear);
             backupDirTv = (TextView) view.findViewById(R.id.textBackupDir);
             sdUsedTv = (TextView) view.findViewById(R.id.textSdUsed);
@@ -206,23 +209,39 @@ public class BackupAppListAdapter extends RecyclerView.Adapter<RecyclerView.View
                 @Override
                 public void onClick(View v) {
                     // TODO Auto-generated method stub
-                    ObjectAnimator ani1 = ObjectAnimator.ofFloat(textLinear, "rotationX", 90, -15, 15, 0);//setDuration(500);
-                    ObjectAnimator ani2 = ObjectAnimator.ofFloat(textLinear, "alpha", 0.25f, 0.5f, 0.75f, 1);//.setDuration(500);
-                    //ObjectAnimator.ofFloat(textLinear, "alpha", 0.25f, 0.5f, 0.75f, 1)
+                    int playTime = 1200;
+                    AnimatorSet AniSet1 = new AnimatorSet();
+                    ObjectAnimator ani1 = ObjectAnimator.ofFloat(backupDirTv, "rotationX", -90, 15, 0).setDuration(playTime);//.setDuration(500);
+                    ObjectAnimator ani2 = ObjectAnimator.ofFloat(backupDirTv, "alpha", 0.5f, 0.75f, 1).setDuration(playTime);//.setDuration(500);
+                    //AniSet1.setDuration(5000);
+                    AniSet1.playTogether(ani1,ani2);
                     
-                    AnimatorSet AniSet = new AnimatorSet();
-                    AniSet.playTogether(ani1,ani2);
-                    AniSet.setDuration(800);
-                    AniSet.start();
+                    AnimatorSet AniSet2 = new AnimatorSet();
+                    ObjectAnimator ani3 = ObjectAnimator.ofFloat(sdUsedTv, "rotationX", -90, -15, 0).setDuration(playTime);
+                    ObjectAnimator ani4 = ObjectAnimator.ofFloat(sdUsedTv, "alpha", 0.5f, 0.75f, 1).setDuration(playTime);
+                    //AniSet2.setDuration(5000);
+                    AniSet2.playTogether(ani3,ani4);
                     
+                    AnimatorSet AniSet3 = new AnimatorSet();
+                    ObjectAnimator ani5 = ObjectAnimator.ofFloat(sdTotalTv, "rotationX", -90, -15, 0).setDuration(playTime);
+                    ObjectAnimator ani6 = ObjectAnimator.ofFloat(sdTotalTv, "alpha", 0.5f, 0.75f, 1).setDuration(playTime);
+                    //AniSet3.setDuration(5000);
+                    AniSet3.playTogether(ani5,ani6);
+                    
+                    AniSet1.start();
+                    AniSet2.setStartDelay(200);
+                    AniSet2.start();
+                    AniSet3.setStartDelay(400);
+                    AniSet3.start();
+
                     float[] progressInfo = getHeaderProgress();
                     float process = progressInfo[0];
                     float secProcess = progressInfo[1];
-                    mHeaderProcessbar.animateProgress(0, process, 0, secProcess);
+                    mHeaderViewHolder.headerProcessbar.animateProgress(0, process, 0, secProcess);
                 }
             });
             
-            mHeaderProcessbar = (RoundCornerProgressBar)view.findViewById(R.id.capacity_bar);
+            //mHeaderProcessbar = (RoundCornerProgressBar)view.findViewById(R.id.capacity_bar);
             
             
             /*
@@ -320,16 +339,26 @@ public class BackupAppListAdapter extends RecyclerView.Adapter<RecyclerView.View
                                 break;
                             }
                         }
+                        onBindViewHolder(mHeaderViewHolder,0);
+                        /*String[] sdUsedInfo = Utils.getSdUsedSpaceInfo();
+                        String[] sdTotalInfo = Utils.getSdTotalSpaceInfo();
+                        String[] backupDirInfo = Utils.calculateTotalFileInfo(mAppListFull);
+                               
+                        mHeaderViewHolder.backupDirTv.setText(mCtx.getString(R.string.back_dir)+"\n"+backupDirInfo[1]);
+                        mHeaderViewHolder.sdUsedTv.setText(mCtx.getString(R.string.sd_used)+"\n"+sdUsedInfo[1]);
+                        mHeaderViewHolder.sdTotalTv.setText(mCtx.getString(R.string.sd_total)+"\n"+sdTotalInfo[1]);
 
                         float[] progressInfo = getHeaderProgress();
                         float process = progressInfo[0];
                         float secProcess = progressInfo[1];
                         
-                        mHeaderProcessbar.animateProgress(mHeaderProcessbar.getProgress(), process, 
-                                mHeaderProcessbar.getSecondaryProgress(), secProcess);
+                        mHeaderViewHolder.headerProcessbar.animateProgress(mHeaderViewHolder.headerProcessbar.getProgress(), process, 
+                                mHeaderViewHolder.headerProcessbar.getSecondaryProgress(), secProcess);*/
+                        
                         notifyItemRemoved(getPosition());
-                        MainActivity.T("dir: "+Utils.getBackupDirSizeStr(mCtx)+" sd used "+Utils.getSdUsedSpaceStr()
-                                +" sd total: "+Utils.getSdTotalSpace());
+                        
+//                        MainActivity.T("dir: "+Utils.getBackupDirSizeStr(mCtx)+" sd used "+Utils.getSdUsedSpaceStr()
+//                                +" sd total: "+Utils.getSdTotalSpace());
                         // getBackupAppListDataSetChangedListener().OnBackupAppListDataSetChanged();
                     } else {
                         MainActivity.T(R.string.error);

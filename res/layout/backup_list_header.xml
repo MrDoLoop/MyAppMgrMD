@@ -34,6 +34,7 @@
                     android:gravity="center"
                     android:layout_weight="1"
                     android:text="backup dir"
+                    android:textStyle="bold"
                     android:textColor="@color/orange_light"
                     android:textSize="15sp" />
                 
@@ -44,6 +45,7 @@
                     android:gravity="center"
                     android:layout_weight="1"
                     android:text="sd free space"
+                    android:textStyle="bold"
                     android:textColor="@color/green_light"
                     android:textSize="15sp" />
                 
@@ -54,6 +56,7 @@
                     android:gravity="center"
                     android:layout_weight="1"
                     android:text="sd total"
+                    android:textStyle="bold"
                     android:textColor="@color/black"
                     android:textSize="15sp" />
             </LinearLayout>
