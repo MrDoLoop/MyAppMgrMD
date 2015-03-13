@@ -175,7 +175,7 @@ public class RoundCornerProgressBar extends LinearLayout {
 
     public void animateProgress(float progressFrom, float progressTo, float secondaryProgressFrom, float secondaryProgressTo){
         ValueAnimator progressAni = ValueAnimator.ofFloat(progressFrom, progressTo);
-        progressAni.setDuration(1000);
+        //progressAni.setDuration(1000);
         progressAni.addUpdateListener(new AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -187,7 +187,7 @@ public class RoundCornerProgressBar extends LinearLayout {
         progressAni.setInterpolator(new AccelerateInterpolator());
         
         ValueAnimator secProgressAni = ValueAnimator.ofFloat(secondaryProgressFrom, secondaryProgressTo);
-        secProgressAni.setDuration(1000);
+        //secProgressAni.setDuration(1000);
         secProgressAni.addUpdateListener(new AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -199,6 +199,7 @@ public class RoundCornerProgressBar extends LinearLayout {
         progressAni.setInterpolator(new AccelerateInterpolator());
         AnimatorSet AniSet = new AnimatorSet();
         AniSet.playTogether(progressAni,secProgressAni);
+        AniSet.setDuration(1000);
         AniSet.setInterpolator(new OvershootInterpolator());
         //AniSet.setDuration(arg0)OvershootInterpolator  
         AniSet.start();
