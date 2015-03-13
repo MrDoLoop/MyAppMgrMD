@@ -38,7 +38,7 @@ public class AppInfo {
     
     //自己添加的
     public boolean selected = false;
-    //public Drawable iconDrawable = null;
+
     public Bitmap iconBitmap = null;
     
     public String backupFilePath = "";
