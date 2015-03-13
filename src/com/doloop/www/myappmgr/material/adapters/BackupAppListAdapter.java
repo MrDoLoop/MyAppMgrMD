@@ -112,7 +112,7 @@ public class BackupAppListAdapter extends RecyclerView.Adapter<RecyclerView.View
             String[] sdUsedInfo = Utils.getSdUsedSpaceInfo();
             String[] sdTotalInfo = Utils.getSdTotalSpaceInfo();
             String[] backupDirInfo = Utils.calculateTotalFileInfo(mAppListFull);
-                   
+            
             holder.backupDirTv.setText(mCtx.getString(R.string.back_dir)+"\n"+backupDirInfo[1]);
             holder.sdUsedTv.setText(mCtx.getString(R.string.sd_used)+"\n"+sdUsedInfo[1]);
             holder.sdTotalTv.setText(mCtx.getString(R.string.sd_total)+"\n"+sdTotalInfo[1]);
@@ -120,6 +120,16 @@ public class BackupAppListAdapter extends RecyclerView.Adapter<RecyclerView.View
             float[] progressInfo = getHeaderProgress();
             float process = progressInfo[0];
             float secProcess = progressInfo[1];
+            
+            if(secProcess >= 80f){
+                holder.sdUsedTv.setTextColor(mCtx.getResources().getColor(R.color.red_light));
+                mHeaderViewHolder.headerProcessbar.setProgressColor(mCtx.getResources().getColor(R.color.orange_light), mCtx.getResources().getColor(R.color.red_light));
+            }
+            else{
+                holder.sdUsedTv.setTextColor(mCtx.getResources().getColor(R.color.green_light));
+                mHeaderViewHolder.headerProcessbar.setProgressColor(mCtx.getResources().getColor(R.color.orange_light), mCtx.getResources().getColor(R.color.green_light));
+            }
+            
             mHeaderViewHolder.headerProcessbar.setProgress(process);
             mHeaderViewHolder.headerProcessbar.setSecondaryProgress(secProcess);
             
