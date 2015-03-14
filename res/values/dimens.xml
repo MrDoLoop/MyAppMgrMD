@@ -11,6 +11,6 @@
 	<dimen name="drawer_item_height">40dp</dimen>
 	<dimen name="drawer_width">300dp</dimen>
 	<dimen name="stroke_width">5dp</dimen>
-	<dimen name="arc_process_size">100dp</dimen>
+	<dimen name="arc_process_size">105dp</dimen>
 	<dimen name="arc_suffix_text_padding">6dp</dimen>
 </resources>
