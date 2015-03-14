@@ -30,7 +30,7 @@
                 android:background="@drawable/backup_app_icon_bg"
                 android:padding="3dp"
                 android:scaleType="centerInside"
-                android:src="@drawable/sysapp_holder" />
+                android:src="@drawable/backupapp_holder" />
 
             <LinearLayout
                 android:id="@+id/text_linear"
