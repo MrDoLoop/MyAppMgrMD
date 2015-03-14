@@ -14,12 +14,15 @@ import com.doloop.www.mayappmgr.material.events.DrawerItemClickEvent.DrawerItem;
 import com.doloop.www.myappmgr.material.utils.NanAppMark;
 import com.doloop.www.myappmgr.material.utils.Utils;
 import com.doloop.www.myappmgrmaterial.R;
+import com.nineoldandroids.animation.Animator;
+import com.nineoldandroids.animation.ObjectAnimator;
+import com.nineoldandroids.animation.Animator.AnimatorListener;
 
 import de.greenrobot.event.EventBus;
 
 public class DrawerFragment extends Fragment {
     private static DrawerFragment uniqueInstance = null;
-    private static Context mContext;
+    //private static Context mContext;
 
     public DrawerFragment() {
 
@@ -29,7 +32,7 @@ public class DrawerFragment extends Fragment {
         if (uniqueInstance == null) {
             uniqueInstance = new DrawerFragment();
         }
-        mContext = ctx;
+        //mContext = ctx;
         return uniqueInstance;
     }
 
@@ -57,12 +60,38 @@ public class DrawerFragment extends Fragment {
         View tv = FragmentView.findViewById(R.id.textView);
         NanAppMark.attach(tv);
         
-        View headerImg = FragmentView.findViewById(R.id.header_image);
+        final View headerImg = FragmentView.findViewById(R.id.header_image);
         headerImg.setOnClickListener(new View.OnClickListener() {
             
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
+                ObjectAnimator ani = ObjectAnimator.ofFloat(headerImg, "rotationY", 0, 360).setDuration(1000);
+                ani.addListener(new AnimatorListener(){
+
+                    @Override
+                    public void onAnimationCancel(Animator arg0) {
+                        // TODO Auto-generated method stub
+                        
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator arg0) {
+                        // TODO Auto-generated method stub
+                        headerImg.setEnabled(true);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator arg0) {
+                        // TODO Auto-generated method stub
+                        
+                    }
+
+                    @Override
+                    public void onAnimationStart(Animator arg0) {
+                        // TODO Auto-generated method stub
+                        headerImg.setEnabled(false);
+                    }} );
+                ani.start();
             }
         });
         TextView verTv = (TextView) FragmentView.findViewById(R.id.ver);
@@ -136,7 +165,7 @@ public class DrawerFragment extends Fragment {
         // Clean up any resources including ending threads,
         // closing database connections etc.
         super.onDestroy();
-        mContext = null;
+        //mContext = null;
         uniqueInstance = null;
     }
 
