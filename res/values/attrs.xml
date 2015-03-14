@@ -10,6 +10,13 @@
         <attr name="cpv_animAutostart" format="boolean" />
         <attr name="cpv_animSteps" format="integer" />
     </declare-styleable> -->
+    
+    <declare-styleable name="MenuItem2Rows">
+        <attr name="iconSrc" format="integer" />
+        <attr name="firstRowTxt" format="string" />
+        <attr name="secondRowTxt" format="string" />
+    </declare-styleable>
+    
      <declare-styleable name="RoundCornerProgress">
         <attr name="rcProgress" format="float" />
         <attr name="rcBackgroundPadding" format="dimension" />
