@@ -10,6 +10,7 @@
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="150dp"
+        android:layout_alignParentTop="true"
         android:background="@drawable/ic_user_background" >
 
         <!--
@@ -22,7 +23,8 @@
             android:src="@drawable/header_icon"
             app:border="true"
             app:border_width="3dp"
-            app:shadow="false" />-->
+            app:shadow="false" />
+        -->
 
         <com.doloop.www.myappmgr.material.widgets.CircleImageView
             android:id="@+id/header_image"
@@ -34,33 +36,39 @@
             app:border_width="3dp" />
     </RelativeLayout>
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/logo_txt"
         android:layout_width="match_parent"
         android:layout_height="@dimen/drawer_item_height"
         android:layout_below="@+id/header"
-        android:background="@color/orange_light" >
+        android:background="@color/orange_light"
+        android:gravity="center"
+        android:text="NAN MADE"
+        android:textColor="@color/snackbar_action_sel"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="NAN MADE"
-            android:textColor="@color/snackbar_action_sel"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-    </LinearLayout>
+    <com.doloop.www.myappmgr.material.widgets.DrawerItem2Rows
+        android:id="@+id/backupApkDir"
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/logo_txt"
+        app:firstRowTxt="@string/back_dir"
+        app:iconSrc="@drawable/folder_black"
+        app:secondRowTxt="2222" >
+    </com.doloop.www.myappmgr.material.widgets.DrawerItem2Rows>
 
     <TextView
         android:id="@+id/ver"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/divider"
-        android:textColor="@color/black"
-        android:textStyle="italic"
         android:gravity="right|center_vertical"
         android:paddingRight="7dp"
-        android:text="v 1.0" />
+        android:text="v 1.0"
+        android:textColor="@color/black"
+        android:textStyle="italic" />
 
     <View
         android:id="@+id/divider"
