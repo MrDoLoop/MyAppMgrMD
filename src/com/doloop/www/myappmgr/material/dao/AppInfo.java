@@ -55,6 +55,30 @@ public class AppInfo {
     }
     
     public final static AppInfo DUMMY_APPINFO = new AppInfo();
+    
+    @Override
+    public boolean equals(Object object)
+    {
+        if (this == object){
+            return true;
+        }
+        if (object == null){
+            return false;
+        }
+        if (getClass() != object.getClass()){
+            return false;
+        }   
+         
+        final AppInfo other = (AppInfo) object;
+        
+        if(this.packageName.equals(other.packageName) && this.versionCode == other.versionCode)
+        {
+            return true;
+        }
+        return false;
+    }
+    
+    
     ////////////////
     
     public AppInfo() {
