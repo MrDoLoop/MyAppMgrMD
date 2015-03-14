@@ -1,23 +1,38 @@
 package com.doloop.www.myappmgr.material.fragments;
 
+import java.io.File;
 import java.util.ArrayList;
+
+import org.apache.commons.io.FileUtils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import com.doloop.www.mayappmgr.material.events.ActionModeToggleEvent;
 import com.doloop.www.mayappmgr.material.events.AppBackupSuccEvent;
+import com.doloop.www.myappmgr.material.MainActivity;
 import com.doloop.www.myappmgr.material.adapters.BackupAppListAdapterV2.BackupAppListDataSetChangedListener;
 import com.doloop.www.myappmgr.material.adapters.BackupAppListAdapterV2;
 import com.doloop.www.myappmgr.material.dao.AppInfo;
+import com.doloop.www.myappmgr.material.fragments.SelectionDialogFragment.SelectionDialogClickListener;
+import com.doloop.www.myappmgr.material.interfaces.IconClickListener;
 import com.doloop.www.myappmgr.material.utils.BackupAppListLoader;
 import com.doloop.www.myappmgr.material.utils.BackupAppListLoader.LoaderBackgroundMoreWorkListener;
 import com.doloop.www.myappmgr.material.utils.Utils;
@@ -26,7 +41,7 @@ import com.doloop.www.myappmgrmaterial.R;
 import de.greenrobot.event.EventBus;
 
 public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.LoaderCallbacks<ArrayList<AppInfo>>,
-        LoaderBackgroundMoreWorkListener {
+        LoaderBackgroundMoreWorkListener,AdapterView.OnItemLongClickListener, IconClickListener,SelectionDialogClickListener {
     private static BackupAppTabFragmentV2 uniqueInstance = null;
     private static Context mContext;
     private ListView mListView;
@@ -37,13 +52,10 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
     private BackupAppListLoader mBackupAppListLoader;
     private View mLoadingView;
     private ArrayList<AppInfo> mPendingNewAppInfo = new ArrayList<AppInfo>();
+    public static boolean isInActoinMode = false;
 
     @Nullable
     private View emptyView;
-
-    public BackupAppTabFragmentV2() {
-
-    }
 
     public synchronized static BackupAppTabFragmentV2 getInstance(Context ctx) {
         if (uniqueInstance == null) {
@@ -65,40 +77,6 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
         mListView.smoothScrollToPosition(0);
     }
 
-    /*
-     * private void initData(){ mAppList.clear(); File backupFolder = new File(Utilities.getBackUpAPKfileDir(mContext));
-     * if (!backupFolder.exists()) { backupFolder.mkdir(); }
-     * 
-     * File[] files = backupFolder.listFiles(new ApkFileFilter()); PackageManager pkgMgr; PackageInfo packageInfo; if
-     * (files.length > 0) { Arrays.sort(files, LastModifiedFileComparator.LASTMODIFIED_REVERSE); for (File file : files)
-     * { //filesArray.add(file.getName());
-     * 
-     * pkgMgr = mContext.getPackageManager(); packageInfo = pkgMgr.getPackageArchiveInfo(file.getAbsolutePath(),
-     * PackageManager.GET_ACTIVITIES); AppInfo appInfo; if(packageInfo != null){
-     * 
-     * ApplicationInfo applicationInfo = packageInfo.applicationInfo; applicationInfo.sourceDir =
-     * file.getAbsolutePath(); applicationInfo.publicSourceDir = file.getAbsolutePath();
-     * 
-     * appInfo = Utilities.buildAppInfoEntry(mContext,packageInfo,pkgMgr,false); mAppList.add(appInfo); } } }
-     * 
-     * mAdapter = new BackupAppListAdapter(mContext,mAppList); mDataSetObserver = new AdapterDataObserver(){
-     * 
-     * @Override public void onChanged() { // TODO Auto-generated method stub super.onChanged(); checkIfEmpty();
-     * mAdapter.getBackupAppListDataSetChangedListener().OnBackupAppListDataSetChanged(); }
-     * 
-     * @Override public void onItemRangeInserted(int positionStart, int itemCount) { checkIfEmpty();
-     * mAdapter.getBackupAppListDataSetChangedListener().OnBackupAppListDataSetChanged(); }
-     * 
-     * @Override public void onItemRangeRemoved(int positionStart, int itemCount) { checkIfEmpty();
-     * mAdapter.getBackupAppListDataSetChangedListener().OnBackupAppListDataSetChanged(); }
-     * 
-     * }; mAdapter.registerAdapterDataObserver(mDataSetObserver);
-     * mAdapter.setUserAppListDataSetChangedListener((BackupAppListDataSetChangedListener)mContext); }
-     */
-
-    /*
-     * public void setEmptyView(@Nullable View emptyView) { this.emptyView = emptyView; checkIfEmpty(); }
-     */
     private void checkIfEmpty() {
         if (emptyView != null && mAdapter != null) {
             if (mAdapter.getAppItemCount() > 0) {
@@ -121,8 +99,9 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
         emptyView = FragmentView.findViewById(R.id.emptyView);
         
         mListView = (ListView) FragmentView.findViewById(android.R.id.list);
+        mListView.setOnItemLongClickListener(this);
         
-        mAdapter = new BackupAppListAdapterV2(mContext, mAppList);
+        mAdapter = new BackupAppListAdapterV2(mContext, mAppList,BackupAppTabFragmentV2.this);
         mListView.setAdapter(mAdapter);
         // checkIfEmpty();
         return FragmentView;
@@ -226,6 +205,7 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
         mContext = null;
         mListView = null;
         uniqueInstance = null;
+        isInActoinMode = false;
         EventBus.getDefault().unregister(this);
     }
 
@@ -238,12 +218,7 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        // mContext = activity;
-        // Get a reference to the parent Activity.
-        /*
-         * try { mListener = (OnSysAppListItemSelectedListener) activity; } catch (ClassCastException e) { throw new
-         * ClassCastException(activity.toString() + "must implement Listener"); }
-         */
+        
     }
 
     @Override
@@ -261,14 +236,6 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
         mAdapter.filterList(str);
         // mAdapter.notifyDataSetChanged();
     }
-
-    /*
-     * private void processNewBackupApp(AppInfo theAppInfo, ArrayList<AppInfo> list) { boolean found = false; for (int i
-     * = 0; i < list.size(); i++) { AppInfo appInfo = list.get(i); if
-     * (appInfo.packageName.equals(theAppInfo.packageName)) { found = true; break; } } if (!found) { AppInfo appInfo =
-     * Utilities.getLastBackupAppFromSD(mContext); list.add(0, appInfo); // mAdapter.getDisplayList().add(0, appInfo);
-     * // mAdapter.notifyItemInserted(0); // mAdapter.notifyDataSetChanged(); } }
-     */
 
     public void onEventMainThread(AppBackupSuccEvent ev) {
 
@@ -293,13 +260,6 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
             for (AppInfo aInfo : ev.AppInfoList) {
                 // 检查是否在pending的list中存在
                 boolean found = Utils.isAppInfoInList(aInfo, mPendingNewAppInfo);
-               /* for (int i = 0; i < mPendingNewAppInfo.size(); i++) {
-                    AppInfo appInfo = mPendingNewAppInfo.get(i);
-                    if (aInfo.packageName.equals(appInfo.packageName)) {
-                        found = true;
-                        break;
-                    }
-                }*/
                 if (!found) {
                     mPendingNewAppInfo.add(aInfo);
                 }
@@ -373,4 +333,188 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
     }
     // LoaderBackgroundMoreWorkListener-end
 
+    @Override
+    public void OnIconClickListener(int position) {
+        // TODO Auto-generated method stub
+        if (isInActoinMode) {
+            // mAdapter.toggleSelection(position,true);
+            // updateActionModeTitle();
+        } else {
+            MainActivity.sActionMode =
+                    ((ActionBarActivity) getActivity()).startSupportActionMode(new ActionMode.Callback() {
+
+                        @Override
+                        public boolean onActionItemClicked(ActionMode mode, MenuItem menuItem) {
+                            // TODO Auto-generated method stub
+                            switch (menuItem.getItemId()) {
+                                case R.id.menu_selection:
+                                    if (mAdapter.getSelectedItemCnt() < mAdapter.getCount()) {// 选择全部
+                                        mAdapter.selectAll();
+                                    } else {// 都不选
+                                        mAdapter.deselectAll();
+                                    }
+                                    updateActionModeTitle();
+                                    break;
+                                case R.id.menu_delete:
+                                    if (mAdapter.getSelectedItemCnt() == 0) {
+                                        MainActivity.T(R.string.nothing_selected);
+                                    } else {
+                                        AppInfo tmpAppInfo = null;
+                                        ArrayList<AppInfo> list = mAdapter.getSelectedItemList();
+                                        ArrayList<AppInfo> succlist = new ArrayList<AppInfo>(); 
+                                        for (int i = 0; i < list.size(); i++) {
+                                            tmpAppInfo = list.get(i);
+
+                                            if (FileUtils.deleteQuietly(new File(tmpAppInfo.backupFilePath))) {
+                                                succlist.add(tmpAppInfo);
+                                            }else {
+                                                MainActivity.T(tmpAppInfo.appName + "--" +mContext.getString(R.string.error));
+                                            }
+                                        }
+                                        mAdapter.removeItem(succlist);
+                                        MainActivity.sActionMode.finish();
+                                    }
+
+                                    break;
+                            }
+                            return true;
+                        }
+
+                        @Override
+                        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                            // TODO Auto-generated method stub
+                            MenuInflater inflater = getActivity().getMenuInflater();
+                            inflater.inflate(R.menu.backup_app_action_menu, menu);
+                            isInActoinMode = true;
+                            EventBus.getDefault().post(new ActionModeToggleEvent(true));
+                            return true;
+                        }
+
+                        @Override
+                        public void onDestroyActionMode(ActionMode mode) {
+                            // TODO Auto-generated method stub
+                            mAdapter.deselectAll();
+                            MainActivity.sActionMode = null;
+                            isInActoinMode = false;
+                            EventBus.getDefault().post(new ActionModeToggleEvent(false));
+                        }
+
+                        @Override
+                        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                            // TODO Auto-generated method stub
+                            return false;
+                        }
+                    });
+
+            mAdapter.setSelectedItem(position, true, true);
+            updateActionModeTitle();
+        }
+    }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        // TODO Auto-generated method stub
+        super.onListItemClick(l, v, position, id);
+
+        AppInfo item = mAdapter.getItem(position);
+        if (item != null) {
+            if (isInActoinMode) {
+                mAdapter.toggleSelection(position, true);
+                updateActionModeTitle();
+            } else {
+                String toastMsg =
+                        item.appName + " \n" + item.packageName + " \n" + item.apkFilePath;
+                MainActivity.T(toastMsg);
+                // 滚动text
+                TextView appVersion = (TextView) v.findViewById(R.id.app_version);
+                if (appVersion.isSelected()) {
+                    appVersion.setSelected(false);
+                }
+                appVersion.setSelected(true);
+            }
+        } else {
+            MainActivity.T("BackupApp Item " + position);
+        }
+    }
+    
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        // TODO Auto-generated method stub
+        if (isInActoinMode) {
+            if(mAdapter.getCount() > 2){//只有一项的时候不显示选择对话框, 因为有了header，所以多一项
+                SelectionDialogFragment SelectionDialog = new SelectionDialogFragment();
+                SelectionDialog.setArgs(mAdapter.getItem(position), position, position == 1 ? true:false, position == mAdapter.getAppItemCount() ? true:false, BackupAppTabFragmentV2.this);
+                SelectionDialog.show(getActivity().getSupportFragmentManager(), SelectionDialogFragment.DialogTag);
+                return true;
+            } 
+            return false;
+        } else {
+            view.findViewById(R.id.app_icon).performClick();
+            return true;
+        }
+    }
+
+    
+    public void updateActionModeTitle() {
+        MenuItem selItem = MainActivity.sActionMode.getMenu().findItem(R.id.menu_selection);
+        if (mAdapter.getSelectedItemCnt() > 0) {
+            MainActivity.sActionMode.setTitle(mAdapter.getSelectedItemCnt() + " / " + mAdapter.getCount());
+            if (mAdapter.getSelectedItemCnt() == mAdapter.getCount()) {
+                selItem.setTitle(R.string.deselect_all);
+                selItem.setIcon(R.drawable.ic_deselect_all_white);
+            } else {
+                selItem.setTitle(R.string.select_all);
+                selItem.setIcon(R.drawable.ic_select_all_white);
+            }
+        } else {
+            MainActivity.sActionMode.setTitle("");
+            selItem.setTitle(R.string.select_all);
+            selItem.setIcon(R.drawable.ic_select_all_white);
+        }
+    }
+
+    @Override
+    public void onSelectionDialogClick(DialogInterface dialog, int selectType, int curPos) {
+        // TODO Auto-generated method stub
+        switch (selectType) {
+            case SelectionDialogFragment.SELECT_ALL_ABOVE:
+                for (int i = 0; i < curPos; i++) {
+                    if (!mAdapter.getItem(i).selected) {
+                        //mAdapter.getItem(i).selected = true;
+                        mAdapter.setSelectedItem(i, true, false);
+                    }
+                }
+                break;
+            case SelectionDialogFragment.DESELECT_ALL_ABOVE:
+                for (int i = 0; i < curPos; i++) {
+                    if (mAdapter.getItem(i).selected) {
+                        //mAdapter.getItem(i).selected = false;
+                        mAdapter.setSelectedItem(i, false, false);
+                    }
+                }
+                break;
+            case SelectionDialogFragment.SELECT_ALL_BELOW:
+                for (int i = curPos + 1; i < mAdapter.getCount(); i++) {
+                    if (!mAdapter.getItem(i).selected) {
+                        //mAdapter.getItem(i).selected = true;
+                        mAdapter.setSelectedItem(i, true, false);
+                        //UserAppActionModeSelectCnt++;
+                    }
+                }
+                break;
+            case SelectionDialogFragment.DESELECT_ALL_BELOW:
+                for (int i = curPos + 1; i < mAdapter.getCount(); i++) {
+                    if (mAdapter.getItem(i).selected) {
+                        mAdapter.setSelectedItem(i, false, false);
+                        //mAdapter.getItem(i).selected = false;
+                        //UserAppActionModeSelectCnt--;
+                    }
+                }
+                break;
+        }
+
+        updateActionModeTitle();
+        mAdapter.notifyDataSetChanged();
+    }
+    
 }

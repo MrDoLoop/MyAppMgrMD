@@ -1,10 +1,7 @@
 package com.doloop.www.myappmgr.material.adapters;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Locale;
-
-import org.apache.commons.io.FileUtils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -19,8 +16,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.doloop.www.myappmgr.material.MainActivity;
 import com.doloop.www.myappmgr.material.dao.AppInfo;
+import com.doloop.www.myappmgr.material.fragments.BackupAppTabFragmentV2;
+import com.doloop.www.myappmgr.material.interfaces.IconClickListener;
 import com.doloop.www.myappmgr.material.utils.Constants;
 import com.doloop.www.myappmgr.material.utils.Utils;
 import com.doloop.www.myappmgr.material.widgets.RoundCornerProgressBar;
@@ -31,13 +29,21 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Picasso.LoadedFrom;
 import com.squareup.picasso.Target;
 
-public class BackupAppListAdapterV2 extends BaseAdapter {
+public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickListener {
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
     // private RoundCornerProgressBar mHeaderProcessbar;
     private HeaderViewHolder mHeaderViewHolder;
     private boolean mIsDataInit = false;
 
+    private ArrayList<AppInfo> mAppListDisplay;
+    private ArrayList<AppInfo> mAppListFull;
+    private Context mCtx;
+
+    private int selectedCnt = 0;
+    
+    public IconClickListener mIconClickListener;
+    
     /*
      * private DisplayImageOptions options = new DisplayImageOptions.Builder()
      * .showImageOnLoading(R.drawable.backupapp_holder) .cacheInMemory(true) .cacheOnDisk(false)
@@ -58,10 +64,81 @@ public class BackupAppListAdapterV2 extends BaseAdapter {
         return this.mBackupAppListDataSetChangedListener;
     }
 
-    private ArrayList<AppInfo> mAppListDisplay;
-    private ArrayList<AppInfo> mAppListFull;
-    private Context mCtx;
+    public void selectAll() {
+        // mSelectedItems.clear();
+        int size = getCount();
+        for (int i = 0; i < size; i++) {
+            // mSelectedItems.put(getItem(i).packageName, getItem(i));
+            getItem(i).selected = true;
+        }
+        selectedCnt = size;
+        this.notifyDataSetChanged();
+    }
 
+    public void deselectAll() {
+        // mSelectedItems.clear();
+        ArrayList<AppInfo> list = getDisplayList();
+        for (AppInfo appInfo : list) {
+            appInfo.selected = false;
+        }
+        selectedCnt = 0;
+        this.notifyDataSetChanged();
+    }
+
+    public void toggleSelection(int position, boolean refreshList) {
+        // setSelectedItem(position, !mSelectedItems.containsKey(position), refreshList);
+        // String thePkgName = getItem(position).packageName;
+        getItem(position).selected = !getItem(position).selected;
+        setSelectedItem(position, getItem(position).selected, refreshList);
+    }
+
+    public void setSelectedItem(int position, boolean val, boolean refreshList) {
+        if (val) {
+            getItem(position).selected = true;
+            selectedCnt++;
+            if(selectedCnt > getCount()){
+                selectedCnt = getCount();
+            }
+            // mSelectedItems.put(getItem(position).packageName, getItem(position));
+        } else {
+            getItem(position).selected = false;
+            selectedCnt--;
+            if(selectedCnt < 0){
+                selectedCnt = 0;
+            }
+            // mSelectedItems.remove(getItem(position).packageName);
+        }
+        if (refreshList) {
+            notifyDataSetChanged();
+        }
+    }
+
+    public int getSelectedItemCnt() {
+        return selectedCnt;
+    }
+
+    public ArrayList<AppInfo> getSelectedItemList() {
+        ArrayList<AppInfo> retList = new ArrayList<AppInfo>();
+        ArrayList<AppInfo> curList = getDisplayList();
+        for (AppInfo appInfo : curList) {
+            if (appInfo.selected) {
+                retList.add(appInfo);
+            }
+        }
+
+        return retList;
+        /*
+         * ArrayList<AppInfo> list = new ArrayList<AppInfo>(mSelectedItems.values()); return list;
+         */
+    }
+    
+    public void removeItem(ArrayList<AppInfo> list){
+        mAppListFull.remove(list);
+        mAppListDisplay.removeAll(list);
+        notifyDataSetChanged();
+    }
+    
+    
     public void filterList(String str) {
         mAppListDisplay = mAppListFull;
         if (!TextUtils.isEmpty(str)) {
@@ -89,11 +166,12 @@ public class BackupAppListAdapterV2 extends BaseAdapter {
 
     }
 
-    public BackupAppListAdapterV2(Context ctx, ArrayList<AppInfo> appList) {
+    public BackupAppListAdapterV2(Context ctx, ArrayList<AppInfo> appList,IconClickListener l) {
         appList.add(0, AppInfo.DUMMY_APPINFO);
         mIsDataInit = false;
         mAppListFull = mAppListDisplay = appList;
         mCtx = ctx;
+        mIconClickListener = l;
     }
 
     public void setDataSource(ArrayList<AppInfo> appList) {
@@ -272,38 +350,9 @@ public class BackupAppListAdapterV2 extends BaseAdapter {
                 itemHolder.AppVersionTextView = (TextView) convertView.findViewById(R.id.app_version);
                 itemHolder.AppFileNameTextView = (TextView) convertView.findViewById(R.id.app_filename);
                 itemHolder.AppIconImageView = (ImageView) convertView.findViewById(R.id.app_icon);
-                itemHolder.AppIconImageView.setOnClickListener(new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View v) {
-                        // TODO Auto-generated method stub
-                        int pos = (Integer) v.getTag();
-
-                        AppInfo appInfo = null;
-                        try {// 因为添加了动画，点击过快的话，删除动画还没有完成，此处就崩溃了
-                            appInfo = mAppListDisplay.get(pos);
-                        } catch (Exception e) {
-                            return;
-                        }
-
-                        if (FileUtils.deleteQuietly(new File(appInfo.backupFilePath))) {
-                            // 从显示的list中删除
-                            mAppListDisplay.remove(pos);
-                            // 从总共的list中删除
-                            for (int i = 0; i < mAppListFull.size(); i++) {
-                                if (mAppListFull.get(i).packageName.equals(appInfo.packageName)) {
-                                    mAppListFull.remove(i);
-                                    break;
-                                }
-                            }
-                            notifyDataSetChanged();
-                        } else {
-                            MainActivity.T(R.string.error);
-                        }
-                    }
-                });
+                itemHolder.AppIconImageView.setOnClickListener(this);
                 itemHolder.RootLayout = (RelativeLayout) convertView.findViewById(R.id.rootLayout);
-                itemHolder.RootLayout.setOnClickListener(new View.OnClickListener() {
+                /*itemHolder.RootLayout.setOnClickListener(new View.OnClickListener() {
 
                     @Override
                     public void onClick(View v) {
@@ -316,7 +365,7 @@ public class BackupAppListAdapterV2 extends BaseAdapter {
                             Utils.installAPK(mCtx, theApp.backupFilePath);
                         }
                     }
-                });
+                });*/
                 convertView.setTag(itemHolder);
             }
             else{
@@ -342,151 +391,25 @@ public class BackupAppListAdapterV2 extends BaseAdapter {
             itemHolder.AppIconImageView.setTag(position);
             itemHolder.RootLayout.setTag(position);
             
+            if (BackupAppTabFragmentV2.isInActoinMode) {
+                itemHolder.AppIconImageView.setOnClickListener(null);
+                itemHolder.AppIconImageView.setClickable(false);
+                itemHolder.AppIconImageView.setBackgroundResource(R.drawable.imageview_border_orange);
+                if (appInfo.selected) {
+                    itemHolder.RootLayout.setBackgroundResource(R.drawable.list_row_item_pressed_bg);
+                    //holder.AppIconImageView.setBackgroundResource(R.drawable.imageview_border_blue);
+                } else {
+                    itemHolder.RootLayout.setBackgroundResource(R.drawable.list_row_item_bg);
+                    //holder.AppIconImageView.setBackgroundResource(R.drawable.user_app_icon_bg);
+                }
+            } else {
+                itemHolder.AppIconImageView.setOnClickListener(this);
+                itemHolder.AppIconImageView.setClickable(true);
+                itemHolder.RootLayout.setBackgroundResource(R.drawable.list_row_item_bg);
+                itemHolder.AppIconImageView.setBackgroundResource(R.drawable.backup_app_icon_bg);
+            }    
         }
         
-        
-       /* if (convertView == null) {
-            if (viewType == TYPE_HEADER) {
-                convertView = LayoutInflater.from(mCtx).inflate(R.layout.backup_list_header, parent, false);
-                mHeaderViewHolder = headerHolder = new HeaderViewHolder();
-
-                headerHolder.headerProcessbar = (RoundCornerProgressBar) convertView.findViewById(R.id.capacity_bar);
-                headerHolder.textLinear = (LinearLayout) convertView.findViewById(R.id.textLinear);
-                headerHolder. backupDirTv = (TextView) convertView.findViewById(R.id.textBackupDir);
-                headerHolder.sdUsedTv = (TextView) convertView.findViewById(R.id.textSdUsed);
-                headerHolder.sdTotalTv = (TextView) convertView.findViewById(R.id.textSdTotal);
-                headerHolder.RootLayout = (LinearLayout) convertView.findViewById(R.id.bgLayout);
-                headerHolder.RootLayout.setOnClickListener(new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View v) {
-
-                        AnimatorSet AniSet1 = buildHeaderTextItemAni(mHeaderViewHolder.backupDirTv);
-                        AnimatorSet AniSet2 = buildHeaderTextItemAni(mHeaderViewHolder.sdUsedTv);
-                        AnimatorSet AniSet3 = buildHeaderTextItemAni(mHeaderViewHolder.sdTotalTv);
-
-                        AniSet1.start();
-                        AniSet2.setStartDelay(200);
-                        AniSet2.start();
-                        AniSet3.setStartDelay(400);
-                        AniSet3.start();
-
-                        float[] progressInfo = getHeaderProgress();
-                        float process = progressInfo[0];
-                        float secProcess = progressInfo[1];
-                        mHeaderViewHolder.headerProcessbar.animateProgress(0, process, 0, secProcess);
-                    }
-                });
-
-            } else if (viewType == TYPE_ITEM) {
-                convertView = LayoutInflater.from(mCtx).inflate(R.layout.backup_app_list_view_v2, parent, false);
-                itemHolder = new ItemViewHolder();
-                itemHolder.AppNameTextView = (TextView) convertView.findViewById(R.id.app_name);
-                itemHolder.AppVersionTextView = (TextView) convertView.findViewById(R.id.app_version);
-                itemHolder.AppFileNameTextView = (TextView) convertView.findViewById(R.id.app_filename);
-                itemHolder.AppIconImageView = (ImageView) convertView.findViewById(R.id.app_icon);
-                itemHolder.AppIconImageView.setOnClickListener(new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View v) {
-                        // TODO Auto-generated method stub
-                        int pos = (Integer) v.getTag();
-
-                        AppInfo appInfo = null;
-                        try {// 因为添加了动画，点击过快的话，删除动画还没有完成，此处就崩溃了
-                            appInfo = mAppListDisplay.get(pos);
-                        } catch (Exception e) {
-                            return;
-                        }
-
-                        if (FileUtils.deleteQuietly(new File(appInfo.backupFilePath))) {
-                            // 从显示的list中删除
-                            mAppListDisplay.remove(pos);
-                            // 从总共的list中删除
-                            for (int i = 0; i < mAppListFull.size(); i++) {
-                                if (mAppListFull.get(i).packageName.equals(appInfo.packageName)) {
-                                    mAppListFull.remove(i);
-                                    break;
-                                }
-                            }
-                            notifyDataSetChanged();
-                        } else {
-                            MainActivity.T(R.string.error);
-                        }
-                    }
-                });
-                itemHolder.RootLayout = (RelativeLayout) convertView.findViewById(R.id.rootLayout);
-                itemHolder.RootLayout.setOnClickListener(new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View v) {
-                        // TODO Auto-generated method stub
-                        int pos = (Integer) v.getTag();
-                        AppInfo theApp = mAppListDisplay.get(pos);
-                        if (TextUtils.isEmpty(theApp.backupFilePath)) {
-                            Utils.installAPK(mCtx, theApp.apkFilePath);
-                        } else {
-                            Utils.installAPK(mCtx, theApp.backupFilePath);
-                        }
-                    }
-                });
-                convertView.setTag(itemHolder);
-            }
-        } else {
-            if (viewType == TYPE_HEADER) {
-                headerHolder = (HeaderViewHolder) convertView.getTag();
-                String[] sdUsedInfo = Utils.getSdUsedSpaceInfo();
-                String[] sdTotalInfo = Utils.getSdTotalSpaceInfo();
-                String[] backupDirInfo = Utils.calculateTotalFileInfo(mAppListFull);
-
-                headerHolder.backupDirTv.setText(mCtx.getString(R.string.back_dir) + "\n" + backupDirInfo[1]);
-                headerHolder.sdUsedTv.setText(mCtx.getString(R.string.sd_used) + "\n" + sdUsedInfo[1]);
-                headerHolder.sdTotalTv.setText(mCtx.getString(R.string.sd_total) + "\n" + sdTotalInfo[1]);
-
-                float[] progressInfo = getHeaderProgress();
-                float process = progressInfo[0];
-                float secProcess = progressInfo[1];
-
-                if (secProcess >= 80f) {
-                    headerHolder.sdUsedTv.setTextColor(mCtx.getResources().getColor(R.color.red_light));
-                    mHeaderViewHolder.headerProcessbar.setProgressColor(
-                            mCtx.getResources().getColor(R.color.orange_light),
-                            mCtx.getResources().getColor(R.color.red_light));
-                } else {
-                    headerHolder.sdUsedTv.setTextColor(mCtx.getResources().getColor(R.color.green_light));
-                    mHeaderViewHolder.headerProcessbar.setProgressColor(
-                            mCtx.getResources().getColor(R.color.orange_light),
-                            mCtx.getResources().getColor(R.color.green_light));
-                }
-
-                mHeaderViewHolder.headerProcessbar.setProgress(process);
-                mHeaderViewHolder.headerProcessbar.setSecondaryProgress(secProcess);
-            } else if (viewType == TYPE_ITEM) {
-                itemHolder = (ItemViewHolder) convertView.getTag();
-                itemHolder.AppNameTextView.setText(appInfo.appName);
-                // holder.AppIconImageView.setImageBitmap(appInfo.iconBitmap);
-                itemHolder.AppIconImageView.setTag(position);
-                itemHolder.AppVersionTextView.setText("v" + appInfo.versionName + " | " + appInfo.appSizeStr + " | "
-                        + appInfo.lastModifiedTimeStr);
-                itemHolder.AppFileNameTextView.setText(appInfo.getBackupApkFileName());
-
-                if (appInfo.iconBitmap == null) {
-                    // ImageLoader.getInstance().displayImage(Scheme.FILE.wrap(appInfo.getAppIconCachePath(mCtx).getAbsolutePath()),
-                    // holder.AppIconImageView, options);
-                    Picasso.with(mCtx).load(appInfo.getAppIconCachePath(mCtx)).noFade().into(itemHolder);
-                    // holder.AppIconImageView.setImageDrawable(Utils.getIconDrawable(mCtx, appInfo.packageName));
-                } else {
-                    itemHolder.AppIconImageView.setImageBitmap(appInfo.iconBitmap);
-                }
-                
-                
-                
-                itemHolder.AppIconImageView.setTag(position);
-                itemHolder.RootLayout.setTag(position);
-            }
-
-        }*/
-
         return convertView;
     }
 
@@ -542,6 +465,34 @@ public class BackupAppListAdapterV2 extends BaseAdapter {
     @Override
     public int getViewTypeCount() {
         return 2;
+    }
+
+    @Override
+    public void onClick(View v) {
+        // TODO Auto-generated method stub
+        int pos = (Integer) v.getTag();
+        mIconClickListener.OnIconClickListener(pos);
+        /*AppInfo appInfo = null;
+        try {// 因为添加了动画，点击过快的话，删除动画还没有完成，此处就崩溃了
+            appInfo = mAppListDisplay.get(pos);
+        } catch (Exception e) {
+            return;
+        }
+
+        if (FileUtils.deleteQuietly(new File(appInfo.backupFilePath))) {
+            // 从显示的list中删除
+            mAppListDisplay.remove(pos);
+            // 从总共的list中删除
+            for (int i = 0; i < mAppListFull.size(); i++) {
+                if (mAppListFull.get(i).packageName.equals(appInfo.packageName)) {
+                    mAppListFull.remove(i);
+                    break;
+                }
+            }
+            notifyDataSetChanged();
+        } else {
+            MainActivity.T(R.string.error);
+        }*/
     }
 
 }
