@@ -17,7 +17,6 @@
             android:layout_width="match_parent"
             android:layout_height="65dp"
             android:background="@drawable/list_row_item_bg"
-            android:clickable="true"
             android:descendantFocusability="beforeDescendants"
             android:padding="5dp" >
 
