@@ -45,7 +45,7 @@
     <string name="sdcard_changed">Sdcard changed, pls restart!</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
-    <string name="backup_dir">Backup Dir</string>
+    <string name="back_dir">Backup Dir</string>
     <string name="sd_free">SD Free</string>
     <string name="sd_used">SD Used</string>
     <string name="sd_total">SD Total</string>
