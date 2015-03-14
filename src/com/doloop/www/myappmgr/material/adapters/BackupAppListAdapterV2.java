@@ -9,8 +9,6 @@ import org.apache.commons.io.FileUtils;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +36,7 @@ public class BackupAppListAdapterV2 extends BaseAdapter {
     private static final int TYPE_ITEM = 1;
     // private RoundCornerProgressBar mHeaderProcessbar;
     private HeaderViewHolder mHeaderViewHolder;
+    private boolean mIsDataInit = false;
 
     /*
      * private DisplayImageOptions options = new DisplayImageOptions.Builder()
@@ -92,12 +91,14 @@ public class BackupAppListAdapterV2 extends BaseAdapter {
 
     public BackupAppListAdapterV2(Context ctx, ArrayList<AppInfo> appList) {
         appList.add(0, AppInfo.DUMMY_APPINFO);
+        mIsDataInit = false;
         mAppListFull = mAppListDisplay = appList;
         mCtx = ctx;
     }
 
     public void setDataSource(ArrayList<AppInfo> appList) {
         appList.add(0, AppInfo.DUMMY_APPINFO);
+        mIsDataInit = true;
         mAppListFull = mAppListDisplay = appList;
     }
 
@@ -108,58 +109,6 @@ public class BackupAppListAdapterV2 extends BaseAdapter {
     public AppInfo getItem(int position) {
         return mAppListDisplay.get(position);
     }
-
-/*    @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int position) {
-        // TODO Auto-generated method stub
-        if (getItemViewType(position) == TYPE_HEADER) {
-            HeaderViewHolder holder = (HeaderViewHolder) viewHolder;
-            String[] sdUsedInfo = Utils.getSdUsedSpaceInfo();
-            String[] sdTotalInfo = Utils.getSdTotalSpaceInfo();
-            String[] backupDirInfo = Utils.calculateTotalFileInfo(mAppListFull);
-
-            holder.backupDirTv.setText(mCtx.getString(R.string.back_dir) + "\n" + backupDirInfo[1]);
-            holder.sdUsedTv.setText(mCtx.getString(R.string.sd_used) + "\n" + sdUsedInfo[1]);
-            holder.sdTotalTv.setText(mCtx.getString(R.string.sd_total) + "\n" + sdTotalInfo[1]);
-
-            float[] progressInfo = getHeaderProgress();
-            float process = progressInfo[0];
-            float secProcess = progressInfo[1];
-
-            if (secProcess >= 80f) {
-                holder.sdUsedTv.setTextColor(mCtx.getResources().getColor(R.color.red_light));
-                mHeaderViewHolder.headerProcessbar.setProgressColor(mCtx.getResources().getColor(R.color.orange_light),
-                        mCtx.getResources().getColor(R.color.red_light));
-            } else {
-                holder.sdUsedTv.setTextColor(mCtx.getResources().getColor(R.color.green_light));
-                mHeaderViewHolder.headerProcessbar.setProgressColor(mCtx.getResources().getColor(R.color.orange_light),
-                        mCtx.getResources().getColor(R.color.green_light));
-            }
-
-            mHeaderViewHolder.headerProcessbar.setProgress(process);
-            mHeaderViewHolder.headerProcessbar.setSecondaryProgress(secProcess);
-
-        } else if (getItemViewType(position) == TYPE_ITEM) {
-            AppInfo appInfo = mAppListDisplay.get(position);
-            ItemViewHolder holder = (ItemViewHolder) viewHolder;
-            holder.AppNameTextView.setText(appInfo.appName);
-            // holder.AppIconImageView.setImageBitmap(appInfo.iconBitmap);
-            holder.AppIconImageView.setTag(position);
-            holder.AppVersionTextView.setText("v" + appInfo.versionName + " | " + appInfo.appSizeStr + " | "
-                    + appInfo.lastModifiedTimeStr);
-            holder.AppFileNameTextView.setText(appInfo.getBackupApkFileName());
-            holder.RootLayout.setTag(appInfo);
-
-            if (appInfo.iconBitmap == null) {
-                // ImageLoader.getInstance().displayImage(Scheme.FILE.wrap(appInfo.getAppIconCachePath(mCtx).getAbsolutePath()),
-                // holder.AppIconImageView, options);
-                Picasso.with(mCtx).load(appInfo.getAppIconCachePath(mCtx)).noFade().into(holder);
-                // holder.AppIconImageView.setImageDrawable(Utils.getIconDrawable(mCtx, appInfo.packageName));
-            } else {
-                holder.AppIconImageView.setImageBitmap(appInfo.iconBitmap);
-            }
-        }
-    }*/
 
     /**
      * 
@@ -285,7 +234,13 @@ public class BackupAppListAdapterV2 extends BaseAdapter {
             String[] sdTotalInfo = Utils.getSdTotalSpaceInfo();
             String[] backupDirInfo = Utils.calculateTotalFileInfo(mAppListFull);
 
-            headerHolder.backupDirTv.setText(mCtx.getString(R.string.back_dir) + "\n" + backupDirInfo[1]);
+            if(mIsDataInit){
+                headerHolder.backupDirTv.setText(mCtx.getString(R.string.back_dir) + "\n" + backupDirInfo[1]);
+            }
+            else{
+                headerHolder.backupDirTv.setText(mCtx.getString(R.string.back_dir) + "\n" + "---" );
+            }
+            
             headerHolder.sdUsedTv.setText(mCtx.getString(R.string.sd_used) + "\n" + sdUsedInfo[1]);
             headerHolder.sdTotalTv.setText(mCtx.getString(R.string.sd_total) + "\n" + sdTotalInfo[1]);
 
