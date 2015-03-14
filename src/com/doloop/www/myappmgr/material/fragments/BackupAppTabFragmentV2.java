@@ -15,6 +15,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.view.ActionMode;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -422,15 +423,11 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
                 mAdapter.toggleSelection(position, true);
                 updateActionModeTitle();
             } else {
-                String toastMsg =
-                        item.appName + " \n" + item.packageName + " \n" + item.apkFilePath;
-                MainActivity.T(toastMsg);
-                // ¹ö¶¯text
-                TextView appVersion = (TextView) v.findViewById(R.id.app_version);
-                if (appVersion.isSelected()) {
-                    appVersion.setSelected(false);
+                if (TextUtils.isEmpty(item.backupFilePath)) {
+                    Utils.installAPK(getActivity(), item.apkFilePath);
+                } else {
+                    Utils.installAPK(getActivity(), item.backupFilePath);
                 }
-                appVersion.setSelected(true);
             }
         } else {
             MainActivity.T("BackupApp Item " + position);

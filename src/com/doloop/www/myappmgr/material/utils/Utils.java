@@ -675,8 +675,15 @@ public class Utils {
         }
     }
 
+    public static void saveBackUpAPKfileDir(Context ctx, String path){
+        SharedPreferences.Editor shPrefEdit = ctx.getSharedPreferences("MyAppMgrSharedPreferences", 0).edit();
+        shPrefEdit.putString("backupApkFileDir", path);
+        SharedPreferencesCompat.apply(shPrefEdit);
+    }
+    
     public static String getBackUpAPKfileDir(Context ctx) {
-        String path = Environment.getExternalStorageDirectory().toString() + "/MyAppMgrMD/";
+        String path = ctx.getSharedPreferences("MyAppMgrSharedPreferences", 0).getString("backupApkFileDir", Constants.DEF_BACKUP_DIR);
+        
         File backUpFileDir = new File(path);
         if (!backUpFileDir.exists()) {
             backUpFileDir.mkdirs();

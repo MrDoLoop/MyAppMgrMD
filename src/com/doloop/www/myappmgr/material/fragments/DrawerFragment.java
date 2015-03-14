@@ -1,5 +1,7 @@
 package com.doloop.www.myappmgr.material.fragments;
 
+import java.io.File;
+
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -13,6 +15,7 @@ import com.doloop.www.mayappmgr.material.events.DrawerItemClickEvent;
 import com.doloop.www.mayappmgr.material.events.DrawerItemClickEvent.DrawerItem;
 import com.doloop.www.myappmgr.material.utils.NanAppMark;
 import com.doloop.www.myappmgr.material.utils.Utils;
+import com.doloop.www.myappmgr.material.widgets.DrawerItem2Rows;
 import com.doloop.www.myappmgrmaterial.R;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.ObjectAnimator;
@@ -20,8 +23,9 @@ import com.nineoldandroids.animation.Animator.AnimatorListener;
 
 import de.greenrobot.event.EventBus;
 
-public class DrawerFragment extends Fragment {
+public class DrawerFragment extends Fragment implements FolderSelectorDialog.FolderSelectCallback {
     private static DrawerFragment uniqueInstance = null;
+    private DrawerItem2Rows DrawerItemBackupDir;
     //private static Context mContext;
 
     public DrawerFragment() {
@@ -57,8 +61,19 @@ public class DrawerFragment extends Fragment {
             }
         });
         
-        View tv = FragmentView.findViewById(R.id.textView);
+        View tv = FragmentView.findViewById(R.id.logo_txt);
         NanAppMark.attach(tv);
+        
+        DrawerItemBackupDir = (DrawerItem2Rows) FragmentView.findViewById(R.id.backupApkDir);
+        DrawerItemBackupDir.setSecondRowTxt(Utils.getBackUpAPKfileDir(getActivity()));
+        DrawerItemBackupDir.setOnClickListener(new View.OnClickListener() {
+            
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                new FolderSelectorDialog().show(getActivity().getSupportFragmentManager(),DrawerFragment.this);
+            }
+        });
         
         final View headerImg = FragmentView.findViewById(R.id.header_image);
         headerImg.setOnClickListener(new View.OnClickListener() {
@@ -184,6 +199,13 @@ public class DrawerFragment extends Fragment {
          * try { mListener = (OnSysAppListItemSelectedListener) activity; } catch (ClassCastException e) { throw new
          * ClassCastException(activity.toString() + "must implement Listener"); }
          */
+    }
+
+    @Override
+    public void onFolderSelection(File folder) {
+        // TODO Auto-generated method stub
+        DrawerItemBackupDir.setSecondRowTxt(folder.getAbsolutePath()+"/");
+        Utils.saveBackUpAPKfileDir(getActivity(), folder.getAbsolutePath()+"/");
     }
     
 }

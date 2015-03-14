@@ -1,5 +1,7 @@
 package com.doloop.www.myappmgr.material.utils;
 
+import android.os.Environment;
+
 public class Constants {
     public final static int USR_APPS_TAB_POS = 0;
     public final static int SYS_APPS_TAB_POS = 1;
@@ -9,5 +11,5 @@ public class Constants {
     
     public static String MY_PACKAGE_NAME = "";
     
-    
+    public static final String DEF_BACKUP_DIR = Environment.getExternalStorageDirectory().toString() + "/MyAppMgrMD/";
 }

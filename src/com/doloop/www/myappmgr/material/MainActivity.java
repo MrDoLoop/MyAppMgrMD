@@ -1213,17 +1213,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
         @Override
         protected void onPreExecute() {
             unregisterReceivers();
-            /*
-             * progDialog = new ProgressDialog(thisActivityCtx); progDialog.setCancelable(false);
-             * progDialog.setMessage(getString(R.string.saving_apps));
-             * progDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL); progDialog.setProgress(0);
-             * progDialog.setMax(AppList.size()); progDialog.setOnCancelListener(new OnCancelListener() {
-             * 
-             * @Override public void onCancel(DialogInterface dialog) { BackUpApps.this.cancel(true); }
-             * 
-             * });
-             */
-            
+           
             progDialog = new MyProgressDialog(MainActivity.this,getString(R.string.saving_apps),getString(R.string.saving_apps));
             progDialog.setCancelable(false);
             progDialog.setArcProgressMax(100);
