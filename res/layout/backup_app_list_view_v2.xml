@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/windows_bg" >
+
+    <!--
+         <android.support.v7.widget.RecyclerView
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:fadeScrollbars="true"
+        android:paddingTop="5dp"
+        android:scrollbars="vertical"
+        tools:context=".MainActivity" />-->
+
+
+    <ImageView
+        android:id="@+id/emptyView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:src="@drawable/ic_folder_open"
+        android:visibility="gone" />
+
+    <ListView
+        android:id="@android:id/list"
+        android:paddingTop="5dp"
+        android:clipToPadding="false"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@color/transparent"
+        android:dividerHeight="0dp"
+        android:fadingEdgeLength="0dp"
+        android:fastScrollEnabled="false"
+        android:listSelector="@color/transparent"
+        android:smoothScrollbar="true" 
+      />
+
+   <!-- <com.doloop.www.myappmgr.material.widgets.CircleProgressBar
+        android:id="@+id/loading_bar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        app:mlpb_progress_stoke_width="3dp" />-->
+
+    <!-- <include layout="@layout/list_empty_view" android:id="@+id/emptyView" /> -->
+
+
+    <!--
+         <ProgressBar
+        android:id="@+id/loading_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" >
+    </ProgressBar>
+    -->
+
+
+
+         <com.doloop.www.myappmgr.material.widgets.ProgressWheel
+        android:id="@+id/loading_bar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        app:matProg_barColor="@color/theme_blue_light"
+        app:matProg_progressIndeterminate="true" />
+
+
+    <!--
+         <com.doloop.www.myappmgr.material.widgets.CircularProgressView
+        android:id="@+id/loading_bar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        app:cpv_animAutostart="true"
+        app:cpv_indeterminate="true"
+        app:cpv_thickness="4dp" />
+    -->
+
+
+    <!--
+          <com.doloop.www.myappmgr.material.widgets.CircularProgressView
+             android:id="@+id/loading_bar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+            app:angleAnimationDurationMillis="@integer/circular_default_angleAnimationDurationMillis"
+            app:borderWidth="@dimen/circular_default_border_width"
+            app:colorSequence="@array/circular_default_color_sequence"
+            app:sweepAnimationDurationMillis="@integer/circular_default_sweepAnimationDuration" />
+    -->
+
+</RelativeLayout>
