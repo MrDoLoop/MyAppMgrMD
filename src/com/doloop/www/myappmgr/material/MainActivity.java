@@ -49,6 +49,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,14 +61,14 @@ import com.doloop.www.mayappmgr.material.events.BackupAppEvent;
 import com.doloop.www.mayappmgr.material.events.DrawerItemClickEvent;
 import com.doloop.www.mayappmgr.material.events.ViewNewBackupAppEvent;
 import com.doloop.www.myappmgr.material.adapters.AppListFragAdapter;
-import com.doloop.www.myappmgr.material.adapters.BackupAppListAdapter.BackupAppListDataSetChangedListener;
+import com.doloop.www.myappmgr.material.adapters.BackupAppListAdapterV2.BackupAppListDataSetChangedListener;
 import com.doloop.www.myappmgr.material.adapters.SysAppListAdapter.SysAppListDataSetChangedListener;
 import com.doloop.www.myappmgr.material.adapters.UserAppListAdapter.UserAppListDataSetChangedListener;
 import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.dao.AppInfoDao.Properties;
 import com.doloop.www.myappmgr.material.dao.DaoSession;
 import com.doloop.www.myappmgr.material.dao.DaoUtils;
-import com.doloop.www.myappmgr.material.fragments.BackupAppTabFragment;
+import com.doloop.www.myappmgr.material.fragments.BackupAppTabFragmentV2;
 import com.doloop.www.myappmgr.material.fragments.BaseFrag;
 import com.doloop.www.myappmgr.material.fragments.DrawerFragment;
 import com.doloop.www.myappmgr.material.fragments.SortTypeDialogFragment;
@@ -95,7 +96,8 @@ import de.greenrobot.event.EventBus;
 
 public class MainActivity extends ActionBarActivity implements // UserAppListFilterResultListener,
         UserAppListDataSetChangedListener, SysAppListDataSetChangedListener, 
-        SortTypeListItemClickListener,BackupAppListDataSetChangedListener {
+        SortTypeListItemClickListener,//BackupAppListDataSetChangedListener,
+        BackupAppListDataSetChangedListener {
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private ActionBar mActionBar;
@@ -117,7 +119,8 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
     private TreeMap<String, Integer> mSectionInListPosMap = new TreeMap<String, Integer>();
 
     // 备份app列表
-    private BackupAppTabFragment backupAppsFrg;
+    private BackupAppTabFragmentV2 backupAppsFrg;
+    //private BackupAppTabFragment backupAppsFrg;
 
     private EditText searchViewEdt;
 
@@ -284,7 +287,8 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
         Fragmentlist = new ArrayList<BaseFrag>();
         usrAppsFrg = UserAppsTabFragment.getInstance(thisActivityCtx);
         sysAppsFrg = SysAppsTabFragment.getInstance(thisActivityCtx);
-        backupAppsFrg = BackupAppTabFragment.getInstance(thisActivityCtx);
+        backupAppsFrg = BackupAppTabFragmentV2.getInstance(thisActivityCtx);
+        //backupAppsFrg = BackupAppTabFragment.getInstance(thisActivityCtx);
 
         Fragmentlist.add(usrAppsFrg);
         Fragmentlist.add(sysAppsFrg);
@@ -517,6 +521,13 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
 
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
         searchView.setQueryHint(getString(R.string.search));
+
+//        //Get the search bar Linearlayout
+        LinearLayout searchBar = (LinearLayout) searchView.findViewById(android.support.v7.appcompat.R.id.search_bar);
+//
+//        //Give the Linearlayout a transition animation.searchview显示动画
+       //searchBar.setLayoutTransition(new LayoutTransition());
+                
         searchViewEdt = ((EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text));
         try {// 设置光标颜色
              // https://github.com/android/platform_frameworks_base/blob/kitkat-release/core/java/android/widget/TextView.java#L562-564
@@ -1288,6 +1299,9 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
             }
             registerReceivers();
             if (SuccAppList.size() > 0) {
+                if(sActionMode != null){
+                    sActionMode.finish();
+                }
                 EventBus.getDefault().post(new AppBackupSuccEvent(SuccAppList));
             }
         }
