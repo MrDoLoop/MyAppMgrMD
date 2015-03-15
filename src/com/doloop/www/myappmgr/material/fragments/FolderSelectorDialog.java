@@ -10,7 +10,6 @@ import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.doloop.www.myappmgr.material.utils.Constants;
-import com.doloop.www.myappmgr.material.utils.Utils;
 import com.doloop.www.myappmgrmaterial.R;
 
 import java.io.File;
@@ -18,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * @author Aidan Follestad (afollestad)
@@ -120,7 +120,7 @@ public class FolderSelectorDialog extends DialogFragment implements MaterialDial
     private static class FolderSorter implements Comparator<File> {
         @Override
         public int compare(File lhs, File rhs) {
-            return lhs.getName().compareTo(rhs.getName());
+            return lhs.getName().toLowerCase(Locale.getDefault()).compareTo(rhs.getName().toLowerCase(Locale.getDefault()));
         }
     }
 }

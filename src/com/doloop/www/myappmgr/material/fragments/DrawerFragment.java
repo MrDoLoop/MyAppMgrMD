@@ -1,6 +1,9 @@
 package com.doloop.www.myappmgr.material.fragments;
 
 import java.io.File;
+import java.io.IOException;
+
+import org.apache.commons.io.FileUtils;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,7 +13,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.doloop.www.mayappmgr.material.events.DrawerItemClickEvent;
 import com.doloop.www.mayappmgr.material.events.DrawerItemClickEvent.DrawerItem;
 import com.doloop.www.myappmgr.material.utils.NanAppMark;
@@ -48,7 +53,7 @@ public class DrawerFragment extends Fragment implements FolderSelectorDialog.Fol
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Create, or inflate the Fragment¡¯s UI, and return it.
+        // Create, or inflate the Fragmentâ€™s UI, and return it.
         // If this Fragment has no UI then return null.
         View FragmentView = inflater.inflate(R.layout.drawer_content, container, false);
         View refItem = FragmentView.findViewById(R.id.drawerRefresh);
@@ -117,9 +122,9 @@ public class DrawerFragment extends Fragment implements FolderSelectorDialog.Fol
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        // Complete the Fragment initialization ¨C particularly anything
+        // Complete the Fragment initialization â€“ particularly anything
         // that requires the parent Activity to be initialized or the
-        // Fragment¡¯s view to be fully inflated.
+        // Fragmentâ€™s view to be fully inflated.
         setRetainInstance(false);
         setHasOptionsMenu(false);
     }
@@ -142,7 +147,7 @@ public class DrawerFragment extends Fragment implements FolderSelectorDialog.Fol
     @Override
     public void onPause() {
         // Suspend UI updates, threads, or CPU intensive processes
-        // that don¡¯t need to be updated when the Activity isn¡¯t
+        // that donâ€™t need to be updated when the Activity isnâ€™t
         // the active foreground activity.
         // Persist all edits or state changes
         // as after this call the process is likely to be killed.
@@ -163,11 +168,11 @@ public class DrawerFragment extends Fragment implements FolderSelectorDialog.Fol
     @Override
     public void onStop() {
         // Suspend remaining UI updates, threads, or processing
-        // that aren¡¯t required when the Fragment isn¡¯t visible.
+        // that arenâ€™t required when the Fragment isnâ€™t visible.
         super.onStop();
     }
 
-    // Called when the Fragment¡¯s View has been detached.
+    // Called when the Fragmentâ€™s View has been detached.
     @Override
     public void onDestroyView() {
         // Clean up resources related to the View.
@@ -193,19 +198,47 @@ public class DrawerFragment extends Fragment implements FolderSelectorDialog.Fol
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        // mContext = activity;
-        // Get a reference to the parent Activity.
-        /*
-         * try { mListener = (OnSysAppListItemSelectedListener) activity; } catch (ClassCastException e) { throw new
-         * ClassCastException(activity.toString() + "must implement Listener"); }
-         */
+       
     }
 
     @Override
     public void onFolderSelection(File folder) {
         // TODO Auto-generated method stub
-        DrawerItemBackupDir.setSecondRowTxt(folder.getAbsolutePath()+"/");
-        Utils.saveBackUpAPKfileDir(getActivity(), folder.getAbsolutePath()+"/");
+        final String newpath = folder.getAbsolutePath()+"/";
+        final String curBackupPath = Utils.getBackUpAPKfileDir(getActivity());
+        DrawerItemBackupDir.setSecondRowTxt(newpath);
+        
+        if(!curBackupPath.equals(newpath)){
+            Utils.saveBackUpAPKfileDir(getActivity(), newpath);
+            MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
+            .content(R.string.move_apk)
+            .positiveText(R.string.ok)
+            .negativeText(R.string.cancel)
+            .callback(new MaterialDialog.ButtonCallback() {
+                @Override
+                public void onPositive(MaterialDialog dialog) {
+                    DrawerItemClickEvent changeDirEv = new DrawerItemClickEvent(DrawerItem.CHG_BACKUP_DIR);
+                    changeDirEv.oldPath = curBackupPath;
+                    changeDirEv.newPath = newpath;
+                    EventBus.getDefault().post(changeDirEv);
+                }
+
+                @Override
+                public void onNegative(MaterialDialog dialog) {
+                    
+                }
+            }).build();
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.show();
+          //æŠŠæ—§ç›®å½•ä¸‹çš„apkæ–‡ä»¶ç§»åŠ¨åˆ°æ–°çš„ç›®å½•ä¸‹
+            /*try {
+                FileUtils.copyDirectory(new File(curBackupPath), new File(newpath));
+                FileUtils.deleteDirectory(new File(curBackupPath));
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }*/
+            
+        }
     }
-    
 }

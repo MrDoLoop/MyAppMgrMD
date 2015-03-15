@@ -28,6 +28,8 @@
 	<string name="saving_apps">保存程序</string>
 	<string name="error">错误</string>
 	<string name="loading_apps">正在加载程序&#8230;</string>
+	<string name="moving_akps">正在移动Apk文件&#8230;</string>
+	<string name="move_success">移动成功</string>
 	<string name="new_app_installed">新程序安装:</string>
 	<string name="app_removed">程序移除.</string>
 	<string name="app_removed_name">程序移除:</string>
@@ -52,5 +54,6 @@
     <string name="sd_used">SD 使用容量</string>
     <string name="sd_total">SD 总容量</string>
     <string name="choose">选择</string>
+    <string name="move_apk">是否复制所有的APK文件到新的目录?</string>
     <string name="version_name">初心版 1.0</string>
 </resources>

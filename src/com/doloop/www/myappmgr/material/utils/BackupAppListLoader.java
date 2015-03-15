@@ -69,6 +69,7 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
     public void showLoadingView(boolean withAni) {
         if (mLoadingView != null) {
             mLoadingView.setVisibility(View.VISIBLE);
+            ViewHelper.setAlpha(mLoadingView, 1f);
             //mContentView.setVisibility(View.INVISIBLE);
             if(withAni){
                 ObjectAnimator anim = ObjectAnimator.ofFloat(mLoadingView, "alpha", 0f, 1f).setDuration(800);
@@ -140,7 +141,13 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
      */
     @Override
     public ArrayList<AppInfo> loadInBackground() {
-        
+        //∫ÛÃ®º”‘ÿ
+        /*try {
+            Thread.sleep(20000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }*/
         mLoadingRunning = true;
         mLoadInBackgroundCanceled = false;
         
@@ -258,11 +265,10 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
             return ;
         }
         
-        mLoadingRunning = true;
         if (DEBUG)
             Log.i(TAG, "+++ onStartLoading() called! +++");
-        mLoadInBackgroundCanceled = false;
-        if (mApps != null) {
+        
+        if (mApps != null && !mLoadInBackgroundCanceled) {
             // Deliver any previously loaded data immediately.
             if (DEBUG)
                 Log.i(TAG, "+++ Delivering previously loaded data to the client...");
@@ -281,6 +287,7 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
             // onContentChanged() on the Loader, which will cause the next call to
             // takeContentChanged() to return true. If this is ever the case (or if
             // the current data is null), we force a new load.
+            mLoadInBackgroundCanceled = false;
             if (DEBUG)
                 Log.i(TAG, "+++ A content change has been detected... so force load! +++");
             showLoadingView(false);
@@ -296,6 +303,7 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
 
     @Override
     protected void onStopLoading() {
+        mLoadingRunning = false;
         if (DEBUG)
             Log.i(TAG, "+++ onStopLoading() called! +++");
 
@@ -313,6 +321,7 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
     public boolean cancelLoad() {
         // TODO Auto-generated method stub
         mLoadInBackgroundCanceled = true;
+        mLoadingRunning = false;
         return super.cancelLoad();
     }
 
@@ -356,6 +365,7 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
 
     @Override
     public void forceLoad() {
+        showLoadingView(false);
         if (DEBUG)
             Log.i(TAG, "+++ forceLoad() called! +++");
         super.forceLoad();

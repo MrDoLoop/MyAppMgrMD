@@ -28,6 +28,7 @@
     <string name="saving_apps">Saving Apps</string>
     <string name="error">Error</string>
     <string name="loading_apps">Loading Apps&#8230;</string>
+    <string name="moving_akps">Moving Apks&#8230;</string>
     <string name="new_app_installed">New App Installed:</string>
     <string name="app_removed">App Removed.</string>
     <string name="app_removed_name">App Removed:</string>
@@ -52,6 +53,8 @@
     <string name="sd_used">SD Used</string>
     <string name="sd_total">SD Total</string>
     <string name="choose">Choose</string>
+    <string name="move_success">Move Success!</string>
+    <string name="move_apk">Do you want to move all Apks to new Dir?</string>
     <string name="version_name">1.0</string>
 
 </resources>

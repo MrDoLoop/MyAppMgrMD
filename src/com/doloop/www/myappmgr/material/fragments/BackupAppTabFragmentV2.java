@@ -24,8 +24,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
-
 import com.doloop.www.mayappmgr.material.events.ActionModeToggleEvent;
 import com.doloop.www.mayappmgr.material.events.AppBackupSuccEvent;
 import com.doloop.www.myappmgr.material.MainActivity;
@@ -270,6 +268,29 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
         // mAdapter.notifyItemInserted(0);
     }
 
+    
+    public void cancelLoading(){
+        if(mBackupAppListLoader.isLoadingRunning()){
+            mBackupAppListLoader.cancelLoad();
+        }
+        
+    }
+    
+    public boolean isLoadingRunning(){
+        return mBackupAppListLoader.isLoadingRunning();
+    }
+    
+    public void forceReLoad(){
+        if(mAppList != null){
+            mAppList.clear();
+        }
+        mAppList = new ArrayList<AppInfo>();
+        mAdapter.setDataSource(mAppList);
+        mAdapter.notifyDataSetChanged();
+        emptyView.setVisibility(View.GONE);
+        mBackupAppListLoader.forceLoad();
+    }
+    
     // LoaderManager.LoaderCallbacks--start
     @Override
     public Loader<ArrayList<AppInfo>> onCreateLoader(int id, Bundle args) {
@@ -365,11 +386,13 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
                                         ArrayList<AppInfo> succlist = new ArrayList<AppInfo>(); 
                                         for (int i = 0; i < list.size(); i++) {
                                             tmpAppInfo = list.get(i);
-
+                                            tmpAppInfo.selected = false;
                                             if (FileUtils.deleteQuietly(new File(tmpAppInfo.backupFilePath))) {
                                                 succlist.add(tmpAppInfo);
                                             }else {
-                                                MainActivity.T(tmpAppInfo.appName + "--" +mContext.getString(R.string.error));
+                                                if(!TextUtils.isEmpty(tmpAppInfo.appName)){
+                                                    MainActivity.T(tmpAppInfo.appName + "--" +mContext.getString(R.string.error));
+                                                } 
                                             }
                                         }
                                         mAdapter.removeItem(succlist);

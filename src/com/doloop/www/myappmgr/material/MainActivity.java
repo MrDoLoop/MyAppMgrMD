@@ -1,5 +1,7 @@
 package com.doloop.www.myappmgr.material;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+
+import org.apache.commons.io.FileUtils;
 
 import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
@@ -75,6 +79,7 @@ import com.doloop.www.myappmgr.material.fragments.SortTypeDialogFragment;
 import com.doloop.www.myappmgr.material.fragments.SortTypeDialogFragment.SortTypeListItemClickListener;
 import com.doloop.www.myappmgr.material.fragments.SysAppsTabFragment;
 import com.doloop.www.myappmgr.material.fragments.UserAppsTabFragment;
+import com.doloop.www.myappmgr.material.utils.ApkFileFilter;
 import com.doloop.www.myappmgr.material.utils.AppPinYinComparator;
 import com.doloop.www.myappmgr.material.utils.Constants;
 import com.doloop.www.myappmgr.material.utils.L;
@@ -223,7 +228,6 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
                     @Override
                     public void onDrawerSlide(View drawerView, float slideOffset) {
                         super.onDrawerSlide(drawerView, slideOffset);
-                        L.d("slideOffset " + slideOffset);
                         ViewHelper.setAlpha(MenuItemCompat.getActionView(searchMenuItem), 1 - slideOffset);
                     }
 
@@ -647,6 +651,92 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
         appDestroyCleanup();
     }
 
+    private class MoveAppsToNewPath extends AsyncTask<Void, Integer, Void> {
+        private String oldPath = "";
+        private String newPath = "";
+        private String curFileName = "";
+        private int totalFileSize = 0;
+        private int curFileNum = 0;
+        
+        
+        public MoveAppsToNewPath(String old_path, String new_path){
+            oldPath = old_path;
+            newPath = new_path;    
+        }
+        
+        @Override
+        protected void onPreExecute() {
+            progDialog = new MyProgressDialog(MainActivity.this,getString(R.string.moving_akps),getString(R.string.moving_akps));
+            progDialog.setCancelable(false);
+            progDialog.setArcProgressMax(100);
+            progDialog.setArcBottomText("移动中");
+            progDialog.show();
+        }
+        
+        @Override
+        protected void onProgressUpdate(Integer...values) {
+            // TODO Auto-generated method stub
+            super.onProgressUpdate(values);
+            if (!TextUtils.isEmpty(curFileName)) {
+                progDialog.setDialogText(curFileName);
+            }
+
+            int percentage = (int) (((float) curFileNum / (float) totalFileSize) * 100f);
+            progDialog.setArcProgress(percentage);
+            progDialog.setArcBottomText(curFileNum + "/" + totalFileSize);
+        }
+        
+        @Override
+        protected Void doInBackground(Void...params) {
+            // TODO Auto-generated method stub
+            File oldDir = new File(oldPath);
+            File newDir = new File(newPath);
+            File[] files = oldDir.listFiles(new ApkFileFilter());
+            if(files != null){
+                totalFileSize = files.length;
+                for(File fileEntry : files){
+                    try {
+                        curFileNum++;
+                        FileUtils.moveFileToDirectory(fileEntry, newDir, true);
+                        //FileUtils.copyFileToDirectory(fileEntry, newDir);
+                        curFileName = fileEntry.getName();
+                        publishProgress();
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+            }
+            
+/*            try {
+                //FileUtils.copyDirectory(new File(oldPath), new File(newPath));
+                FileUtils.cleanDirectory(oldDir);//.deleteDirectory(new File(ev.oldPath));
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }*/
+            
+            return null;
+        }
+        
+        @Override
+        protected void onCancelled() {
+        }
+
+        // can use UI thread here
+        @Override
+        protected void onPostExecute(final Void unused) {
+            if (progDialog.isShowing()) {
+                progDialog.dismiss();
+            }
+            backupAppsFrg.forceReLoad();
+            toast.setText(R.string.move_success);
+            toast.show();
+        }
+        
+    }
+    
+    
     private class GetApps extends AsyncTask<Boolean, Integer, Void> {
         private List<PackageInfo> packages;
         private PackageManager pManager;
@@ -1003,11 +1093,28 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
 
     // eventbus 处理
     public void onEventMainThread(DrawerItemClickEvent ev) {
-        toggleDrawerMenu();
+        closeDrawerMenu();
         // mDrawerItemClickEvent = ev;
         switch (ev.DrawerItem) {
             case REFRESH:
                 new GetApps().execute(true);
+                break;
+            case CHG_BACKUP_DIR:
+                
+                if(backupAppsFrg.isLoadingRunning()){
+                    backupAppsFrg.cancelLoading();
+                }
+                new MoveAppsToNewPath(ev.oldPath,ev.newPath).execute();
+                /*try {
+                    FileUtils.copyDirectory(new File(ev.oldPath), new File(ev.newPath));
+                    FileUtils.cleanDirectory(new File(ev.oldPath));//.deleteDirectory(new File(ev.oldPath));
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                
+                backupAppsFrg.startLoading();*/
+                
                 break;
         }
     }
@@ -1019,7 +1126,9 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         } else {
             mPager.setPagingEnabled(true);
-            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+            if(mPager.getCurrentItem() == Constants.USR_APPS_TAB_POS){
+                mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+            }
         }
 
     }
@@ -1313,7 +1422,6 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
                 usrAppsFrg.collapseLastOpenItem(false);
                 usrAppsFrg.notifyDataSetChanged();
                 
-
                 break;
             case Constants.SYS_APPS_TAB_POS:
                 
@@ -1349,48 +1457,5 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
     
     private void DismissAllDialog(){
         Utils.DismissDialog(SortTypeDialog);
-        //(UserAppListMoreActionDialog);
-        //DismissDialog(SelectionDialog);
     }
-    
-    /*
-     * public void onEventMainThread(AppUpdateEvent ev) { toggleDrawerMenu(); usrAppsFrg.collapseLastOpenItem(false);
-     * closeDrawerMenu(); switch (ev.mAppState){ case APP_ADDED:
-     * 
-     * if (DaoUtils.getByPackageName(thisActivityCtx, ev.mPkgName) != null)// 安装过--更新 { for (int i = 0; i <
-     * UserAppFullList.size(); i++) { if(UserAppFullList.get(i).getPackageName().equals(ev.mPkgName)) {
-     * 
-     * DaoUtils.deleteAppInfo(thisActivityCtx, UserAppFullList.get(i));
-     * 
-     * AppInfo tmpAppInfo = Utilities.buildAppInfoEntry(thisActivityCtx, ev.mPkgName); DaoUtils.insert(thisActivityCtx,
-     * tmpAppInfo);
-     * 
-     * AppInfo tmp = DaoUtils.getByPackageName(thisActivityCtx, ev.mPkgName); UserAppFullList.set(i, tmp);
-     * 
-     * //((ActionSlideExpandableListView) usrAppsFrg.getListView()).collapse(false); usrAppsFrg.notifyDataSetChanged();
-     * break; } } } else// 没有安装过, 重新来过
-     * 
-     * //startRefreshAppInfoList(); //AppInfo tmpAppInfo = Utilities.buildAppInfoEntry(thisActivityCtx, ev.mPkgName);
-     * //DaoUtils.insert(thisActivityCtx, ev.mAppInfo); UserAppFullList.add(ev.mAppInfo);
-     * Utilities.sortUserAppList(thisActivityCtx, UserAppFullList); updateSlidingTabTitle(Constants.USR_APPS_TAB_POS);
-     * usrAppsFrg.notifyDataSetChanged(); break; case APP_REMOVED: ArrayList<AppInfo> tmpUserDisplayList =
-     * usrAppsFrg.getDisplayList(); for (int i = 0; i < UserAppFullList.size(); i++) { if
-     * (UserAppFullList.get(i).packageName.equals(ev.mPkgName)) { if (mActionMode != null) { if
-     * (UserAppFullList.get(i).selected) { UserAppActionModeSelectCnt--; mActionMode.setTitle("" +
-     * UserAppActionModeSelectCnt); } }
-     * 
-     * if (UserAppListMoreActionDialog != null &&
-     * UserAppListMoreActionDialog.getCurrentAppInfo().packageName.equals(RemovedPkgName)) {
-     * UserAppListMoreActionDialog.dismiss(); }
-     * 
-     * //DaoUtils.deleteAppInfo(thisActivityCtx, UserAppFullList.get(i));
-     * //toast.setText(getString(R.string.app_removed_name) + " " + UserAppFullList.get(i).appName);
-     * UserAppFullList.remove(i); } if (i < tmpUserDisplayList.size()) { if
-     * (tmpUserDisplayList.get(i).packageName.equals(ev.mPkgName)) { tmpUserDisplayList.remove(i); } } }
-     * updateSlidingTabTitle(Constants.USR_APPS_TAB_POS); usrAppsFrg.notifyDataSetChanged();
-     * 
-     * break; case APP_CHANGED:
-     * 
-     * break; default: break; } }
-     */
 }
