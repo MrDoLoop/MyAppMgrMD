@@ -1098,6 +1098,10 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
         switch (ev.DrawerItem) {
             case REFRESH:
                 new GetApps().execute(true);
+                if(backupAppsFrg.isLoadingRunning()){
+                    backupAppsFrg.cancelLoading();
+                }
+                backupAppsFrg.forceReLoad();
                 break;
             case CHG_BACKUP_DIR:
                 
@@ -1155,6 +1159,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
                 AppInfo newAppInfo = null;
                 if (DaoUtils.getByPackageName(thisActivityCtx, NewPkgName) != null)// 安装过--更新
                 {
+                    //verify user list
                     for (int i = 0, size = UserAppFullList.size(); i < size; i++) {
                         if (UserAppFullList.get(i).getPackageName().equals(NewPkgName)) {
 
@@ -1171,7 +1176,29 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
                             break;
                         }
                     }
-                } else// 没有安装过, 重新来过
+                    
+                    //verify sys list
+                    for(int i = 0 ; i < SysAppFullListWapper.size();i++){
+                        if(SysAppFullListWapper.get(i).type == SysAppListItem.APP_ITEM){
+                            if (SysAppFullListWapper.get(i).appinfo.getPackageName().equals(NewPkgName)) {
+
+                                DaoUtils.deleteAppInfo(thisActivityCtx, SysAppFullListWapper.get(i).appinfo);
+
+                                AppInfo tmpAppInfo = Utils.buildAppInfoEntry(thisActivityCtx, NewPkgName);
+                                tmpAppInfo.isSysApp = true;
+                                DaoUtils.insert(thisActivityCtx, tmpAppInfo);
+
+                                newAppInfo = DaoUtils.getByPackageName(thisActivityCtx, NewPkgName);
+                                SysAppFullListWapper.get(i).appinfo = newAppInfo;
+
+                                // ((ActionSlideExpandableListView) usrAppsFrg.getListView()).collapse(false);
+                                sysAppsFrg.notifyDataSetChanged();
+                                break;
+                            }
+                        }
+                    }
+                } 
+                else// 没有安装过, 重新来过
                 {
                     // startRefreshAppInfoList();
                     newAppInfo = Utils.buildAppInfoEntry(thisActivityCtx, NewPkgName);
