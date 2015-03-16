@@ -54,6 +54,8 @@
     <string name="sd_used">SD 使用容量</string>
     <string name="sd_total">SD 总容量</string>
     <string name="choose">选择</string>
-    <string name="move_apk">是否复制所有的APK文件到新的目录?</string>
+    <string name="move_apk">是否将所有的APK文件复制到新的目录下?</string>
     <string name="version_name">初心版 1.0</string>
+    <string name="new_folder">新建文件夹</string>
+    <string name="go_up">向上</string>
 </resources>
