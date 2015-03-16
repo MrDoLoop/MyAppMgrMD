@@ -29,7 +29,7 @@ public class AppUpdateStaticReceiver extends BroadcastReceiver {
                 //EventBus.getDefault().post(new AppUpdateEvent(intent.getAction(), PkgName, null));
                 DaoUtils.deleteAppInfo(context, PkgName);
                 DaoUtils.destroy();
-                Toast.makeText(context, "MD程序移除:" + PkgName, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "MD-removed:" + PkgName, Toast.LENGTH_SHORT).show();
                 
             } else if (intent.getAction().equals(Intent.ACTION_PACKAGE_ADDED)) {
                 Log.i("ttt", "AppUpdateStaticReceiver: added-- " + appName + " -- " + PkgName);
@@ -40,7 +40,7 @@ public class AppUpdateStaticReceiver extends BroadcastReceiver {
                 DaoUtils.insert(context, app);
                 DaoUtils.destroy();
                 
-                Toast.makeText(context, "MD新程序安装:" + appName, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "MD-added:" + appName, Toast.LENGTH_SHORT).show();
             } else if (intent.getAction().equals(Intent.ACTION_PACKAGE_CHANGED)) {
                 Log.i("ttt", "AppUpdateStaticReceiver: changed-- " + PkgName);
                 // DaoUtils.deleteAllAppInfo(context);
@@ -49,7 +49,7 @@ public class AppUpdateStaticReceiver extends BroadcastReceiver {
                 DaoUtils.insert(context, app);
                 DaoUtils.destroy();
                 //EventBus.getDefault().post(new AppUpdateEvent(intent.getAction(),PkgName, app));
-                Toast.makeText(context, "MD-APP改变了:" + appName, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "MD-changed:" + appName, Toast.LENGTH_SHORT).show();
             }
         }
     }
