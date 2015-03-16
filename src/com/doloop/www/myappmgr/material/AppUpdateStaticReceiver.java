@@ -21,7 +21,7 @@ public class AppUpdateStaticReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         // TODO Auto-generated method stub
         if (handleEvent) {
-          //∏≤∏«∞≤◊∞ª·œ» ’µΩremoved£¨»ª∫Û‘⁄ «added
+          //ÔøΩÔøΩÔøΩ«∞ÔøΩ◊∞ÔøΩÔøΩÔøΩÔøΩÔøΩ’µÔøΩremovedÔøΩÔøΩ»ªÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩadded
             String PkgName = intent.getDataString().substring(8);
             // String packageName = intent.getData().getSchemeSpecificPart();
             String appName = Utils.pkgNameToAppName(context, PkgName);
@@ -29,7 +29,7 @@ public class AppUpdateStaticReceiver extends BroadcastReceiver {
                 //EventBus.getDefault().post(new AppUpdateEvent(intent.getAction(), PkgName, null));
                 DaoUtils.deleteAppInfo(context, PkgName);
                 DaoUtils.destroy();
-                Toast.makeText(context, "MD–∂‘ÿ: " + PkgName, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "MDÁ®ãÂ∫èÁßªÈô§:" + PkgName, Toast.LENGTH_SHORT).show();
                 
             } else if (intent.getAction().equals(Intent.ACTION_PACKAGE_ADDED)) {
                 Log.i("ttt", "AppUpdateStaticReceiver: added-- " + appName + " -- " + PkgName);
@@ -40,7 +40,7 @@ public class AppUpdateStaticReceiver extends BroadcastReceiver {
                 DaoUtils.insert(context, app);
                 DaoUtils.destroy();
                 
-                Toast.makeText(context, "MD–¬∞≤◊∞: " + appName, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "MDÊñ∞Á®ãÂ∫èÂÆâË£Ö:" + appName, Toast.LENGTH_SHORT).show();
             } else if (intent.getAction().equals(Intent.ACTION_PACKAGE_CHANGED)) {
                 Log.i("ttt", "AppUpdateStaticReceiver: changed-- " + PkgName);
                 // DaoUtils.deleteAllAppInfo(context);
@@ -49,7 +49,7 @@ public class AppUpdateStaticReceiver extends BroadcastReceiver {
                 DaoUtils.insert(context, app);
                 DaoUtils.destroy();
                 //EventBus.getDefault().post(new AppUpdateEvent(intent.getAction(),PkgName, app));
-                Toast.makeText(context, "MD-APP∏ƒ±‰¡À: " + appName, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "MD-APPÊîπÂèò‰∫Ü:" + appName, Toast.LENGTH_SHORT).show();
             }
         }
     }
