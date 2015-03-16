@@ -303,7 +303,7 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
 
     @Override
     protected void onStopLoading() {
-        mLoadingRunning = false;
+        //mLoadingRunning = false;
         if (DEBUG)
             Log.i(TAG, "+++ onStopLoading() called! +++");
 
