@@ -13,11 +13,16 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.MaterialDialog.Builder;
+import com.afollestad.materialdialogs.MaterialDialog.ButtonCallback;
 import com.doloop.www.myappmgr.material.utils.Constants;
 import com.doloop.www.myappmgrmaterial.R;
 
@@ -108,14 +113,68 @@ public class FolderSelectorDialog extends DialogFragment implements MaterialDial
             int colorPrimary = getActivity().getResources().getColor(R.color.primary);
             headerView = View.inflate(getActivity(), R.layout.md_listitem_folder_dia_header, null);
             TextView newFolder = (TextView) headerView.findViewById(R.id.newFolder);
-            newFolder.setText(R.string.new_folder);
+            newFolder.setText(R.string.new_f);
             newFolder.setTextColor(colorPrimary);
             newFolder.setOnClickListener(new View.OnClickListener() {
                 
                 @Override
                 public void onClick(View v) {
                     // TODO Auto-generated method stub
-                    
+                   
+                    FrameLayout layout = (FrameLayout) View.inflate(getActivity(), R.layout.md_input_dialog, null);
+                    final EditText mEditText = (EditText) layout.findViewById(android.R.id.edit);
+                    Builder mBuilder = new MaterialDialog.Builder(getActivity())
+                    .title(R.string.new_folder)
+                    //.icon(getDialogIcon())
+                    .positiveText(R.string.ok)
+                    .negativeText(R.string.cancel)
+                    .autoDismiss(false)
+                    .callback(new ButtonCallback(){
+                        @Override
+                        public void onPositive(MaterialDialog dialog) {
+                            mEditText.setError(null);
+                            String newFolderName = mEditText.getText().toString();
+                            
+                            if(TextUtils.isEmpty(newFolderName)){
+                                mEditText.setError(getString(R.string.not_null));
+                            }
+                            else{
+                                boolean foundSameName = false;
+                                for(File file : parentContents){
+                                    if(file.getName().equalsIgnoreCase(newFolderName)){
+                                        foundSameName = true;
+                                        break;
+                                    }
+                                }
+                                if(foundSameName){
+                                    mEditText.setError(getString(R.string.folder_name_exists));
+                                }
+                                else{
+                                    //
+                                    File newDir = new File(parentFolder.getAbsolutePath()+File.separator+newFolderName);
+                                    newDir.mkdir();
+                                    
+                                    dialog.dismiss();
+                                    
+                                    parentContents = listFiles();
+                                    MaterialDialog mDialog = (MaterialDialog) getDialog();
+                                    mDialog.setTitle(parentFolder.getAbsolutePath());
+                                    mDialog.setItems(getContentsArray());
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onNegative(MaterialDialog dialog) {
+                            // TODO Auto-generated method stub
+                            dialog.dismiss();
+                        }
+                        
+                        
+                        
+                    })
+                    .customView(layout, false);
+                    mBuilder.build().show();
                 }
             });
             TextView goUp = (TextView) headerView.findViewById(R.id.goUp);
