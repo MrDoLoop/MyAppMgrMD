@@ -56,6 +56,9 @@
     <string name="choose">选择</string>
     <string name="move_apk">是否将所有的APK文件复制到新的目录下?</string>
     <string name="version_name">初心版 1.0</string>
-    <string name="new_folder">\u0020新建</string>
+    <string name="new_f">\u0020新建</string>
+    <string name="new_folder">新建文件夹</string>
     <string name="go_up">\u0020向上</string>
+    <string name="folder_name_exists">名字已存在</string>
+	<string name="not_null">不能为空</string>
 </resources>
