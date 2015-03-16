@@ -1,6 +1,7 @@
 package com.doloop.www.myappmgr.material.fragments;
 
 import java.io.File;
+
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -9,9 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.doloop.www.mayappmgr.material.events.DrawerItemClickEvent;
-import com.doloop.www.mayappmgr.material.events.DrawerItemClickEvent.DrawerItem;
+import com.doloop.www.myappmgr.material.events.DrawerItemClickEvent;
+import com.doloop.www.myappmgr.material.events.DrawerItemClickEvent.DrawerItem;
 import com.doloop.www.myappmgr.material.utils.NanAppMark;
 import com.doloop.www.myappmgr.material.utils.Utils;
 import com.doloop.www.myappmgr.material.widgets.DrawerItem2Rows;
