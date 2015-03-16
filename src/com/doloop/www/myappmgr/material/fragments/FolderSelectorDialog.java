@@ -1,23 +1,25 @@
 package com.doloop.www.myappmgr.material.fragments;
 
-import android.app.Activity;
-import android.app.Dialog;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
-import android.os.Bundle;
-import android.os.Environment;
-import android.view.View;
-
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.doloop.www.myappmgr.material.utils.Constants;
-import com.doloop.www.myappmgrmaterial.R;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+
+import android.app.Activity;
+import android.app.Dialog;
+import android.os.Bundle;
+import android.os.Environment;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
+import android.view.View;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.doloop.www.myappmgr.material.utils.Constants;
+import com.doloop.www.myappmgrmaterial.R;
 
 /**
  * @author Aidan Follestad (afollestad)
@@ -28,6 +30,8 @@ public class FolderSelectorDialog extends DialogFragment implements MaterialDial
     private File[] parentContents;
     private boolean canGoUp = true;
     private FolderSelectCallback mCallback;
+    private ListView listView;
+    private View headerView;
 
     private final MaterialDialog.ButtonCallback mButtonCallback = new MaterialDialog.ButtonCallback() {
         @Override
@@ -59,10 +63,21 @@ public class FolderSelectorDialog extends DialogFragment implements MaterialDial
     }
 
     String[] getContentsArray() {
-        String[] results = new String[parentContents.length + (canGoUp ? 1 : 0)];
-        if (canGoUp) results[0] = "...";
+        String[] results = new String[parentContents.length];
+        if (canGoUp){
+            if(listView != null && listView.getHeaderViewsCount() == 0){
+                listView.addHeaderView(headerView, null, false);
+            }
+        }
+        else{
+            if(listView != null){
+                listView.removeHeaderView(headerView); 
+            }    
+        }
         for (int i = 0; i < parentContents.length; i++)
-            results[canGoUp ? i + 1 : i] = parentContents[i].getName();
+        {      
+            results[i] = parentContents[i].getName();
+        }
         return results;
     }
 
@@ -78,7 +93,7 @@ public class FolderSelectorDialog extends DialogFragment implements MaterialDial
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        return new MaterialDialog.Builder(getActivity())
+        MaterialDialog dialog =  new MaterialDialog.Builder(getActivity())
                 .title(parentFolder.getAbsolutePath())
                 .items(getContentsArray())
                 .itemsCallback(this)
@@ -88,17 +103,49 @@ public class FolderSelectorDialog extends DialogFragment implements MaterialDial
                 .neutralText(R.string.default_dir)
                 .negativeText(R.string.cancel)
                 .build();
+        listView = dialog.getListView();
+        if(listView != null){
+            int colorPrimary = getActivity().getResources().getColor(R.color.primary);
+            headerView = View.inflate(getActivity(), R.layout.md_listitem_folder_dia_header, null);
+            TextView newFolder = (TextView) headerView.findViewById(R.id.newFolder);
+            newFolder.setText(R.string.new_folder);
+            newFolder.setTextColor(colorPrimary);
+            newFolder.setOnClickListener(new View.OnClickListener() {
+                
+                @Override
+                public void onClick(View v) {
+                    // TODO Auto-generated method stub
+                    
+                }
+            });
+            TextView goUp = (TextView) headerView.findViewById(R.id.goUp);
+            goUp.setText(R.string.go_up);
+            goUp.setTextColor(colorPrimary);
+            goUp.setOnClickListener(new View.OnClickListener() {
+                
+                @Override
+                public void onClick(View v) {
+                    // TODO Auto-generated method stub
+                    parentFolder = parentFolder.getParentFile();
+                    canGoUp = parentFolder.getParent() != null;
+                    
+                    parentContents = listFiles();
+                    MaterialDialog dialog = (MaterialDialog) getDialog();
+                    dialog.setTitle(parentFolder.getAbsolutePath());
+                    dialog.setItems(getContentsArray());
+                }
+            });
+            listView.addHeaderView(headerView, null, false);
+        }
+       
+        return dialog;
     }
 
     @Override
     public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence s) {
-        if (canGoUp && i == 0) {
-            parentFolder = parentFolder.getParentFile();
-            canGoUp = parentFolder.getParent() != null;
-        } else {
-            parentFolder = parentContents[canGoUp ? i - 1 : i];
-            canGoUp = true;
-        }
+        parentFolder = parentContents[i];
+        canGoUp = true;
+        
         parentContents = listFiles();
         MaterialDialog dialog = (MaterialDialog) getDialog();
         dialog.setTitle(parentFolder.getAbsolutePath());
