@@ -56,7 +56,7 @@
     <string name="move_success">Move Success!</string>
     <string name="move_apk">Do you want to move all Apks to new Dir?</string>
     <string name="version_name">1.0</string>
-    <string name="new_folder">New Folder</string>
-    <string name="go_up">UP</string>
+    <string name="new_folder">\u0020New</string>
+    <string name="go_up">\u0020UP</string>
 
 </resources>
