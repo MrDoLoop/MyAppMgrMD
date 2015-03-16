@@ -8,7 +8,7 @@ public class SysAppListItem {
 
     public final int type;
     public final String sectionTxt;
-    public final AppInfo appinfo;
+    public AppInfo appinfo;
 
     public SysAppListItem(int type, String text, AppInfo info) {
         this.type = type;
