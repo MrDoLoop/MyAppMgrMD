@@ -128,6 +128,10 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
         mAdapter.getFilter().filter(str);
     }
 
+    public void notifyDataSetChanged() {
+        mAdapter.notifyDataSetChanged();
+    }
+    
     @Override
     public ListAdapter getListAdapter() {
         // TODO Auto-generated method stub
