@@ -57,13 +57,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.doloop.www.mayappmgr.material.events.ActionModeToggleEvent;
-import com.doloop.www.mayappmgr.material.events.AppBackupSuccEvent;
-import com.doloop.www.mayappmgr.material.events.AppUpdateEvent;
-import com.doloop.www.mayappmgr.material.events.AppUpdateEvent.AppState;
-import com.doloop.www.mayappmgr.material.events.BackupAppEvent;
-import com.doloop.www.mayappmgr.material.events.DrawerItemClickEvent;
-import com.doloop.www.mayappmgr.material.events.ViewNewBackupAppEvent;
 import com.doloop.www.myappmgr.material.adapters.AppListFragAdapter;
 import com.doloop.www.myappmgr.material.adapters.BackupAppListAdapterV2.BackupAppListDataSetChangedListener;
 import com.doloop.www.myappmgr.material.adapters.SysAppListAdapter.SysAppListDataSetChangedListener;
@@ -72,6 +65,13 @@ import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.dao.AppInfoDao.Properties;
 import com.doloop.www.myappmgr.material.dao.DaoSession;
 import com.doloop.www.myappmgr.material.dao.DaoUtils;
+import com.doloop.www.myappmgr.material.events.ActionModeToggleEvent;
+import com.doloop.www.myappmgr.material.events.AppBackupSuccEvent;
+import com.doloop.www.myappmgr.material.events.AppUpdateEvent;
+import com.doloop.www.myappmgr.material.events.AppUpdateEvent.AppState;
+import com.doloop.www.myappmgr.material.events.BackupAppEvent;
+import com.doloop.www.myappmgr.material.events.DrawerItemClickEvent;
+import com.doloop.www.myappmgr.material.events.ViewNewBackupAppEvent;
 import com.doloop.www.myappmgr.material.fragments.BackupAppTabFragmentV2;
 import com.doloop.www.myappmgr.material.fragments.BaseFrag;
 import com.doloop.www.myappmgr.material.fragments.DrawerFragment;
@@ -669,7 +669,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
             progDialog = new MyProgressDialog(MainActivity.this,getString(R.string.moving_akps),getString(R.string.moving_akps));
             progDialog.setCancelable(false);
             progDialog.setArcProgressMax(100);
-            progDialog.setArcBottomText("ÒÆ¶¯ÖÐ");
+            progDialog.setArcBottomText(getString(R.string.moving_akps));
             progDialog.show();
         }
         
