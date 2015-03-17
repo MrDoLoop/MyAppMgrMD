@@ -113,7 +113,7 @@ public class FolderSelectorDialog extends DialogFragment implements MaterialDial
             int colorPrimary = getActivity().getResources().getColor(R.color.primary);
             headerView = View.inflate(getActivity(), R.layout.md_listitem_folder_dia_header, null);
             TextView newFolder = (TextView) headerView.findViewById(R.id.newFolder);
-            newFolder.setText(R.string.new_f);
+            newFolder.setText(" "+getString(R.string.new_f));
             newFolder.setTextColor(colorPrimary);
             newFolder.setOnClickListener(new View.OnClickListener() {
                 
@@ -169,16 +169,13 @@ public class FolderSelectorDialog extends DialogFragment implements MaterialDial
                             // TODO Auto-generated method stub
                             dialog.dismiss();
                         }
-                        
-                        
-                        
                     })
                     .customView(layout, false);
                     mBuilder.build().show();
                 }
             });
             TextView goUp = (TextView) headerView.findViewById(R.id.goUp);
-            goUp.setText(R.string.go_up);
+            goUp.setText(" "+getString(R.string.go_up));
             goUp.setTextColor(colorPrimary);
             goUp.setOnClickListener(new View.OnClickListener() {
                 
