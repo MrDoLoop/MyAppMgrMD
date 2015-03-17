@@ -38,7 +38,7 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_centerInParent="true"
-        android:background="@drawable/rounded_rectangle_shape_poptxt"
+        android:background="@drawable/rounded_rectangle_shape_poptxt_blue"
         android:gravity="center"
         android:text="A"
         android:textColor="#ffffff"
