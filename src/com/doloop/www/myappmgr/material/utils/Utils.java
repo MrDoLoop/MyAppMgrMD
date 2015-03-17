@@ -51,13 +51,25 @@ import android.support.v4.app.DialogFragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.fragments.SortTypeDialogFragment;
 import com.doloop.www.myappmgrmaterial.R;
 
 public class Utils {
-      //http://stackoverflow.com/questions/3394765/how-to-check-available-space-on-android-device-on-mini-sd-card
+    
+    public static void hideInputMethod(Context ctx, View focusedView) {
+        InputMethodManager inputMethodManager =
+                (InputMethodManager) ctx.getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(focusedView.getWindowToken(), 0);
+       /* if (inputMethodManager.isActive()) {
+            inputMethodManager.hideSoftInputFromWindow(focusedView.getWindowToken(), 0);
+        }*/
+    }
+    
+    //http://stackoverflow.com/questions/3394765/how-to-check-available-space-on-android-device-on-mini-sd-card
     
     public static String[] calculateTotalFileInfo(ArrayList<AppInfo> list){
         long size = 0;
