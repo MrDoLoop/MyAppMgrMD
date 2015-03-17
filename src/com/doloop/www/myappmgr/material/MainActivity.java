@@ -1098,10 +1098,11 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
         switch (ev.DrawerItem) {
             case REFRESH:
                 new GetApps().execute(true);
-                if(backupAppsFrg.isLoadingRunning()){
+                //also refresh backupTab
+                /*if(backupAppsFrg.isLoadingRunning()){
                     backupAppsFrg.cancelLoading();
                 }
-                backupAppsFrg.forceReLoad();
+                backupAppsFrg.forceReLoad();*/
                 break;
             case CHG_BACKUP_DIR:
                 
