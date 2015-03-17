@@ -216,7 +216,10 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
      */
     @Override
     public void deliverResult(ArrayList<AppInfo> apps) {
-        hideLoadingView(true);
+        if(mLoadingRunning){
+            hideLoadingView(true);
+        }
+        
         mLoadingRunning = false;
         if (isReset()) {
             if (DEBUG)
