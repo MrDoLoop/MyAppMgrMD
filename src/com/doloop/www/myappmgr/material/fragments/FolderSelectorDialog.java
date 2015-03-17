@@ -24,6 +24,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.MaterialDialog.Builder;
 import com.afollestad.materialdialogs.MaterialDialog.ButtonCallback;
 import com.doloop.www.myappmgr.material.utils.Constants;
+import com.doloop.www.myappmgr.material.utils.Utils;
 import com.doloop.www.myappmgrmaterial.R;
 
 /**
@@ -101,8 +102,10 @@ public class FolderSelectorDialog extends DialogFragment implements MaterialDial
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        headerView = View.inflate(getActivity(), R.layout.md_listitem_folder_dia_header, null);
         MaterialDialog dialog =  new MaterialDialog.Builder(getActivity())
                 .title(parentFolder.getAbsolutePath())
+                .listViewHeader(headerView)
                 .items(getContentsArray())
                 .itemsCallback(this)
                 .callback(mButtonCallback)
@@ -114,7 +117,7 @@ public class FolderSelectorDialog extends DialogFragment implements MaterialDial
         listView = dialog.getListView();
         if(listView != null){
             int colorPrimary = getActivity().getResources().getColor(R.color.primary);
-            headerView = View.inflate(getActivity(), R.layout.md_listitem_folder_dia_header, null);
+            //headerView = View.inflate(getActivity(), R.layout.md_listitem_folder_dia_header, null);
             TextView newFolder = (TextView) headerView.findViewById(R.id.newFolder);
             newFolder.setText(" "+getString(R.string.new_f));
             newFolder.setTextColor(colorPrimary);
@@ -156,7 +159,7 @@ public class FolderSelectorDialog extends DialogFragment implements MaterialDial
                                     //
                                     File newDir = new File(parentFolder.getAbsolutePath()+File.separator+newFolderName);
                                     newDir.mkdir();
-                                    
+                                    Utils.hideInputMethod(getActivity(),mEditText);
                                     dialog.dismiss();
                                     
                                     parentContents = listFiles();
@@ -204,7 +207,7 @@ public class FolderSelectorDialog extends DialogFragment implements MaterialDial
                 }
             });
             goUp.setVisibility(View.INVISIBLE);
-            listView.addHeaderView(headerView, null, false);
+            //listView.addHeaderView(headerView, null, false);
         }
        
         return dialog;
