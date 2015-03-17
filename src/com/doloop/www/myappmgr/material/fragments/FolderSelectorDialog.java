@@ -33,10 +33,11 @@ public class FolderSelectorDialog extends DialogFragment implements MaterialDial
 
     private File parentFolder;
     private File[] parentContents;
-    private boolean canGoUp = true;
+    //private boolean canGoUp = true;
     private FolderSelectCallback mCallback;
     private ListView listView;
     private View headerView;
+    private TextView goUp;
 
     private final MaterialDialog.ButtonCallback mButtonCallback = new MaterialDialog.ButtonCallback() {
         @Override
@@ -69,16 +70,18 @@ public class FolderSelectorDialog extends DialogFragment implements MaterialDial
 
     String[] getContentsArray() {
         String[] results = new String[parentContents.length];
-        if (canGoUp){
+        /*if (canGoUp){
             if(listView != null && listView.getHeaderViewsCount() == 0){
                 listView.addHeaderView(headerView, null, false);
+                goUp.setVisibility(View.VISIBLE);
             }
         }
         else{
             if(listView != null){
-                listView.removeHeaderView(headerView); 
+                listView.removeHeaderView(headerView);
+                goUp.setVisibility(View.INVISIBLE);
             }    
-        }
+        }*/
         for (int i = 0; i < parentContents.length; i++)
         {      
             results[i] = parentContents[i].getName();
@@ -174,7 +177,7 @@ public class FolderSelectorDialog extends DialogFragment implements MaterialDial
                     mBuilder.build().show();
                 }
             });
-            TextView goUp = (TextView) headerView.findViewById(R.id.goUp);
+            goUp = (TextView) headerView.findViewById(R.id.goUp);
             goUp.setText(" "+getString(R.string.go_up));
             goUp.setTextColor(colorPrimary);
             goUp.setOnClickListener(new View.OnClickListener() {
@@ -183,7 +186,16 @@ public class FolderSelectorDialog extends DialogFragment implements MaterialDial
                 public void onClick(View v) {
                     // TODO Auto-generated method stub
                     parentFolder = parentFolder.getParentFile();
-                    canGoUp = parentFolder.getParent() != null;
+                    //canGoUp = parentFolder.getParent() != null;
+                    if(parentFolder.equals(Environment.getExternalStorageDirectory())){
+                        //canGoUp = false;
+                        goUp.setVisibility(View.INVISIBLE);
+                    }
+                    else{
+                        //canGoUp = true;
+                        goUp.setVisibility(View.VISIBLE);
+                    }
+                    
                     
                     parentContents = listFiles();
                     MaterialDialog dialog = (MaterialDialog) getDialog();
@@ -191,6 +203,7 @@ public class FolderSelectorDialog extends DialogFragment implements MaterialDial
                     dialog.setItems(getContentsArray());
                 }
             });
+            goUp.setVisibility(View.INVISIBLE);
             listView.addHeaderView(headerView, null, false);
         }
        
@@ -200,8 +213,8 @@ public class FolderSelectorDialog extends DialogFragment implements MaterialDial
     @Override
     public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence s) {
         parentFolder = parentContents[i];
-        canGoUp = true;
-        
+        //canGoUp = true;
+        goUp.setVisibility(View.VISIBLE);
         parentContents = listFiles();
         MaterialDialog dialog = (MaterialDialog) getDialog();
         dialog.setTitle(parentFolder.getAbsolutePath());
