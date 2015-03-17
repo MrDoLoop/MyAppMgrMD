@@ -1216,6 +1216,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
                         + Utils.pkgNameToAppName(thisActivityCtx, NewPkgName));
                 toast.show();
                 EventBus.getDefault().post(new AppUpdateEvent(AppState.APP_ADDED,NewPkgName,newAppInfo));
+                L.d("app---added: "+NewPkgName);
                 // startRefreshAppInfoList();
 
             } else if (intent.getAction().equals(Intent.ACTION_PACKAGE_REMOVED)) {
@@ -1226,18 +1227,11 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
                 AppInfo targetAppInfo = null;
                 for (int i = 0,size = UserAppFullList.size(); i < size; i++) {
                     if (UserAppFullList.get(i).packageName.equals(RemovedPkgName)) {
-                        /*
-                         * if (mActionMode != null) { if (UserAppFullList.get(i).selected) {
-                         * UserAppActionModeSelectCnt--; mActionMode.setTitle("" + UserAppActionModeSelectCnt); } }
-                         * 
-                         * if (UserAppListMoreActionDialog != null &&
-                         * UserAppListMoreActionDialog.getCurrentAppInfo().packageName.equals(RemovedPkgName)) {
-                         * UserAppListMoreActionDialog.dismiss(); }
-                         */
                         targetAppInfo = UserAppFullList.get(i);
                         DaoUtils.deleteAppInfo(thisActivityCtx, targetAppInfo);
                         toast.setText(getString(R.string.app_removed_name) + " " + targetAppInfo.appName);
                         UserAppFullList.remove(i);
+                        usrAppsFrg.notifyDataSetChanged();
                     }
                     if (i < tmpUserDisplayList.size()) {
                         if (tmpUserDisplayList.get(i).packageName.equals(RemovedPkgName)) {
@@ -1248,10 +1242,25 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
                         break;
                     }
                 }
-
+                
+               /* if(targetAppInfo == null){
+                    //verify sys list
+                    for(int i = 0 ; i < SysAppFullListWapper.size();i++){
+                        if(SysAppFullListWapper.get(i).type == SysAppListItem.APP_ITEM){
+                            if (SysAppFullListWapper.get(i).appinfo.getPackageName().equals(RemovedPkgName)) {
+                                targetAppInfo = SysAppFullListWapper.get(i).appinfo;
+                                //DaoUtils.deleteAppInfo(thisActivityCtx, targetAppInfo);
+                                toast.setText(getString(R.string.app_removed_name) + " " + targetAppInfo.appName);
+                                //SysAppFullListWapper.remove(i);
+                                sysAppsFrg.notifyDataSetChanged();
+                                break;
+                            }
+                        }
+                    }
+                }*/
                 toast.show();
-                usrAppsFrg.notifyDataSetChanged();
                 EventBus.getDefault().post(new AppUpdateEvent(AppState.APP_REMOVED,RemovedPkgName,targetAppInfo));
+                L.d("app---removed: "+RemovedPkgName);
                 // updateSlidingTabTitle(Constants.USR_APPS_TAB_POS);
             } else if (intent.getAction().equals(Intent.ACTION_PACKAGE_CHANGED)) {
                 String PkgName = intent.getDataString().substring(8);
