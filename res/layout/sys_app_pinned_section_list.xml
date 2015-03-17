@@ -18,10 +18,10 @@
 
     <ImageView
         android:id="@+id/emptyView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
         android:layout_centerInParent="true"
-        android:src="@drawable/ic_folder_open"
+        android:src="@drawable/icon_folder_blue"
         android:visibility="gone" />
 
     <!-- <include android:id="@+id/emptyView" layout="@layout/list_empty_view" /> -->
