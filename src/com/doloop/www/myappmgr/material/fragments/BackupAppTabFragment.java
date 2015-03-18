@@ -16,19 +16,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.doloop.www.mayappmgr.material.events.AppBackupSuccEvent;
 import com.doloop.www.myappmgr.material.adapters.BackupAppListAdapter;
 import com.doloop.www.myappmgr.material.adapters.BackupAppListAdapter.BackupAppListDataSetChangedListener;
 import com.doloop.www.myappmgr.material.dao.AppInfo;
+import com.doloop.www.myappmgr.material.events.AppBackupSuccEvent;
 import com.doloop.www.myappmgr.material.utils.BackupAppListLoader;
-import com.doloop.www.myappmgr.material.utils.BackupAppListLoader.LoaderBackgroundMoreWorkListener;
+import com.doloop.www.myappmgr.material.utils.BackupAppListLoader.LoaderBckgrdIsAboutToDeliverListener;
 import com.doloop.www.myappmgr.material.utils.Utils;
 import com.doloop.www.myappmgrmaterial.R;
 
 import de.greenrobot.event.EventBus;
 
 public class BackupAppTabFragment extends BaseFrag implements LoaderManager.LoaderCallbacks<ArrayList<AppInfo>>,
-        LoaderBackgroundMoreWorkListener {
+    LoaderBckgrdIsAboutToDeliverListener {
     private static BackupAppTabFragment uniqueInstance = null;
     private static Context mContext;
     private RecyclerView mRecyclerView;
@@ -114,7 +114,7 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Create, or inflate the Fragment¡¯s UI, and return it.
+        // Create, or inflate the Fragmenté”Ÿæ–¤æ‹·s UI, and return it.
         // If this Fragment has no UI then return null.
         View FragmentView = inflater.inflate(R.layout.backup_app_list_view, container, false);
         mLoadingView = FragmentView.findViewById(R.id.loading_bar);
@@ -136,7 +136,7 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        // Ò²¿ÉÒÔÊÔÊÔÔÚÕâÀï³õÊ¼»¯Êý¾Ý
+       
         /*
          * LinearLayoutManager layoutManager = new LinearLayoutManager( getActivity());
          * layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL); mRecyclerView.setLayoutManager(layoutManager);
@@ -151,9 +151,9 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        // Complete the Fragment initialization ¨C particularly anything
+        // Complete the Fragment initialization é”Ÿç´º particularly anything
         // that requires the parent Activity to be initialized or the
-        // Fragment¡¯s view to be fully inflated.
+        // Fragmenté”Ÿæ–¤æ‹·s view to be fully inflated.
         setRetainInstance(false);
         setHasOptionsMenu(false);
 
@@ -182,7 +182,7 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
     @Override
     public void onPause() {
         // Suspend UI updates, threads, or CPU intensive processes
-        // that don¡¯t need to be updated when the Activity isn¡¯t
+        // that doné”Ÿæ–¤æ‹·t need to be updated when the Activity isné”Ÿæ–¤æ‹·t
         // the active foreground activity.
         // Persist all edits or state changes
         // as after this call the process is likely to be killed.
@@ -203,11 +203,11 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
     @Override
     public void onStop() {
         // Suspend remaining UI updates, threads, or processing
-        // that aren¡¯t required when the Fragment isn¡¯t visible.
+        // that arené”Ÿæ–¤æ‹·t required when the Fragment isné”Ÿæ–¤æ‹·t visible.
         super.onStop();
     }
 
-    // Called when the Fragment¡¯s View has been detached.
+    // Called when the Fragmenté”Ÿæ–¤æ‹·s View has been detached.
     @Override
     public void onDestroyView() {
         // Clean up resources related to the View.
@@ -277,9 +277,9 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
 
     public void onEventMainThread(AppBackupSuccEvent ev) {
 
-        if (!mBackupAppListLoader.isLoadingRunning()) {// loading Íê³ÉÁË
+        if (!mBackupAppListLoader.isLoadingRunning()) {// loading é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿï¿½
             
-            // ¼ì²éÊÇ·ñÔÚÏÔÊ¾µÄlistÖÐ
+            // é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·æ¬ é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿç»žæ’…æ‹·é”Ÿçµ£isté”Ÿæ–¤æ‹·
             for (AppInfo aInfo : ev.AppInfoList) {
                 boolean found = Utils.isAppInfoInList(aInfo, mAdapter.getDisplayList());
                /* for (int i = 0, size = mAdapter.getDisplayList().size(); i < size; i++) {
@@ -294,9 +294,9 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
                 } 
             }
             mAdapter.notifyDataSetChanged();
-        } else {// loading »¹Ã»Íê³É
+        } else {// loading é”Ÿæ–¤æ‹·æ²¡é”Ÿæ–¤æ‹·é”Ÿï¿½
             for (AppInfo aInfo : ev.AppInfoList) {
-                // ¼ì²éÊÇ·ñÔÚpendingµÄlistÖÐ´æÔÚ
+                // é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·æ¬ é”Ÿæ–¤æ‹·é”Ÿçµ§endingé”Ÿæ–¤æ‹·listé”Ÿå«è¾¾æ‹·é”Ÿæ–¤æ‹·
                 boolean found = Utils.isAppInfoInList(aInfo, mPendingNewAppInfo);
                /* for (int i = 0; i < mPendingNewAppInfo.size(); i++) {
                     AppInfo appInfo = mPendingNewAppInfo.get(i);
@@ -373,7 +373,7 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
 
     // LoaderBackgroundMoreWorkListener-start
     @Override
-    public void onLoaderBackgroundMoreWork(ArrayList<AppInfo> listReadyToDeliver) {
+    public void onLoaderBckgrdIsAboutToDeliver(ArrayList<AppInfo> listReadyToDeliver) {
         // TODO Auto-generated method stub
         
          /*try { Thread.sleep(10000); } catch (InterruptedException e) { // TODO Auto-generated catch block
