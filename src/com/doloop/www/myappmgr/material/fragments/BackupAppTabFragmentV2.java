@@ -465,58 +465,6 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
     }
     // LoaderBackgroundMoreWorkListener-end
 
-    private void collapseRun(final View view, final int pos)  
-    {  
-        final int originalHeight = view.getHeight();
-        final ViewGroup.LayoutParams lp = view.getLayoutParams();
-        ValueAnimator animator = ValueAnimator.ofFloat(1, 0);  
-
-        animator.addUpdateListener(new AnimatorUpdateListener()  
-        {  
-            @Override  
-            public void onAnimationUpdate(ValueAnimator animation)  
-            {  
-                ViewHelper.setAlpha(view,0);
-                float val = (Float) animation.getAnimatedValue();
-                //ViewHelper.setAlpha(view,0);
-                lp.height = (int) (val * originalHeight);
-                view.setLayoutParams(lp);
-            }  
-        }); 
-        
-        animator.addListener(new AnimatorListener(){
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-                // TODO Auto-generated method stub
-                
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                // TODO Auto-generated method stub
-                ViewHelper.setAlpha(view, 1f);
-                lp.height = originalHeight;
-                view.setLayoutParams(lp);
-                mAdapter.removeItemAtPosition(pos);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-                // TODO Auto-generated method stub
-                
-            }
-
-            @Override
-            public void onAnimationStart(Animator animation) {
-                // TODO Auto-generated method stub
-                ViewHelper.setAlpha(view,0);
-            }});
-        
-        animator.setDuration(200).start(); 
-    }  
-    
-    
     @Override
     public void OnIconClickListener(final int position) {
         // TODO Auto-generated method stub
