@@ -382,8 +382,8 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
                     ani.start();*/
                     View itemView = mListView.getChildAt(newBackupAppPos-mListView.getFirstVisiblePosition());
                     View iconView = itemView.findViewById(R.id.app_icon);
-                    Animation shake = AnimationUtils.loadAnimation(getActivity(), R.anim.shake);
-                    iconView.startAnimation(shake);
+                    Animation ani = AnimationUtils.loadAnimation(getActivity(), R.anim.scale);
+                    iconView.startAnimation(ani);
                     
                 }},500);
         }
