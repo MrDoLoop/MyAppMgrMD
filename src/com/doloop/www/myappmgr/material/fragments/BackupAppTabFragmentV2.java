@@ -2,6 +2,7 @@ package com.doloop.www.myappmgr.material.fragments;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Locale;
 
 import org.apache.commons.io.FileUtils;
@@ -356,6 +357,9 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
                 boolean found = Utils.isAppInfoInList(aInfo, mAppList);
                
                 if (!found) {
+                    Date date = new Date();
+                    aInfo.lastBackUpRawTime = date.getTime();
+                    aInfo.lastBackUpTimeStr = Utils.formatTimeDisplay(date);
                     mAppList.add(aInfo);
                     Utils.sortBackUpAppList(mContext, mAppList);
                     mAdapter.notifyDataSetChanged();
@@ -367,12 +371,13 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
                 // 锟斤拷锟斤拷欠锟斤拷锟絧ending锟斤拷list锟叫达拷锟斤拷
                 boolean found = Utils.isAppInfoInList(aInfo, mPendingNewAppInfo);
                 if (!found) {
+                    Date date = new Date();
+                    aInfo.lastBackUpRawTime = date.getTime();
+                    aInfo.lastBackUpTimeStr = Utils.formatTimeDisplay(date);
                     mPendingNewAppInfo.add(aInfo);
                 }
             }
         }
-        // processNewBackupApp(ev.AppInfo);
-        // mAdapter.notifyItemInserted(0);
     }
 
     
