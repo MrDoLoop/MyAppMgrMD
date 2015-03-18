@@ -29,11 +29,11 @@ import com.nineoldandroids.view.ViewHelper;
  */
 public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
 
-    public LoaderBackgroundMoreWorkListener mLoaderBackgroundMoreWorkListener;
-    public interface LoaderBackgroundMoreWorkListener {
-        public void onLoaderBackgroundMoreWork(ArrayList<AppInfo> listReadyToDeliver);
+    public LoaderBckgrdIsAboutToDeliverListener mLoaderBackgroundMoreWorkListener;
+    public interface LoaderBckgrdIsAboutToDeliverListener {
+        public void onLoaderBckgrdIsAboutToDeliver(ArrayList<AppInfo> listReadyToDeliver);
     }
-    public void setUserAppListDataSetChangedListener(LoaderBackgroundMoreWorkListener l) {
+    public void setUserAppListDataSetChangedListener(LoaderBckgrdIsAboutToDeliverListener l) {
         this.mLoaderBackgroundMoreWorkListener = l;
     }
     
@@ -53,7 +53,7 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
     private boolean mLoadingRunning = false;
     
 
-    public BackupAppListLoader(Context ctx, View loadingView, View contentView, LoaderBackgroundMoreWorkListener l) {
+    public BackupAppListLoader(Context ctx, View loadingView, View contentView, LoaderBckgrdIsAboutToDeliverListener l) {
         // Loaders may be used across multiple Activitys (assuming they aren't
         // bound to the LoaderManager), so NEVER hold a reference to the context
         // directly. Doing so will cause you to leak an entire Activity's context.
@@ -200,7 +200,7 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
         }
        
         if(mLoaderBackgroundMoreWorkListener != null){
-            mLoaderBackgroundMoreWorkListener.onLoaderBackgroundMoreWork(entries);
+            mLoaderBackgroundMoreWorkListener.onLoaderBckgrdIsAboutToDeliver(entries);
         }
        
         return entries;
