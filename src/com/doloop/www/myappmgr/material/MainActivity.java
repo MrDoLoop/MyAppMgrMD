@@ -329,6 +329,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
                     if (MenuItemCompat.isActionViewExpanded(searchMenuItem)) {
                         sortMenuItem.setVisible(false);
                     } else {
+                        processSortMenuIcon(Utils.getUserAppListSortType(thisActivityCtx));
                         sortMenuItem.setVisible(true);
                     }
                 } else if (position == Constants.SYS_APPS_TAB_POS) {
@@ -337,6 +338,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
                     if (MenuItemCompat.isActionViewExpanded(searchMenuItem)) {
                         sortMenuItem.setVisible(false);
                     } else {
+                        processSortMenuIcon(Utils.getBackUpAppListSortType(thisActivityCtx));
                         sortMenuItem.setVisible(true);
                     }
                 }
@@ -624,7 +626,12 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
 
                 SortTypeDialog = new SortTypeDialogFragment();
                 Bundle bundle = new Bundle();
-                bundle.putInt(SortTypeDialogFragment.SELECTED_ITEM, usrAppsFrg.getListSortType());
+                if(mPager.getCurrentItem() == Constants.USR_APPS_TAB_POS){
+                    bundle.putInt(SortTypeDialogFragment.SELECTED_ITEM, usrAppsFrg.getListSortType());
+                }
+                else if(mPager.getCurrentItem() == Constants.BACKUP_APPS_TAB_POS){
+                    bundle.putInt(SortTypeDialogFragment.SELECTED_ITEM, backupAppsFrg.getListSortType());
+                }
                 SortTypeDialog.setArguments(bundle);
                 SortTypeDialog.show(getSupportFragmentManager(), SortTypeDialogFragment.DialogTag);
 
@@ -1464,7 +1471,15 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
                 
                 break;
             case Constants.BACKUP_APPS_TAB_POS:
-               
+                if (backupAppsFrg.getListSortType() == which)
+                    return;
+                Utils.setBackUpAppListSortType(thisActivityCtx, which);
+                Utils.sortBackUpAppList(thisActivityCtx, backupAppsFrg.getAppList());
+                processSortMenuIcon(which);
+                
+                backupAppsFrg.setListSortType(which);
+                backupAppsFrg.notifyDataSetChanged();
+
                 break;
         }
     }
