@@ -187,6 +187,9 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
                         
                         appInfo = Utils.buildAppInfoEntry(getContext(), packageInfo, pkgMgr, false);
                         appInfo.backupFilePath = file.getAbsolutePath();
+                        //加载本地文件之后,属性和本地文件的apk保持一致
+                        appInfo.lastBackUpRawTime = appInfo.lastModifiedRawTime;
+                        appInfo.lastBackUpTimeStr = appInfo.lastModifiedTimeStr;       
                         entries.add(appInfo);
                         
                         if(!Utils.isAppIconOnSd(getContext(),appInfo)){

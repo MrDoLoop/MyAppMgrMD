@@ -337,10 +337,10 @@ public class Utils {
                 Collections.sort(list, new AppSizeComparator(false));
                 break;
             case SortTypeDialogFragment.LIST_SORT_TYPE_LAST_MOD_TIME_ASC:
-                Collections.sort(list, new LastModifiedComparator(true));
+                Collections.sort(list, new LastBackupTimeComparator(true));
                 break;
             case SortTypeDialogFragment.LIST_SORT_TYPE_LAST_MOD_TIME_DES:
-                Collections.sort(list, new LastModifiedComparator(false));
+                Collections.sort(list, new LastBackupTimeComparator(false));
                 break;
         }
         if(foundDummy){
@@ -1002,6 +1002,12 @@ public class Utils {
         dateformat.applyPattern(datePatternStr);
 
         return dateformat;
+    }
+    
+    
+    public static String formatTimeDisplay(Date date){
+        SimpleDateFormat dateFormat =  getLocalDataDigitalDisplayFormat();
+        return dateFormat.format(date);
     }
 
     public static String formatFileSize(long length) {
