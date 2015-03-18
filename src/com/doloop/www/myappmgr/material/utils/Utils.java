@@ -317,6 +317,38 @@ public class Utils {
         return tmpInfo;
     }
 
+    public static void sortBackUpAppList(Context ctx, ArrayList<AppInfo> list) {
+        boolean foundDummy = false;
+        if(list.size() > 1 && list.get(0) == AppInfo.DUMMY_APPINFO){
+            list.remove(0);
+            foundDummy = true;
+        }
+        switch (getBackUpAppListSortType(ctx)) {
+            case SortTypeDialogFragment.LIST_SORT_TYPE_NAME_ASC:
+                Collections.sort(list, new AppNameComparator(true));
+                break;
+            case SortTypeDialogFragment.LIST_SORT_TYPE_NAME_DES:
+                Collections.sort(list, new AppNameComparator(false));
+                break;
+            case SortTypeDialogFragment.LIST_SORT_TYPE_SIZE_ASC:
+                Collections.sort(list, new AppSizeComparator(true));
+                break;
+            case SortTypeDialogFragment.LIST_SORT_TYPE_SIZE_DES:
+                Collections.sort(list, new AppSizeComparator(false));
+                break;
+            case SortTypeDialogFragment.LIST_SORT_TYPE_LAST_MOD_TIME_ASC:
+                Collections.sort(list, new LastModifiedComparator(true));
+                break;
+            case SortTypeDialogFragment.LIST_SORT_TYPE_LAST_MOD_TIME_DES:
+                Collections.sort(list, new LastModifiedComparator(false));
+                break;
+        }
+        if(foundDummy){
+            list.add(0,AppInfo.DUMMY_APPINFO);
+        }
+    }
+    
+    
     public static void sortUserAppList(Context ctx, ArrayList<AppInfo> list) {
         switch (getUserAppListSortType(ctx)) {
             case SortTypeDialogFragment.LIST_SORT_TYPE_NAME_ASC:
@@ -655,6 +687,13 @@ public class Utils {
                         SortTypeDialogFragment.LIST_SORT_TYPE_LAST_MOD_TIME_DES);
         return type;
     }
+    
+    public static int getBackUpAppListSortType(Context ctx) {
+        int type =
+                ctx.getSharedPreferences("MyAppMgrSharedPreferences", 0).getInt("BackUpAppListSortType",
+                        SortTypeDialogFragment.LIST_SORT_TYPE_LAST_MOD_TIME_DES);
+        return type;
+    }
 
     public static void setUserAppListSortType(Context ctx, int sortType) {
         SharedPreferences.Editor shPrefEdit = ctx.getSharedPreferences("MyAppMgrSharedPreferences", 0).edit();
@@ -662,6 +701,14 @@ public class Utils {
         // shPrefEdit.commit();
         SharedPreferencesCompat.apply(shPrefEdit);
     }
+    
+    public static void setBackUpAppListSortType(Context ctx, int sortType) {
+        SharedPreferences.Editor shPrefEdit = ctx.getSharedPreferences("MyAppMgrSharedPreferences", 0).edit();
+        shPrefEdit.putInt("BackUpAppListSortType", sortType);
+        // shPrefEdit.commit();
+        SharedPreferencesCompat.apply(shPrefEdit);
+    }
+    
 
     public static int dp2px(Context ctx, float dpValue) {
         final float scale = ctx.getResources().getDisplayMetrics().density;
