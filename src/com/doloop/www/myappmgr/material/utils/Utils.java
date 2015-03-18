@@ -7,6 +7,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,12 +55,34 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
 
 import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.fragments.SortTypeDialogFragment;
 import com.doloop.www.myappmgrmaterial.R;
 
 public class Utils {
+    
+    public static void stopScroll(AbsListView view)
+    {//http://stackoverflow.com/questions/6369491/stop-listview-scroll-animation
+        //http://stackoverflow.com/questions/7819145/stop-scrolling-in-a-listview
+        try
+        {
+            Field field = android.widget.AbsListView.class.getDeclaredField("mFlingRunnable");
+            field.setAccessible(true);
+            Object flingRunnable = field.get(view);
+            if (flingRunnable != null)
+            {
+                Method method = Class.forName("android.widget.AbsListView$FlingRunnable").getDeclaredMethod("endFling");
+                method.setAccessible(true);
+                method.invoke(flingRunnable);
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
     
     public static void hideInputMethod(Context ctx, View focusedView) {
         InputMethodManager inputMethodManager =
