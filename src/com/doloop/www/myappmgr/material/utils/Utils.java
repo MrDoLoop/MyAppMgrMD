@@ -257,13 +257,21 @@ public class Utils {
         }
     }
     
-    public static boolean isAppInfoInList(AppInfo appInfo, ArrayList<AppInfo> list){
+    /**
+     * 返回这个app在list中的位置
+     * @param appInfo
+     * @param list
+     * @return 返回这个app在list中的位置,没有找到返回-1
+     */
+    public static int isAppInfoInList(AppInfo appInfo, ArrayList<AppInfo> list){
+        int i = 0;
         for(AppInfo aEntry : list){
             if(appInfo.packageName.equals(aEntry.packageName) && (appInfo.versionCode == aEntry.versionCode)){
-                return true;
+                return i;
             }
+            i++;
         }
-        return false;
+        return -1;
     }
     
     public static AppInfo getLastBackupAppFromSD(Context ctx) {
