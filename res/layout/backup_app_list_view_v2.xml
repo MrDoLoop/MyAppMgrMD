@@ -15,8 +15,8 @@
         android:fadeScrollbars="true"
         android:paddingTop="5dp"
         android:scrollbars="vertical"
-        tools:context=".MainActivity" />-->
-
+        tools:context=".MainActivity" />
+    -->
 
     <ImageView
         android:id="@+id/emptyView"
@@ -29,25 +29,27 @@
 
     <ListView
         android:id="@android:id/list"
-        android:paddingTop="5dp"
-        android:clipToPadding="false"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipToPadding="false"
         android:divider="@color/transparent"
         android:dividerHeight="0dp"
         android:fadingEdgeLength="0dp"
-        android:fastScrollEnabled="false"
+        android:fastScrollEnabled="true"
         android:listSelector="@color/transparent"
-        android:smoothScrollbar="true" 
-      />
+        android:paddingTop="5dp"
+        android:smoothScrollbar="true" />
 
-   <!-- <com.doloop.www.myappmgr.material.widgets.CircleProgressBar
+    <!--
+        <com.doloop.www.myappmgr.material.widgets.CircleProgressBar
         android:id="@+id/loading_bar"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_centerInParent="true"
         android:visibility="gone"
-        app:mlpb_progress_stoke_width="3dp" />-->
+        app:mlpb_progress_stoke_width="3dp" />
+    -->
+
 
     <!-- <include layout="@layout/list_empty_view" android:id="@+id/emptyView" /> -->
 
@@ -62,9 +64,7 @@
     </ProgressBar>
     -->
 
-
-
-         <com.doloop.www.myappmgr.material.widgets.ProgressWheel
+    <com.doloop.www.myappmgr.material.widgets.ProgressWheel
         android:id="@+id/loading_bar"
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -73,6 +73,35 @@
         app:matProg_barColor="@color/theme_blue_light"
         app:matProg_progressIndeterminate="true" />
 
+    <TextView
+        android:id="@+id/centralPopTextView"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_centerInParent="true"
+        android:background="@drawable/rounded_rectangle_shape_poptxt_blue"
+        android:gravity="center"
+        android:text="A"
+        android:textColor="#ffffff"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/topPopTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="7dp"
+        android:background="@drawable/rounded_rectangle_shape_poptxt_blue"
+        android:gravity="center"
+        android:paddingLeft="7dp"
+        android:paddingRight="7dp"
+        android:text="A"
+        android:textColor="#ffffff"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:visibility="invisible" />
 
     <!--
          <com.doloop.www.myappmgr.material.widgets.CircularProgressView
