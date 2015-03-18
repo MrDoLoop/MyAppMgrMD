@@ -26,7 +26,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
@@ -43,6 +42,7 @@ import com.doloop.www.myappmgr.material.adapters.BackupAppListAdapterV2.ItemView
 import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.events.ActionModeToggleEvent;
 import com.doloop.www.myappmgr.material.events.AppBackupSuccEvent;
+import com.doloop.www.myappmgr.material.events.ViewNewBackupAppEvent;
 import com.doloop.www.myappmgr.material.fragments.SelectionDialogFragment.SelectionDialogClickListener;
 import com.doloop.www.myappmgr.material.interfaces.IconClickListener;
 import com.doloop.www.myappmgr.material.utils.BackupAppListLoader;
@@ -52,8 +52,8 @@ import com.doloop.www.myappmgrmaterial.R;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.Animator.AnimatorListener;
 import com.nineoldandroids.animation.AnimatorListenerAdapter;
+import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.animation.ValueAnimator;
-import com.nineoldandroids.animation.ValueAnimator.AnimatorUpdateListener;
 import com.nineoldandroids.view.ViewHelper;
 import com.nineoldandroids.view.ViewPropertyAnimator;
 
@@ -75,6 +75,10 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
     public static boolean isInActoinMode = false;
     private boolean deleteAniIsRunning = false;
     private int currentSortType = SortTypeDialogFragment.LIST_SORT_TYPE_NAME_ASC;
+    private int newBackupAppPos = -1;
+    
+    private Handler mHandlder = new Handler();
+    
 
     private final class RemoveWindow implements Runnable {
         public void run() {
@@ -305,6 +309,7 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
         // Clean up any resources including ending threads,
         // closing database connections etc.
         super.onDestroy();
+        mHandlder.removeCallbacksAndMessages(null);
         if (!mBackupAppListLoader.isLoadingRunning()) {
             mBackupAppListLoader.cancelLoad();
         }
@@ -345,32 +350,55 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
 
     public void filterList(String str) {
         mAdapter.filterList(str);
-        // mAdapter.notifyDataSetChanged();
     }
 
+    public void onEventMainThread(ViewNewBackupAppEvent ev) {
+        if(newBackupAppPos != -1){
+            mListView.setSelection(newBackupAppPos);
+            
+            mHandlder.postDelayed(new Runnable(){
+
+                @Override
+                public void run() {
+                    // TODO Auto-generated method stub
+                    View itemView = mListView.getChildAt(newBackupAppPos-mListView.getFirstVisiblePosition());
+                    View iconView = itemView.findViewById(R.id.app_icon);
+                    ObjectAnimator ani = ObjectAnimator.ofFloat(iconView, "rotationY", 0, 360).setDuration(1000);
+                    ani.start();
+                }},500);
+        }
+    }
+    
+    
     public void onEventMainThread(AppBackupSuccEvent ev) {
 
         if (!mBackupAppListLoader.isLoadingRunning()) {// loading 已经结束了
             
-            // 锟斤拷锟斤拷欠锟斤拷锟斤拷锟绞撅拷锟絣ist锟斤拷
+           
             for (AppInfo aInfo : ev.AppInfoList) {
-                boolean found = Utils.isAppInfoInList(aInfo, mAppList);
+                int pos = Utils.isAppInfoInList(aInfo, mAppList);
                
-                if (!found) {
+                if (pos == -1) {//没有找到
                     Date date = new Date();
                     aInfo.lastBackUpRawTime = date.getTime();
                     aInfo.lastBackUpTimeStr = Utils.formatTimeDisplay(date);
                     mAppList.add(aInfo);
                     Utils.sortBackUpAppList(mContext, mAppList);
+                    
+                    newBackupAppPos = mAppList.indexOf(aInfo);
+                   
                     mAdapter.notifyDataSetChanged();
-                } 
+                }
+                else{
+                    newBackupAppPos = pos;
+                }
             }
             
         } else {// loading 没有结束
             for (AppInfo aInfo : ev.AppInfoList) {
-                // 锟斤拷锟斤拷欠锟斤拷锟絧ending锟斤拷list锟叫达拷锟斤拷
-                boolean found = Utils.isAppInfoInList(aInfo, mPendingNewAppInfo);
-                if (!found) {
+                
+                int pos = Utils.isAppInfoInList(aInfo, mPendingNewAppInfo);
+                if (pos == -1) {
                     Date date = new Date();
                     aInfo.lastBackUpRawTime = date.getTime();
                     aInfo.lastBackUpTimeStr = Utils.formatTimeDisplay(date);
@@ -460,9 +488,10 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
          
         if (!mPendingNewAppInfo.isEmpty()) {
             for (int i = 0; i < mPendingNewAppInfo.size(); i++) {
-                boolean found = Utils.isAppInfoInList(mPendingNewAppInfo.get(i), listReadyToDeliver);
-                if (!found) {
-                    listReadyToDeliver.add(0, mPendingNewAppInfo.get(i));
+                int pos = Utils.isAppInfoInList(mPendingNewAppInfo.get(i), listReadyToDeliver);
+                if (pos == -1) {
+                    //listReadyToDeliver.add(0, mPendingNewAppInfo.get(i));
+                    listReadyToDeliver.add(mPendingNewAppInfo.get(i));
                 }
             }
             mPendingNewAppInfo.clear();

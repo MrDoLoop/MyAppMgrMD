@@ -281,14 +281,8 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
             
             // 锟斤拷锟斤拷欠锟斤拷锟斤拷锟绞撅拷锟絣ist锟斤拷
             for (AppInfo aInfo : ev.AppInfoList) {
-                boolean found = Utils.isAppInfoInList(aInfo, mAdapter.getDisplayList());
-               /* for (int i = 0, size = mAdapter.getDisplayList().size(); i < size; i++) {
-                    AppInfo appInfo = mAdapter.getDisplayList().get(i);
-                    if (aInfo.packageName.equals(appInfo.packageName)) {
-                        found = true;
-                        break;
-                    }
-                }*/
+                boolean found = Utils.isAppInfoInList(aInfo, mAdapter.getDisplayList()) != -1 ? true : false;
+               
                 if (!found) {
                     mAdapter.getDisplayList().add(1, aInfo);
                 } 
@@ -297,14 +291,7 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
         } else {// loading 锟斤拷没锟斤拷锟�
             for (AppInfo aInfo : ev.AppInfoList) {
                 // 锟斤拷锟斤拷欠锟斤拷锟絧ending锟斤拷list锟叫达拷锟斤拷
-                boolean found = Utils.isAppInfoInList(aInfo, mPendingNewAppInfo);
-               /* for (int i = 0; i < mPendingNewAppInfo.size(); i++) {
-                    AppInfo appInfo = mPendingNewAppInfo.get(i);
-                    if (aInfo.packageName.equals(appInfo.packageName)) {
-                        found = true;
-                        break;
-                    }
-                }*/
+                boolean found = Utils.isAppInfoInList(aInfo, mPendingNewAppInfo) != -1 ? true : false;
                 if (!found) {
                     mPendingNewAppInfo.add(aInfo);
                 }
@@ -381,7 +368,7 @@ public class BackupAppTabFragment extends BaseFrag implements LoaderManager.Load
          
         if (!mPendingNewAppInfo.isEmpty()) {
             for (int i = 0; i < mPendingNewAppInfo.size(); i++) {
-                boolean found = Utils.isAppInfoInList(mPendingNewAppInfo.get(i), listReadyToDeliver);
+                boolean found = Utils.isAppInfoInList(mPendingNewAppInfo.get(i), listReadyToDeliver) != -1 ? true : false;
                 if (!found) {
                     listReadyToDeliver.add(0, mPendingNewAppInfo.get(i));
                 }

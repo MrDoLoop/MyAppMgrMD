@@ -92,6 +92,10 @@ public class FolderSelectorDialog extends DialogFragment implements MaterialDial
 
     File[] listFiles() {
         File[] contents = parentFolder.listFiles();
+        if(contents == null){
+            return new File[]{};
+        } 
+        
         List<File> results = new ArrayList<File>();
         for (File fi : contents) {
             if (fi.isDirectory()) results.add(fi);
@@ -114,6 +118,7 @@ public class FolderSelectorDialog extends DialogFragment implements MaterialDial
                 .neutralText(R.string.default_dir)
                 .negativeText(R.string.cancel)
                 .build();
+        dialog.setCanceledOnTouchOutside(true);
         listView = dialog.getListView();
         if(listView != null){
             int colorPrimary = getActivity().getResources().getColor(R.color.primary);
@@ -177,7 +182,9 @@ public class FolderSelectorDialog extends DialogFragment implements MaterialDial
                         }
                     })
                     .customView(layout, false);
-                    mBuilder.build().show();
+                    MaterialDialog newFolderDia = mBuilder.build();
+                    newFolderDia.setCanceledOnTouchOutside(true);
+                    newFolderDia.show();
                 }
             });
             goUp = (TextView) headerView.findViewById(R.id.goUp);
