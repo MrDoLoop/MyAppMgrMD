@@ -13,14 +13,11 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.view.ActionMode;
-import android.support.v7.widget.SearchView;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
-import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.UnderlineSpan;
 import android.util.Log;
@@ -28,6 +25,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
@@ -35,7 +33,6 @@ import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -72,7 +69,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
     //private boolean isAnyStoreInstalled = false;
 
     private int currentSortType = SortTypeDialogFragment.LIST_SORT_TYPE_NAME_ASC;
-    private MenuItem searchMenuItem;
+    //private MenuItem searchMenuItem;
 
     private DataSetObserver mDataSetObserver;
     private View mEmptyView;
@@ -254,6 +251,19 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
         thisAppPackageName = Utils.getSelfAppInfo(getActivity()).packageName;
         View contentView = inflater.inflate(R.layout.user_app_slide_expandable_list, container, false);
         mActionSlideExpandableListView = (ActionSlideExpandableListView) contentView.findViewById(android.R.id.list);
+        mActionSlideExpandableListView.setOnTouchListener(new View.OnTouchListener() {
+            
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) 
+                {
+                    case MotionEvent.ACTION_DOWN: 
+                        mActionSlideExpandableListView.smoothScrollBy(0, 0); 
+                        return false;
+                } 
+                return false; 
+            }
+        });
         mActionSlideExpandableListView.setItemActionListener(
                 new ActionSlideExpandableListView.OnActionClickListener() {
                     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
@@ -662,12 +672,12 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                     mContext.getResources().getDimensionPixelSize(R.dimen.card_content_padding)
                             + mContext.getResources().getDimensionPixelSize(R.dimen.card_elevation)
                             + mContext.getResources().getDimensionPixelSize(R.dimen.card_max_elevation);
-            // moveHeight += Utilities.dp2px(mContext, 10);
+           
             mActionSlideExpandableListView.smoothScrollBy(moveHeight, 800);
         }
     }
 
-    @Override
+   /* @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // TODO Auto-generated method stub
         super.onCreateOptionsMenu(menu, inflater);
@@ -719,13 +729,13 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                 return true;
             }
         });
-    }
+    }*/
 
     public void collapseLastOpenItem(boolean anim) {
         mActionSlideExpandableListView.collapse(anim);
     }
 
-    @Override
+   /* @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // TODO Auto-generated method stub
 
@@ -741,7 +751,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                 break;
         }
         return true;
-    }
+    }*/
 
     public void listBackToTop() {
         mActionSlideExpandableListView.smoothScrollToPosition(0);

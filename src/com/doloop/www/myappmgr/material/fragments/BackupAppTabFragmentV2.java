@@ -24,10 +24,12 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.Transformation;
 import android.view.animation.Animation.AnimationListener;
 import android.widget.AbsListView;
@@ -213,6 +215,19 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
         emptyView = FragmentView.findViewById(R.id.emptyView);
         
         mListView = (ListView) FragmentView.findViewById(android.R.id.list);
+        mListView.setOnTouchListener(new View.OnTouchListener() {
+            
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) 
+                {
+                    case MotionEvent.ACTION_DOWN: 
+                        mListView.smoothScrollBy(0, 0); 
+                        return false;
+                } 
+                return false; 
+            }
+        });
         mListView.setOnItemLongClickListener(this);
         mListView.setOnScrollListener(this);
         
@@ -361,10 +376,15 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
                 @Override
                 public void run() {
                     // TODO Auto-generated method stub
-                    View itemView = mListView.getChildAt(newBackupAppPos-mListView.getFirstVisiblePosition());
+                    /*View itemView = mListView.getChildAt(newBackupAppPos-mListView.getFirstVisiblePosition());
                     View iconView = itemView.findViewById(R.id.app_icon);
                     ObjectAnimator ani = ObjectAnimator.ofFloat(iconView, "rotationY", 0, 360).setDuration(1000);
-                    ani.start();
+                    ani.start();*/
+                    View itemView = mListView.getChildAt(newBackupAppPos-mListView.getFirstVisiblePosition());
+                    View iconView = itemView.findViewById(R.id.app_icon);
+                    Animation shake = AnimationUtils.loadAnimation(getActivity(), R.anim.shake);
+                    iconView.startAnimation(shake);
+                    
                 }},500);
         }
     }
