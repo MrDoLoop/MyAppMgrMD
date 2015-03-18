@@ -385,7 +385,7 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
             itemHolder.AppNameTextView.setText(appInfo.appName);
             itemHolder.AppIconImageView.setTag(position);
             itemHolder.AppVersionTextView.setText("v" + appInfo.versionName + " | " + appInfo.appSizeStr + " | "
-                    + appInfo.lastModifiedTimeStr);
+                    + appInfo.lastBackUpTimeStr);
             itemHolder.AppFileNameTextView.setText(appInfo.getBackupApkFileName());
 
             if (appInfo.iconBitmap == null) {
