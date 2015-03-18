@@ -42,6 +42,8 @@ public class AppInfo {
     public Bitmap iconBitmap = null;
     
     public String backupFilePath = "";
+    public String lastBackUpTimeStr = "";
+    public long lastBackUpRawTime = 0;
     
     public String getBackupApkFileName(){
         if(!TextUtils.isEmpty(backupFilePath)){
