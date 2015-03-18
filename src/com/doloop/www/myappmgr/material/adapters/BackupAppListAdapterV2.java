@@ -138,6 +138,12 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
         notifyDataSetChanged();
     }
     
+    public void removeItemAtPosition(int position){
+        AppInfo theApp = mAppListDisplay.get(position);
+        mAppListDisplay.remove(position);
+        mAppListFull.remove(theApp);
+        notifyDataSetChanged();
+    }
     
     public void filterList(String str) {
         mAppListDisplay = mAppListFull;
@@ -343,7 +349,7 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
             
         }
         else if (viewType == TYPE_ITEM) {
-            if (convertView == null) {
+            if (convertView == null || ((ItemViewHolder)convertView.getTag()).needInflate) {
                 convertView = LayoutInflater.from(mCtx).inflate(R.layout.back_app_info_item, parent, false);
                 itemHolder = new ItemViewHolder();
                 itemHolder.AppNameTextView = (TextView) convertView.findViewById(R.id.app_name);
@@ -352,6 +358,7 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
                 itemHolder.AppIconImageView = (ImageView) convertView.findViewById(R.id.app_icon);
                 itemHolder.AppIconImageView.setOnClickListener(this);
                 itemHolder.RootLayout = (RelativeLayout) convertView.findViewById(R.id.rootLayout);
+                itemHolder.needInflate = false;
                 /*itemHolder.RootLayout.setOnClickListener(new View.OnClickListener() {
 
                     @Override
@@ -367,9 +374,11 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
                     }
                 });*/
                 convertView.setTag(itemHolder);
+                //L.d("Item convertView inflate");
             }
             else{
                 itemHolder = (ItemViewHolder) convertView.getTag();
+                //L.d("Item convertView getTag");
             }
             
             
@@ -413,13 +422,14 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
         return convertView;
     }
 
-    static class ItemViewHolder implements Target {
+    public static class ItemViewHolder implements Target {
 
         TextView AppNameTextView;
         TextView AppVersionTextView;
         TextView AppFileNameTextView;
         ImageView AppIconImageView;
         RelativeLayout RootLayout;
+        public boolean needInflate;
 
         @Override
         public void onBitmapFailed(Drawable bitmap) {
