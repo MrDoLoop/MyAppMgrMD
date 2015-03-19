@@ -1150,7 +1150,15 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
     }
 
     public void onEventMainThread(BackupAppEvent ev) {
-        new BackUpApps(ev.appList, ev.sendAfterBackup).execute();
+        ArrayList<AppInfo> list = ev.appList;
+        long requiredSpace = Utils.calculateTotalFileRawSize(list);
+        if(Utils.isSdcardSpaceEnough(requiredSpace)){
+            new BackUpApps(ev.appList, ev.sendAfterBackup).execute();
+        }
+        else{
+            T(R.string.no_enough_space);
+        }
+        
     }
 
     private class AppUpdateReceiver extends BroadcastReceiver {
