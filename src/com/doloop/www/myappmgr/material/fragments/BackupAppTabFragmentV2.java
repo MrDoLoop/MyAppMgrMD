@@ -44,6 +44,7 @@ import com.doloop.www.myappmgr.material.adapters.BackupAppListAdapterV2.ItemView
 import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.events.ActionModeToggleEvent;
 import com.doloop.www.myappmgr.material.events.AppBackupSuccEvent;
+import com.doloop.www.myappmgr.material.events.BackupAppEvent;
 import com.doloop.www.myappmgr.material.events.ViewNewBackupAppEvent;
 import com.doloop.www.myappmgr.material.fragments.SelectionDialogFragment.SelectionDialogClickListener;
 import com.doloop.www.myappmgr.material.interfaces.IconClickListener;
@@ -590,6 +591,14 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
                                         mAdapter.deselectAll();
                                     }
                                     updateActionModeTitle();
+                                    break;
+                                case R.id.menu_send:
+                                    if (mAdapter.getSelectedItemCnt() == 0) {
+                                        MainActivity.T(R.string.nothing_selected);
+                                    } else {
+                                        EventBus.getDefault().post(
+                                                new BackupAppEvent(mAdapter.getSelectedItemList(), true));
+                                    }
                                     break;
                                 case R.id.menu_delete:
                                     if (mAdapter.getSelectedItemCnt() == 0) {
