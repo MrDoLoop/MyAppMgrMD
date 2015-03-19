@@ -7,15 +7,14 @@
         android:title="@string/select_all"
         app:showAsAction="always"/>
     <item
-        android:id="@+id/menu_delete"
-        android:icon="@drawable/delete_white"
-        android:title="@string/delete"
-        app:showAsAction="never"/>
-    
-     <item
         android:id="@+id/menu_send"
         android:icon="@drawable/ic_search_white"
         android:title="@string/send"
         app:showAsAction="never"/>
-    
+    <item
+        android:id="@+id/menu_delete"
+        android:icon="@drawable/delete_white"
+        android:title="@string/delete"
+        app:showAsAction="never"/>
+
 </menu>
