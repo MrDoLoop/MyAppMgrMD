@@ -467,6 +467,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
         // Clean up any resources including ending threads,
         // closing database connections etc.
         super.onDestroy();
+        mHandler.removeCallbacksAndMessages(null);
         EventBus.getDefault().unregister(this);
         mAdapter.unregisterDataSetObserver(mDataSetObserver);
         mAdapter = null;
@@ -497,7 +498,6 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
 
     public void setData(ArrayList<AppInfo> userAppList) {
         mAdapter = new UserAppListAdapter(getActivity(), R.layout.user_app_expandable_list_item, 0, userAppList, this);
-        // mAdapter.setUserAppListFilterResultListener((UserAppListFilterResultListener)mContext);
         mAdapter.setUserAppListDataSetChangedListener((UserAppListDataSetChangedListener) mContext);
         mActionSlideExpandableListView.setAdapter(mAdapter);
         mActionSlideExpandableListView.setEmptyView(mEmptyView);
