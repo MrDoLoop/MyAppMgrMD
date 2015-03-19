@@ -54,7 +54,6 @@ import com.doloop.www.myappmgrmaterial.R;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.Animator.AnimatorListener;
 import com.nineoldandroids.animation.AnimatorListenerAdapter;
-import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.animation.ValueAnimator;
 import com.nineoldandroids.view.ViewHelper;
 import com.nineoldandroids.view.ViewPropertyAnimator;
@@ -79,7 +78,8 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
     private int currentSortType = SortTypeDialogFragment.LIST_SORT_TYPE_NAME_ASC;
     private int newBackupAppPos = -1;
     
-    private Handler mHandlder = new Handler();
+    //private Handler mHandlder = new Handler();
+                     
     
 
     private final class RemoveWindow implements Runnable {
@@ -324,7 +324,7 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
         // Clean up any resources including ending threads,
         // closing database connections etc.
         super.onDestroy();
-        mHandlder.removeCallbacksAndMessages(null);
+        mHandler.removeCallbacksAndMessages(null);
         if (!mBackupAppListLoader.isLoadingRunning()) {
             mBackupAppListLoader.cancelLoad();
         }
@@ -370,21 +370,17 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
     public void onEventMainThread(ViewNewBackupAppEvent ev) {
         if(newBackupAppPos != -1){
             mListView.setSelection(newBackupAppPos);
-            
-            mHandlder.postDelayed(new Runnable(){
 
+            
+            mHandler.postDelayed(new Runnable(){
                 @Override
                 public void run() {
-                    // TODO Auto-generated method stub
-                    /*View itemView = mListView.getChildAt(newBackupAppPos-mListView.getFirstVisiblePosition());
-                    View iconView = itemView.findViewById(R.id.app_icon);
-                    ObjectAnimator ani = ObjectAnimator.ofFloat(iconView, "rotationY", 0, 360).setDuration(1000);
-                    ani.start();*/
                     View itemView = mListView.getChildAt(newBackupAppPos-mListView.getFirstVisiblePosition());
-                    View iconView = itemView.findViewById(R.id.app_icon);
-                    Animation ani = AnimationUtils.loadAnimation(getActivity(), R.anim.scale);
-                    iconView.startAnimation(ani);
-                    
+                    //View iconView = itemView.findViewById(R.id.app_icon);
+                    if(itemView != null){
+                        Animation ani = AnimationUtils.loadAnimation(getActivity(), R.anim.shake);
+                        itemView.startAnimation(ani);
+                    }
                 }},500);
         }
     }
@@ -393,8 +389,6 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
     public void onEventMainThread(AppBackupSuccEvent ev) {
 
         if (!mBackupAppListLoader.isLoadingRunning()) {// loading 已经结束了
-            
-           
             for (AppInfo aInfo : ev.AppInfoList) {
                 int pos = Utils.isAppInfoInList(aInfo, mAppList);
                
