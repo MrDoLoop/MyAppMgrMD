@@ -63,6 +63,15 @@ import com.doloop.www.myappmgrmaterial.R;
 
 public class Utils {
     
+    public static boolean isSdcardSpaceEnough(long requiredSpace){
+        if(requiredSpace < getSdFreeSpaceRawSize()){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    
     public static void stopScroll(AbsListView view)
     {//http://stackoverflow.com/questions/6369491/stop-listview-scroll-animation
         //http://stackoverflow.com/questions/7819145/stop-scrolling-in-a-listview
@@ -213,7 +222,7 @@ public class Utils {
         String retVal = formatFileSize(availableSpace);
         //Formatter.formatFileSize(ctx, availableSpace);
         return retVal;
-    }
+    }*/
     
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     public static long getSdFreeSpaceRawSize(){
@@ -227,7 +236,7 @@ public class Utils {
         }
         //Formatter.formatFileSize(ctx, availableSpace);
         return availableSpace;
-    }*/
+    }
     
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     public static String[] getSdTotalSpaceInfo(){
