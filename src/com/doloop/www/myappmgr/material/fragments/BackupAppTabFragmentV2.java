@@ -914,7 +914,7 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
                     break;
                 case SortTypeDialogFragment.LIST_SORT_TYPE_LAST_MOD_TIME_ASC:
                 case SortTypeDialogFragment.LIST_SORT_TYPE_LAST_MOD_TIME_DES:
-                    mTopDialogText.setText(firstVisiableApp.lastModifiedTimeStr);
+                    mTopDialogText.setText(firstVisiableApp.lastBackUpTimeStr);
                     mTopDialogText.clearAnimation();
                     mTopDialogText.setVisibility(View.VISIBLE);
                     break;
