@@ -15,6 +15,7 @@
     <string name="delete">Delete</string>
     <string name="backup_success">Backup success</string>
     <string name="uninstall">Uninstall</string>
+    <string name="no_enough_space">No enough space</string>
     <string name="more">More</string>
     <string name="google_play">Google Play</string>
     <string name="send">Send</string>
