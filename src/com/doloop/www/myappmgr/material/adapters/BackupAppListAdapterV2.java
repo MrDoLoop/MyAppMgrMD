@@ -396,7 +396,7 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
             } else {
                 itemHolder.AppIconImageView.setImageBitmap(appInfo.iconBitmap);
             }
-            itemHolder.AppIconImageView.clearAnimation();
+            convertView.clearAnimation();
             itemHolder.AppIconImageView.setTag(position);
             itemHolder.RootLayout.setTag(position);
             
