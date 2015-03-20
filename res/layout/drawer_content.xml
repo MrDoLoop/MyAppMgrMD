@@ -52,10 +52,11 @@
         android:id="@+id/backupApkDir"
         android:layout_marginTop="5dp"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/logo_txt"
         app:firstRowTxt="@string/back_dir"
         app:iconSrc="@drawable/folder_black"
+        android:background="@drawable/md_selector"
         app:secondRowTxt="2222" >
     </com.doloop.www.myappmgr.material.widgets.DrawerItem2Rows>
 
@@ -81,6 +82,7 @@
         android:id="@+id/drawerRefresh"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/md_selector"
         android:layout_alignParentBottom="true" >
     </com.doloop.www.myappmgr.material.widgets.DrawerItem>
 
