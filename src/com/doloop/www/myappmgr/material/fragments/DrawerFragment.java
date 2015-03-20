@@ -19,9 +19,8 @@ import com.doloop.www.myappmgr.material.utils.Utils;
 import com.doloop.www.myappmgr.material.widgets.DrawerItem2Rows;
 import com.doloop.www.myappmgrmaterial.R;
 import com.nineoldandroids.animation.Animator;
+import com.nineoldandroids.animation.AnimatorListenerAdapter;
 import com.nineoldandroids.animation.ObjectAnimator;
-import com.nineoldandroids.animation.Animator.AnimatorListener;
-
 import de.greenrobot.event.EventBus;
 
 public class DrawerFragment extends Fragment implements FolderSelectorDialog.FolderSelectCallback {
@@ -82,24 +81,12 @@ public class DrawerFragment extends Fragment implements FolderSelectorDialog.Fol
             @Override
             public void onClick(View v) {
                 ObjectAnimator ani = ObjectAnimator.ofFloat(headerImg, "rotationY", 0, 360).setDuration(1000);
-                ani.addListener(new AnimatorListener(){
-
-                    @Override
-                    public void onAnimationCancel(Animator arg0) {
-                        // TODO Auto-generated method stub
-                        
-                    }
+                ani.addListener(new AnimatorListenerAdapter(){
 
                     @Override
                     public void onAnimationEnd(Animator arg0) {
                         // TODO Auto-generated method stub
                         headerImg.setEnabled(true);
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator arg0) {
-                        // TODO Auto-generated method stub
-                        
                     }
 
                     @Override
