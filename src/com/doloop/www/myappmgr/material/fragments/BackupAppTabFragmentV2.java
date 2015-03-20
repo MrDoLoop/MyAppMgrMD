@@ -25,22 +25,21 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Transformation;
-import android.view.animation.Animation.AnimationListener;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.doloop.www.myappmgr.material.MainActivity;
-import com.doloop.www.myappmgr.material.adapters.BackupAppListAdapterV2.BackupAppListDataSetChangedListener;
 import com.doloop.www.myappmgr.material.adapters.BackupAppListAdapterV2;
+import com.doloop.www.myappmgr.material.adapters.BackupAppListAdapterV2.BackupAppListDataSetChangedListener;
 import com.doloop.www.myappmgr.material.adapters.BackupAppListAdapterV2.ItemViewHolder;
 import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.events.ActionModeToggleEvent;
@@ -216,19 +215,6 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
         emptyView = FragmentView.findViewById(R.id.emptyView);
         
         mListView = (ListView) FragmentView.findViewById(android.R.id.list);
-        mListView.setOnTouchListener(new View.OnTouchListener() {
-            
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) 
-                {
-                    case MotionEvent.ACTION_DOWN: 
-                        mListView.smoothScrollBy(0, 0); 
-                        return false;
-                } 
-                return false; 
-            }
-        });
         mListView.setOnItemLongClickListener(this);
         mListView.setOnScrollListener(this);
         
@@ -699,7 +685,9 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
     public void onListItemClick(ListView l, View v, int position, long id) {
         // TODO Auto-generated method stub
         super.onListItemClick(l, v, position, id);
-
+        if(position == 0){//header 的位置
+            return ;
+        }
         AppInfo item = mAdapter.getItem(position);
         if (item != null) {
             if (isInActoinMode) {
@@ -720,6 +708,11 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         // TODO Auto-generated method stub
+        
+        if(position == 0){//header 的位置
+            return false;
+        }
+        
         if (isInActoinMode) {
             if(mAdapter.getCount() > 2){//只锟斤拷一锟斤拷锟绞憋拷锟斤拷锟绞狙★拷锟皆伙拷锟斤拷, 锟斤拷为锟斤拷锟斤拷header锟斤拷锟斤拷锟皆讹拷一锟斤拷
                 SelectionDialogFragment SelectionDialog = new SelectionDialogFragment();
