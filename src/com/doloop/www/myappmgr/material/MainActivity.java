@@ -809,7 +809,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
                 for (int i = 0 ; i < fullAppListSize; i++) {
                     Log.i("ttt", "processing app " + (i + 1) + " / " + fullAppListSize);
                     packageInfo = packages.get(i);
-                    tmpInfo = Utils.buildAppInfoEntry(thisActivityCtx, packageInfo, pManager, false);
+                    tmpInfo = Utils.buildAppInfoEntry(thisActivityCtx, packageInfo, pManager, false, true);
                     if (tmpInfo.isSysApp) {
                         SysAppFullList.add(tmpInfo);
                     } else {
@@ -879,7 +879,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
                         // publishProgress("" + (i + 1));
                         Log.i("ttt", "processing app " + (i + 1) + " / " + fullAppListSize);
                         packageInfo = packages.get(i);
-                        tmpInfo = Utils.buildAppInfoEntry(thisActivityCtx, packageInfo, pManager, true);
+                        tmpInfo = Utils.buildAppInfoEntry(thisActivityCtx, packageInfo, pManager, true, false);
                         if (tmpInfo.isSysApp) {
                             SysAppFullList.add(tmpInfo);
                         } else {
