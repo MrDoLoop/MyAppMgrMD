@@ -160,6 +160,8 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
 //    private SelectionDialogFragment SelectionDialog;
     
     // private DrawerItemClickEvent mDrawerItemClickEvent;
+    
+    private int oldPagePos = 0;
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
@@ -322,6 +324,11 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
 
             @Override
             public void onPageSelected(int position) {
+                int curPage = mPager.getCurrentItem();
+                //停止之前list的滑动
+                Fragmentlist.get(oldPagePos).getListView().smoothScrollBy(0, 0); 
+                
+                
                 // 禁止在别的tab下从屏幕边缘划出，但是还是可以通过menu按键呼出抽屉，
                 // 所以在open的时候记得要解锁
                 if (position == Constants.USR_APPS_TAB_POS) {
@@ -348,6 +355,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
                     }
                 }
 
+                oldPagePos = curPage;
             }
 
             @Override
