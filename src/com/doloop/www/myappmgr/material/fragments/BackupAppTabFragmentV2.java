@@ -600,7 +600,9 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
                                         for (int i = 0; i < list.size(); i++) {
                                             tmpAppInfo = list.get(i);
                                             tmpAppInfo.selected = false;
-                                            if (FileUtils.deleteQuietly(new File(tmpAppInfo.backupFilePath))) {
+                                            //if (FileUtils.deleteQuietly(new File(tmpAppInfo.backupFilePath))) 
+                                            if (new File(tmpAppInfo.backupFilePath).delete()) 
+                                            {
                                                 succlist.add(tmpAppInfo);
                                             }else {
                                                 if(!TextUtils.isEmpty(tmpAppInfo.appName)){
@@ -935,7 +937,6 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
         // TODO Auto-generated method stub
-        MainActivity.getSnackbar(false).dismiss();
         switch (scrollState) {
             case AbsListView.OnScrollListener.SCROLL_STATE_IDLE:
                 mListIsScrolling = false;

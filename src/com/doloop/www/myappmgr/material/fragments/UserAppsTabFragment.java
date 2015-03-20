@@ -615,7 +615,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
         // TODO Auto-generated method stub
-        MainActivity.getSnackbar(false).dismiss();
+        MainActivity.dismissSnackbar();
         switch (scrollState) {
             case AbsListView.OnScrollListener.SCROLL_STATE_IDLE:
                 mListIsScrolling = false;
