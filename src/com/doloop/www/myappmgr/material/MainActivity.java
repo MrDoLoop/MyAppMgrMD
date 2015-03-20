@@ -175,15 +175,20 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
                     WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
+            SystemBarConfig config = tintManager.getConfig();
+            //处理状态栏
             tintManager.setStatusBarTintEnabled(true);
             tintManager.setStatusBarTintResource(R.color.transparent);
             tintManager.setStatusBarAlpha(0.5f);
-            SystemBarConfig config = tintManager.getConfig();
+            
 
             View contHolder = findViewById(R.id.content_linear);
-            contHolder.setPadding(0, config.getStatusBarHeight(), 0, 0);
-            // View drawerHolder = findViewById(R.id.drawer_content_holder);
-            // drawerHolder.setPadding(0, config.getStatusBarHeight(), 0, 0);
+            contHolder.setPadding(0, config.getStatusBarHeight(), 0, config.getNavigationBarHeight());
+            //处理底边导航栏
+            tintManager.setNavigationBarTintEnabled(true);
+            tintManager.setNavigationBarTintResource(R.color.transparent);
+            View drawerHolder = findViewById(R.id.drawer_content_holder);
+            drawerHolder.setPadding(0, 0, 0, config.getNavigationBarHeight());
             // contLinear.setPadding(0, config.getPixelInsetTop(true), 0, config.getPixelInsetBottom());
             // statusBarHolder.getLayoutParams().height = config.getStatusBarHeight();
             // statusBarHolder.setVisibility(View.VISIBLE);
