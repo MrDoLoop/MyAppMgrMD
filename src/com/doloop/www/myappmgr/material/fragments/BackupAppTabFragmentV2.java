@@ -600,8 +600,8 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
                                         for (int i = 0; i < list.size(); i++) {
                                             tmpAppInfo = list.get(i);
                                             tmpAppInfo.selected = false;
-                                            //if (FileUtils.deleteQuietly(new File(tmpAppInfo.backupFilePath))) 
-                                            if (new File(tmpAppInfo.backupFilePath).delete()) 
+                                            if (FileUtils.deleteQuietly(new File(tmpAppInfo.backupFilePath))) 
+                                            //if (new File(tmpAppInfo.backupFilePath).delete()) 
                                             {
                                                 succlist.add(tmpAppInfo);
                                             }else {
