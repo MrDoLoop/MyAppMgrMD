@@ -804,7 +804,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
                 for (int i = 0 ; i < fullAppListSize; i++) {
                     Log.i("ttt", "processing app " + (i + 1) + " / " + fullAppListSize);
                     packageInfo = packages.get(i);
-                    tmpInfo = Utils.buildAppInfoEntry(thisActivityCtx, packageInfo, pManager, true);
+                    tmpInfo = Utils.buildAppInfoEntry(thisActivityCtx, packageInfo, pManager, false);
                     if (tmpInfo.isSysApp) {
                         SysAppFullList.add(tmpInfo);
                     } else {
