@@ -63,6 +63,7 @@ public class DaoUtils {
     public static void destroy() {
         if (daoSession != null) {
             daoSession.clear();
+            daoSession.getDatabase().close();
         }
         daoMaster = null;
         daoSession = null;
