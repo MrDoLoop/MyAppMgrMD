@@ -467,6 +467,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
         if (progDialog != null && progDialog.isShowing()) {
             progDialog.dismiss();
         }
+        
         SysAppFullList.clear();
         UserAppFullList.clear();
         unregisterReceivers();
@@ -479,6 +480,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
         thisActivityCtx = null;
         mDrawerLayout = null;
         sIsSdcardReady = false;
+        DaoUtils.destroy();
     }
 
     /**

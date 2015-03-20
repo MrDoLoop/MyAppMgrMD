@@ -1,5 +1,6 @@
 package com.doloop.www.myappmgr.material;
 
+import com.doloop.www.myappmgr.material.dao.DaoUtils;
 import com.doloop.www.myappmgr.material.utils.Constants;
 import com.doloop.www.myappmgr.material.utils.Utils;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
@@ -31,6 +32,13 @@ public class App extends Application {
         initImageLoader(this);
     }
 
+    @Override
+    public void onTerminate() {
+        // TODO Auto-generated method stub
+        super.onTerminate();
+        DaoUtils.destroy();
+    }
+    
     /**
      * 获得单实例
      * 
