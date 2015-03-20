@@ -322,7 +322,7 @@ public class Utils {
                 applicationInfo.sourceDir = theApk.getAbsolutePath();
                 applicationInfo.publicSourceDir = theApk.getAbsolutePath();
 
-                AppInfo appInfo = Utils.buildAppInfoEntry(ctx, packageInfo, pkgMgr, false);
+                AppInfo appInfo = Utils.buildAppInfoEntry(ctx, packageInfo, pkgMgr, false, false);
                 appInfo.backupFilePath = theApk.getAbsolutePath();
                 return appInfo;
             }
@@ -502,7 +502,12 @@ public class Utils {
             return false;
         }
     }
-    
+    /**
+     * save之后iconBitmap字段==null
+     * @param context
+     * @param appInfo
+     * @return
+     */
     public static boolean saveAppIconOnSd(Context context, AppInfo appInfo) {
 
         OutputStream outStream = null;
@@ -533,9 +538,17 @@ public class Utils {
             return false;
         }
     }
-
+    /**
+     * 
+     * @param context
+     * @param packageInfo
+     * @param pManager
+     * @param saveAppIconOnSd 是否保存icon到sd
+     * @param holdAppIcon 保存之后是否hold icon的bitmap在appinfo变量中
+     * @return
+     */
     public static AppInfo buildAppInfoEntry(Context context, PackageInfo packageInfo, PackageManager pManager,
-            boolean saveAppIconOnSd) {
+            boolean saveAppIconOnSd, boolean holdAppIcon) {
         AppInfo tmpInfo = new AppInfo();
         tmpInfo.appName = packageInfo.applicationInfo.loadLabel(pManager).toString().trim();
         if (tmpInfo.appName.startsWith("\u00a0")) {
@@ -573,10 +586,22 @@ public class Utils {
         {
             tmpInfo.isSysApp = true;
         }
-        if (saveAppIconOnSd) {
-            tmpInfo.iconBitmap = drawableToBitmap(packageInfo.applicationInfo.loadIcon(pManager));
-            saveAppIconOnSd(context, tmpInfo);
+        
+        
+        if(holdAppIcon || saveAppIconOnSd){
+            Bitmap iconBitmap = drawableToBitmap(packageInfo.applicationInfo.loadIcon(pManager));
+            
+            if (saveAppIconOnSd) {
+                tmpInfo.iconBitmap = iconBitmap;
+                saveAppIconOnSd(context, tmpInfo);//save之后iconBitmap字段==null
+            }
+            
+            if(holdAppIcon){
+                tmpInfo.iconBitmap = iconBitmap;
+            }
         }
+        
+        
 
         return tmpInfo;
     }
@@ -585,7 +610,7 @@ public class Utils {
         try {
             PackageManager pm = context.getPackageManager();
             PackageInfo packageInfo = pm.getPackageInfo(packName, 0);
-            return buildAppInfoEntry(context, packageInfo, pm, true);
+            return buildAppInfoEntry(context, packageInfo, pm, true, false);
         } catch (NameNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
