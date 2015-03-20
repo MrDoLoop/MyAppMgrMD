@@ -25,7 +25,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
@@ -251,19 +250,6 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
         thisAppPackageName = Utils.getSelfAppInfo(getActivity()).packageName;
         View contentView = inflater.inflate(R.layout.user_app_slide_expandable_list, container, false);
         mActionSlideExpandableListView = (ActionSlideExpandableListView) contentView.findViewById(android.R.id.list);
-        mActionSlideExpandableListView.setOnTouchListener(new View.OnTouchListener() {
-            
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) 
-                {
-                    case MotionEvent.ACTION_DOWN: 
-                        mActionSlideExpandableListView.smoothScrollBy(0, 0); 
-                        return false;
-                } 
-                return false; 
-            }
-        });
         mActionSlideExpandableListView.setItemActionListener(
                 new ActionSlideExpandableListView.OnActionClickListener() {
                     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
