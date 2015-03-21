@@ -588,7 +588,19 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
                                             SnedApkUris.add(Uri.parse("file://" + appinfo.backupFilePath));
                                         }
                                         Utils.chooseSendByApp(mContext, SnedApkUris);
-                                        MainActivity.sActionMode.finish();
+                                        if(android.os.Build.VERSION.SDK_INT >= 11){
+                                            MainActivity.sActionMode.finish();
+                                        }
+                                        else{//2.3系统的toolbar有bug
+                                            //https://github.com/JakeWharton/ActionBarSherlock/issues/487
+                                            mHandler.postDelayed(new Runnable(){
+
+                                                @Override
+                                                public void run() {
+                                                    // TODO Auto-generated method stub
+                                                    MainActivity.sActionMode.finish();
+                                                }}, 500);
+                                        }
                                     }
                                     break;
                                 case R.id.menu_delete:
