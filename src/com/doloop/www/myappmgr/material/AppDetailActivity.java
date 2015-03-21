@@ -1,9 +1,13 @@
 package com.doloop.www.myappmgr.material;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -13,17 +17,44 @@ import com.doloop.www.myappmgr.material.filtermenu.FilterMenu;
 import com.doloop.www.myappmgr.material.filtermenu.FilterMenuLayout;
 import com.doloop.www.myappmgr.material.utils.Utils;
 import com.doloop.www.myappmgrmaterial.R;
+import com.readystatesoftware.systembartint.SystemBarTintManager;
+import com.readystatesoftware.systembartint.SystemBarTintManager.SystemBarConfig;
 
 public class AppDetailActivity extends ActionBarActivity {
 
     public static AppInfo curAppInfo;
     private LinearLayout rowContainer;
 
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_details);
 
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
+            // setTranslucentStatus(true);
+
+            Window window = this.getWindow();
+            window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+            SystemBarTintManager tintManager = new SystemBarTintManager(this);
+            SystemBarConfig config = tintManager.getConfig();
+            //处理状态栏
+            tintManager.setStatusBarTintEnabled(true);
+            tintManager.setStatusBarTintResource(R.color.transparent);
+            tintManager.setStatusBarAlpha(0.5f);
+            
+            View rootView = findViewById(R.id.root_scroll_view);
+            rootView.setPadding(0, config.getStatusBarHeight(), 0, config.getNavigationBarHeight());
+            //处理底边导航栏
+            /*tintManager.setNavigationBarTintEnabled(true);
+            tintManager.setNavigationBarTintResource(R.color.transparent);
+            View drawerHolder = findViewById(R.id.drawer_content_holder);
+            drawerHolder.setPadding(0, 0, 0, config.getNavigationBarHeight());*/
+        }
+        
+        
         // Row Container
         rowContainer = (LinearLayout) findViewById(R.id.row_container);
         FilterMenuLayout menuLayout = (FilterMenuLayout) findViewById(R.id.menu);
@@ -34,6 +65,25 @@ public class AppDetailActivity extends ActionBarActivity {
             .addItem(R.drawable.ic_action_clock)
             .addItem(R.drawable.ic_action_clock)
             .attach(menuLayout)
+            .withListener(new FilterMenu.OnMenuChangeListener() {
+                    
+                    @Override
+                    public void onMenuItemClick(View view, int position) {
+                        MainActivity.T("菜单 "+position);
+                    }
+
+                    
+                    @Override
+                    public void onMenuCollapse() {
+
+                    }
+
+                    
+                    @Override
+                    public void onMenuExpand() {
+
+                    }
+                })
             .build();
         
         if (curAppInfo != null) {
