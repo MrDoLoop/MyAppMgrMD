@@ -163,6 +163,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
     // private DrawerItemClickEvent mDrawerItemClickEvent;
     
     private int oldPagePos = 0;
+    private Toolbar toolbar;
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
@@ -219,7 +220,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
         t.replace(R.id.drawer_content_holder, drawFrag);
         t.commit();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         // toolbar.inflateMenu(R.menu.menu_main);
         setSupportActionBar(toolbar);
@@ -236,7 +237,8 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
                     @Override
                     public void onDrawerSlide(View drawerView, float slideOffset) {
                         super.onDrawerSlide(drawerView, slideOffset);
-                        ViewHelper.setAlpha(MenuItemCompat.getActionView(searchMenuItem), 1 - slideOffset);
+                        //ViewHelper.setAlpha(MenuItemCompat.getActionView(searchMenuItem), 1 - slideOffset);
+                        ViewHelper.setAlpha(toolbar, 1 - slideOffset);
                     }
 
                     /** Called when a drawer has settled in a completely closed state. */
@@ -246,7 +248,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
 
                         searchViewEdt.setFocusable(true);
                         searchViewEdt.setFocusableInTouchMode(true);
-                        if (!MenuItemCompat.isActionViewExpanded(searchMenuItem)) {
+                       /* if (!MenuItemCompat.isActionViewExpanded(searchMenuItem)) {
                             switch (mPager.getCurrentItem()) {
                                 case Constants.USR_APPS_TAB_POS:
                                     searchMenuItem.setVisible(true);
@@ -262,7 +264,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
                             }
 
                             // sortMenuItem.setVisible(true);
-                        }
+                        }*/
 
                         if (mPager.getCurrentItem() != Constants.USR_APPS_TAB_POS) {
                             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
@@ -285,10 +287,10 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
                         searchViewEdt.clearFocus();
                         searchViewEdt.setFocusable(false);
                         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-                        if (!MenuItemCompat.isActionViewExpanded(searchMenuItem)) {
+                       /* if (!MenuItemCompat.isActionViewExpanded(searchMenuItem)) {
                             searchMenuItem.setVisible(false);
                             sortMenuItem.setVisible(false);
-                        }
+                        }*/
                         // invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
                     }
                 };
