@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/windows_bg"
@@ -18,13 +19,13 @@
             android:background="@drawable/ic_user_background" >
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentLeft="true"
-                android:layout_marginLeft="20dp"
                 android:layout_marginBottom="15dp"
-                android:layout_toLeftOf="@+id/menu"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="80dp"
                 android:orientation="vertical" >
 
                 <ImageView
@@ -46,15 +47,19 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <ImageView
+            <com.doloop.www.myappmgr.material.filtermenu.FilterMenuLayout
                 android:id="@+id/menu"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_alignParentRight="true"
-                
-                android:layout_centerVertical="true"
-                android:layout_marginRight="20dp"
-                android:src="@drawable/rounded_rectangle_shape_index_selected" />
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:elevation="8dp"
+                app:centerBottom="50dp"
+                app:centerRight="50dp"
+                app:collapsedRadius="22dp"
+                app:expandedRadius="80dp"
+                app:primaryColor="#03A9F4"
+                app:primaryDarkColor="#359ed7" >
+            </com.doloop.www.myappmgr.material.filtermenu.FilterMenuLayout>
+
         </RelativeLayout>
 
         <LinearLayout
