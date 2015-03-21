@@ -588,6 +588,7 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
                                             SnedApkUris.add(Uri.parse("file://" + appinfo.backupFilePath));
                                         }
                                         Utils.chooseSendByApp(mContext, SnedApkUris);
+                                        MainActivity.sActionMode.finish();
                                     }
                                     break;
                                 case R.id.menu_delete:
