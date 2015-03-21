@@ -9,6 +9,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.doloop.www.myappmgr.material.dao.AppInfo;
+import com.doloop.www.myappmgr.material.filtermenu.FilterMenu;
+import com.doloop.www.myappmgr.material.filtermenu.FilterMenuLayout;
 import com.doloop.www.myappmgr.material.utils.Utils;
 import com.doloop.www.myappmgrmaterial.R;
 
@@ -24,7 +26,16 @@ public class AppDetailActivity extends ActionBarActivity {
 
         // Row Container
         rowContainer = (LinearLayout) findViewById(R.id.row_container);
-
+        FilterMenuLayout menuLayout = (FilterMenuLayout) findViewById(R.id.menu);
+        new FilterMenu.Builder(this)
+            .addItem(R.drawable.ic_action_add)
+            .addItem(R.drawable.ic_action_clock)
+            .addItem(R.drawable.ic_action_clock)
+            .addItem(R.drawable.ic_action_clock)
+            .addItem(R.drawable.ic_action_clock)
+            .attach(menuLayout)
+            .build();
+        
         if (curAppInfo != null) {
             TextView appName = (TextView) findViewById(R.id.app_name);
             appName.setText(curAppInfo.appName);
