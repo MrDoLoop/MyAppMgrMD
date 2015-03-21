@@ -22,6 +22,7 @@
     <color name="windows_bg">#eeeeee</color>
     <color name="drawer_divider">#e0e0e0</color>
     <color name="insetForeground">#7813bbf9</color>
+    <color name="dividers">#DADADA</color>
     
     
     <color name="primary">#03A9F4</color>

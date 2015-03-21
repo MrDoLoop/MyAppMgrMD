@@ -37,6 +37,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.doloop.slideexpandable.library.ActionSlideExpandableListView;
+import com.doloop.www.myappmgr.material.AppDetailActivity;
 import com.doloop.www.myappmgr.material.MainActivity;
 import com.doloop.www.myappmgr.material.adapters.UserAppListAdapter;
 import com.doloop.www.myappmgr.material.adapters.UserAppListAdapter.UserAppListDataSetChangedListener;
@@ -530,6 +531,10 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
             }
             appVersion.setSelected(true);
             MainActivity.T(selectItem.apkFilePath);
+            
+            AppDetailActivity.curAppInfo = selectItem;
+            startActivity(new Intent(getActivity(), AppDetailActivity.class));
+            
         }
 
         /*

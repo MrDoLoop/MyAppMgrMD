@@ -30,7 +30,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+		<activity
+            android:name="com.doloop.www.myappmgr.material.AppDetailActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustNothing" >
+        </activity>
+        
         <receiver android:name="com.doloop.www.myappmgr.material.AppUpdateStaticReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED" />

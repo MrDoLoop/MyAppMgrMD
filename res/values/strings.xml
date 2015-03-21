@@ -62,4 +62,12 @@
     <string name="go_up">UP</string>
 	<string name="folder_name_exists">Name Exists</string>
 	<string name="not_null">Not null</string>
+	
+	<string name="pkg_name">Package Name</string>
+	<string name="version">Version</string>
+	<string name="apk_info">APK</string>
+	<string name="last_updated_time">Last Updated Time</string>
+	<string name="activity">Activity</string>
+	<string name="componement">Componement</string>
+	
 </resources>

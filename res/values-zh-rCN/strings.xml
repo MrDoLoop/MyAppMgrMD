@@ -62,4 +62,10 @@
     <string name="go_up">向上</string>
     <string name="folder_name_exists">名字已存在</string>
 	<string name="not_null">不能为空</string>
+	<string name="pkg_name">包信息</string>
+	<string name="version">版本信息</string>
+	<string name="apk_info">APK信息</string>
+	<string name="last_updated_time">最后修改时间</string>
+	<string name="activity">启动Activity</string>
+	<string name="componement">组件</string>
 </resources>
