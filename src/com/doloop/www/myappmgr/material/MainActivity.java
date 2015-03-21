@@ -504,6 +504,12 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
         }
         return mSnackbar;
     }
+    
+    public static void dismissSnackbar() {
+        if(mSnackbar != null){
+            mSnackbar.dismiss();
+        }
+    }
 
     private void registerReceivers() {
         registerReceiver(mAppUpdateReceiver, AppIntentFilter);
