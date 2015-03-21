@@ -10,7 +10,18 @@
         <attr name="cpv_animAutostart" format="boolean" />
         <attr name="cpv_animSteps" format="integer" />
     </declare-styleable> -->
-    
+     <declare-styleable name="FilterMenuLayout">
+        <attr name="primaryColor" format="color|reference"/>
+        <attr name="primaryDarkColor" format="color|reference"/>
+        <attr name="expandedRadius" format="dimension"/>
+        <attr name="collapsedRadius" format="dimension"/>
+        <attr name="centerLeft" format="dimension"/>
+        <attr name="centerRight" format="dimension"/>
+        <attr name="centerTop" format="dimension"/>
+        <attr name="menu_line_width" format="dimension"/>
+        <attr name="centerBottom" format="dimension"/>
+        <attr name="sweepAngle" format="integer"/>
+    </declare-styleable>
     <declare-styleable name="MenuItem2Rows">
         <attr name="iconSrc" format="integer" />
         <attr name="firstRowTxt" format="string" />
