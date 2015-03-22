@@ -44,6 +44,7 @@ public class AppDetailActivity extends BaseActivity implements ObservableScrollV
     private LinearLayout rowContainer;
     private ObservableScrollView scrollView;
     private View headerView;
+    private View headerImgView;
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
@@ -65,7 +66,7 @@ public class AppDetailActivity extends BaseActivity implements ObservableScrollV
             tintManager.setStatusBarTintResource(R.color.primary);
             tintManager.setStatusBarAlpha(0.5f);
             
-            View headerImgView = findViewById(R.id.header_image);
+            headerImgView = findViewById(R.id.header_image);
             int newHeight = headerImgView.getLayoutParams().height + config.getStatusBarHeight();
             headerImgView.getLayoutParams().height = newHeight;
             headerImgView.requestLayout();
@@ -238,6 +239,8 @@ public class AppDetailActivity extends BaseActivity implements ObservableScrollV
     public void onScrollChanged(int scrollY, boolean firstScroll, boolean dragging) {
         // TODO Auto-generated method stub
         MainActivity.dismissSnackbar();
+        
+        //ViewHelper.setTranslationY(headerImgView, scrollY / 2);
         ViewHelper.setTranslationY(headerView, scrollY / 2);
     }
 
