@@ -211,6 +211,8 @@ public class FilterMenuLayout extends ViewGroup{
     @SuppressLint("NewApi")
     public void setExpandProgress(float progress) {
         this.expandProgress = progress;
+        
+        //改变透明度
         primaryPaint.setAlpha(Math.min(255, (int) (progress * 255)));
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
