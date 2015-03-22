@@ -53,7 +53,10 @@ import android.support.v4.app.DialogFragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.KeyCharacterMap;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 
@@ -62,6 +65,27 @@ import com.doloop.www.myappmgr.material.fragments.SortTypeDialogFragment;
 import com.doloop.www.myappmgrmaterial.R;
 
 public class Utils {
+    
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+    public static boolean hasNavBar(Context context) {
+        
+        if(android.os.Build.BRAND.toLowerCase(Locale.getDefault()).contains("meizu") || Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH )
+        {
+            return false;
+        }
+        else{
+            //https://stackoverflow.com/questions/16092431/check-for-navigation-bar/23181183#23181183
+            Resources resources = context.getResources();
+            int id = resources.getIdentifier("config_showNavigationBar", "bool", "android");
+            if (id > 0) {
+                return resources.getBoolean(id);
+            } else {    // Check for keys
+                boolean hasMenuKey = ViewConfiguration.get(context).hasPermanentMenuKey();
+                boolean hasBackKey = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_BACK);
+                return !hasMenuKey && !hasBackKey;
+            }
+        }
+    }
     
     public static boolean isSdcardSpaceEnough(long requiredSpace){
         if(requiredSpace < getSdFreeSpaceRawSize()){
