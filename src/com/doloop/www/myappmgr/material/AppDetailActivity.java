@@ -5,7 +5,9 @@ import java.util.Date;
 import android.annotation.TargetApi;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.pm.ResolveInfo;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -128,6 +130,13 @@ public class AppDetailActivity extends BaseActivity implements ObservableScrollV
             .build();
         
         if (curAppInfo != null) {
+            
+            Intent intent = new Intent();
+            intent.setPackage(curAppInfo.packageName);
+            intent.addCategory(Intent.CATEGORY_LAUNCHER);
+            ResolveInfo appResolveInfo = getPackageManager().resolveActivity(intent, 0);
+            
+            
             TextView appName = (TextView) findViewById(R.id.app_name);
             appName.setText(curAppInfo.appName);
             ImageView appIcon = (ImageView) findViewById(R.id.app_icon);
@@ -148,14 +157,20 @@ public class AppDetailActivity extends BaseActivity implements ObservableScrollV
             fillRow(view, getString(R.string.last_updated_time), Utils.formatTimeDisplayFull(new Date(curAppInfo.lastModifiedRawTime)));
 
             view = rowContainer.findViewById(R.id.row_activity);
-            fillRow(view, getString(R.string.activity), "");
+            fillRow(view, getString(R.string.activity), appResolveInfo.activityInfo.name);
 
             view = rowContainer.findViewById(R.id.row_componement);
-            Intent intent = getPackageManager().getLaunchIntentForPackage(curAppInfo.packageName);
             String componementStr = "";
-            if(intent != null && intent.getComponent() != null){
-                componementStr = intent.getComponent().toShortString();
+            ComponentName componentName = new ComponentName(appResolveInfo.activityInfo.applicationInfo.packageName, appResolveInfo.activityInfo.name);
+            if(componentName != null){
+                componementStr = componentName.toString();
             }
+            
+           /*Intent intent2 = getPackageManager().getLaunchIntentForPackage(curAppInfo.packageName);
+            
+            if(intent2 != null && intent2.getComponent() != null){
+                componementStr = intent2.getComponent().toShortString();
+            }*/
             fillRow(view, getString(R.string.componement), componementStr);
         }
     }
