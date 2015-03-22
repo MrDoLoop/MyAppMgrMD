@@ -6,6 +6,7 @@ import java.util.TreeMap;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
@@ -30,6 +31,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.doloop.www.myappmgr.material.AppDetailActivity;
 import com.doloop.www.myappmgr.material.MainActivity;
 import com.doloop.www.myappmgr.material.adapters.SysAppListAdapter;
 import com.doloop.www.myappmgr.material.adapters.SysAppListAdapter.SysAppListDataSetChangedListener;
@@ -341,7 +343,7 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
                     mAdapter.toggleSelection(position, true);
                     updateActionModeTitle();
                 } else {
-                    String toastMsg =
+                   /* String toastMsg =
                             item.appinfo.appName + " \n" + item.appinfo.packageName + " \n" + item.appinfo.apkFilePath;
                     MainActivity.T(toastMsg);
                     // ¹ö¶¯text
@@ -349,7 +351,10 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
                     if (appVersion.isSelected()) {
                         appVersion.setSelected(false);
                     }
-                    appVersion.setSelected(true);
+                    appVersion.setSelected(true);*/
+                    
+                    AppDetailActivity.curAppInfo = item.appinfo;
+                    startActivity(new Intent(getActivity(), AppDetailActivity.class));
                 }
             }
         } else {

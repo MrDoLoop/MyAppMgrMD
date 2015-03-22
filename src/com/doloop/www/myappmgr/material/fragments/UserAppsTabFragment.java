@@ -522,15 +522,15 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
             mAdapter.toggleSelection(position, true);
             updateActionModeTitle();
         } else {
-            final AppInfo selectItem = mAdapter.getItem(position);
-            mActionSlideExpandableListView.collapse(true);
+            AppInfo selectItem = mAdapter.getItem(position);
+            //mActionSlideExpandableListView.collapse(true);
             // ¹ö¶¯text
-            TextView appVersion = (TextView) v.findViewById(R.id.app_version);
+            /*TextView appVersion = (TextView) v.findViewById(R.id.app_version);
             if (appVersion.isSelected()) {
                 appVersion.setSelected(false);
             }
             appVersion.setSelected(true);
-            MainActivity.T(selectItem.apkFilePath);
+            MainActivity.T(selectItem.apkFilePath);*/
             
             AppDetailActivity.curAppInfo = selectItem;
             startActivity(new Intent(getActivity(), AppDetailActivity.class));
