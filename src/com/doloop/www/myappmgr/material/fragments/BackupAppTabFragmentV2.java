@@ -526,9 +526,9 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
                     mAdapter.removeItemAtPosition(position);
                     ViewHelper.setAlpha(view, 1f);
                 }
-            });
+            });*/
             
-            if(deleteAniIsRunning){
+        /*if(deleteAniIsRunning){
                 return;
             } 
             
