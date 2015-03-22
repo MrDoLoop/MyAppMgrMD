@@ -6,35 +6,44 @@ import android.annotation.TargetApi;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.UnderlineSpan;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.filtermenu.FilterMenu;
 import com.doloop.www.myappmgr.material.filtermenu.FilterMenuLayout;
+import com.doloop.www.myappmgr.material.utils.ScrimUtil;
 import com.doloop.www.myappmgr.material.utils.Utils;
+import com.doloop.www.myappmgr.material.widgets.ObservableScrollView;
+import com.doloop.www.myappmgr.material.widgets.ObservableScrollViewCallbacks;
+import com.doloop.www.myappmgr.material.widgets.ScrollState;
 import com.doloop.www.myappmgrmaterial.R;
+import com.nineoldandroids.view.ViewHelper;
 import com.nispok.snackbar.Snackbar;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.readystatesoftware.systembartint.SystemBarTintManager.SystemBarConfig;
 
-public class AppDetailActivity extends BaseActivity {
+public class AppDetailActivity extends BaseActivity implements ObservableScrollViewCallbacks {
 
     public static AppInfo curAppInfo;
     private LinearLayout rowContainer;
-    private ScrollView scrollView;
+    private ObservableScrollView scrollView;
+    private View headerView;
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
@@ -70,7 +79,16 @@ public class AppDetailActivity extends BaseActivity {
             View drawerHolder = findViewById(R.id.drawer_content_holder);
             drawerHolder.setPadding(0, 0, 0, config.getNavigationBarHeight());*/
         }
+        scrollView = (ObservableScrollView) findViewById(R.id.root_scroll_view);
+        scrollView.setScrollViewCallbacks(this);
+        headerView = findViewById(R.id.header);
         
+        Drawable shadow = ScrimUtil.makeCubicGradientScrimDrawable(
+                //Color.parseColor("#7d000000"),
+                Color.GRAY,//"#55000000"
+                8, //½¥±ä²ãÊý
+                Gravity.BOTTOM);
+        this.findViewById(R.id.shadow).setBackgroundDrawable(shadow);
         
         // Row Container
         rowContainer = (LinearLayout) findViewById(R.id.row_container);
@@ -148,7 +166,10 @@ public class AppDetailActivity extends BaseActivity {
         titleView.setText(title);
 
         TextView descriptionView = (TextView) view.findViewById(R.id.description);
-        descriptionView.setText(description);
+        if(!TextUtils.isEmpty(description)){
+            descriptionView.setText(description);
+        }
+        
         view.setOnLongClickListener(new View.OnLongClickListener() {
             @SuppressWarnings("deprecation")
             @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -206,6 +227,24 @@ public class AppDetailActivity extends BaseActivity {
             }
         });
        
+    }
+
+    @Override
+    public void onScrollChanged(int scrollY, boolean firstScroll, boolean dragging) {
+        // TODO Auto-generated method stub
+        ViewHelper.setTranslationY(headerView, scrollY / 2);
+    }
+
+    @Override
+    public void onDownMotionEvent() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void onUpOrCancelMotionEvent(ScrollState scrollState) {
+        // TODO Auto-generated method stub
+        
     }
 
 }
