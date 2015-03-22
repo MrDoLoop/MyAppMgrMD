@@ -65,6 +65,11 @@ public class AppDetailActivity extends BaseActivity implements ObservableScrollV
             tintManager.setStatusBarTintResource(R.color.primary);
             tintManager.setStatusBarAlpha(0.5f);
             
+            View headerImgView = findViewById(R.id.header_image);
+            int newHeight = headerImgView.getLayoutParams().height + config.getStatusBarHeight();
+            headerImgView.getLayoutParams().height = newHeight;
+            headerImgView.requestLayout();
+            
             View rootView = findViewById(R.id.content_root);
             if(hasNavBar){
                 rootView.setPadding(0, config.getStatusBarHeight(), 0, config.getNavigationBarHeight());
@@ -74,7 +79,7 @@ public class AppDetailActivity extends BaseActivity implements ObservableScrollV
             }
            
             //´¦Àíµ×±ßµ¼º½À¸
-            /*tintManager.setNavigationBarTintEnabled(true);
+           /* tintManager.setNavigationBarTintEnabled(true);
             tintManager.setNavigationBarTintResource(R.color.transparent);
             View drawerHolder = findViewById(R.id.drawer_content_holder);
             drawerHolder.setPadding(0, 0, 0, config.getNavigationBarHeight());*/
@@ -232,6 +237,7 @@ public class AppDetailActivity extends BaseActivity implements ObservableScrollV
     @Override
     public void onScrollChanged(int scrollY, boolean firstScroll, boolean dragging) {
         // TODO Auto-generated method stub
+        MainActivity.dismissSnackbar();
         ViewHelper.setTranslationY(headerView, scrollY / 2);
     }
 
