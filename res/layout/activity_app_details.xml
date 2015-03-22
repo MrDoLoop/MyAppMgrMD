@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/windows_bg"
     android:fadingEdge="none"
+    android:scrollbars="none"
     android:fadingEdgeLength="0dp" >
 
     <FrameLayout
