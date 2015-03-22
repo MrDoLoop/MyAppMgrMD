@@ -45,7 +45,7 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="4dp"
             android:maxLines="20"
-            android:text="22222"
+            android:text="@string/none_info"
             android:textSize="15sp" >
         </TextView>
     </LinearLayout>
