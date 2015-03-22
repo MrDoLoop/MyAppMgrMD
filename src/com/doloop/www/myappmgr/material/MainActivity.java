@@ -35,7 +35,6 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.SearchView;
@@ -100,7 +99,7 @@ import com.readystatesoftware.systembartint.SystemBarTintManager.SystemBarConfig
 
 import de.greenrobot.event.EventBus;
 
-public class MainActivity extends ActionBarActivity implements // UserAppListFilterResultListener,
+public class MainActivity extends BaseActivity implements // UserAppListFilterResultListener,
         UserAppListDataSetChangedListener, SysAppListDataSetChangedListener, 
         SortTypeListItemClickListener,//BackupAppListDataSetChangedListener,
         BackupAppListDataSetChangedListener {
@@ -178,6 +177,7 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
             window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
                     WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
+            boolean hasNavBar = Utils.hasNavBar(this);
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
             SystemBarConfig config = tintManager.getConfig();
             //处理状态栏
@@ -185,14 +185,21 @@ public class MainActivity extends ActionBarActivity implements // UserAppListFil
             tintManager.setStatusBarTintResource(R.color.transparent);
             tintManager.setStatusBarAlpha(0.5f);
             
-
             View contHolder = findViewById(R.id.content_linear);
-            contHolder.setPadding(0, config.getStatusBarHeight(), 0, config.getNavigationBarHeight());
+            if(hasNavBar){
+                contHolder.setPadding(0, config.getStatusBarHeight(), 0, config.getNavigationBarHeight());
+            }
+            else{
+                contHolder.setPadding(0, config.getStatusBarHeight(), 0, 0);
+            }
+            
             //处理底边导航栏
-            tintManager.setNavigationBarTintEnabled(true);
-            tintManager.setNavigationBarTintResource(R.color.transparent);
-            View drawerHolder = findViewById(R.id.drawer_content_holder);
-            drawerHolder.setPadding(0, 0, 0, config.getNavigationBarHeight());
+            if(hasNavBar){
+                tintManager.setNavigationBarTintEnabled(true);
+                tintManager.setNavigationBarTintResource(R.color.transparent);
+                View drawerHolder = findViewById(R.id.drawer_content_holder);
+                drawerHolder.setPadding(0, 0, 0, config.getNavigationBarHeight());
+            }
             // contLinear.setPadding(0, config.getPixelInsetTop(true), 0, config.getPixelInsetBottom());
             // statusBarHolder.getLayoutParams().height = config.getStatusBarHeight();
             // statusBarHolder.setVisibility(View.VISIBLE);

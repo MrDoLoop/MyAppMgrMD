@@ -1,15 +1,24 @@
 package com.doloop.www.myappmgr.material;
 
+import java.util.Date;
+
 import android.annotation.TargetApi;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.UnderlineSpan;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.doloop.www.myappmgr.material.dao.AppInfo;
@@ -17,13 +26,15 @@ import com.doloop.www.myappmgr.material.filtermenu.FilterMenu;
 import com.doloop.www.myappmgr.material.filtermenu.FilterMenuLayout;
 import com.doloop.www.myappmgr.material.utils.Utils;
 import com.doloop.www.myappmgrmaterial.R;
+import com.nispok.snackbar.Snackbar;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.readystatesoftware.systembartint.SystemBarTintManager.SystemBarConfig;
 
-public class AppDetailActivity extends ActionBarActivity {
+public class AppDetailActivity extends BaseActivity {
 
     public static AppInfo curAppInfo;
     private LinearLayout rowContainer;
+    private ScrollView scrollView;
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
@@ -33,7 +44,7 @@ public class AppDetailActivity extends ActionBarActivity {
 
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
             // setTranslucentStatus(true);
-
+            boolean hasNavBar = Utils.hasNavBar(this);
             Window window = this.getWindow();
             window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
                     WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -42,11 +53,17 @@ public class AppDetailActivity extends ActionBarActivity {
             SystemBarConfig config = tintManager.getConfig();
             //处理状态栏
             tintManager.setStatusBarTintEnabled(true);
-            tintManager.setStatusBarTintResource(R.color.transparent);
+            tintManager.setStatusBarTintResource(R.color.primary);
             tintManager.setStatusBarAlpha(0.5f);
             
-            View rootView = findViewById(R.id.root_scroll_view);
-            rootView.setPadding(0, config.getStatusBarHeight(), 0, config.getNavigationBarHeight());
+            View rootView = findViewById(R.id.content_root);
+            if(hasNavBar){
+                rootView.setPadding(0, config.getStatusBarHeight(), 0, config.getNavigationBarHeight());
+            }
+            else{
+                rootView.setPadding(0, config.getStatusBarHeight(), 0, 0);
+            }
+           
             //处理底边导航栏
             /*tintManager.setNavigationBarTintEnabled(true);
             tintManager.setNavigationBarTintResource(R.color.transparent);
@@ -104,7 +121,7 @@ public class AppDetailActivity extends ActionBarActivity {
                     curAppInfo.apkFilePath + "\n" + Utils.formatFileSize(curAppInfo.appRawSize));
 
             view = rowContainer.findViewById(R.id.row_time_info);
-            fillRow(view, getString(R.string.last_updated_time), curAppInfo.lastModifiedTimeStr);
+            fillRow(view, getString(R.string.last_updated_time), Utils.formatTimeDisplayFull(new Date(curAppInfo.lastModifiedRawTime)));
 
             view = rowContainer.findViewById(R.id.row_activity);
             fillRow(view, getString(R.string.activity), "");
@@ -132,6 +149,63 @@ public class AppDetailActivity extends ActionBarActivity {
 
         TextView descriptionView = (TextView) view.findViewById(R.id.description);
         descriptionView.setText(description);
+        view.setOnLongClickListener(new View.OnLongClickListener() {
+            @SuppressWarnings("deprecation")
+            @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+            @Override
+            public boolean onLongClick(View v) {
+                // TODO Auto-generated method stub     
+                String copiedStr = title+":"+description;
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB){
+                    ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                    ClipData clip = ClipData.newPlainText(title, copiedStr);
+                    clipboard.setPrimaryClip(clip);
+                }
+                else{
+                    android.text.ClipboardManager clipboardManager = (android.text.ClipboardManager)getSystemService(CLIPBOARD_SERVICE);  
+                    clipboardManager.setText(copiedStr); 
+                }
+                SpannableString spanString = new SpannableString(title + " " +getString(R.string.copied));
+                spanString.setSpan(new UnderlineSpan(), 0, title.length(),
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                spanString.setSpan(
+                        new ForegroundColorSpan(getResources().getColor(
+                                R.color.theme_blue_light)), 0, title.length(),
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                
+                
+                Snackbar mSnackbar = MainActivity.getSnackbar(false);
+                boolean mShowAniSnackBar = true;
+                boolean mAniText = false;
+                if(mSnackbar != null){
+                    if(mSnackbar.isShowing()){
+                        mShowAniSnackBar = false;
+                        if(!mSnackbar.getText().toString().equalsIgnoreCase(spanString.toString())){
+                            mAniText = true;
+                        }
+                        
+                        mSnackbar.dismissAnimation(false);
+                        mSnackbar.dismiss();
+                    }
+                    mSnackbar = MainActivity.getSnackbar(true);
+                }
+
+                mSnackbar.text(spanString) // text to display
+                .animationText(mAniText)
+                .swipeToDismiss(false)
+                .showAnimation(mShowAniSnackBar)
+                .dismissAnimation(true)
+                .show(AppDetailActivity.this);
+                
+//                Snackbar.with(getApplicationContext()).dismiss();
+//                Snackbar.with(getApplicationContext()) // context
+//                        .text(spanString) // text to display
+//                        .animationText(true)
+//                        .show(AppDetailActivity.this);
+                return true;
+            }
+        });
+       
     }
 
 }
