@@ -41,11 +41,17 @@
                 <TextView
                     android:id="@+id/app_name"
                     android:layout_width="wrap_content"
+                    android:gravity="center"
+                    android:minWidth="48dp"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:paddingRight="3dp"
                     android:singleLine="true"
                     android:text="APP NAME"
+                    android:shadowColor="#000000"
+                    android:shadowDx="3"
+                    android:shadowDy="3"
+                    android:shadowRadius="1"
                     android:textColor="@color/white"
                     android:textSize="16sp"
                     android:textStyle="bold" />
