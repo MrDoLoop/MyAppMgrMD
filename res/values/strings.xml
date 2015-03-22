@@ -70,4 +70,5 @@
 	<string name="activity">Activity</string>
 	<string name="componement">Componement</string>
 	<string name="copied">Copied</string>
+	<string name="none_info">None</string>
 </resources>
