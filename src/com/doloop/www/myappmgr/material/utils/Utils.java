@@ -1094,11 +1094,65 @@ public class Utils {
         return dateformat;
     }
     
+    @SuppressLint("SimpleDateFormat")
+    public static SimpleDateFormat getLocalDataDigitalDisplayFormatFull() {
+        /**
+         * it dd/MM/yy ch yy-M-d eng M/d/yy
+         */
+        SimpleDateFormat dateformat = new SimpleDateFormat(); // new
+                                                              // SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String datePatternStr = dateformat.toLocalizedPattern().split(" ")[0];
+        String daySection = "";
+        String MonthSection = "";
+        String YearSection = "";
+        for (int i = 0; i < datePatternStr.length(); i++) {
+            if (datePatternStr.charAt(i) == 'd') {
+                daySection += "d";
+            } else if (datePatternStr.charAt(i) == 'M') {
+                MonthSection += "M";
+            } else if (datePatternStr.charAt(i) == 'y') {
+                YearSection += "y";
+            }
+        }
+
+        if (!daySection.equals("dd")) {
+            datePatternStr = datePatternStr.replace(daySection, "dd");
+        }
+
+        if (!MonthSection.equals("MM")) {
+            datePatternStr = datePatternStr.replace(MonthSection, "MM");
+        }
+
+        if (!YearSection.equals("yyyy")) {
+            datePatternStr = datePatternStr.replace(YearSection, "yyyy");
+        }
+        datePatternStr += " hh:mm:ss";
+        dateformat.applyPattern(datePatternStr);
+
+        return dateformat;
+    }
     
+    
+    /**
+     * 只有年月日
+     * @param date
+     * @return
+     */
     public static String formatTimeDisplay(Date date){
         SimpleDateFormat dateFormat =  getLocalDataDigitalDisplayFormat();
         return dateFormat.format(date);
     }
+    
+    /**
+     * 年月日时分秒
+     * @param date
+     * @return
+     */
+    public static String formatTimeDisplayFull(Date date){
+        SimpleDateFormat dateFormat =  getLocalDataDigitalDisplayFormatFull();
+        return dateFormat.format(date);
+    }
+    
 
     public static String formatFileSize(long length) {
         String result = null;
