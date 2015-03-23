@@ -31,6 +31,7 @@ import com.doloop.www.myappmgr.material.filtermenu.FilterMenu;
 import com.doloop.www.myappmgr.material.filtermenu.FilterMenuLayout;
 import com.doloop.www.myappmgr.material.utils.ScrimUtil;
 import com.doloop.www.myappmgr.material.utils.Utils;
+import com.doloop.www.myappmgr.material.widgets.CircularRevealView;
 import com.doloop.www.myappmgr.material.widgets.ObservableScrollView;
 import com.doloop.www.myappmgr.material.widgets.ObservableScrollViewCallbacks;
 import com.doloop.www.myappmgr.material.widgets.ScrollState;
@@ -47,6 +48,8 @@ public class AppDetailActivity extends BaseActivity implements ObservableScrollV
     private ObservableScrollView scrollView;
     private View headerView;
     private View headerImgView;
+    private CircularRevealView revealView;
+    public static final String ARG_REVEAL_START_LOCATION = "ARG_REVEAL_START_LOCATION";
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
@@ -63,86 +66,121 @@ public class AppDetailActivity extends BaseActivity implements ObservableScrollV
 
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
             SystemBarConfig config = tintManager.getConfig();
-            //处理状态栏
+            // 处理状态栏
             tintManager.setStatusBarTintEnabled(true);
             tintManager.setStatusBarTintResource(R.color.primary);
             tintManager.setStatusBarAlpha(0.5f);
-            
+
             headerImgView = findViewById(R.id.header_image);
             int newHeight = headerImgView.getLayoutParams().height + config.getStatusBarHeight();
             headerImgView.getLayoutParams().height = newHeight;
             headerImgView.requestLayout();
-            
+
             View rootView = findViewById(R.id.content_root);
-            if(hasNavBar){
+            if (hasNavBar) {
                 rootView.setPadding(0, config.getStatusBarHeight(), 0, config.getNavigationBarHeight());
-            }
-            else{
+            } else {
                 rootView.setPadding(0, config.getStatusBarHeight(), 0, 0);
             }
-           
-            //处理底边导航栏
-           /* tintManager.setNavigationBarTintEnabled(true);
-            tintManager.setNavigationBarTintResource(R.color.transparent);
-            View drawerHolder = findViewById(R.id.drawer_content_holder);
-            drawerHolder.setPadding(0, 0, 0, config.getNavigationBarHeight());*/
+
+            // 处理底边导航栏
+            tintManager.setNavigationBarTintEnabled(true);
+            tintManager.setNavigationBarTintResource(R.color.primary); 
         }
+
         scrollView = (ObservableScrollView) findViewById(R.id.root_scroll_view);
         scrollView.setScrollViewCallbacks(this);
         headerView = findViewById(R.id.header);
+
+        final int[] startingLocation = getIntent().getIntArrayExtra(ARG_REVEAL_START_LOCATION);
+        revealView = (CircularRevealView) findViewById(R.id.reveal);
+        revealView.setVisibility(View.GONE);
+        /*revealView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                int color = Color.parseColor("#00bcd4"); 
+                revealView.reveal(startingLocation[0], startingLocation[1], color, headerView.getHeight() / 2, 440, new AnimatorListenerAdapter(){
+                    //
+                  
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        // TODO Auto-generated method stub
+                        
+                        revealView.hide(startingLocation[0], startingLocation[1], Color.TRANSPARENT, null);
+                        //revealView.setBackgroundColor(Color.TRANSPARENT);
+                    }});
+                return false;
+            }
+        });*/
+        /*final int color = Color.parseColor("#00bcd4"); 
+        revealView.reveal(startingLocation[0], startingLocation[1], color, headerView.getHeight() / 2, 440, new AnimatorListenerAdapter(){
+            //
+          
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                // TODO Auto-generated method stub
+                
+                revealView.hide(startingLocation[0], startingLocation[1], Color.TRANSPARENT, null);
+                //revealView.setBackgroundColor(Color.TRANSPARENT);
+            }});*/
         
+        
+        /*
+         * Handler handler=new Handler(); handler.postDelayed(new Runnable() {
+         * 
+         * @Override public void run() { final Point p = getLocationInView(revealView, headerView); int color =
+         * Color.parseColor("#00bcd4"); revealView.reveal(p.x, p.y, color, headerView.getHeight() / 2, 440, null); } },
+         * 2000);
+         */
+
         Drawable shadow = ScrimUtil.makeCubicGradientScrimDrawable(
-                //Color.parseColor("#7d000000"),
-                Color.GRAY,//"#55000000"
-                8, //渐变层数
+        // Color.parseColor("#7d000000"),
+                Color.GRAY,// "#55000000"
+                8, // 渐变层数
                 Gravity.BOTTOM);
         this.findViewById(R.id.shadow).setBackgroundDrawable(shadow);
-        
+
         // Row Container
         rowContainer = (LinearLayout) findViewById(R.id.row_container);
         FilterMenuLayout menuLayout = (FilterMenuLayout) findViewById(R.id.menu);
-        new FilterMenu.Builder(this)
-            .addItem(R.drawable.ic_action_add)
-            .addItem(R.drawable.ic_action_clock)
-            .addItem(R.drawable.ic_action_clock)
-            .addItem(R.drawable.ic_action_clock)
-            .addItem(R.drawable.ic_action_clock)
-            .attach(menuLayout)
-            .withListener(new FilterMenu.OnMenuChangeListener() {
-                    
+        new FilterMenu.Builder(this).addItem(R.drawable.ic_action_add).addItem(R.drawable.ic_action_clock)
+                .addItem(R.drawable.ic_action_clock).addItem(R.drawable.ic_action_clock)
+                .addItem(R.drawable.ic_action_clock).attach(menuLayout)
+                .withListener(new FilterMenu.OnMenuChangeListener() {
+
                     @Override
                     public void onMenuItemClick(View view, int position) {
-                        MainActivity.T("菜单 "+position);
+                        MainActivity.T("菜单 " + position);
                     }
 
-                    
                     @Override
                     public void onMenuCollapse() {
 
                     }
 
-                    
                     @Override
                     public void onMenuExpand() {
 
                     }
-                })
-            .build();
-        
+                }).build();
+
         if (curAppInfo != null) {
-            
+
             Intent intent = new Intent();
             intent.setPackage(curAppInfo.packageName);
             intent.addCategory(Intent.CATEGORY_LAUNCHER);
-            ResolveInfo appResolveInfo = getPackageManager().resolveActivity(intent, 0);
-            
-            
+            ResolveInfo appResolveInfo = null;
+            try {
+                appResolveInfo = getPackageManager().resolveActivity(intent, 0);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             TextView appName = (TextView) findViewById(R.id.app_name);
             appName.setText(curAppInfo.appName);
             ImageView appIcon = (ImageView) findViewById(R.id.app_icon);
             appIcon.setImageDrawable(Utils.getIconDrawable(this, curAppInfo.packageName));
-            
-            
+
             View view = rowContainer.findViewById(R.id.row_pkgname);
             fillRow(view, getString(R.string.pkg_name), curAppInfo.packageName);
 
@@ -154,24 +192,43 @@ public class AppDetailActivity extends BaseActivity implements ObservableScrollV
                     curAppInfo.apkFilePath + "\n" + Utils.formatFileSize(curAppInfo.appRawSize));
 
             view = rowContainer.findViewById(R.id.row_time_info);
-            fillRow(view, getString(R.string.last_updated_time), Utils.formatTimeDisplayFull(new Date(curAppInfo.lastModifiedRawTime)));
+            fillRow(view, getString(R.string.last_updated_time),
+                    Utils.formatTimeDisplayFull(new Date(curAppInfo.lastModifiedRawTime)));
 
+            
             view = rowContainer.findViewById(R.id.row_activity);
-            fillRow(view, getString(R.string.activity), appResolveInfo.activityInfo.name);
+            if(appResolveInfo != null){
+                fillRow(view, getString(R.string.activity), appResolveInfo.activityInfo.name); 
+            }
+            else{
+                fillRow(view, getString(R.string.activity), ""); 
+            }
 
-            view = rowContainer.findViewById(R.id.row_componement);
-            String componementStr = "";
-            ComponentName componentName = new ComponentName(appResolveInfo.activityInfo.applicationInfo.packageName, appResolveInfo.activityInfo.name);
-            if(componentName != null){
-                componementStr = componentName.toString();
+            view = rowContainer.findViewById(R.id.row_componement);            
+            if(appResolveInfo != null){
+                String componementStr = "";
+                ComponentName componentName =
+                        new ComponentName(appResolveInfo.activityInfo.applicationInfo.packageName,
+                                appResolveInfo.activityInfo.name);
+                if (componentName != null) {
+                    componementStr = componentName.toString();
+                }
+                fillRow(view, getString(R.string.componement), componementStr);        
+            }
+            else{
+                fillRow(view, getString(R.string.componement), ""); 
             }
             
-           /*Intent intent2 = getPackageManager().getLaunchIntentForPackage(curAppInfo.packageName);
             
-            if(intent2 != null && intent2.getComponent() != null){
-                componementStr = intent2.getComponent().toShortString();
-            }*/
-            fillRow(view, getString(R.string.componement), componementStr);
+           
+
+            /*
+             * Intent intent2 = getPackageManager().getLaunchIntentForPackage(curAppInfo.packageName);
+             * 
+             * if(intent2 != null && intent2.getComponent() != null){ componementStr =
+             * intent2.getComponent().toShortString(); }
+             */
+            
         }
     }
 
@@ -187,88 +244,81 @@ public class AppDetailActivity extends BaseActivity implements ObservableScrollV
         titleView.setText(title);
 
         TextView descriptionView = (TextView) view.findViewById(R.id.description);
-        if(!TextUtils.isEmpty(description)){
+        if (!TextUtils.isEmpty(description)) {
             descriptionView.setText(description);
         }
-        
+
         view.setOnLongClickListener(new View.OnLongClickListener() {
             @SuppressWarnings("deprecation")
             @TargetApi(Build.VERSION_CODES.HONEYCOMB)
             @Override
             public boolean onLongClick(View v) {
-                // TODO Auto-generated method stub     
-                String copiedStr = title+":"+description;
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB){
+                // TODO Auto-generated method stub
+                String copiedStr = title + ":" + description;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
                     ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
                     ClipData clip = ClipData.newPlainText(title, copiedStr);
                     clipboard.setPrimaryClip(clip);
+                } else {
+                    android.text.ClipboardManager clipboardManager =
+                            (android.text.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                    clipboardManager.setText(copiedStr);
                 }
-                else{
-                    android.text.ClipboardManager clipboardManager = (android.text.ClipboardManager)getSystemService(CLIPBOARD_SERVICE);  
-                    clipboardManager.setText(copiedStr); 
-                }
-                SpannableString spanString = new SpannableString(title + " " +getString(R.string.copied));
-                spanString.setSpan(new UnderlineSpan(), 0, title.length(),
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                spanString.setSpan(
-                        new ForegroundColorSpan(getResources().getColor(
-                                R.color.theme_blue_light)), 0, title.length(),
-                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                
-                
+                SpannableString spanString = new SpannableString(title + " " + getString(R.string.copied));
+                spanString.setSpan(new UnderlineSpan(), 0, title.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                spanString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.theme_blue_light)), 0,
+                        title.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
                 Snackbar mSnackbar = MainActivity.getSnackbar(false);
                 boolean mShowAniSnackBar = true;
                 boolean mAniText = false;
-                if(mSnackbar != null){
-                    if(mSnackbar.isShowing()){
+                if (mSnackbar != null) {
+                    if (mSnackbar.isShowing()) {
                         mShowAniSnackBar = false;
-                        if(!mSnackbar.getText().toString().equalsIgnoreCase(spanString.toString())){
+                        if (!mSnackbar.getText().toString().equalsIgnoreCase(spanString.toString())) {
                             mAniText = true;
                         }
-                        
+
                         mSnackbar.dismissAnimation(false);
                         mSnackbar.dismiss();
                     }
                     mSnackbar = MainActivity.getSnackbar(true);
                 }
 
-                mSnackbar.text(spanString) // text to display
-                .animationText(mAniText)
-                .swipeToDismiss(false)
-                .showAnimation(mShowAniSnackBar)
-                .dismissAnimation(true)
-                .show(AppDetailActivity.this);
-                
-//                Snackbar.with(getApplicationContext()).dismiss();
-//                Snackbar.with(getApplicationContext()) // context
-//                        .text(spanString) // text to display
-//                        .animationText(true)
-//                        .show(AppDetailActivity.this);
+                mSnackbar.text(spanString)
+                        // text to display
+                        .animationText(mAniText).swipeToDismiss(false).showAnimation(mShowAniSnackBar)
+                        .dismissAnimation(true).show(AppDetailActivity.this);
+
+                // Snackbar.with(getApplicationContext()).dismiss();
+                // Snackbar.with(getApplicationContext()) // context
+                // .text(spanString) // text to display
+                // .animationText(true)
+                // .show(AppDetailActivity.this);
                 return true;
             }
         });
-       
+
     }
 
     @Override
     public void onScrollChanged(int scrollY, boolean firstScroll, boolean dragging) {
         // TODO Auto-generated method stub
         MainActivity.dismissSnackbar();
-        
-        //ViewHelper.setTranslationY(headerImgView, scrollY / 2);
+
+        // ViewHelper.setTranslationY(headerImgView, scrollY / 2);
         ViewHelper.setTranslationY(headerView, scrollY / 2);
     }
 
     @Override
     public void onDownMotionEvent() {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void onUpOrCancelMotionEvent(ScrollState scrollState) {
         // TODO Auto-generated method stub
-        
-    }
 
+    }
 }
