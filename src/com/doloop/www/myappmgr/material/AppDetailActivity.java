@@ -9,9 +9,12 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -29,6 +32,7 @@ import android.widget.TextView;
 import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.filtermenu.FilterMenu;
 import com.doloop.www.myappmgr.material.filtermenu.FilterMenuLayout;
+import com.doloop.www.myappmgr.material.utils.Constants;
 import com.doloop.www.myappmgr.material.utils.ScrimUtil;
 import com.doloop.www.myappmgr.material.utils.Utils;
 import com.doloop.www.myappmgr.material.widgets.CircularRevealView;
@@ -36,27 +40,39 @@ import com.doloop.www.myappmgr.material.widgets.ObservableScrollView;
 import com.doloop.www.myappmgr.material.widgets.ObservableScrollViewCallbacks;
 import com.doloop.www.myappmgr.material.widgets.ScrollState;
 import com.doloop.www.myappmgrmaterial.R;
+import com.nineoldandroids.animation.Animator;
+import com.nineoldandroids.animation.AnimatorListenerAdapter;
+import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.view.ViewHelper;
+import com.nineoldandroids.view.ViewPropertyAnimator;
 import com.nispok.snackbar.Snackbar;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.readystatesoftware.systembartint.SystemBarTintManager.SystemBarConfig;
 
+//http://frogermcs.github.io/InstaMaterial-concept-part-6-user-profile/
 public class AppDetailActivity extends BaseActivity implements ObservableScrollViewCallbacks {
 
     public static AppInfo curAppInfo;
     private LinearLayout rowContainer;
-    private ObservableScrollView scrollView;
+    private ObservableScrollView rootScrollView;
     private View headerView;
     private View headerImgView;
     private CircularRevealView revealView;
-    public static final String ARG_REVEAL_START_LOCATION = "ARG_REVEAL_START_LOCATION";
+    private View contentRootView;
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_details);
-
+        headerImgView = findViewById(R.id.header_image);
+        contentRootView = findViewById(R.id.content_root);
+        rootScrollView = (ObservableScrollView) findViewById(R.id.root_scroll_view);
+        rootScrollView.setBackgroundColor(Color.TRANSPARENT);
+        
+        headerImgView.setVisibility(View.INVISIBLE);
+        contentRootView.setVisibility(View.INVISIBLE);
+        
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
             // setTranslucentStatus(true);
             boolean hasNavBar = Utils.hasNavBar(this);
@@ -71,67 +87,63 @@ public class AppDetailActivity extends BaseActivity implements ObservableScrollV
             tintManager.setStatusBarTintResource(R.color.primary);
             tintManager.setStatusBarAlpha(0.5f);
 
-            headerImgView = findViewById(R.id.header_image);
+            
             int newHeight = headerImgView.getLayoutParams().height + config.getStatusBarHeight();
             headerImgView.getLayoutParams().height = newHeight;
             headerImgView.requestLayout();
 
-            View rootView = findViewById(R.id.content_root);
+            
             if (hasNavBar) {
-                rootView.setPadding(0, config.getStatusBarHeight(), 0, config.getNavigationBarHeight());
+                contentRootView.setPadding(0, config.getStatusBarHeight(), 0, config.getNavigationBarHeight());
+                tintManager.setNavigationBarTintEnabled(true);
+                tintManager.setNavigationBarTintResource(R.color.primary);
             } else {
-                rootView.setPadding(0, config.getStatusBarHeight(), 0, 0);
+                contentRootView.setPadding(0, config.getStatusBarHeight(), 0, 0);
             }
-
-            // 处理底边导航栏
-            tintManager.setNavigationBarTintEnabled(true);
-            tintManager.setNavigationBarTintResource(R.color.primary); 
         }
 
-        scrollView = (ObservableScrollView) findViewById(R.id.root_scroll_view);
-        scrollView.setScrollViewCallbacks(this);
+        rootScrollView.setScrollViewCallbacks(this);
         headerView = findViewById(R.id.header);
-
-        final int[] startingLocation = getIntent().getIntArrayExtra(ARG_REVEAL_START_LOCATION);
         revealView = (CircularRevealView) findViewById(R.id.reveal);
-        revealView.setVisibility(View.GONE);
-        /*revealView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+        
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+
             @Override
-            public boolean onPreDraw() {
-                int color = Color.parseColor("#00bcd4"); 
-                revealView.reveal(startingLocation[0], startingLocation[1], color, headerView.getHeight() / 2, 440, new AnimatorListenerAdapter(){
-                    //
-                  
+            public void run() {
+                final Point p = new Point(Utils.getScreenWidth(AppDetailActivity.this)/2, Utils.getScreenHeight(AppDetailActivity.this)/2);//Utils.getLocationInView(revealView, headerView);
+                final int color = Color.parseColor("#00bcd4");
+                revealView.reveal(p.x, p.y, color, 30, 440, new AnimatorListenerAdapter(){
+                    
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        // TODO Auto-generated method stub
+                        contentRootView.setVisibility(View.INVISIBLE);
+                        headerImgView.setVisibility(View.INVISIBLE);
+                    }
+
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         // TODO Auto-generated method stub
+                        revealView.hide(p.x, p.y, Color.TRANSPARENT, new AnimatorListenerAdapter(){
+
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                // TODO Auto-generated method stub
+                                revealView.setVisibility(View.GONE);
+                            }
+                            
+                        });
                         
-                        revealView.hide(startingLocation[0], startingLocation[1], Color.TRANSPARENT, null);
-                        //revealView.setBackgroundColor(Color.TRANSPARENT);
-                    }});
-                return false;
+                        contentRootView.setVisibility(View.VISIBLE);
+                        headerImgView.setVisibility(View.VISIBLE);
+                        rootScrollView.setBackgroundColor(getResources().getColor(R.color.windows_bg));
+                        
+                    }
+                    
+                });
             }
-        });*/
-        /*final int color = Color.parseColor("#00bcd4"); 
-        revealView.reveal(startingLocation[0], startingLocation[1], color, headerView.getHeight() / 2, 440, new AnimatorListenerAdapter(){
-            //
-          
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                // TODO Auto-generated method stub
-                
-                revealView.hide(startingLocation[0], startingLocation[1], Color.TRANSPARENT, null);
-                //revealView.setBackgroundColor(Color.TRANSPARENT);
-            }});*/
-        
-        
-        /*
-         * Handler handler=new Handler(); handler.postDelayed(new Runnable() {
-         * 
-         * @Override public void run() { final Point p = getLocationInView(revealView, headerView); int color =
-         * Color.parseColor("#00bcd4"); revealView.reveal(p.x, p.y, color, headerView.getHeight() / 2, 440, null); } },
-         * 2000);
-         */
+        }, 100);
 
         Drawable shadow = ScrimUtil.makeCubicGradientScrimDrawable(
         // Color.parseColor("#7d000000"),
@@ -150,7 +162,43 @@ public class AppDetailActivity extends BaseActivity implements ObservableScrollV
 
                     @Override
                     public void onMenuItemClick(View view, int position) {
-                        MainActivity.T("菜单 " + position);
+                        switch (position) {
+                            case 0://启动
+                                if (Constants.MY_PACKAGE_NAME.equals(curAppInfo.packageName))// 避免再次启动自己app
+                                {
+                                    MainActivity.T("You catch me!! NAN Made app");
+                                } else {
+                                    Intent intent = getPackageManager().getLaunchIntentForPackage(
+                                            curAppInfo.packageName);
+                                    if (intent != null) {
+                                        if (intent != null) {
+                                            try {
+                                                startActivity(intent);
+                                            } catch (Exception e) {
+                                                MainActivity.T(R.string.launch_fail);
+                                            }
+                                        }
+                                    } else {
+                                        MainActivity.T(R.string.launch_fail);
+                                    }
+                                }
+                                break;
+                            case 1:
+                                Utils.showInstalledAppDetails(AppDetailActivity.this, curAppInfo.packageName);
+                                break;
+                            case 2:
+                                Uri packageUri = Uri.parse("package:" + curAppInfo.packageName);
+                                Intent uninstallIntent;
+                                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                                    uninstallIntent = new Intent(Intent.ACTION_DELETE, packageUri);
+                                } else {
+                                    uninstallIntent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE, packageUri);
+                                }
+                                startActivity(uninstallIntent);
+                                break;
+                            
+                        }
+                        //MainActivity.T("菜单 " + position);
                     }
 
                     @Override
@@ -178,9 +226,44 @@ public class AppDetailActivity extends BaseActivity implements ObservableScrollV
 
             TextView appName = (TextView) findViewById(R.id.app_name);
             appName.setText(curAppInfo.appName);
-            ImageView appIcon = (ImageView) findViewById(R.id.app_icon);
+            final ImageView appIcon = (ImageView) findViewById(R.id.app_icon);
             appIcon.setImageDrawable(Utils.getIconDrawable(this, curAppInfo.packageName));
+            appIcon.setOnClickListener(new View.OnClickListener() {
+                
+                @Override
+                public void onClick(View v) {
+                    // TODO Auto-generated method stub
+                    ObjectAnimator ani = ObjectAnimator.ofFloat(appIcon, "rotationY", 0, 360).setDuration(1000);
+                    ani.addListener(new AnimatorListenerAdapter(){
 
+                        @Override
+                        public void onAnimationEnd(Animator arg0) {
+                            // TODO Auto-generated method stub
+                            appIcon.setEnabled(true);
+                        }
+
+                        @Override
+                        public void onAnimationStart(Animator arg0) {
+                            // TODO Auto-generated method stub
+                            appIcon.setEnabled(false);
+                        }} );
+                    ani.start();
+                    /*ViewPropertyAnimator.animate(appIcon).cancel();
+                    ViewPropertyAnimator.animate(appIcon).rotation(360f).setDuration(1000).setListener(new AnimatorListenerAdapter() {
+                        
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                            appIcon.setEnabled(false);
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            appIcon.setEnabled(true);
+                        }
+                    }).start();*/
+                }
+            });
+            
             View view = rowContainer.findViewById(R.id.row_pkgname);
             fillRow(view, getString(R.string.pkg_name), curAppInfo.packageName);
 
@@ -195,17 +278,15 @@ public class AppDetailActivity extends BaseActivity implements ObservableScrollV
             fillRow(view, getString(R.string.last_updated_time),
                     Utils.formatTimeDisplayFull(new Date(curAppInfo.lastModifiedRawTime)));
 
-            
             view = rowContainer.findViewById(R.id.row_activity);
-            if(appResolveInfo != null){
-                fillRow(view, getString(R.string.activity), appResolveInfo.activityInfo.name); 
-            }
-            else{
-                fillRow(view, getString(R.string.activity), ""); 
+            if (appResolveInfo != null) {
+                fillRow(view, getString(R.string.activity), appResolveInfo.activityInfo.name);
+            } else {
+                fillRow(view, getString(R.string.activity), "");
             }
 
-            view = rowContainer.findViewById(R.id.row_componement);            
-            if(appResolveInfo != null){
+            view = rowContainer.findViewById(R.id.row_componement);
+            if (appResolveInfo != null) {
                 String componementStr = "";
                 ComponentName componentName =
                         new ComponentName(appResolveInfo.activityInfo.applicationInfo.packageName,
@@ -213,22 +294,10 @@ public class AppDetailActivity extends BaseActivity implements ObservableScrollV
                 if (componentName != null) {
                     componementStr = componentName.toString();
                 }
-                fillRow(view, getString(R.string.componement), componementStr);        
+                fillRow(view, getString(R.string.componement), componementStr);
+            } else {
+                fillRow(view, getString(R.string.componement), "");
             }
-            else{
-                fillRow(view, getString(R.string.componement), ""); 
-            }
-            
-            
-           
-
-            /*
-             * Intent intent2 = getPackageManager().getLaunchIntentForPackage(curAppInfo.packageName);
-             * 
-             * if(intent2 != null && intent2.getComponent() != null){ componementStr =
-             * intent2.getComponent().toShortString(); }
-             */
-            
         }
     }
 
@@ -298,7 +367,6 @@ public class AppDetailActivity extends BaseActivity implements ObservableScrollV
                 return true;
             }
         });
-
     }
 
     @Override
