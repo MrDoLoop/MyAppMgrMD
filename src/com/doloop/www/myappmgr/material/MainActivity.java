@@ -108,7 +108,7 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
     private ActionBar mActionBar;
 
     private MyProgressDialog progDialog;
-
+    
     private ArrayList<BaseFrag> Fragmentlist;
     private static long back_pressed = 0;
 
@@ -228,8 +228,6 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
         t.commit();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-
-        // toolbar.inflateMenu(R.menu.menu_main);
         setSupportActionBar(toolbar);
 
         mActionBar = getSupportActionBar();
