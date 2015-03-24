@@ -15,7 +15,7 @@
         <!-- Status bar color -->
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <!-- Window color -->
-        <item name="android:windowBackground">@color/transparent</item><!-- @color/primary_dark -->
+        <item name="android:windowBackground">@color/primary_dark</item><!-- @color/primary_dark -->
         
         <!-- toolbar的title颜色 -->
 		<item name="android:textColorPrimary">@color/primary_text</item>
@@ -37,6 +37,10 @@
    <!--  <style name="MySearchViewStyle" parent="Widget.AppCompat.SearchView" >
         <item name="android:textCursorDrawable">@null</item>
     </style> -->
+
+	<style name="AppTheme.AppDetails" parent="AppTheme.Base">
+	    <item name="android:windowBackground">@color/transparent</item>
+	</style>
 
     <style name="MyCardViewStyle" >
         <item name="cardBackgroundColor">@color/white</item>
