@@ -25,6 +25,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -44,6 +45,7 @@ import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.AnimatorListenerAdapter;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.view.ViewHelper;
+import com.nineoldandroids.view.ViewPropertyAnimator;
 import com.nispok.snackbar.Snackbar;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.readystatesoftware.systembartint.SystemBarTintManager.SystemBarConfig;
@@ -58,19 +60,48 @@ public class AppDetailActivity extends BaseActivity implements ObservableScrollV
     private View headerImgView;
     private CircularRevealView revealView;
     private View contentRootView;
+    private View shadowView;
+    private FilterMenuLayout menuLayout;
+    private Point revalStartPosition;
+    
+    public static final String REVEAL_START_POSITION = "REVEAL_START_POSITION";
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
         setContentView(R.layout.activity_app_details);
         headerImgView = findViewById(R.id.header_image);
         contentRootView = findViewById(R.id.content_root);
         rootScrollView = (ObservableScrollView) findViewById(R.id.root_scroll_view);
         rootScrollView.setBackgroundColor(Color.TRANSPARENT);
         
+        //默认是从屏幕中心开始
+        int[] pos = getIntent().getIntArrayExtra(REVEAL_START_POSITION);
+        if(pos != null){
+            revalStartPosition = new Point(pos[0], pos[1]);
+        }
+        else{
+            revalStartPosition = new Point(Utils.getScreenWidth(AppDetailActivity.this)/2, Utils.getScreenHeight(AppDetailActivity.this)/2);
+        }
+        
+
+                
         headerImgView.setVisibility(View.INVISIBLE);
         contentRootView.setVisibility(View.INVISIBLE);
+        Drawable shadow = ScrimUtil.makeCubicGradientScrimDrawable(
+        // Color.parseColor("#7d000000"),
+                Color.GRAY,// "#55000000"
+                8, // 渐变层数
+                Gravity.BOTTOM);
+        shadowView = this.findViewById(R.id.shadow);
+        shadowView.setBackgroundDrawable(shadow);
+        ViewHelper.setAlpha(shadowView, 0f);
+        
+        rootScrollView.setScrollViewCallbacks(this);
+        headerView = findViewById(R.id.header);
+        revealView = (CircularRevealView) findViewById(R.id.reveal);
         
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
             // setTranslucentStatus(true);
@@ -101,22 +132,31 @@ public class AppDetailActivity extends BaseActivity implements ObservableScrollV
             }
         }
 
-        rootScrollView.setScrollViewCallbacks(this);
-        headerView = findViewById(R.id.header);
-        revealView = (CircularRevealView) findViewById(R.id.reveal);
-        
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
 
             @Override
             public void run() {
-                final Point p = new Point(Utils.getScreenWidth(AppDetailActivity.this)/2, Utils.getScreenHeight(AppDetailActivity.this)/2);//Utils.getLocationInView(revealView, headerView);
-                final int color = getResources().getColor(R.color.primary);//Color.parseColor("#00bcd4");
-                revealView.reveal(p.x, p.y, color, 30, 440, new AnimatorListenerAdapter(){
+                //Utils.getLocationInView(revealView, headerView);
+                int color = Color.parseColor("#00bcd4");//getResources().getColor(R.color.windows_bg);//Color.parseColor("#00bcd4");
+                revealView.reveal(revalStartPosition.x, revalStartPosition.y, color, 30, 700, new AnimatorListenerAdapter(){
                     
                     @Override
                     public void onAnimationStart(Animator animation) {
-                        // TODO Auto-generated method stub
+                      //向下移动+alpha
+                        ViewHelper.setTranslationY(rowContainer, 300);
+                        ViewHelper.setAlpha(rowContainer, 0.5f);
+                        
+                        //向上移动+alpha
+                        ViewHelper.setTranslationY(headerImgView, -200);
+                        ViewHelper.setAlpha(headerImgView, 0.5f);
+          
+                        //ViewHelper.setTranslationY(headerView, -200);
+                        
+                        
+                        //隐藏
+                        ViewHelper.setAlpha(headerView, 0.0f);
+                        
                         contentRootView.setVisibility(View.INVISIBLE);
                         headerImgView.setVisibility(View.INVISIBLE);
                     }
@@ -124,18 +164,35 @@ public class AppDetailActivity extends BaseActivity implements ObservableScrollV
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         // TODO Auto-generated method stub
-                        revealView.hide(p.x, p.y, Color.TRANSPARENT, new AnimatorListenerAdapter(){
-
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                // TODO Auto-generated method stub
-                                revealView.setVisibility(View.GONE);
-                            }
-                            
-                        });
-                        
+//                        revealView.hide(p.x, p.y, Color.TRANSPARENT, new AnimatorListenerAdapter(){
+//
+//                            @Override
+//                            public void onAnimationEnd(Animator animation) {
+//                                // TODO Auto-generated method stub
+//                                revealView.setVisibility(View.GONE);
+//                            }
+//                            
+//                        });
+                        //revealView.setVisibility(View.GONE);
+                        //ViewPropertyAnimator.animate(revealView).alpha(0).setDuration(150).start();
+                        getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.primary_dark));
                         contentRootView.setVisibility(View.VISIBLE);
                         headerImgView.setVisibility(View.VISIBLE);
+                        ViewPropertyAnimator.animate(rowContainer).alpha(1f).translationY(0).setInterpolator(new DecelerateInterpolator(3.f))
+                        .setDuration(800).setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                //ViewHelper.setAlpha(shadowView, 1f);
+                                revealView.setVisibility(View.GONE);
+                            }
+                        })  
+                        .start();
+                        ViewPropertyAnimator.animate(headerImgView).alpha(1f).translationY(0).setInterpolator(new DecelerateInterpolator(3.f))
+                        .setDuration(800).start();  
+                        
+                        ViewPropertyAnimator.animate(headerView).alpha(1f).setInterpolator(new DecelerateInterpolator(3.f))
+                        .setDuration(800).setStartDelay(300).start();
+                        
                         rootScrollView.setBackgroundColor(getResources().getColor(R.color.windows_bg));
                         
                     }
@@ -144,16 +201,11 @@ public class AppDetailActivity extends BaseActivity implements ObservableScrollV
             }
         }, 100);
 
-        Drawable shadow = ScrimUtil.makeCubicGradientScrimDrawable(
-        // Color.parseColor("#7d000000"),
-                Color.GRAY,// "#55000000"
-                8, // 渐变层数
-                Gravity.BOTTOM);
-        this.findViewById(R.id.shadow).setBackgroundDrawable(shadow);
+
 
         // Row Container
         rowContainer = (LinearLayout) findViewById(R.id.row_container);
-        FilterMenuLayout menuLayout = (FilterMenuLayout) findViewById(R.id.menu);
+        menuLayout = (FilterMenuLayout) findViewById(R.id.menu);
         new FilterMenu.Builder(this).addItem(R.drawable.ic_action_add).addItem(R.drawable.ic_action_clock)
                 .addItem(R.drawable.ic_action_clock).addItem(R.drawable.ic_action_clock)
                 .addItem(R.drawable.ic_action_clock).attach(menuLayout)
@@ -409,7 +461,12 @@ public class AppDetailActivity extends BaseActivity implements ObservableScrollV
     public void onScrollChanged(int scrollY, boolean firstScroll, boolean dragging) {
         // TODO Auto-generated method stub
         MainActivity.dismissSnackbar();
-
+        if(scrollY == 0){
+            ViewHelper.setAlpha(shadowView, 0f);
+        }
+        else{
+            ViewHelper.setAlpha(shadowView, 1f);
+        }
         // ViewHelper.setTranslationY(headerImgView, scrollY / 2);
         ViewHelper.setTranslationY(headerView, scrollY / 2);
     }

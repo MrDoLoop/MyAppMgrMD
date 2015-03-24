@@ -83,7 +83,16 @@ public class Utils {
         return outMetrics.heightPixels;
     }
     
-    public static Point getLocationInView(View src, View target) {
+    public static int[] findViewCenterXY(View view){
+        final int[] l0 = new int[2];
+        view.getLocationOnScreen(l0);
+        int x = view.getWidth() / 2 + l0[0];
+        int y = view.getHeight() / 2 + l0[1];
+        return new int[]{x,y};
+    }
+    
+    
+    /*public static Point getLocationInView(View src, View target) {
         final int[] l0 = new int[2];
         src.getLocationOnScreen(l0);
 
@@ -94,7 +103,7 @@ public class Utils {
         l1[1] = l1[1] - l0[1] + target.getHeight() / 2;
 
         return new Point(l1[0], l1[1]);
-    }
+    }*/
     
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     public static boolean hasNavBar(Context context) {

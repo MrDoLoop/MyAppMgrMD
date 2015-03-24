@@ -14,6 +14,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
+        <com.doloop.www.myappmgr.material.widgets.CircularRevealView
+            android:id="@+id/reveal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/transparent" />
+
         <View
             android:id="@+id/header_image"
             android:layout_width="match_parent"
@@ -32,6 +38,7 @@
                 android:layout_alignParentTop="true" >
 
                 <LinearLayout
+                    android:id="@+id/app_banner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
@@ -41,12 +48,12 @@
                     android:layout_marginTop="25dp"
                     android:orientation="vertical" >
 
+                   <!-- android:background="@drawable/user_app_icon_bg"
+                        android:padding="3dp" -->
                     <ImageView
                         android:id="@+id/app_icon"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:background="@drawable/user_app_icon_bg"
-                        android:padding="3dp"
                         android:scaleType="centerInside"
                         android:src="@null" />
 
@@ -124,12 +131,6 @@
                     layout="@layout/app_detail_row" />
             </LinearLayout>
         </RelativeLayout>
-
-        <com.doloop.www.myappmgr.material.widgets.CircularRevealView
-            android:id="@+id/reveal"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/transparent" />
     </FrameLayout>
 
 </com.doloop.www.myappmgr.material.widgets.ObservableScrollView>
