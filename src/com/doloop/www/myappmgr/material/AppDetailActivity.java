@@ -111,7 +111,7 @@ public class AppDetailActivity extends BaseActivity implements ObservableScrollV
             @Override
             public void run() {
                 final Point p = new Point(Utils.getScreenWidth(AppDetailActivity.this)/2, Utils.getScreenHeight(AppDetailActivity.this)/2);//Utils.getLocationInView(revealView, headerView);
-                final int color = Color.parseColor("#00bcd4");
+                final int color = getResources().getColor(R.color.primary);//Color.parseColor("#00bcd4");
                 revealView.reveal(p.x, p.y, color, 30, 440, new AnimatorListenerAdapter(){
                     
                     @Override
@@ -298,6 +298,43 @@ public class AppDetailActivity extends BaseActivity implements ObservableScrollV
                 fillRow(view, getString(R.string.componement), "");
             }
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        // TODO Auto-generated method stub
+        /*revealView.setVisibility(View.VISIBLE);
+        final Point p = new Point(Utils.getScreenWidth(AppDetailActivity.this)/2, Utils.getScreenHeight(AppDetailActivity.this)/2);//Utils.getLocationInView(revealView, headerView);
+        final int color = getResources().getColor(R.color.primary);//Color.parseColor("#00bcd4");
+        revealView.reveal(p.x, p.y, color, 30, 440, new AnimatorListenerAdapter(){
+            
+            @Override
+            public void onAnimationStart(Animator animation) {
+                // TODO Auto-generated method stub
+                
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                // TODO Auto-generated method stub
+                revealView.hide(p.x, p.y, Color.TRANSPARENT, new AnimatorListenerAdapter(){
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        // TODO Auto-generated method stub
+                        finish();
+                        overridePendingTransition(0, 0);
+                    }
+                    
+                });
+                
+                
+                
+            }
+            
+        });*/
+        super.onBackPressed();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     @Override
