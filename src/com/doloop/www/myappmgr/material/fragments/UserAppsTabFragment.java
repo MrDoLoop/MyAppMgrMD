@@ -52,7 +52,7 @@ import com.doloop.www.myappmgr.material.fragments.SelectionDialogFragment.Select
 import com.doloop.www.myappmgr.material.fragments.UserAppListMoreActionDialogFragment.UserAppMoreActionListItemClickListener;
 import com.doloop.www.myappmgr.material.interfaces.IconClickListener;
 import com.doloop.www.myappmgr.material.utils.Utils;
-import com.doloop.www.myappmgrmaterial.R;
+import com.doloop.www.myappmgr.material.R;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.listeners.ActionClickListener;
 

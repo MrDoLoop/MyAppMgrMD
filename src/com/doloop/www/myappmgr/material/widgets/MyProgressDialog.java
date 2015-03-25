@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.doloop.www.myappmgrmaterial.R;
+import com.doloop.www.myappmgr.material.R;
 
 public class MyProgressDialog {
     private MaterialDialog progDialog;

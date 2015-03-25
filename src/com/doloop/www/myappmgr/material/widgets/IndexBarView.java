@@ -22,7 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.doloop.www.myappmgrmaterial.R;
+import com.doloop.www.myappmgr.material.R;
 
 public class IndexBarView extends LinearLayout {
 

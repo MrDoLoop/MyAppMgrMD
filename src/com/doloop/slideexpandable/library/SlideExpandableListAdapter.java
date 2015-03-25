@@ -3,7 +3,7 @@ package com.doloop.slideexpandable.library;
 import android.view.View;
 import android.widget.ListAdapter;
 
-import com.doloop.www.myappmgrmaterial.R;
+import com.doloop.www.myappmgr.material.R;
 
 /**
  * ListAdapter that adds sliding functionality to a list.

@@ -16,7 +16,7 @@
 
 package com.doloop.www.myappmgr.material.widgets;
 
-import com.doloop.www.myappmgrmaterial.BuildConfig;
+import com.doloop.www.myappmgr.material.BuildConfig;
 
 import android.content.Context;
 import android.database.DataSetObserver;

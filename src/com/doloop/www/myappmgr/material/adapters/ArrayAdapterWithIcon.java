@@ -1,6 +1,6 @@
 package com.doloop.www.myappmgr.material.adapters;
 
-import com.doloop.www.myappmgrmaterial.R;
+import com.doloop.www.myappmgr.material.R;
 
 import android.content.Context;
 import android.util.TypedValue;

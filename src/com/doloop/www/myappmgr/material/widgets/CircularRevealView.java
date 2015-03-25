@@ -3,7 +3,7 @@ package com.doloop.www.myappmgr.material.widgets;
 /**
  * Created by naman on 18/03/15.
  */
-import com.doloop.www.myappmgrmaterial.R;
+import com.doloop.www.myappmgr.material.R;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.view.ViewHelper;
 import com.nineoldandroids.view.ViewPropertyAnimator;

@@ -47,7 +47,7 @@ import com.doloop.www.myappmgr.material.utils.Utils;
 import com.doloop.www.myappmgr.material.widgets.IndexBarView;
 import com.doloop.www.myappmgr.material.widgets.IndexBarView.OnIndexItemClickListener;
 import com.doloop.www.myappmgr.material.widgets.PinnedSectionListView;
-import com.doloop.www.myappmgrmaterial.R;
+import com.doloop.www.myappmgr.material.R;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.listeners.ActionClickListener;
 

@@ -3,7 +3,7 @@ package com.doloop.www.myappmgr.material.unused;
 
 import com.doloop.www.myappmgr.material.unused.TickPlusDrawable.PlusAnimDoneListener;
 import com.doloop.www.myappmgr.material.unused.TickPlusDrawable.TickAnimDoneListener;
-import com.doloop.www.myappmgrmaterial.R;
+import com.doloop.www.myappmgr.material.R;
 
 import android.content.Context;
 import android.graphics.Bitmap;

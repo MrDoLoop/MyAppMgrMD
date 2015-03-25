@@ -14,7 +14,7 @@ import com.doloop.www.myappmgr.material.adapters.ArrayAdapterWithIcon;
 import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.utils.Constants;
 import com.doloop.www.myappmgr.material.utils.Utils;
-import com.doloop.www.myappmgrmaterial.R;
+import com.doloop.www.myappmgr.material.R;
 
 //@SuppressLint("ValidFragment")
 public class SelectionDialogFragment extends DialogFragment {

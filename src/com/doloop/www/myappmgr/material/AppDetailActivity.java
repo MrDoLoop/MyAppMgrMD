@@ -42,7 +42,7 @@ import com.doloop.www.myappmgr.material.widgets.CircularRevealView;
 import com.doloop.www.myappmgr.material.widgets.ObservableScrollView;
 import com.doloop.www.myappmgr.material.widgets.ObservableScrollViewCallbacks;
 import com.doloop.www.myappmgr.material.widgets.ScrollState;
-import com.doloop.www.myappmgrmaterial.R;
+import com.doloop.www.myappmgr.material.R;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.AnimatorListenerAdapter;
 import com.nineoldandroids.animation.ObjectAnimator;

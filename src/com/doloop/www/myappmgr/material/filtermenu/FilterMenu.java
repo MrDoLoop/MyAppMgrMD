@@ -10,7 +10,7 @@ import android.widget.ImageButton;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.doloop.www.myappmgrmaterial.R;
+import com.doloop.www.myappmgr.material.R;
 import com.nineoldandroids.view.ViewHelper;
 
 
