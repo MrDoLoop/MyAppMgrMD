@@ -79,6 +79,7 @@ import com.doloop.www.myappmgr.material.fragments.SortTypeDialogFragment;
 import com.doloop.www.myappmgr.material.fragments.SortTypeDialogFragment.SortTypeListItemClickListener;
 import com.doloop.www.myappmgr.material.fragments.SysAppsTabFragment;
 import com.doloop.www.myappmgr.material.fragments.UserAppsTabFragment;
+import com.doloop.www.myappmgr.material.swipeback.lib.SwipeBackUtils;
 import com.doloop.www.myappmgr.material.utils.ApkFileFilter;
 import com.doloop.www.myappmgr.material.utils.AppPinYinComparator;
 import com.doloop.www.myappmgr.material.utils.Constants;
@@ -448,6 +449,7 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
         super.onPostCreate(savedInstanceState);
         // Sync the toggle state after onRestoreInstanceState has occurred.
         mDrawerToggle.syncState();
+        SwipeBackUtils.convertActivityFromTranslucent(this);
     }
 
     public static boolean isInActionMode() {
