@@ -42,7 +42,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -91,6 +90,14 @@ public class Utils {
         return new int[]{x,y};
     }
     
+    public static boolean isMeizuDev(){
+        if(android.os.Build.BRAND.toLowerCase(Locale.getDefault()).contains("meizu")) {
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
     
     /*public static Point getLocationInView(View src, View target) {
         final int[] l0 = new int[2];

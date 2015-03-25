@@ -31,8 +31,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.doloop.www.myappmgr.material.dao.AppInfo;
+import com.doloop.www.myappmgr.material.events.AppUpdateEvent;
 import com.doloop.www.myappmgr.material.filtermenu.FilterMenu;
 import com.doloop.www.myappmgr.material.filtermenu.FilterMenuLayout;
+import com.doloop.www.myappmgr.material.swipeback.lib.SwipeBackActivity;
 import com.doloop.www.myappmgr.material.utils.Constants;
 import com.doloop.www.myappmgr.material.utils.ScrimUtil;
 import com.doloop.www.myappmgr.material.utils.Utils;
@@ -50,8 +52,10 @@ import com.nispok.snackbar.Snackbar;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.readystatesoftware.systembartint.SystemBarTintManager.SystemBarConfig;
 
+import de.greenrobot.event.EventBus;
+
 //http://frogermcs.github.io/InstaMaterial-concept-part-6-user-profile/
-public class AppDetailActivity extends BaseActivity implements ObservableScrollViewCallbacks {
+public class AppDetailActivity extends SwipeBackActivity implements ObservableScrollViewCallbacks {
 
     public static AppInfo curAppInfo;
     private LinearLayout rowContainer;
@@ -63,6 +67,7 @@ public class AppDetailActivity extends BaseActivity implements ObservableScrollV
     private View shadowView;
     private FilterMenuLayout menuLayout;
     private Point revalStartPosition;
+    private View appIcon;
     
     public static final String REVEAL_START_POSITION = "REVEAL_START_POSITION";
 
@@ -70,9 +75,13 @@ public class AppDetailActivity extends BaseActivity implements ObservableScrollV
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
         setContentView(R.layout.activity_app_details);
+        
+        
+        EventBus.getDefault().register(this);
+        
         headerImgView = findViewById(R.id.header_image);
+        appIcon = findViewById(R.id.app_icon);
         contentRootView = findViewById(R.id.content_root);
         rootScrollView = (ObservableScrollView) findViewById(R.id.root_scroll_view);
         rootScrollView.setBackgroundColor(Color.TRANSPARENT);
@@ -86,8 +95,6 @@ public class AppDetailActivity extends BaseActivity implements ObservableScrollV
             revalStartPosition = new Point(Utils.getScreenWidth(AppDetailActivity.this)/2, Utils.getScreenHeight(AppDetailActivity.this)/2);
         }
         
-
-                
         headerImgView.setVisibility(View.INVISIBLE);
         contentRootView.setVisibility(View.INVISIBLE);
         Drawable shadow = ScrimUtil.makeCubicGradientScrimDrawable(
@@ -152,7 +159,8 @@ public class AppDetailActivity extends BaseActivity implements ObservableScrollV
                         ViewHelper.setAlpha(headerImgView, 0.5f);
           
                         //ViewHelper.setTranslationY(headerView, -200);
-                        
+                        ViewHelper.setScaleX(appIcon, 0);
+                        ViewHelper.setScaleY(appIcon, 0);
                         
                         //вўВи
                         ViewHelper.setAlpha(headerView, 0.0f);
@@ -175,11 +183,14 @@ public class AppDetailActivity extends BaseActivity implements ObservableScrollV
 //                        });
                         //revealView.setVisibility(View.GONE);
                         //ViewPropertyAnimator.animate(revealView).alpha(0).setDuration(150).start();
-                        getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.primary_dark));
+                        //getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.primary_dark));
+                        
+                        ViewPropertyAnimator.animate(revealView).alpha(0).setDuration(500).start();
                         contentRootView.setVisibility(View.VISIBLE);
                         headerImgView.setVisibility(View.VISIBLE);
+                        
                         ViewPropertyAnimator.animate(rowContainer).alpha(1f).translationY(0).setInterpolator(new DecelerateInterpolator(3.f))
-                        .setDuration(800).setListener(new AnimatorListenerAdapter() {
+                        .setDuration(1000).setListener(new AnimatorListenerAdapter() {
                             @Override
                             public void onAnimationEnd(Animator animation) {
                                 //ViewHelper.setAlpha(shadowView, 1f);
@@ -188,10 +199,13 @@ public class AppDetailActivity extends BaseActivity implements ObservableScrollV
                         })  
                         .start();
                         ViewPropertyAnimator.animate(headerImgView).alpha(1f).translationY(0).setInterpolator(new DecelerateInterpolator(3.f))
-                        .setDuration(800).start();  
+                        .setDuration(1000).start();  
                         
                         ViewPropertyAnimator.animate(headerView).alpha(1f).setInterpolator(new DecelerateInterpolator(3.f))
-                        .setDuration(800).setStartDelay(300).start();
+                        .setDuration(1000).setStartDelay(300).start();
+                        
+                        ViewPropertyAnimator.animate(appIcon).scaleX(1).scaleY(1).alpha(1f).setInterpolator(new DecelerateInterpolator(3.f))
+                        .setDuration(1000).setStartDelay(300).start();
                         
                         rootScrollView.setBackgroundColor(getResources().getColor(R.color.windows_bg));
                         
@@ -392,8 +406,26 @@ public class AppDetailActivity extends BaseActivity implements ObservableScrollV
     @Override
     protected void onDestroy() {
         // TODO Auto-generated method stub
-        super.onDestroy();
         curAppInfo = null;
+        EventBus.getDefault().unregister(this);
+        super.onDestroy();
+    }
+    
+    public void onEventMainThread(AppUpdateEvent ev) {
+        switch (ev.mAppState){
+            case APP_ADDED:
+            case APP_REMOVED:
+                if(ev.mPkgName.equals(curAppInfo.packageName)){
+                    onBackPressed();
+                }
+                break;
+            case APP_CHANGED:
+                break;
+            default:
+                break;
+        }
+            
+        
     }
 
     private void fillRow(View view, final String title, final String description) {
