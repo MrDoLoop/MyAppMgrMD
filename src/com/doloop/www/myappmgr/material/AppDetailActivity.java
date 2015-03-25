@@ -1,5 +1,6 @@
 package com.doloop.www.myappmgr.material;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import android.annotation.TargetApi;
@@ -29,6 +30,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.doloop.www.myappmgr.material.dao.AppInfo;
+import com.doloop.www.myappmgr.material.events.AppBackupSuccEvent;
 import com.doloop.www.myappmgr.material.events.AppUpdateEvent;
 import com.doloop.www.myappmgr.material.filtermenu.FilterMenu;
 import com.doloop.www.myappmgr.material.filtermenu.FilterMenuLayout;
@@ -66,6 +68,11 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
     private FilterMenuLayout menuLayout;
     private Point revalStartPosition;
     private View appIcon;
+    private static final int OPEN_ACTION = 0;
+    private static final int INFO_ACTION = 1;
+    private static final int UNINSTALL_ACTION = 2;
+    private static final int BACKUP_ACTION = 3;
+    private static final int SEND_ACTION = 4;
     
     public static final String REVEAL_START_POSITION = "REVEAL_START_POSITION";
 
@@ -210,7 +217,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                     @Override
                     public void onMenuItemClick(View view, int position) {
                         switch (position) {
-                            case 0://启动
+                            case OPEN_ACTION://启动
                                 if (Constants.MY_PACKAGE_NAME.equals(curAppInfo.packageName))// 避免再次启动自己app
                                 {
                                     MainActivity.T("You catch me!! NAN Made app");
@@ -230,10 +237,10 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                                     }
                                 }
                                 break;
-                            case 1:
+                            case INFO_ACTION:
                                 Utils.showInstalledAppDetails(AppDetailActivity.this, curAppInfo.packageName);
                                 break;
-                            case 2:
+                            case UNINSTALL_ACTION:
                                 Uri packageUri = Uri.parse("package:" + curAppInfo.packageName);
                                 Intent uninstallIntent;
                                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
@@ -242,7 +249,60 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                                     uninstallIntent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE, packageUri);
                                 }
                                 startActivity(uninstallIntent);
-                                break;   
+                                break;  
+                            case BACKUP_ACTION:
+                                String mBackUpFolder = Utils.getBackUpAPKfileDir(AppDetailActivity.this);
+                                String sdAPKfileName = Utils.BackupApp(curAppInfo, mBackUpFolder);
+                                if (sdAPKfileName != null) {
+                                    // MainActivity.T(R.string.backup_success);
+                                    SpannableString spanString =
+                                            new SpannableString(curAppInfo.appName + " "
+                                                    + getString(R.string.backup_success));
+                                    spanString.setSpan(new UnderlineSpan(), 0, curAppInfo.appName.length(),
+                                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                                    spanString.setSpan(
+                                            new ForegroundColorSpan(getResources().getColor(
+                                                    R.color.theme_blue_light)), 0, curAppInfo.appName.length(),
+                                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                                    Snackbar mSnackbar = MainActivity.getSnackbar(false);
+                                    boolean mAniText = false;
+                                    boolean mShowAniSnackBar = true;
+                                    if (mSnackbar != null) {
+                                        if (mSnackbar.isShowing()) {
+                                            if (!spanString.toString().equalsIgnoreCase(mSnackbar.getText().toString())) {
+                                                mAniText = true;
+                                            }
+                                            mShowAniSnackBar = false;
+                                            mSnackbar.dismissAnimation(false);
+                                            mSnackbar.dismiss();
+                                        }
+                                        mSnackbar = MainActivity.getSnackbar(true);
+                                    }
+                                    mSnackbar.swipeToDismiss(false).showAnimation(mShowAniSnackBar)
+                                            .dismissAnimation(true).animationText(mAniText)
+                                            .duration(Snackbar.SnackbarDuration.LENGTH_SHORT)
+                                            .text(spanString);
+                                    mSnackbar.show(AppDetailActivity.this);
+
+                                    EventBus.getDefault().post(new AppBackupSuccEvent(curAppInfo));
+                                }
+                                else {
+                                    MainActivity.T(R.string.error);
+                                }
+                                break;
+                            case SEND_ACTION:
+                                String BACK_UP_FOLDER = Utils.getBackUpAPKfileDir(AppDetailActivity.this);
+                                String sdApkfileName = Utils.BackupApp(curAppInfo, BACK_UP_FOLDER);
+                                if (sdApkfileName != null) {
+                                    ArrayList<AppInfo> list = new ArrayList<AppInfo>();
+                                    list.add(curAppInfo);
+                                    EventBus.getDefault().post(new AppBackupSuccEvent(list));
+                                    Utils.chooseSendByApp(AppDetailActivity.this, Uri.parse("file://" + sdApkfileName));
+                                } else {
+                                    MainActivity.T(R.string.error);
+                                }
+                                break;
                         }
                     }
 
