@@ -75,14 +75,14 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_details);
         
-        
         EventBus.getDefault().register(this);
-        
         headerImgView = findViewById(R.id.header_image);
         appIcon = findViewById(R.id.app_icon);
         contentRootView = findViewById(R.id.content_root);
         rootScrollView = (ObservableScrollView) findViewById(R.id.root_scroll_view);
         rootScrollView.setBackgroundColor(Color.TRANSPARENT);
+        
+        
         
         //默认是从屏幕中心开始
         int[] pos = getIntent().getIntArrayExtra(REVEAL_START_POSITION);
@@ -108,46 +108,22 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
         headerView = findViewById(R.id.header);
         revealView = (CircularRevealView) findViewById(R.id.reveal);
         
-       /* if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
-            // setTranslucentStatus(true);
-            boolean hasNavBar = Utils.hasNavBar(this);
-           Window window = this.getWindow();
-            window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
-                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-            SystemBarTintManager tintManager = new SystemBarTintManager(this);
-            SystemBarConfig config = tintManager.getConfig();
-            // 处理状态栏
-            tintManager.setStatusBarTintEnabled(true);
-            tintManager.setStatusBarTintResource(R.color.primary);
-            tintManager.setStatusBarAlpha(0.5f);
-
-            
-            int newHeight = headerImgView.getLayoutParams().height + config.getStatusBarHeight();
-            headerImgView.getLayoutParams().height = newHeight;
-            headerImgView.requestLayout();
-
-            
-            if (hasNavBar) {
-                contentRootView.setPadding(0, config.getStatusBarHeight(), 0, config.getNavigationBarHeight());
-                tintManager.setNavigationBarTintEnabled(true);
-                tintManager.setNavigationBarTintResource(R.color.primary);
-            } else {
-                contentRootView.setPadding(0, config.getStatusBarHeight(), 0, 0);
-            }
-        }*/
+        //强制使reveal填满屏幕，如果内容不够长，reveal只有屏幕的一点
+        revealView.getLayoutParams().height = Utils.getScreenHeight(this);
+        revealView.requestLayout();
 
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
 
             @Override
             public void run() {
-                //Utils.getLocationInView(revealView, headerView);
                 int color = Color.parseColor("#00bcd4");//getResources().getColor(R.color.windows_bg);//Color.parseColor("#00bcd4");
                 revealView.reveal(revalStartPosition.x, revalStartPosition.y, color, 30, 700, new AnimatorListenerAdapter(){
                     
                     @Override
                     public void onAnimationStart(Animator animation) {
+                        
+                       
                       //向下移动+alpha
                         ViewHelper.setTranslationY(rowContainer, 300);
                         ViewHelper.setAlpha(rowContainer, 0.5f);
@@ -192,8 +168,15 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                         .setDuration(1000).setListener(new AnimatorListenerAdapter() {
                             @Override
                             public void onAnimationEnd(Animator animation) {
-                                //ViewHelper.setAlpha(shadowView, 1f);
+
                                 revealView.setVisibility(View.GONE);
+
+                               //这里设置底部的padding，在长屏幕下。如果先设置了底部的padding，reaveal消失的时候，底部会出现一个空条
+                                if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT && Utils.hasNavBar(AppDetailActivity.this)) {
+                                    SystemBarTintManager tintManager = new SystemBarTintManager(AppDetailActivity.this);
+                                    SystemBarConfig config = tintManager.getConfig();
+                                    contentRootView.setPadding(0, config.getStatusBarHeight(), 0, config.getNavigationBarHeight());
+                                }
                             }
                         })  
                         .start();
@@ -204,7 +187,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                         .setDuration(1000).setStartDelay(300).start();
                         
                         ViewPropertyAnimator.animate(appIcon).alpha(1).scaleX(1).scaleY(1).alpha(1f).setInterpolator(new DecelerateInterpolator(3.f))
-                        .setDuration(1000).setStartDelay(300).start();
+                        .setDuration(1000).setStartDelay(400).start();
                         
                         rootScrollView.setBackgroundColor(getResources().getColor(R.color.windows_bg));
                         
@@ -259,10 +242,8 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                                     uninstallIntent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE, packageUri);
                                 }
                                 startActivity(uninstallIntent);
-                                break;
-                            
+                                break;   
                         }
-                        //MainActivity.T("菜单 " + position);
                     }
 
                     @Override
@@ -383,14 +364,13 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
             tintManager.setStatusBarTintResource(R.color.primary);
             tintManager.setStatusBarAlpha(0.5f);
 
-            
+            //改变headerImgView的高度，使得headerImgView插入状态栏
             int newHeight = headerImgView.getLayoutParams().height + config.getStatusBarHeight();
             headerImgView.getLayoutParams().height = newHeight;
             headerImgView.requestLayout();
 
-            
             if (hasNavBar) {
-                contentRootView.setPadding(0, config.getStatusBarHeight(), 0, config.getNavigationBarHeight());
+                contentRootView.setPadding(0, config.getStatusBarHeight(), 0, 0);
                 tintManager.setNavigationBarTintEnabled(true);
                 tintManager.setNavigationBarTintResource(R.color.primary);
             } else {
@@ -401,40 +381,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
 
     @Override
     public void onBackPressed() {
-        // TODO Auto-generated method stub
-        /*revealView.setVisibility(View.VISIBLE);
-        final Point p = new Point(Utils.getScreenWidth(AppDetailActivity.this)/2, Utils.getScreenHeight(AppDetailActivity.this)/2);//Utils.getLocationInView(revealView, headerView);
-        final int color = getResources().getColor(R.color.primary);//Color.parseColor("#00bcd4");
-        revealView.reveal(p.x, p.y, color, 30, 440, new AnimatorListenerAdapter(){
-            
-            @Override
-            public void onAnimationStart(Animator animation) {
-                // TODO Auto-generated method stub
-                
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                // TODO Auto-generated method stub
-                revealView.hide(p.x, p.y, Color.TRANSPARENT, new AnimatorListenerAdapter(){
-
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        // TODO Auto-generated method stub
-                        finish();
-                        overridePendingTransition(0, 0);
-                    }
-                    
-                });
-                
-                
-                
-            }
-            
-        });*/
-        super.onBackPressed();
-        //overridePendingTransition(0,0);
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        finishActivtyWithAni();
     }
 
     @Override
@@ -450,7 +397,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
             case APP_ADDED:
             case APP_REMOVED:
                 if(ev.mPkgName.equals(curAppInfo.packageName)){
-                    onBackPressed();
+                    finishActivtyWithAni();
                 }
                 break;
             case APP_CHANGED:
@@ -458,8 +405,11 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
             default:
                 break;
         }
-            
-        
+    }
+
+    private void finishActivtyWithAni(){
+        finish();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     private void fillRow(View view, final String title, final String description) {
@@ -533,7 +483,6 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
         else{
             ViewHelper.setAlpha(shadowView, 1f);
         }
-        // ViewHelper.setTranslationY(headerImgView, scrollY / 2);
         ViewHelper.setTranslationY(headerView, scrollY / 2);
     }
 
