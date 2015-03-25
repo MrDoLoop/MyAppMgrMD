@@ -23,8 +23,8 @@ public class SwipeBackActivityHelper {
 
     @SuppressWarnings("deprecation")
     public void onActivityCreate() {
-        mActivity.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        mActivity.getWindow().getDecorView().setBackgroundDrawable(null);
+        //mActivity.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        //mActivity.getWindow().getDecorView().setBackgroundDrawable(null);
         mSwipeBackLayout = (SwipeBackLayout) LayoutInflater.from(mActivity).inflate(
                R.layout.swipeback_layout, null);
         mSwipeBackLayout.addSwipeListener(new SwipeBackLayout.SwipeListener() {
@@ -34,7 +34,7 @@ public class SwipeBackActivityHelper {
 
             @Override
             public void onEdgeTouch(int edgeFlag) {
-                Utils.convertActivityToTranslucent(mActivity);
+                SwipeBackUtils.convertActivityToTranslucent(mActivity);
             }
 
             @Override

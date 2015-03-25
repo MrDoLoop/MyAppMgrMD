@@ -48,7 +48,7 @@ public class SwipeBackActivity extends ActionBarActivity implements SwipeBackAct
 
     @Override
     public void scrollToFinishActivity() {
-        Utils.convertActivityToTranslucent(this);
+        SwipeBackUtils.convertActivityToTranslucent(this);
         getSwipeBackLayout().scrollToFinishActivity();
     }
 }
