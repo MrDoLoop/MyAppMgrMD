@@ -125,7 +125,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                         
                        
                       //向下移动+alpha
-                        ViewHelper.setTranslationY(rowContainer, 300);
+                        ViewHelper.setTranslationY(rowContainer, 250);
                         ViewHelper.setAlpha(rowContainer, 0.5f);
                         
                         //向上移动+alpha
@@ -181,10 +181,10 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                         })  
                         .start();
                         ViewPropertyAnimator.animate(headerImgView).alpha(1f).translationY(0).setInterpolator(new DecelerateInterpolator(3.f))
-                        .setDuration(1000).start();  
+                        .setDuration(800).start();  
                         
                         ViewPropertyAnimator.animate(headerView).alpha(1f).setInterpolator(new DecelerateInterpolator(3.f))
-                        .setDuration(1000).setStartDelay(300).start();
+                        .setDuration(800).setStartDelay(300).start();
                         
                         ViewPropertyAnimator.animate(appIcon).alpha(1).scaleX(1).scaleY(1).alpha(1f).setInterpolator(new DecelerateInterpolator(3.f))
                         .setDuration(1000).setStartDelay(400).start();
