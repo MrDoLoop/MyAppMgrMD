@@ -23,8 +23,6 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.UnderlineSpan;
 import android.view.Gravity;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -55,7 +53,7 @@ import com.readystatesoftware.systembartint.SystemBarTintManager.SystemBarConfig
 import de.greenrobot.event.EventBus;
 
 //http://frogermcs.github.io/InstaMaterial-concept-part-6-user-profile/
-public class AppDetailActivity extends SwipeBackActivity implements ObservableScrollViewCallbacks {
+public class AppDetailActivity extends SwipeBackActivity implements ObservableScrollViewCallbacks {//SwipeBackActivity ActionBarActivity
 
     public static AppInfo curAppInfo;
     private LinearLayout rowContainer;
@@ -110,10 +108,10 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
         headerView = findViewById(R.id.header);
         revealView = (CircularRevealView) findViewById(R.id.reveal);
         
-        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
+       /* if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
             // setTranslucentStatus(true);
             boolean hasNavBar = Utils.hasNavBar(this);
-            Window window = this.getWindow();
+           Window window = this.getWindow();
             window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
                     WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
@@ -137,7 +135,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
             } else {
                 contentRootView.setPadding(0, config.getStatusBarHeight(), 0, 0);
             }
-        }
+        }*/
 
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -161,6 +159,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                         //ViewHelper.setTranslationY(headerView, -200);
                         ViewHelper.setScaleX(appIcon, 0);
                         ViewHelper.setScaleY(appIcon, 0);
+                        ViewHelper.setAlpha(appIcon, 0.0f);
                         
                         //Òþ²Ø
                         ViewHelper.setAlpha(headerView, 0.0f);
@@ -204,7 +203,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                         ViewPropertyAnimator.animate(headerView).alpha(1f).setInterpolator(new DecelerateInterpolator(3.f))
                         .setDuration(1000).setStartDelay(300).start();
                         
-                        ViewPropertyAnimator.animate(appIcon).scaleX(1).scaleY(1).alpha(1f).setInterpolator(new DecelerateInterpolator(3.f))
+                        ViewPropertyAnimator.animate(appIcon).alpha(1).scaleX(1).scaleY(1).alpha(1f).setInterpolator(new DecelerateInterpolator(3.f))
                         .setDuration(1000).setStartDelay(300).start();
                         
                         rootScrollView.setBackgroundColor(getResources().getColor(R.color.windows_bg));
@@ -367,6 +366,40 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
     }
 
     @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        // TODO Auto-generated method stub
+        super.onPostCreate(savedInstanceState);
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
+            // setTranslucentStatus(true);
+            boolean hasNavBar = Utils.hasNavBar(this);
+//           Window window = this.getWindow();
+//            window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+//                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+            SystemBarTintManager tintManager = new SystemBarTintManager(this);
+            SystemBarConfig config = tintManager.getConfig();
+            // ´¦Àí×´Ì¬À¸
+            tintManager.setStatusBarTintEnabled(true);
+            tintManager.setStatusBarTintResource(R.color.primary);
+            tintManager.setStatusBarAlpha(0.5f);
+
+            
+            int newHeight = headerImgView.getLayoutParams().height + config.getStatusBarHeight();
+            headerImgView.getLayoutParams().height = newHeight;
+            headerImgView.requestLayout();
+
+            
+            if (hasNavBar) {
+                contentRootView.setPadding(0, config.getStatusBarHeight(), 0, config.getNavigationBarHeight());
+                tintManager.setNavigationBarTintEnabled(true);
+                tintManager.setNavigationBarTintResource(R.color.primary);
+            } else {
+                contentRootView.setPadding(0, config.getStatusBarHeight(), 0, 0);
+            }
+        }
+    }
+
+    @Override
     public void onBackPressed() {
         // TODO Auto-generated method stub
         /*revealView.setVisibility(View.VISIBLE);
@@ -400,6 +433,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
             
         });*/
         super.onBackPressed();
+        //overridePendingTransition(0,0);
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
