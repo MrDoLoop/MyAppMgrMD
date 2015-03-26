@@ -12,7 +12,8 @@ import android.util.AttributeSet;
 import android.widget.FrameLayout;
 
 public class ScrimInsetsFrameLayout extends FrameLayout {
-    private Drawable mInsetForeground;
+    private Drawable mInsetForegroundTop;
+    private Drawable mInsetForegroundBottom;
     private Rect mInsets;
     private Rect mTempRect = new Rect();
     private OnInsetsCallback mOnInsetsCallback;
@@ -37,7 +38,8 @@ public class ScrimInsetsFrameLayout extends FrameLayout {
         if (a == null) {
             return;
         }
-        mInsetForeground = a.getDrawable(R.styleable.ScrimInsetsView_insetForeground);
+        mInsetForegroundTop = a.getDrawable(R.styleable.ScrimInsetsView_insetForegroundTop);
+        mInsetForegroundBottom = a.getDrawable(R.styleable.ScrimInsetsView_insetForegroundBottom);
         a.recycle();
         setWillNotDraw(true);
     }
@@ -45,7 +47,7 @@ public class ScrimInsetsFrameLayout extends FrameLayout {
     @Override
     protected boolean fitSystemWindows(Rect insets) {
         mInsets = new Rect(insets);
-        setWillNotDraw(mInsetForeground == null);
+        setWillNotDraw(mInsetForegroundTop == null);
         ViewCompat.postInvalidateOnAnimation(this);
         if (mOnInsetsCallback != null) {
             mOnInsetsCallback.onInsetsChanged(insets);
@@ -58,25 +60,25 @@ public class ScrimInsetsFrameLayout extends FrameLayout {
         super.draw(canvas);
         int width = getWidth();
         int height = getHeight();
-        if (mInsets != null && mInsetForeground != null) {
+        if (mInsets != null && mInsetForegroundTop != null) {
             int sc = canvas.save();
             canvas.translate(getScrollX(), getScrollY());
             // Top
             mTempRect.set(0, 0, width, mInsets.top);
-            mInsetForeground.setBounds(mTempRect);
-            mInsetForeground.draw(canvas);
+            mInsetForegroundTop.setBounds(mTempRect);
+            mInsetForegroundTop.draw(canvas);
             // Bottom
             mTempRect.set(0, height - mInsets.bottom, width, height);
-            mInsetForeground.setBounds(mTempRect);
-            mInsetForeground.draw(canvas);
+            mInsetForegroundBottom.setBounds(mTempRect);
+            mInsetForegroundBottom.draw(canvas);
             // Left
             mTempRect.set(0, mInsets.top, mInsets.left, height - mInsets.bottom);
-            mInsetForeground.setBounds(mTempRect);
-            mInsetForeground.draw(canvas);
+            mInsetForegroundTop.setBounds(mTempRect);
+            mInsetForegroundTop.draw(canvas);
             // Right
             mTempRect.set(width - mInsets.right, mInsets.top, width, height - mInsets.bottom);
-            mInsetForeground.setBounds(mTempRect);
-            mInsetForeground.draw(canvas);
+            mInsetForegroundTop.setBounds(mTempRect);
+            mInsetForegroundTop.draw(canvas);
             canvas.restoreToCount(sc);
         }
     }
@@ -84,16 +86,16 @@ public class ScrimInsetsFrameLayout extends FrameLayout {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        if (mInsetForeground != null) {
-            mInsetForeground.setCallback(this);
+        if (mInsetForegroundTop != null) {
+            mInsetForegroundTop.setCallback(this);
         }
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        if (mInsetForeground != null) {
-            mInsetForeground.setCallback(null);
+        if (mInsetForegroundTop != null) {
+            mInsetForegroundTop.setCallback(null);
         }
     }
 
