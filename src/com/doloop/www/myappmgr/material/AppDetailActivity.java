@@ -23,6 +23,7 @@ import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.UnderlineSpan;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
@@ -76,6 +77,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
     
     public static final String REVEAL_START_POSITION = "REVEAL_START_POSITION";
 
+    @SuppressWarnings("deprecation")
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -533,6 +535,23 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
         });
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        // TODO Auto-generated method stub
+        // Í£Ö¹list¹ö¶¯
+        // MotionEvent me = MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(),
+        // MotionEvent.ACTION_CANCEL, 0, 0, 0);
+        // sysAppsFrg.getListView().dispatchTouchEvent(me);
+        // me.recycle();
+
+        if (keyCode == KeyEvent.KEYCODE_MENU && event.getRepeatCount() == 0) {
+            menuLayout.toggle(true);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+    
+    
     @Override
     public void onScrollChanged(int scrollY, boolean firstScroll, boolean dragging) {
         // TODO Auto-generated method stub

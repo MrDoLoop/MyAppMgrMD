@@ -26,7 +26,9 @@ public class App extends Application {
         super.onCreate();
 
         // 崩溃处理初始化
-        //InitCrashHandler();
+        if(!BuildConfig.DEBUG){
+            InitCrashHandler();
+        }
         
         Constants.MY_PACKAGE_NAME = Utils.getSelfAppInfo(this).packageName;
         initImageLoader(this);
