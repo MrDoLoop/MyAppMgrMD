@@ -67,7 +67,8 @@
         android:background="@color/white2"
         android:clickable="true"
         android:fitsSystemWindows="true"
-        app:insetForeground="@color/insetForeground" >
+        app:insetForegroundBottom="?attr/colorPrimary" 
+        app:insetForegroundTop="@color/insetForeground" >
     </com.doloop.www.myappmgr.material.widgets.ScrimInsetsFrameLayout>
 
 </android.support.v4.widget.DrawerLayout>
