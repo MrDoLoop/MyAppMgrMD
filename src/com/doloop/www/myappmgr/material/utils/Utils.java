@@ -68,6 +68,17 @@ import com.doloop.www.myappmgr.material.R;
 
 public class Utils {
     
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    @SuppressWarnings("deprecation")
+    public static void setBackgroundDrawable(View view, Drawable drawable){
+        if(android.os.Build.VERSION.SDK_INT >= 16){
+            view.setBackground(drawable);
+        }
+        else{
+            view.setBackgroundDrawable(drawable);
+        }
+    }
+    
     public static int getScreenWidth(Context ctx) {
         WindowManager wm = (WindowManager) ctx.getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics outMetrics = new DisplayMetrics();
