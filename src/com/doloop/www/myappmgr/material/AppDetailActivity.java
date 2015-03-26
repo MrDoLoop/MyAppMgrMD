@@ -77,7 +77,6 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
     
     public static final String REVEAL_START_POSITION = "REVEAL_START_POSITION";
 
-    @SuppressWarnings("deprecation")
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +109,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                 8, // ½¥±ä²ãÊý
                 Gravity.BOTTOM);
         shadowView = this.findViewById(R.id.shadow);
-        shadowView.setBackgroundDrawable(shadow);
+        Utils.setBackgroundDrawable(findViewById(R.id.shadow), shadow);
         ViewHelper.setAlpha(shadowView, 0f);
         
         rootScrollView.setScrollViewCallbacks(this);

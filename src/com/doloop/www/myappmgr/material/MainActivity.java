@@ -220,7 +220,7 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
                 Color.GRAY,//"#55000000"
                 8, //渐变层数
                 Gravity.TOP);
-        this.findViewById(R.id.shadow).setBackgroundDrawable(shadow);
+        Utils.setBackgroundDrawable(findViewById(R.id.shadow), shadow);
         
         // 初始化抽屉
         FragmentTransaction t = this.getSupportFragmentManager().beginTransaction();
