@@ -197,7 +197,7 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
             //´¦Àíµ×±ßµ¼º½À¸
             if(hasNavBar){
                 tintManager.setNavigationBarTintEnabled(true);
-                tintManager.setNavigationBarTintResource(R.color.transparent);
+                tintManager.setNavigationBarTintResource(R.color.primary);
                 View drawerHolder = findViewById(R.id.drawer_content_holder);
                 drawerHolder.setPadding(0, 0, 0, config.getNavigationBarHeight());
             }
