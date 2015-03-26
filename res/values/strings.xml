@@ -47,7 +47,7 @@
     <string name="launch_fail">Launch Fail</string>
     <string name="sdcard_changed">Sdcard changed, pls restart!</string>
     <string name="cancel">Cancel</string>
-    <string name="default_dir">DefaultDir</string>
+    <string name="default_dir">Def. Dir</string>
     <string name="ok">OK</string>
     <string name="back_dir">Backup Dir</string>
     <string name="sd_free">SD Free</string>
