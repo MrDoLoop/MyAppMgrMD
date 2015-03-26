@@ -25,9 +25,12 @@ import android.text.style.UnderlineSpan;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.BounceInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.view.animation.Interpolator;
+import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.doloop.www.myappmgr.material.dao.AppInfo;
@@ -43,9 +46,9 @@ import com.doloop.www.myappmgr.material.widgets.CircularRevealView;
 import com.doloop.www.myappmgr.material.widgets.ObservableScrollView;
 import com.doloop.www.myappmgr.material.widgets.ObservableScrollViewCallbacks;
 import com.doloop.www.myappmgr.material.widgets.ScrollState;
-import com.doloop.www.myappmgr.material.R;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.AnimatorListenerAdapter;
+import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.view.ViewHelper;
 import com.nineoldandroids.view.ViewPropertyAnimator;
@@ -59,7 +62,7 @@ import de.greenrobot.event.EventBus;
 public class AppDetailActivity extends SwipeBackActivity implements ObservableScrollViewCallbacks {//SwipeBackActivity ActionBarActivity
 
     public static AppInfo curAppInfo;
-    private LinearLayout rowContainer;
+    private View rowContainer;
     private ObservableScrollView rootScrollView;
     private View headerView;
     private View headerImgView;
@@ -107,10 +110,10 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
         // Color.parseColor("#7d000000"),
                 Color.GRAY,// "#55000000"
                 8, // 渐变层数
-                Gravity.BOTTOM);
+                Gravity.TOP);
         shadowView = this.findViewById(R.id.shadow);
         Utils.setBackgroundDrawable(findViewById(R.id.shadow), shadow);
-        ViewHelper.setAlpha(shadowView, 0f);
+        //ViewHelper.setAlpha(shadowView, 0f);
         
         rootScrollView.setScrollViewCallbacks(this);
         headerView = findViewById(R.id.header);
@@ -139,6 +142,9 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                         //向上移动+alpha
                         ViewHelper.setTranslationY(headerImgView, -200);
                         ViewHelper.setAlpha(headerImgView, 0.5f);
+                        
+                        ViewHelper.setAlpha(shadowView, 0.5f);
+                        ViewHelper.setTranslationY(shadowView, -200);
           
                         //ViewHelper.setTranslationY(headerView, -200);
                         ViewHelper.setScaleX(appIcon, 0);
@@ -150,6 +156,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                         
                         contentRootView.setVisibility(View.INVISIBLE);
                         headerImgView.setVisibility(View.INVISIBLE);
+                        //shadowView.setVisibility(View.INVISIBLE);
                     }
 
                     @Override
@@ -172,11 +179,12 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                         contentRootView.setVisibility(View.VISIBLE);
                         headerImgView.setVisibility(View.VISIBLE);
                         
-                        ViewPropertyAnimator.animate(rowContainer).alpha(1f).translationY(0).setInterpolator(new DecelerateInterpolator(3.f))
-                        .setDuration(1000).setListener(new AnimatorListenerAdapter() {
+                        Interpolator interpolator = new DecelerateInterpolator(3.f); 
+                        ViewPropertyAnimator.animate(rowContainer).alpha(1f).translationY(0).setInterpolator(interpolator)
+                        .setDuration(800).setListener(new AnimatorListenerAdapter() {
                             @Override
                             public void onAnimationEnd(Animator animation) {
-
+                                
                                 revealView.setVisibility(View.GONE);
 
                                //这里设置底部的padding，在长屏幕下。如果先设置了底部的padding，reaveal消失的时候，底部会出现一个空条
@@ -188,11 +196,15 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                             }
                         })  
                         .start();
-                        ViewPropertyAnimator.animate(headerImgView).alpha(1f).translationY(0).setInterpolator(new DecelerateInterpolator(3.f))
+                        ViewPropertyAnimator.animate(headerImgView).alpha(1f).translationY(0).setInterpolator(interpolator)
                         .setDuration(800).start();  
                         
-                        ViewPropertyAnimator.animate(headerView).alpha(1f).setInterpolator(new DecelerateInterpolator(3.f))
+                        ViewPropertyAnimator.animate(shadowView).alpha(1f).translationY(0).setInterpolator(interpolator)
+                        .setDuration(800).start();  
+                        
+                        ViewPropertyAnimator.animate(headerView).alpha(1f).setInterpolator(interpolator)
                         .setDuration(800).setStartDelay(300).start();
+                       
                         
                         ViewPropertyAnimator.animate(appIcon).alpha(1).scaleX(1).scaleY(1).alpha(1f).setInterpolator(new DecelerateInterpolator(3.f))
                         .setDuration(1000).setStartDelay(400).start();
@@ -208,7 +220,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
 
 
         // Row Container
-        rowContainer = (LinearLayout) findViewById(R.id.row_container);
+        rowContainer = findViewById(R.id.row_container);
         menuLayout = (FilterMenuLayout) findViewById(R.id.menu);
         new FilterMenu.Builder(this).addItem(R.drawable.ic_action_add).addItem(R.drawable.ic_action_clock)
                 .addItem(R.drawable.ic_action_clock).addItem(R.drawable.ic_action_clock)
@@ -339,8 +351,30 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                 @Override
                 public void onClick(View v) {
                     // TODO Auto-generated method stub
-                    ObjectAnimator ani = ObjectAnimator.ofFloat(appIcon, "rotationY", 0, 360).setDuration(1000);
-                    ani.addListener(new AnimatorListenerAdapter(){
+                    //ObjectAnimator rotationAni = ObjectAnimator.ofFloat(appIcon, "rotationY", 0f, 360f);
+                    ObjectAnimator scaleXAni = ObjectAnimator.ofFloat(appIcon, "scaleY", 1f, 0.5f, 1f);
+                    ObjectAnimator scaleYAni = ObjectAnimator.ofFloat(appIcon, "scaleX", 1f, 0.5f, 1f);
+                    //ObjectAnimator alphaAni = ObjectAnimator.ofFloat(appIcon, "alpha", 0.5f, 1f);
+                    AnimatorSet set = new AnimatorSet();
+                    set.playTogether(scaleXAni,scaleYAni);//alphaAni rotationAni
+                    set.setDuration(1000);
+                    set.setInterpolator(new BounceInterpolator ()); //AnticipateOvershootInterpolator OvershootInterpolator
+                    set.addListener(new AnimatorListenerAdapter(){
+                        @Override
+                        public void onAnimationEnd(Animator arg0) {
+                            // TODO Auto-generated method stub
+                            appIcon.setEnabled(true);
+                        }
+
+                        @Override
+                        public void onAnimationStart(Animator arg0) {
+                            // TODO Auto-generated method stub
+                            appIcon.setEnabled(false);
+                        } 
+                    });
+                    set.start();
+                    
+                 /*   ani.addListener(new AnimatorListenerAdapter(){
 
                         @Override
                         public void onAnimationEnd(Animator arg0) {
@@ -353,7 +387,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                             // TODO Auto-generated method stub
                             appIcon.setEnabled(false);
                         }} );
-                    ani.start();
+                    ani.start();*/
                     /*ViewPropertyAnimator.animate(appIcon).cancel();
                     ViewPropertyAnimator.animate(appIcon).rotation(360f).setDuration(1000).setListener(new AnimatorListenerAdapter() {
                         
@@ -556,10 +590,10 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
         // TODO Auto-generated method stub
         MainActivity.dismissSnackbar();
         if(scrollY == 0){
-            ViewHelper.setAlpha(shadowView, 0f);
+            ViewHelper.setAlpha(shadowView, 1f);
         }
         else{
-            ViewHelper.setAlpha(shadowView, 1f);
+            //ViewHelper.setAlpha(shadowView, 0f);
         }
         ViewHelper.setTranslationY(headerView, scrollY / 2);
     }

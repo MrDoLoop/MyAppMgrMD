@@ -48,8 +48,6 @@
                     android:layout_marginTop="25dp"
                     android:orientation="vertical" >
 
-                   <!-- android:background="@drawable/user_app_icon_bg"
-                        android:padding="3dp" -->
                     <ImageView
                         android:id="@+id/app_icon"
                         android:layout_width="48dp"
@@ -90,46 +88,59 @@
                 </com.doloop.www.myappmgr.material.filtermenu.FilterMenuLayout>
             </RelativeLayout>
 
-            <View
-                android:id="@+id/shadow"
-                android:layout_width="match_parent"
-                android:layout_height="8dp"
-                android:layout_above="@+id/row_container" />
             <!-- android:background="@drawable/shadow_bottom" -->
 
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/row_container"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@+id/header"
-                android:background="@color/windows_bg"
-                android:orientation="vertical"
-                android:paddingTop="10dp" >
+                android:layout_below="@+id/header" >
 
-                <include
-                    android:id="@+id/row_pkgname"
-                    layout="@layout/app_detail_row" />
+                <LinearLayout
+                    
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/windows_bg"
+                    android:orientation="vertical"
+                    android:paddingTop="10dp" >
 
-                <include
-                    android:id="@+id/row_version"
-                    layout="@layout/app_detail_row" />
+                    <include
+                        android:id="@+id/row_pkgname"
+                                
+                        layout="@layout/app_detail_row" />
 
-                <include
-                    android:id="@+id/row_apk_info"
-                    layout="@layout/app_detail_row" />
+                    <include
+                        android:id="@+id/row_version"
+                                
+                        layout="@layout/app_detail_row" />
 
-                <include
-                    android:id="@+id/row_time_info"
-                    layout="@layout/app_detail_row" />
+                    <include
+                        android:id="@+id/row_apk_info"
+                        layout="@layout/app_detail_row" />
 
-                <include
-                    android:id="@+id/row_activity"
-                    layout="@layout/app_detail_row" />
+                    <include
+                        android:id="@+id/row_time_info"
+                        layout="@layout/app_detail_row" />
 
-                <include
-                    android:id="@+id/row_componement"
-                    layout="@layout/app_detail_row" />
-            </LinearLayout>
+                    <include
+                        android:id="@+id/row_activity"
+                        layout="@layout/app_detail_row" />
+
+                    <include
+                        android:id="@+id/row_componement"
+                        layout="@layout/app_detail_row" />
+                </LinearLayout>
+
+                
+            </RelativeLayout>
+            
+            <View
+                    android:id="@+id/shadow"
+                    android:layout_width="match_parent"
+                    android:layout_height="8dp"
+                    android:layout_below="@+id/header"/>
+            
+            
         </RelativeLayout>
     </FrameLayout>
 
