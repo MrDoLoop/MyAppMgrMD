@@ -65,7 +65,8 @@
         <attr name="arc_bottom_text_size" format="dimension" />
     </declare-styleable>
     <declare-styleable name="ScrimInsetsView">
-        <attr name="insetForeground" format="reference|color" />
+        <attr name="insetForegroundTop" format="reference|color" />
+        <attr name="insetForegroundBottom" format="reference|color" />
     </declare-styleable>
     <declare-styleable name="ProgressWheel">
         <attr name="matProg_progressIndeterminate" format="boolean" />
