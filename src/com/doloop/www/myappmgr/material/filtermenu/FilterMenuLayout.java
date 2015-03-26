@@ -251,7 +251,7 @@ public class FilterMenuLayout extends ViewGroup{
             menu.getListener().onMenuExpand();
         }
     }
-    void toggle(boolean animate) {
+    public void toggle(boolean animate) {
         if (state== STATE_COLLAPSE) {
             expand(animate);
         } else if (state== STATE_EXPAND) {
