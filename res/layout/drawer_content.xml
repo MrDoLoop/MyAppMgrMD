@@ -48,6 +48,17 @@
         android:textSize="18sp"
         android:textStyle="bold" />
 
+    <com.doloop.www.myappmgr.material.widgets.DrawerItem
+        android:id="@+id/drawerRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/logo_txt"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/md_selector"
+        app:iconSrcId="@drawable/ic_refresh_black"
+        app:txt="@string/refresh" >
+    </com.doloop.www.myappmgr.material.widgets.DrawerItem>
+    <!--
     <com.doloop.www.myappmgr.material.widgets.DrawerItem2Rows
         android:id="@+id/backupApkDir"
         android:layout_marginTop="5dp"
@@ -59,6 +70,7 @@
         android:background="@drawable/md_selector"
         app:secondRowTxt="2222" >
     </com.doloop.www.myappmgr.material.widgets.DrawerItem2Rows>
+    -->
 
     <TextView
         android:id="@+id/ver"
@@ -75,15 +87,17 @@
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_above="@+id/drawerRefresh"
+        android:layout_above="@+id/drawerSettings"
         android:background="@color/drawer_divider" />
 
     <com.doloop.www.myappmgr.material.widgets.DrawerItem
-        android:id="@+id/drawerRefresh"
+        android:id="@+id/drawerSettings"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:background="@drawable/md_selector"
-        android:layout_alignParentBottom="true" >
+        app:iconSrcId="@drawable/ic_settings_black_24dp"
+        app:txt="@string/settings" >
     </com.doloop.www.myappmgr.material.widgets.DrawerItem>
 
 </RelativeLayout>
