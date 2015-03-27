@@ -817,6 +817,14 @@ public class Utils {
         ctx.startActivity(Intent.createChooser(sendIntent, ctx.getString(R.string.send_by)));// ChooserµÄ±êÌâ
     }
 
+    public static void chooseSendByAppWithAppList(Context ctx, ArrayList<AppInfo> appList) {
+        ArrayList<Uri> SnedApkUris = new ArrayList<Uri>();
+        for(AppInfo appInfo : appList){
+            SnedApkUris.add(Uri.parse("file://" + appInfo.apkFilePath));
+        }
+        Utils.chooseSendByApp(ctx, SnedApkUris);
+    }
+    
     public static void chooseSendByApp(Context ctx, ArrayList<Uri> Uris) {
         Intent sendIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
         sendIntent.setType("application/vnd.android.package-archive");
