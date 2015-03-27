@@ -26,7 +26,7 @@ import android.view.View;
  *         http://www.apache.org/licenses/LICENSE-2.0
  */
 public class ProgressWheel extends View {
-    private static final String TAG = ProgressWheel.class.getSimpleName();
+    //private static final String TAG = ProgressWheel.class.getSimpleName();
 
     //Sizes (with defaults in DP)
     private int circleRadius = 28;
