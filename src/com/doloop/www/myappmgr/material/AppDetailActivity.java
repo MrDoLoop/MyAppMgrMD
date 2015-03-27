@@ -25,11 +25,9 @@ import android.text.style.UnderlineSpan;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
-import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -79,6 +77,8 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
     private static final int SEND_ACTION = 4;
     
     public static final String REVEAL_START_POSITION = "REVEAL_START_POSITION";
+    
+    private boolean playStartAni = true;
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
@@ -91,21 +91,12 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
         appIcon = findViewById(R.id.app_icon);
         contentRootView = findViewById(R.id.content_root);
         rootScrollView = (ObservableScrollView) findViewById(R.id.root_scroll_view);
-        rootScrollView.setBackgroundColor(Color.TRANSPARENT);
         
-        
-        
-        //默认是从屏幕中心开始
-        int[] pos = getIntent().getIntArrayExtra(REVEAL_START_POSITION);
-        if(pos != null){
-            revalStartPosition = new Point(pos[0], pos[1]);
-        }
-        else{
-            revalStartPosition = new Point(Utils.getScreenWidth(AppDetailActivity.this)/2, Utils.getScreenHeight(AppDetailActivity.this)/2);
-        }
-        
-        headerImgView.setVisibility(View.INVISIBLE);
-        contentRootView.setVisibility(View.INVISIBLE);
+        rootScrollView.setScrollViewCallbacks(this);
+        headerView = findViewById(R.id.header);
+        revealView = (CircularRevealView) findViewById(R.id.reveal);
+        rowContainer = findViewById(R.id.row_container);
+
         Drawable shadow = ScrimUtil.makeCubicGradientScrimDrawable(
         // Color.parseColor("#7d000000"),
                 Color.GRAY,// "#55000000"
@@ -114,113 +105,121 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
         shadowView = this.findViewById(R.id.shadow);
         Utils.setBackgroundDrawable(findViewById(R.id.shadow), shadow);
         //ViewHelper.setAlpha(shadowView, 0f);
-        
-        rootScrollView.setScrollViewCallbacks(this);
-        headerView = findViewById(R.id.header);
-        revealView = (CircularRevealView) findViewById(R.id.reveal);
+       
         
         //强制使reveal填满屏幕，如果内容不够长，reveal只有屏幕的一点
         revealView.getLayoutParams().height = Utils.getScreenHeight(this);
         revealView.requestLayout();
 
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                int color = Color.parseColor("#00bcd4");//getResources().getColor(R.color.windows_bg);//Color.parseColor("#00bcd4");
-                revealView.reveal(revalStartPosition.x, revalStartPosition.y, color, 30, 700, new AnimatorListenerAdapter(){
-                    
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-                        
-                       
-                      //向下移动+alpha
-                        ViewHelper.setTranslationY(rowContainer, 250);
-                        ViewHelper.setAlpha(rowContainer, 0.5f);
-                        
-                        //向上移动+alpha
-                        ViewHelper.setTranslationY(headerImgView, -200);
-                        ViewHelper.setAlpha(headerImgView, 0.5f);
-                        
-                        ViewHelper.setAlpha(shadowView, 0.5f);
-                        ViewHelper.setTranslationY(shadowView, -200);
-          
-                        //ViewHelper.setTranslationY(headerView, -200);
-                        ViewHelper.setScaleX(appIcon, 0);
-                        ViewHelper.setScaleY(appIcon, 0);
-                        ViewHelper.setAlpha(appIcon, 0.0f);
-                        
-                        //隐藏
-                        ViewHelper.setAlpha(headerView, 0.0f);
-                        
-                        contentRootView.setVisibility(View.INVISIBLE);
-                        headerImgView.setVisibility(View.INVISIBLE);
-                        //shadowView.setVisibility(View.INVISIBLE);
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        // TODO Auto-generated method stub
-//                        revealView.hide(p.x, p.y, Color.TRANSPARENT, new AnimatorListenerAdapter(){
-//
-//                            @Override
-//                            public void onAnimationEnd(Animator animation) {
-//                                // TODO Auto-generated method stub
-//                                revealView.setVisibility(View.GONE);
-//                            }
-//                            
-//                        });
-                        //revealView.setVisibility(View.GONE);
-                        //ViewPropertyAnimator.animate(revealView).alpha(0).setDuration(150).start();
-                        //getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.primary_dark));
-                        
-                        ViewPropertyAnimator.animate(revealView).alpha(0).setDuration(500).start();
-                        contentRootView.setVisibility(View.VISIBLE);
-                        headerImgView.setVisibility(View.VISIBLE);
-                        
-                        Interpolator interpolator = new DecelerateInterpolator(3.f); 
-                        ViewPropertyAnimator.animate(rowContainer).alpha(1f).translationY(0).setInterpolator(interpolator)
-                        .setDuration(800).setListener(new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                
-                                revealView.setVisibility(View.GONE);
-
-                               //这里设置底部的padding，在长屏幕下。如果先设置了底部的padding，reaveal消失的时候，底部会出现一个空条
-                                if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT && Utils.hasNavBar(AppDetailActivity.this)) {
-                                    SystemBarTintManager tintManager = new SystemBarTintManager(AppDetailActivity.this);
-                                    SystemBarConfig config = tintManager.getConfig();
-                                    contentRootView.setPadding(0, config.getStatusBarHeight(), 0, config.getNavigationBarHeight());
-                                }
-                            }
-                        })  
-                        .start();
-                        ViewPropertyAnimator.animate(headerImgView).alpha(1f).translationY(0).setInterpolator(interpolator)
-                        .setDuration(800).start();  
-                        
-                        ViewPropertyAnimator.animate(shadowView).alpha(1f).translationY(0).setInterpolator(interpolator)
-                        .setDuration(800).start();  
-                        
-                        ViewPropertyAnimator.animate(headerView).alpha(1f).setInterpolator(interpolator)
-                        .setDuration(800).setStartDelay(300).start();
-                       
-                        
-                        ViewPropertyAnimator.animate(appIcon).alpha(1).scaleX(1).scaleY(1).alpha(1f).setInterpolator(new DecelerateInterpolator(3.f))
-                        .setDuration(1000).setStartDelay(400).start();
-                        
-                        rootScrollView.setBackgroundColor(getResources().getColor(R.color.windows_bg));
-                        
-                    }
-                    
-                });
+        if(playStartAni){
+            //默认是从屏幕中心开始
+            int[] pos = getIntent().getIntArrayExtra(REVEAL_START_POSITION);
+            if(pos != null){
+                revalStartPosition = new Point(pos[0], pos[1]);
             }
-        }, 100);
+            else{
+                revalStartPosition = new Point(Utils.getScreenWidth(AppDetailActivity.this)/2, Utils.getScreenHeight(AppDetailActivity.this)/2);
+            }
+            
+            headerImgView.setVisibility(View.INVISIBLE);
+            contentRootView.setVisibility(View.INVISIBLE);
+            rootScrollView.setBackgroundColor(Color.TRANSPARENT);
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
 
+                @Override
+                public void run() {
+                    int color = Color.parseColor("#00bcd4");//getResources().getColor(R.color.windows_bg);//Color.parseColor("#00bcd4");
+                    revealView.reveal(revalStartPosition.x, revalStartPosition.y, color, 30, 700, new AnimatorListenerAdapter(){
+                        
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                            
+                           
+                          //向下移动+alpha
+                            ViewHelper.setTranslationY(rowContainer, 250);
+                            ViewHelper.setAlpha(rowContainer, 0.5f);
+                            
+                            //向上移动+alpha
+                            ViewHelper.setTranslationY(headerImgView, -200);
+                            ViewHelper.setAlpha(headerImgView, 0.5f);
+                            
+                            ViewHelper.setAlpha(shadowView, 0.5f);
+                            ViewHelper.setTranslationY(shadowView, -200);
+              
+                            //ViewHelper.setTranslationY(headerView, -200);
+                            ViewHelper.setScaleX(appIcon, 0);
+                            ViewHelper.setScaleY(appIcon, 0);
+                            ViewHelper.setAlpha(appIcon, 0.0f);
+                            
+                            //隐藏
+                            ViewHelper.setAlpha(headerView, 0.0f);
+                            
+                            contentRootView.setVisibility(View.INVISIBLE);
+                            headerImgView.setVisibility(View.INVISIBLE);
+                            //shadowView.setVisibility(View.INVISIBLE);
+                        }
 
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            // TODO Auto-generated method stub
+//                            revealView.hide(p.x, p.y, Color.TRANSPARENT, new AnimatorListenerAdapter(){
+    //
+//                                @Override
+//                                public void onAnimationEnd(Animator animation) {
+//                                    // TODO Auto-generated method stub
+//                                    revealView.setVisibility(View.GONE);
+//                                }
+//                                
+//                            });
+                            //revealView.setVisibility(View.GONE);
+                            //ViewPropertyAnimator.animate(revealView).alpha(0).setDuration(150).start();
+                            //getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.primary_dark));
+                            
+                            ViewPropertyAnimator.animate(revealView).alpha(0).setDuration(500).start();
+                            contentRootView.setVisibility(View.VISIBLE);
+                            headerImgView.setVisibility(View.VISIBLE);
+                            
+                            Interpolator interpolator = new DecelerateInterpolator(3.f); 
+                            ViewPropertyAnimator.animate(rowContainer).alpha(1f).translationY(0).setInterpolator(interpolator)
+                            .setDuration(800).setListener(new AnimatorListenerAdapter() {
+                                @Override
+                                public void onAnimationEnd(Animator animation) {
+                                    
+                                    revealView.setVisibility(View.GONE);
 
-        // Row Container
-        rowContainer = findViewById(R.id.row_container);
+                                   //这里设置底部的padding，在长屏幕下。如果先设置了底部的padding，reaveal消失的时候，底部会出现一个空条
+                                    if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT && Utils.hasNavBar(AppDetailActivity.this)) {
+                                        SystemBarTintManager tintManager = new SystemBarTintManager(AppDetailActivity.this);
+                                        SystemBarConfig config = tintManager.getConfig();
+                                        contentRootView.setPadding(0, config.getStatusBarHeight(), 0, config.getNavigationBarHeight());
+                                    }
+                                }
+                            })  
+                            .start();
+                            ViewPropertyAnimator.animate(headerImgView).alpha(1f).translationY(0).setInterpolator(interpolator)
+                            .setDuration(800).start();  
+                            
+                            ViewPropertyAnimator.animate(shadowView).alpha(1f).translationY(0).setInterpolator(interpolator)
+                            .setDuration(800).start();  
+                            
+                            ViewPropertyAnimator.animate(headerView).alpha(1f).setInterpolator(interpolator)
+                            .setDuration(800).setStartDelay(300).start();
+                           
+                            
+                            ViewPropertyAnimator.animate(appIcon).alpha(1).scaleX(1).scaleY(1).alpha(1f).setInterpolator(new DecelerateInterpolator(3.f))
+                            .setDuration(1000).setStartDelay(400).start();
+                            
+                            rootScrollView.setBackgroundColor(getResources().getColor(R.color.windows_bg));
+                            
+                        }
+                        
+                    });
+                }
+            }, 100);
+        }
+
+        // Row Container    
         menuLayout = (FilterMenuLayout) findViewById(R.id.menu);
         new FilterMenu.Builder(this).addItem(R.drawable.ic_action_add).addItem(R.drawable.ic_action_clock)
                 .addItem(R.drawable.ic_action_clock).addItem(R.drawable.ic_action_clock)
@@ -476,7 +475,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
 
     @Override
     public void onBackPressed() {
-        finishActivtyWithAni();
+        Utils.finishActivtyWithAni(this);
     }
 
     @Override
@@ -492,7 +491,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
             case APP_ADDED:
             case APP_REMOVED:
                 if(ev.mPkgName.equals(curAppInfo.packageName)){
-                    finishActivtyWithAni();
+                    Utils.finishActivtyWithAni(this);
                 }
                 break;
             case APP_CHANGED:
@@ -502,10 +501,10 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
         }
     }
 
-    private void finishActivtyWithAni(){
-        finish();
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-    }
+//    private void finishActivtyWithAni(){
+//        finish();
+//        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+//    }
 
     private void fillRow(View view, final String title, final String description) {
         TextView titleView = (TextView) view.findViewById(R.id.title);
@@ -595,7 +594,14 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
         else{
             //ViewHelper.setAlpha(shadowView, 0f);
         }
-        ViewHelper.setTranslationY(headerView, scrollY / 2);
+        
+        //向上滚动 视察效果
+        //ViewHelper.setTranslationY(headerView, scrollY / 2);
+        
+        //向下滚动
+        ViewHelper.setTranslationY(headerView, scrollY * 1.5f);
+        //header固定不动
+        //ViewHelper.setTranslationY(headerImgView, scrollY);
     }
 
     @Override
