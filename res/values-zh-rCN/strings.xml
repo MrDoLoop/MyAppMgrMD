@@ -75,11 +75,11 @@
 	<string name="common">常规</string>
 	<string name="settings">设定</string>
 	<string name="play_ani_app_details">App详情页是否播放动画</string>
-	<string name="play_ani">播放动画</string>
-	<string name="not_paly_ani">不播放动画</string>
+	<string name="play_ani">动画已启动</string>
+	<string name="not_paly_ani">动画已禁止</string>
 	<string name="app_info">应用信息</string>
 	<string name="open_soure_license">开源代码许可</string>
-	<string name="thx_github">感谢github上的开源大神们!</string>
+	<string name="thx_github">感谢Github上的开源大神们!</string>
 	
 	
 </resources>

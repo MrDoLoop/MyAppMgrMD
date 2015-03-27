@@ -77,8 +77,8 @@
 	<string name="common">Common</string>
 	<string name="settings">Settings</string>
 	<string name="play_ani_app_details">Play Animation in App details</string>
-	<string name="play_ani">Play Animation</string>
-	<string name="not_paly_ani">Not play Animation</string>
+	<string name="play_ani">Animation enabled</string>
+	<string name="not_paly_ani">Animation disabled</string>
 	<string name="app_info">App Info.</string>
 	<string name="open_soure_license">Open source license</string>
 	<string name="thx_github">Thanks all the guys on Github !</string>
