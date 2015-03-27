@@ -1,9 +1,8 @@
 package com.doloop.www.myappmgr.material.fragments;
 
-import java.io.File;
-
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,22 +10,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.MaterialDialog;
+import com.doloop.www.myappmgr.material.R;
+import com.doloop.www.myappmgr.material.SettingActivity;
 import com.doloop.www.myappmgr.material.events.DrawerItemClickEvent;
 import com.doloop.www.myappmgr.material.events.DrawerItemClickEvent.DrawerItem;
 import com.doloop.www.myappmgr.material.utils.NanAppMark;
 import com.doloop.www.myappmgr.material.utils.Utils;
-import com.doloop.www.myappmgr.material.widgets.DrawerItem2Rows;
-import com.doloop.www.myappmgr.material.R;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.AnimatorListenerAdapter;
 import com.nineoldandroids.animation.ObjectAnimator;
+
 import de.greenrobot.event.EventBus;
 
-public class DrawerFragment extends Fragment implements FolderSelectorDialog.FolderSelectCallback {
+public class DrawerFragment extends Fragment {
     private static DrawerFragment uniqueInstance = null;
-    private DrawerItem2Rows DrawerItemBackupDir;
-    //private static Context mContext;
 
     public DrawerFragment() {
 
@@ -61,20 +58,21 @@ public class DrawerFragment extends Fragment implements FolderSelectorDialog.Fol
             }
         });
         
-        View tv = FragmentView.findViewById(R.id.logo_txt);
-        NanAppMark.attach(tv);
-        
-        DrawerItemBackupDir = (DrawerItem2Rows) FragmentView.findViewById(R.id.backupApkDir);
-        DrawerItemBackupDir.setSecondRowTxt(Utils.getBackUpAPKfileDir(getActivity()));
-        DrawerItemBackupDir.setOnClickListener(new View.OnClickListener() {
+        View settingsItem = FragmentView.findViewById(R.id.drawerSettings);
+        settingsItem.setOnClickListener(new View.OnClickListener() {
             
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                new FolderSelectorDialog().show(getActivity().getSupportFragmentManager(),DrawerFragment.this);
+                Utils.startActivtyWithAni(getActivity(), new Intent(getActivity(), SettingActivity.class));
+                EventBus.getDefault().post(new DrawerItemClickEvent(DrawerItem.SETTINGS));
             }
         });
         
+        
+        View tv = FragmentView.findViewById(R.id.logo_txt);
+        NanAppMark.attach(tv);
+      
         final View headerImg = FragmentView.findViewById(R.id.header_image);
         headerImg.setOnClickListener(new View.OnClickListener() {
             
@@ -184,44 +182,4 @@ public class DrawerFragment extends Fragment implements FolderSelectorDialog.Fol
        
     }
 
-    @Override
-    public void onFolderSelection(File folder) {
-        // TODO Auto-generated method stub
-        final String newpath = folder.getAbsolutePath()+"/";
-        final String curBackupPath = Utils.getBackUpAPKfileDir(getActivity());
-        DrawerItemBackupDir.setSecondRowTxt(newpath);
-        
-        if(!curBackupPath.equals(newpath)){
-            Utils.saveBackUpAPKfileDir(getActivity(), newpath);
-            MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
-            .content(R.string.move_apk)
-            .positiveText(R.string.ok)
-            .negativeText(R.string.cancel)
-            .callback(new MaterialDialog.ButtonCallback() {
-                @Override
-                public void onPositive(MaterialDialog dialog) {
-                    DrawerItemClickEvent changeDirEv = new DrawerItemClickEvent(DrawerItem.CHG_BACKUP_DIR);
-                    changeDirEv.oldPath = curBackupPath;
-                    changeDirEv.newPath = newpath;
-                    EventBus.getDefault().post(changeDirEv);
-                }
-
-                @Override
-                public void onNegative(MaterialDialog dialog) {
-                    
-                }
-            }).build();
-            dialog.setCanceledOnTouchOutside(false);
-            dialog.show();
-          //把旧目录下的apk文件移动到新的目录下
-            /*try {
-                FileUtils.copyDirectory(new File(curBackupPath), new File(newpath));
-                FileUtils.deleteDirectory(new File(curBackupPath));
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }*/
-            
-        }
-    }
 }
