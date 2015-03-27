@@ -29,6 +29,7 @@ import org.apache.commons.io.comparator.LastModifiedFileComparator;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -65,8 +66,19 @@ import android.widget.AbsListView;
 import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.fragments.SortTypeDialogFragment;
 import com.doloop.www.myappmgr.material.R;
+import com.doloop.www.myappmgr.material.SettingActivity;
 
 public class Utils {
+    
+    public static void startActivtyWithAni(Activity activity, Intent intent){
+        activity.startActivity(new Intent(activity, SettingActivity.class));
+        activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+    }
+    
+    public static void finishActivtyWithAni(Activity activity){
+        activity.finish();
+        activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+    }
     
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @SuppressWarnings("deprecation")
