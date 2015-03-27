@@ -87,6 +87,9 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
         setContentView(R.layout.activity_app_details);
         
         EventBus.getDefault().register(this);
+        
+        playStartAni = Utils.playAniAppDetails(this);
+        
         headerImgView = findViewById(R.id.header_image);
         appIcon = findViewById(R.id.app_icon);
         contentRootView = findViewById(R.id.content_root);
