@@ -106,7 +106,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                 8, // ½¥±ä²ãÊý
                 Gravity.TOP);
         shadowView = this.findViewById(R.id.shadow);
-        Utils.setBackgroundDrawable(findViewById(R.id.shadow), shadow);
+        Utils.setBackgroundDrawable(shadowView, shadow);
         //ViewHelper.setAlpha(shadowView, 0f);
        
         
