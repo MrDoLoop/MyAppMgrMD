@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.text.TextPaint;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -145,12 +146,16 @@ public class SettingActivity extends SwipeBackActivity implements FolderSelectCa
 
     private void fillCategory(TextView tv, int strId) {
         tv.setTypeface(TypefaceHelper.get(SettingActivity.this, "RobotoMedium"));// RobotoRegular
+        TextPaint tp = tv.getPaint();
+        tp.setFakeBoldText(true);
         tv.setText(strId);
     }
 
     private void fillTwoRowsInfo(View ItemView, String titleStr, String summaryStr) {
         TextView title = (TextView) ItemView.findViewById(R.id.title);
         title.setTypeface(TypefaceHelper.get(SettingActivity.this, "RobotoRegular"));// RobotoRegular
+        TextPaint tp = title.getPaint();
+        tp.setFakeBoldText(true);
         title.setText(titleStr);
         TextView summary = (TextView) ItemView.findViewById(R.id.summary);
         summary.setTypeface(TypefaceHelper.get(SettingActivity.this, "RobotoRegular"));//
