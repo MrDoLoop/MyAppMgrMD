@@ -2,10 +2,13 @@ package com.doloop.www.myappmgr.material;
 
 import java.io.File;
 
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
@@ -19,6 +22,7 @@ import com.doloop.www.myappmgr.material.events.DrawerItemClickEvent.DrawerItem;
 import com.doloop.www.myappmgr.material.fragments.FolderSelectorDialog;
 import com.doloop.www.myappmgr.material.fragments.FolderSelectorDialog.FolderSelectCallback;
 import com.doloop.www.myappmgr.material.swipeback.lib.SwipeBackActivity;
+import com.doloop.www.myappmgr.material.utils.ScrimUtil;
 import com.doloop.www.myappmgr.material.utils.Utils;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.readystatesoftware.systembartint.SystemBarTintManager.SystemBarConfig;
@@ -44,6 +48,14 @@ public class SettingActivity extends SwipeBackActivity implements FolderSelectCa
         ActionBar mActionBar = getSupportActionBar();
         mActionBar.setDisplayHomeAsUpEnabled(true);
 
+        Drawable shadow = ScrimUtil.makeCubicGradientScrimDrawable(
+                // Color.parseColor("#7d000000"),
+                        Color.GRAY,// "#55000000"
+                        8, // ½¥±ä²ãÊý
+                        Gravity.TOP);
+        View shadowView = findViewById(R.id.shadow);
+        Utils.setBackgroundDrawable(shadowView, shadow);
+        
         categoryCommon = (TextView) findViewById(R.id.common_cate);
         fillCategory(categoryCommon, R.string.common);
         categoryInfo = (TextView) findViewById(R.id.info_cate);
