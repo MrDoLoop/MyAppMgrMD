@@ -76,6 +76,33 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/dividers" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:layout_gravity="center_horizontal"
+                    android:drawableLeft="@drawable/email"
+                    android:gravity="center_vertical"
+                    android:text=" nilaile8@gmail.com"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="15sp"
+                    android:autoLink="email"
+                    android:textColorLink="?attr/colorPrimary"
+                    android:textStyle="bold" />
+                
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_gravity="center_horizontal"
+                    android:drawableLeft="@drawable/qq"
+                    android:gravity="center_vertical"
+                    android:text=" 510887760"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+                
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
