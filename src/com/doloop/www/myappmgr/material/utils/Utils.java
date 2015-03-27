@@ -30,6 +30,8 @@ import org.apache.commons.io.comparator.LastModifiedFileComparator;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -68,6 +70,20 @@ import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.fragments.SortTypeDialogFragment;
 
 public class Utils {
+    
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    @SuppressWarnings("deprecation")
+    public static void copyToClipboard(Context ctx,CharSequence label, CharSequence copiedText){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            ClipboardManager clipboard = (ClipboardManager) ctx.getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText(label, copiedText);
+            clipboard.setPrimaryClip(clip);
+        } else {
+            android.text.ClipboardManager clipboardManager =
+                    (android.text.ClipboardManager) ctx.getSystemService(Context.CLIPBOARD_SERVICE);
+            clipboardManager.setText(copiedText);
+        }
+    }
     
     public static void startActivtyWithAni(Activity activity, Intent intent){
         activity.startActivity(intent);
@@ -231,6 +247,7 @@ public class Utils {
      * 
      * @return [0]:rawSize [1]: œ‘ æstring
      */
+    @SuppressWarnings("deprecation")
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     public static String[] getSdUsedSpaceInfo(){
         long usedSpace = -1L;
@@ -247,7 +264,7 @@ public class Utils {
         //Formatter.formatFileSize(ctx, availableSpace);
         return retVal;
     }
-    
+    @SuppressWarnings("deprecation")
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     public static String getSdUsedSpaceStr(){
         long usedSpace = -1L;
@@ -261,7 +278,7 @@ public class Utils {
        
         return formatFileSize(usedSpace);
     }
-    
+    @SuppressWarnings("deprecation")
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     public static long getSdUsedSpaceRawSize(){
         long usedSpace = -1L;
@@ -315,7 +332,7 @@ public class Utils {
         //Formatter.formatFileSize(ctx, availableSpace);
         return retVal;
     }*/
-    
+    @SuppressWarnings("deprecation")
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     public static long getSdFreeSpaceRawSize(){
         long availableSpace = -1L;
@@ -329,7 +346,7 @@ public class Utils {
         //Formatter.formatFileSize(ctx, availableSpace);
         return availableSpace;
     }
-    
+    @SuppressWarnings("deprecation")
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     public static String[] getSdTotalSpaceInfo(){
         long totalSpace = -1L;
@@ -347,6 +364,7 @@ public class Utils {
     }
     
     
+    @SuppressWarnings("deprecation")
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     public static long getSdTotalSpaceRawSize(){
         long totalSpace = -1L;
@@ -360,7 +378,7 @@ public class Utils {
        
         return totalSpace;
     }
-    
+    @SuppressWarnings("deprecation")
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     public static String getSdTotalSpace(){
         long totalSpace = -1L;
