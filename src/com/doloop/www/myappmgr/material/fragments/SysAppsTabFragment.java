@@ -355,10 +355,15 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
                     
                     AppDetailActivity.curAppInfo = item.appinfo;
                     Intent intent = new Intent(getActivity(), AppDetailActivity.class);
-                    int[] revealStartPos = Utils.findViewCenterXY(v);//v.findViewById(R.id.app_icon)
-                    intent.putExtra(AppDetailActivity.REVEAL_START_POSITION, revealStartPos);
-                    startActivity(intent);
-                    getActivity().overridePendingTransition(0, 0);
+                    if(Utils.playAniAppDetails(getActivity())){
+                        int[] revealStartPos = Utils.findViewCenterXY(v);//v.findViewById(R.id.app_icon)
+                        intent.putExtra(AppDetailActivity.REVEAL_START_POSITION, revealStartPos);
+                        startActivity(intent);
+                        getActivity().overridePendingTransition(0, 0);
+                    }
+                    else{
+                        Utils.startActivtyWithAni(getActivity(), intent);
+                    }
                 }
             }
         } else {
