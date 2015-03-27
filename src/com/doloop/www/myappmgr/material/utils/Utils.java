@@ -63,15 +63,14 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 
+import com.doloop.www.myappmgr.material.R;
 import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.fragments.SortTypeDialogFragment;
-import com.doloop.www.myappmgr.material.R;
-import com.doloop.www.myappmgr.material.SettingActivity;
 
 public class Utils {
     
     public static void startActivtyWithAni(Activity activity, Intent intent){
-        activity.startActivity(new Intent(activity, SettingActivity.class));
+        activity.startActivity(intent);
         activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
     
@@ -828,6 +827,19 @@ public class Utils {
         ctx.startActivity(Intent.createChooser(sendIntent, ctx.getString(R.string.send_by)));// ChooserµÄ±êÌâ
     }
 
+    public static boolean playAniAppDetails(Context ctx) {
+        boolean retVal = ctx.getSharedPreferences("MyAppMgrSharedPreferences", 0).getBoolean("playAniAppDetails", true);
+        return retVal;
+    }
+
+    public static void setPlayAniAppDetails(Context ctx, boolean flag) {
+        SharedPreferences.Editor shPrefEdit = ctx.getSharedPreferences("MyAppMgrSharedPreferences", 0).edit();
+        shPrefEdit.putBoolean("playAniAppDetails", flag);
+        // shPrefEdit.commit();
+        SharedPreferencesCompat.apply(shPrefEdit);
+    }
+    
+    
     public static boolean isAppListInDb(Context ctx) {
         boolean retVal = ctx.getSharedPreferences("MyAppMgrSharedPreferences", 0).getBoolean("isAppListInDb", false);
         return retVal;
