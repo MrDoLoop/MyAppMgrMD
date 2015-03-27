@@ -101,6 +101,7 @@
                     android:text=" 510887760"
                     android:textColor="?attr/colorPrimary"
                     android:textSize="15sp"
+                    android:layout_marginBottom="10dp"
                     android:textStyle="bold" />
                 
             </LinearLayout>
