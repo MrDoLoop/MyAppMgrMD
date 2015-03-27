@@ -38,6 +38,14 @@
             android:theme="@style/AppTheme.AppDetails" 
             android:windowSoftInputMode="adjustNothing" >
         </activity>
+        <activity
+            android:name="com.doloop.www.myappmgr.material.SettingActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.AppDetails" 
+            android:windowSoftInputMode="adjustNothing" >
+        </activity>
         
         <receiver android:name="com.doloop.www.myappmgr.material.AppUpdateStaticReceiver" >
             <intent-filter>

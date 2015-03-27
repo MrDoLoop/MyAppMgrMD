@@ -48,6 +48,8 @@
     <string name="sdcard_changed">Sdcard有变化，请重启！</string>
     <string name="cancel">取消</string>
     <string name="ok">确定</string>
+    <string name="no">否</string>
+    <string name="yes">是</string>
     <string name="default_dir">默认目录</string>
     <string name="back_dir">备份文件夹</string>
     <string name="sd_free">SD 空闲容量</string>
@@ -69,4 +71,15 @@
 	<string name="componement">组件</string>
 	<string name="copied">已复制</string>
 	<string name="none_info">无信息</string>
+	
+	<string name="common">常规</string>
+	<string name="settings">设定</string>
+	<string name="play_ani_app_details">App详情页是否播放动画</string>
+	<string name="play_ani">播放动画</string>
+	<string name="not_paly_ani">不播放动画</string>
+	<string name="app_info">应用信息</string>
+	<string name="open_soure_license">开源代码许可</string>
+	<string name="thx_github">感谢github上的开源大神们!</string>
+	
+	
 </resources>
