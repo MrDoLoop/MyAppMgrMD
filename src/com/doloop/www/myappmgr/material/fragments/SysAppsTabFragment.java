@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.DataSetObserver;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.view.ActionMode;
@@ -63,6 +64,7 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
     private View mEmptyView;
     public static boolean isInActoinMode = false;
     private SelectionDialogFragment SelectionDialog;
+    private Handler mHandler = new Handler();
 
     /*
      * private OnSysAppListItemSelectedListener mListener;
@@ -274,6 +276,7 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
         // Clean up any resources including ending threads,
         // closing database connections etc.
         super.onDestroy();
+        mHandler.removeCallbacksAndMessages(null);
         EventBus.getDefault().unregister(this);
         mAdapter.unregisterDataSetObserver(mDataSetObserver);
         mAdapter = null;
@@ -529,8 +532,11 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
                                     if (mAdapter.getSelectedItemCnt() == 0) {
                                         MainActivity.T(R.string.nothing_selected);
                                     } else {
-                                        EventBus.getDefault().post(
-                                                new BackupAppEvent(mAdapter.getSelectedItemList(), true));
+                                        Utils.chooseSendByAppWithAppList(getActivity(), mAdapter.getSelectedItemList());
+                                        finishActionMode();
+                                        //MainActivity.sActionMode.finish();
+//                                        EventBus.getDefault().post(
+//                                                new BackupAppEvent(mAdapter.getSelectedItemList(), true));
 
                                     }
                                     break;
@@ -633,4 +639,20 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
         mAdapter.notifyDataSetChanged();
     }
 
+    private void finishActionMode(){
+        if(android.os.Build.VERSION.SDK_INT >= 11){
+            MainActivity.sActionMode.finish();
+        }
+        else{//2.3系统的toolbar有bug
+            //https://github.com/JakeWharton/ActionBarSherlock/issues/487
+            mHandler.postDelayed(new Runnable(){
+
+                @Override
+                public void run() {
+                    // TODO Auto-generated method stub
+                    MainActivity.sActionMode.finish();
+                }}, 500);
+        }
+    }
+    
 }

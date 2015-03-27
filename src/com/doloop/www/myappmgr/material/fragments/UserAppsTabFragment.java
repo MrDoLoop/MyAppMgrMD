@@ -785,9 +785,10 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                                     if (mAdapter.getSelectedItemCnt() == 0) {
                                         MainActivity.T(R.string.nothing_selected);
                                     } else {
-                                        EventBus.getDefault().post(
-                                                new BackupAppEvent(mAdapter.getSelectedItemList(), true));
-
+                                        Utils.chooseSendByAppWithAppList(getActivity(), mAdapter.getSelectedItemList());
+                                        finishActionMode();
+                                        /*EventBus.getDefault().post(
+                                                new BackupAppEvent(mAdapter.getSelectedItemList(), true));*/
                                     }
                                     break;
 
@@ -810,19 +811,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                                             startActivity(uninstallIntent);
                                         }
                                         
-                                        if(android.os.Build.VERSION.SDK_INT >= 11){
-                                            MainActivity.sActionMode.finish();
-                                        }
-                                        else{//2.3系统的toolbar有bug
-                                            //https://github.com/JakeWharton/ActionBarSherlock/issues/487
-                                            mHandler.postDelayed(new Runnable(){
-
-                                                @Override
-                                                public void run() {
-                                                    // TODO Auto-generated method stub
-                                                    MainActivity.sActionMode.finish();
-                                                }}, 500);
-                                        }
+                                        finishActionMode();
                                     }
                                     break;
                             }
@@ -863,6 +852,23 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
 
     // IconClickListener--end
 
+    
+    private void finishActionMode(){
+        if(android.os.Build.VERSION.SDK_INT >= 11){
+            MainActivity.sActionMode.finish();
+        }
+        else{//2.3系统的toolbar有bug
+            //https://github.com/JakeWharton/ActionBarSherlock/issues/487
+            mHandler.postDelayed(new Runnable(){
+
+                @Override
+                public void run() {
+                    // TODO Auto-generated method stub
+                    MainActivity.sActionMode.finish();
+                }}, 500);
+        }
+    }
+    
     @Override
     public void onUserAppMoreActionListItemClickListener(DialogInterface dialog, int item, AppInfo appInfo) {
         // TODO Auto-generated method stub
@@ -876,7 +882,9 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
             }
         } else if (item == 1) // send
         {
-            String BACK_UP_FOLDER = Utils.getBackUpAPKfileDir(getActivity());
+            Utils.chooseSendByApp(getActivity(), Uri.parse("file://" + appInfo.apkFilePath));
+            
+            /*String BACK_UP_FOLDER = Utils.getBackUpAPKfileDir(getActivity());
             String sdAPKfileName = Utils.BackupApp(appInfo, BACK_UP_FOLDER);
             if (sdAPKfileName != null) {
                 ArrayList<AppInfo> list = new ArrayList<AppInfo>();
@@ -885,7 +893,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                 Utils.chooseSendByApp(getActivity(), Uri.parse("file://" + sdAPKfileName));
             } else {
                 MainActivity.T(R.string.error);
-            }
+            }*/
         }
     }
 
