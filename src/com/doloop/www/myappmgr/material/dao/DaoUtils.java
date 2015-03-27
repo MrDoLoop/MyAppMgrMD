@@ -75,7 +75,10 @@ public class DaoUtils {
 
     public static void deleteAppInfo(Context context, AppInfo appInfo) {
         Utils.deleteAppIconInCache(context, appInfo);
-        getDaoSession(context, false).getAppInfoDao().deleteByKey(appInfo.id);
+        if(appInfo != null && appInfo.id != null){
+            getDaoSession(context, false).getAppInfoDao().deleteByKey(appInfo.id);
+        }
+        
     }
 
     public static void deleteAppInfo(Context context, String pkName) {
