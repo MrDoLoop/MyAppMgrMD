@@ -40,7 +40,7 @@ public class SettingActivity extends SwipeBackActivity implements FolderSelectCa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_setting_layout_v2);
+        setContentView(R.layout.activity_setting_layout);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
