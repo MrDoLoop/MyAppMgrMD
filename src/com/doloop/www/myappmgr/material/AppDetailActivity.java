@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import android.annotation.TargetApi;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
@@ -519,13 +517,11 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
         }
 
         view.setOnLongClickListener(new View.OnLongClickListener() {
-            @SuppressWarnings("deprecation")
-            @TargetApi(Build.VERSION_CODES.HONEYCOMB)
             @Override
             public boolean onLongClick(View v) {
                 // TODO Auto-generated method stub
                 String copiedStr = title + ":" + description;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
                     ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
                     ClipData clip = ClipData.newPlainText(title, copiedStr);
                     clipboard.setPrimaryClip(clip);
@@ -533,7 +529,8 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                     android.text.ClipboardManager clipboardManager =
                             (android.text.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
                     clipboardManager.setText(copiedStr);
-                }
+                }*/
+                Utils.copyToClipboard(AppDetailActivity.this, title, copiedStr);
                 SpannableString spanString = new SpannableString(title + " " + getString(R.string.copied));
                 spanString.setSpan(new UnderlineSpan(), 0, title.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 spanString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.theme_blue_light)), 0,
