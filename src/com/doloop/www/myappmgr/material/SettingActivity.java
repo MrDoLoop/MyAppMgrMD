@@ -2,8 +2,10 @@ package com.doloop.www.myappmgr.material;
 
 import java.io.File;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -37,6 +39,8 @@ public class SettingActivity extends SwipeBackActivity implements FolderSelectCa
     private View playAniAppDetails;
     private View openSource;
     private View appInfoRow;
+    private TextView emailTv;
+    private TextView qqTv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +61,38 @@ public class SettingActivity extends SwipeBackActivity implements FolderSelectCa
         View shadowView = findViewById(R.id.shadow);
         Utils.setBackgroundDrawable(shadowView, shadow);
         
+        emailTv = (TextView) findViewById(R.id.email_tv);
+        emailTv.setOnClickListener(new View.OnClickListener() {
+            
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                Intent intent = new Intent(Intent.ACTION_SENDTO);
+                intent.setData(Uri.parse("mailto:"+emailTv.getText().toString().trim()));
+                startActivity(intent);
+            }
+        });
+        emailTv.setOnLongClickListener(new View.OnLongClickListener() {
+            
+            @Override
+            public boolean onLongClick(View v) {
+                // TODO Auto-generated method stub
+                Utils.copyToClipboard(SettingActivity.this, "email", emailTv.getText().toString().trim());
+                MainActivity.T("Email "+getString(R.string.copied));
+                return true;
+            }
+        });
+        qqTv = (TextView) findViewById(R.id.qq_tv);
+        qqTv.setOnLongClickListener(new View.OnLongClickListener() {
+            
+            @Override
+            public boolean onLongClick(View v) {
+                // TODO Auto-generated method stub
+                Utils.copyToClipboard(SettingActivity.this, "qq", emailTv.getText().toString().trim());
+                MainActivity.T("QQ "+getString(R.string.copied));
+                return true;
+            }
+        });
         categoryCommon = (TextView) findViewById(R.id.common_cate);
         fillCategory(categoryCommon, R.string.common);
         categoryInfo = (TextView) findViewById(R.id.info_cate);
