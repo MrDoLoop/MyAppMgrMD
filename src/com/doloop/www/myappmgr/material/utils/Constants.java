@@ -11,5 +11,7 @@ public class Constants {
     
     public static String MY_PACKAGE_NAME = "";
     
+    public static final boolean HANDLE_PKG_CHG = false;
+    
     public static final String DEF_BACKUP_DIR = Environment.getExternalStorageDirectory().toString() + "/MyAppMgrMD/";
 }
