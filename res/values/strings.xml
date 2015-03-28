@@ -80,7 +80,7 @@
 	<string name="play_ani">Animation enabled</string>
 	<string name="not_paly_ani">Animation disabled</string>
 	<string name="app_info">App Info.</string>
-	<string name="open_soure_license">Open source license</string>
+	<string name="open_soure_license">Open source licenses</string>
 	<string name="thx_github">Thanks all the guys on Github !</string>
 
 </resources>
