@@ -78,6 +78,7 @@
                     android:background="@color/dividers" />
 
                 <TextView
+                    android:id="@+id/email_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
@@ -87,11 +88,10 @@
                     android:text=" nilaile8@gmail.com"
                     android:textColor="?attr/colorPrimary"
                     android:textSize="15sp"
-                    android:autoLink="email"
-                    android:textColorLink="?attr/colorPrimary"
                     android:textStyle="bold" />
                 
                 <TextView
+                    android:id="@+id/qq_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
