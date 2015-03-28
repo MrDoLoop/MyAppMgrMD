@@ -79,7 +79,8 @@
 	<string name="not_paly_ani">动画已禁止</string>
 	<string name="app_info">应用信息</string>
 	<string name="open_soure_license">开源代码许可</string>
-	<string name="thx_github">感谢Github上的开源大神们!</string>
+	<string name="thx_github">感谢Github和Stackoverflow上的各种大神们!</string>
 	
+	<string name="copy_right">版权所有 \u00A9 2015 草创团队</string>
 	
 </resources>
