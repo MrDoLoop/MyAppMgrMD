@@ -72,7 +72,7 @@
                         android:ellipsize="marquee"
                         android:marqueeRepeatLimit="1"
                         android:singleLine="true"
-                        android:text="App Version"
+                        android:text="App pkg"
                         android:textColor="@color/gray" />
 
                     <TextView

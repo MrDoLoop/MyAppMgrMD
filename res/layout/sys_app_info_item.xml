@@ -15,7 +15,7 @@
         <RelativeLayout
             android:id="@+id/rootLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="65dp"
             android:background="@drawable/list_row_item_bg"
             android:descendantFocusability="beforeDescendants"
             android:padding="5dp" >
@@ -25,40 +25,54 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
                 android:layout_centerVertical="true"
                 android:background="@drawable/sys_app_icon_bg"
                 android:padding="3dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/sysapp_holder" />
 
-            <TextView
-                android:id="@+id/app_name"
+            <LinearLayout
+                android:id="@+id/text_linear"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/app_icon"
+                android:layout_height="match_parent"
                 android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
                 android:layout_toRightOf="@+id/app_icon"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:text="App Name"
-                android:textColor="@color/black"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+                android:orientation="vertical"
+                android:weightSum="3" >
 
-            <TextView
-                android:id="@+id/app_version"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/app_icon"
-                android:layout_alignLeft="@+id/app_name"
-                android:layout_alignRight="@+id/app_name"
-                android:ellipsize="marquee"
-                android:marqueeRepeatLimit="1"
-                android:singleLine="true"
-                android:text="App Version"
-                android:textColor="@color/gray" />
+                <TextView
+                    android:id="@+id/app_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:text="App Name"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/app_pkgname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ellipsize="middle"
+                    android:singleLine="true"
+                    android:text="App pkg"
+                    android:textColor="@color/gray" />
+
+                <TextView
+                    android:id="@+id/app_version"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="1"
+                    android:singleLine="true"
+                    android:text="App Version"
+                    android:textColor="@color/gray" />
+            </LinearLayout>
         </RelativeLayout>
     </android.support.v7.widget.CardView>
 
