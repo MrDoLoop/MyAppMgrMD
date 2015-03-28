@@ -67,10 +67,8 @@ public class SettingActivity extends SwipeBackActivity implements FolderSelectCa
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                //http://stackoverflow.com/questions/6506637/only-email-apps-to-resolve-an-intent
-                Intent intent = new Intent(Intent.ACTION_SENDTO);
-                intent.setData(Uri.parse("mailto:"+emailTv.getText().toString().trim()));
-                startActivity(intent);
+                sendMail(emailTv.getText().toString().trim());
+               
             }
         });
         emailTv.setOnLongClickListener(new View.OnLongClickListener() {
@@ -191,8 +189,8 @@ public class SettingActivity extends SwipeBackActivity implements FolderSelectCa
     private void fillTwoRowsInfo(View ItemView, String titleStr, String summaryStr) {
         TextView title = (TextView) ItemView.findViewById(R.id.title);
         title.setTypeface(TypefaceHelper.get(SettingActivity.this, "RobotoRegular"));// RobotoRegular
-        TextPaint tp = title.getPaint();
-        tp.setFakeBoldText(true);
+//        TextPaint tp = title.getPaint();
+//        tp.setFakeBoldText(true);
         title.setText(titleStr);
         TextView summary = (TextView) ItemView.findViewById(R.id.summary);
         summary.setTypeface(TypefaceHelper.get(SettingActivity.this, "RobotoRegular"));//
@@ -233,6 +231,35 @@ public class SettingActivity extends SwipeBackActivity implements FolderSelectCa
         Utils.finishActivtyWithAni(this);
     }
 
+    public void sendMail(String addr) {
+        boolean handled = false;
+        
+        try{
+            //http://stackoverflow.com/questions/6506637/only-email-apps-to-resolve-an-intent
+            //有bug如果没有emial客户端就崩溃了
+            Intent intent = new Intent(Intent.ACTION_SENDTO);
+            intent.setData(Uri.parse("mailto:"+addr));
+            startActivity(intent);
+            return;
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            handled = false;
+        }
+        
+        if(!handled){
+            String[] reciver = new String[] { addr }; 
+            String mybody = "";  
+            Intent myIntent = new Intent(android.content.Intent.ACTION_SEND);  
+            myIntent.setType("plain/text");  
+            myIntent.putExtra(android.content.Intent.EXTRA_EMAIL, reciver);    
+            myIntent.putExtra(android.content.Intent.EXTRA_TEXT, mybody);  
+            startActivity(myIntent);  
+        }
+       
+    }  
+    
+    
     @Override
     public void onFolderSelection(File folder) {
         // TODO Auto-generated method stub

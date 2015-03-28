@@ -230,6 +230,7 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
                 appItemHolder.RootLayout = (RelativeLayout) convertView.findViewById(R.id.rootLayout);
                 appItemHolder.AppNameTextView = (TextView) convertView.findViewById(R.id.app_name);
                 appItemHolder.AppVersionTextView = (TextView) convertView.findViewById(R.id.app_version);
+                appItemHolder.AppPkgTextView = (TextView) convertView.findViewById(R.id.app_pkgname);
                 appItemHolder.AppIconImageView = (ImageView) convertView.findViewById(R.id.app_icon);
                 appItemHolder.AppIconImageView.setOnClickListener(this);
                 /*appItemHolder.AppIconImageView.setOnClickListener(new View.OnClickListener() {
@@ -262,6 +263,8 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
             appItemHolder.AppNameTextView.setText(appInfo.appName);
             appItemHolder.AppVersionTextView.setText("v" + appInfo.versionName + " | " + appInfo.appSizeStr + " | "
                     + appInfo.lastModifiedTimeStr);
+            appItemHolder.AppPkgTextView.setText(appInfo.packageName);
+            
             appItemHolder.AppVersionTextView.setSelected(false);
             // appViewHolder.AppIconImageView.setImageDrawable(appInfo.iconDrawable);
             // Picasso.with(mCtx).load(new File(Utilities.getAppIconCacheDir(mCtx), appInfo.packageName +
@@ -337,6 +340,7 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
     static class AppItemViewHolder implements Target {
         TextView AppNameTextView;
         TextView AppVersionTextView;
+        TextView AppPkgTextView;
         ImageView AppIconImageView;
         RelativeLayout RootLayout;
 
