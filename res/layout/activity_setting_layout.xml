@@ -84,9 +84,10 @@
                     android:layout_marginTop="15dp"
                     android:layout_gravity="center_horizontal"
                     android:drawableLeft="@drawable/email"
+                    android:drawablePadding="3dp"
                     android:gravity="center_vertical"
-                    android:text=" nilaile8@gmail.com"
-                    android:textColor="?attr/colorPrimary"
+                    android:text="nilaile8@gmail.com"
+                    android:textColor="@color/link_txt_sel"
                     android:textSize="15sp"
                     android:textStyle="bold" />
                 
@@ -98,8 +99,9 @@
                     android:layout_gravity="center_horizontal"
                     android:drawableLeft="@drawable/qq"
                     android:gravity="center_vertical"
-                    android:text=" 510887760"
-                    android:textColor="?attr/colorPrimary"
+                    android:text="510887760"
+                    android:drawablePadding="3dp"
+                    android:textColor="@color/link_txt_sel"
                     android:textSize="15sp"
                     android:layout_marginBottom="10dp"
                     android:textStyle="bold" />
