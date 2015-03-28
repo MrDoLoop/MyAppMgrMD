@@ -70,9 +70,9 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
     private View appIcon;
     private static final int OPEN_ACTION = 0;
     private static final int INFO_ACTION = 1;
-    private static final int UNINSTALL_ACTION = 2;
-    private static final int BACKUP_ACTION = 3;
-    private static final int SEND_ACTION = 4;
+    private static final int BACKUP_ACTION = 2;
+    private static final int SEND_ACTION = 3;
+    private static final int UNINSTALL_ACTION = 4;
     
     public static final String REVEAL_START_POSITION = "REVEAL_START_POSITION";
     
@@ -222,9 +222,9 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
 
         // Row Container    
         menuLayout = (FilterMenuLayout) findViewById(R.id.menu);
-        new FilterMenu.Builder(this).addItem(R.drawable.ic_action_add).addItem(R.drawable.ic_action_clock)
+        FilterMenu.Builder menuBuilder = new FilterMenu.Builder(this).addItem(R.drawable.ic_action_add).addItem(R.drawable.ic_action_clock)
                 .addItem(R.drawable.ic_action_clock).addItem(R.drawable.ic_action_clock)
-                .addItem(R.drawable.ic_action_clock).attach(menuLayout)
+                .attach(menuLayout)
                 .withListener(new FilterMenu.OnMenuChangeListener() {
 
                     @Override
@@ -328,7 +328,13 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                     public void onMenuExpand() {
 
                     }
-                }).build();
+                });
+        
+        if(!curAppInfo.isSysApp){//不是系统app添加uninstall
+            menuBuilder.addItem(R.drawable.ic_action_clock);
+        }
+        
+        menuBuilder.build();
 
         if (curAppInfo != null) {
 
