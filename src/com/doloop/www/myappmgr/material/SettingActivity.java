@@ -67,6 +67,7 @@ public class SettingActivity extends SwipeBackActivity implements FolderSelectCa
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
+                //http://stackoverflow.com/questions/6506637/only-email-apps-to-resolve-an-intent
                 Intent intent = new Intent(Intent.ACTION_SENDTO);
                 intent.setData(Uri.parse("mailto:"+emailTv.getText().toString().trim()));
                 startActivity(intent);
