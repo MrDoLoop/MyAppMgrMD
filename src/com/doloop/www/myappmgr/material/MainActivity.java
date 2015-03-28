@@ -101,15 +101,14 @@ import com.readystatesoftware.systembartint.SystemBarTintManager.SystemBarConfig
 import de.greenrobot.event.EventBus;
 
 public class MainActivity extends BaseActivity implements // UserAppListFilterResultListener,
-        UserAppListDataSetChangedListener, SysAppListDataSetChangedListener, 
-        SortTypeListItemClickListener,//BackupAppListDataSetChangedListener,
+        UserAppListDataSetChangedListener, SysAppListDataSetChangedListener, SortTypeListItemClickListener,// BackupAppListDataSetChangedListener,
         BackupAppListDataSetChangedListener {
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private ActionBar mActionBar;
 
     private MyProgressDialog progDialog;
-    
+
     private ArrayList<BaseFrag> Fragmentlist;
     private static long back_pressed = 0;
 
@@ -126,7 +125,7 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
 
     // 备份app列表
     private BackupAppTabFragmentV2 backupAppsFrg;
-    //private BackupAppTabFragment backupAppsFrg;
+    // private BackupAppTabFragment backupAppsFrg;
 
     private EditText searchViewEdt;
 
@@ -144,24 +143,23 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
 
     private LangUpdateReceiver mLangUpdateReceiver;
     private IntentFilter LangIntentFilter;
-    
+
     private SdcardUpdateReceiver mSdcardUpdateReceiver;
     private IntentFilter sdcardIntentFilter;
-    
 
     private static Snackbar mSnackbar;
     private static Context thisActivityCtx;
     public static ActionMode sActionMode = null;
     private static Toast toast;
-    
+
     private static boolean sIsSdcardReady = false;
 
     private SortTypeDialogFragment SortTypeDialog;
-//    private UserAppListMoreActionDialogFragment UserAppListMoreActionDialog;
-//    private SelectionDialogFragment SelectionDialog;
-    
+    // private UserAppListMoreActionDialogFragment UserAppListMoreActionDialog;
+    // private SelectionDialogFragment SelectionDialog;
+
     // private DrawerItemClickEvent mDrawerItemClickEvent;
-    
+
     private int oldPagePos = 0;
     private Toolbar toolbar;
 
@@ -181,21 +179,20 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
             boolean hasNavBar = Utils.hasNavBar(this);
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
             SystemBarConfig config = tintManager.getConfig();
-            //处理状态栏
+            // 处理状态栏
             tintManager.setStatusBarTintEnabled(true);
             tintManager.setStatusBarTintResource(R.color.transparent);
             tintManager.setStatusBarAlpha(0.5f);
-            
+
             View contHolder = findViewById(R.id.content_linear);
-            if(hasNavBar){
+            if (hasNavBar) {
                 contHolder.setPadding(0, config.getStatusBarHeight(), 0, config.getNavigationBarHeight());
-            }
-            else{
+            } else {
                 contHolder.setPadding(0, config.getStatusBarHeight(), 0, 0);
             }
-            
-            //处理底边导航栏
-            if(hasNavBar){
+
+            // 处理底边导航栏
+            if (hasNavBar) {
                 tintManager.setNavigationBarTintEnabled(true);
                 tintManager.setNavigationBarTintResource(R.color.primary);
                 View drawerHolder = findViewById(R.id.drawer_content_holder);
@@ -206,7 +203,7 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
             // statusBarHolder.setVisibility(View.VISIBLE);
 
         }
-        
+
         AppUpdateStaticReceiver.handleEvent = false;
         thisActivityCtx = MainActivity.this;
         toast = Toast.makeText(thisActivityCtx, "", Toast.LENGTH_SHORT);
@@ -216,12 +213,11 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
             L.d("savedInstanceState != null" + savedInstanceState.toString());
         }
 
-        Drawable shadow = ScrimUtil.makeCubicGradientScrimDrawable(
-                Color.GRAY,//"#55000000"
-                8, //渐变层数
+        Drawable shadow = ScrimUtil.makeCubicGradientScrimDrawable(Color.GRAY,// "#55000000"
+                8, // 渐变层数
                 Gravity.TOP);
         Utils.setBackgroundDrawable(findViewById(R.id.shadow), shadow);
-        
+
         // 初始化抽屉
         FragmentTransaction t = this.getSupportFragmentManager().beginTransaction();
         DrawerFragment drawFrag = DrawerFragment.getInstance(thisActivityCtx);
@@ -243,7 +239,7 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
                     @Override
                     public void onDrawerSlide(View drawerView, float slideOffset) {
                         super.onDrawerSlide(drawerView, slideOffset);
-                        //ViewHelper.setAlpha(MenuItemCompat.getActionView(searchMenuItem), 1 - slideOffset);
+                        // ViewHelper.setAlpha(MenuItemCompat.getActionView(searchMenuItem), 1 - slideOffset);
                         ViewHelper.setAlpha(toolbar, 1 - slideOffset);
                     }
 
@@ -254,23 +250,15 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
 
                         searchViewEdt.setFocusable(true);
                         searchViewEdt.setFocusableInTouchMode(true);
-                       /* if (!MenuItemCompat.isActionViewExpanded(searchMenuItem)) {
-                            switch (mPager.getCurrentItem()) {
-                                case Constants.USR_APPS_TAB_POS:
-                                    searchMenuItem.setVisible(true);
-                                    sortMenuItem.setVisible(true);
-                                    break;
-                                case Constants.SYS_APPS_TAB_POS:
-                                    searchMenuItem.setVisible(true);
-                                    break;
-                                case Constants.BACKUP_APPS_TAB_POS:
-                                    searchMenuItem.setVisible(true);
-                                    sortMenuItem.setVisible(true);
-                                    break;
-                            }
-
-                            // sortMenuItem.setVisible(true);
-                        }*/
+                        /*
+                         * if (!MenuItemCompat.isActionViewExpanded(searchMenuItem)) { switch (mPager.getCurrentItem())
+                         * { case Constants.USR_APPS_TAB_POS: searchMenuItem.setVisible(true);
+                         * sortMenuItem.setVisible(true); break; case Constants.SYS_APPS_TAB_POS:
+                         * searchMenuItem.setVisible(true); break; case Constants.BACKUP_APPS_TAB_POS:
+                         * searchMenuItem.setVisible(true); sortMenuItem.setVisible(true); break; }
+                         * 
+                         * // sortMenuItem.setVisible(true); }
+                         */
 
                         if (mPager.getCurrentItem() != Constants.USR_APPS_TAB_POS) {
                             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
@@ -293,10 +281,10 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
                         searchViewEdt.clearFocus();
                         searchViewEdt.setFocusable(false);
                         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-                       /* if (!MenuItemCompat.isActionViewExpanded(searchMenuItem)) {
-                            searchMenuItem.setVisible(false);
-                            sortMenuItem.setVisible(false);
-                        }*/
+                        /*
+                         * if (!MenuItemCompat.isActionViewExpanded(searchMenuItem)) { searchMenuItem.setVisible(false);
+                         * sortMenuItem.setVisible(false); }
+                         */
                         // invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
                     }
                 };
@@ -308,7 +296,7 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
         usrAppsFrg = UserAppsTabFragment.getInstance(thisActivityCtx);
         sysAppsFrg = SysAppsTabFragment.getInstance(thisActivityCtx);
         backupAppsFrg = BackupAppTabFragmentV2.getInstance(thisActivityCtx);
-        //backupAppsFrg = BackupAppTabFragment.getInstance(thisActivityCtx);
+        // backupAppsFrg = BackupAppTabFragment.getInstance(thisActivityCtx);
 
         Fragmentlist.add(usrAppsFrg);
         Fragmentlist.add(sysAppsFrg);
@@ -334,10 +322,9 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
             @Override
             public void onPageSelected(int position) {
                 int curPage = mPager.getCurrentItem();
-                //停止之前list的滑动
-                Fragmentlist.get(oldPagePos).getListView().smoothScrollBy(0, 0); 
-                
-                
+                // 停止之前list的滑动
+                Fragmentlist.get(oldPagePos).getListView().smoothScrollBy(0, 0);
+
                 // 禁止在别的tab下从屏幕边缘划出，但是还是可以通过menu按键呼出抽屉，
                 // 所以在open的时候记得要解锁
                 if (position == Constants.USR_APPS_TAB_POS) {
@@ -420,7 +407,9 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
         AppIntentFilter = new IntentFilter();
         AppIntentFilter.addAction(Intent.ACTION_PACKAGE_ADDED);
         AppIntentFilter.addAction(Intent.ACTION_PACKAGE_REMOVED);
-        AppIntentFilter.addAction(Intent.ACTION_PACKAGE_CHANGED);
+        if (Constants.HANDLE_PKG_CHG) {
+            AppIntentFilter.addAction(Intent.ACTION_PACKAGE_CHANGED);
+        }
         AppIntentFilter.addDataScheme("package");
         registerReceiver(mAppUpdateReceiver, AppIntentFilter);
 
@@ -429,8 +418,8 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
 
         mLangUpdateReceiver = new LangUpdateReceiver();
         registerReceiver(mLangUpdateReceiver, LangIntentFilter);
-        
-        //http://www.cnblogs.com/crazywenza/archive/2013/01/07/2848913.html
+
+        // http://www.cnblogs.com/crazywenza/archive/2013/01/07/2848913.html
         mSdcardUpdateReceiver = new SdcardUpdateReceiver();
         sdcardIntentFilter = new IntentFilter();
         sdcardIntentFilter.addAction(Intent.ACTION_MEDIA_EJECT);
@@ -439,7 +428,6 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
         sdcardIntentFilter.addAction(Intent.ACTION_MEDIA_BAD_REMOVAL);
         sdcardIntentFilter.addDataScheme("file");
         registerReceiver(mSdcardUpdateReceiver, sdcardIntentFilter);
-        
 
         new GetApps().execute(false);
     }
@@ -485,7 +473,7 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
         if (progDialog != null && progDialog.isShowing()) {
             progDialog.dismiss();
         }
-        
+
         SysAppFullList.clear();
         UserAppFullList.clear();
         unregisterReceivers();
@@ -513,9 +501,9 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
         }
         return mSnackbar;
     }
-    
+
     public static void dismissSnackbar() {
-        if(mSnackbar != null){
+        if (mSnackbar != null) {
             mSnackbar.dismiss();
         }
     }
@@ -559,12 +547,12 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
         searchView.setQueryHint(getString(R.string.search));
 
-//        //Get the search bar Linearlayout
+        // //Get the search bar Linearlayout
         LinearLayout searchBar = (LinearLayout) searchView.findViewById(android.support.v7.appcompat.R.id.search_bar);
-//
-//        //Give the Linearlayout a transition animation.searchview显示动画
-       //searchBar.setLayoutTransition(new LayoutTransition());
-                
+        //
+        // //Give the Linearlayout a transition animation.searchview显示动画
+        // searchBar.setLayoutTransition(new LayoutTransition());
+
         searchViewEdt = ((EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text));
         try {// 设置光标颜色
              // https://github.com/android/platform_frameworks_base/blob/kitkat-release/core/java/android/widget/TextView.java#L562-564
@@ -588,7 +576,7 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
             public boolean onQueryTextChange(String newText) {
                 // TODO Auto-generated method stub
                 String mCurFilter = !TextUtils.isEmpty(newText) ? newText.toLowerCase(Locale.getDefault()) : null;
-                
+
                 switch (mPager.getCurrentItem()) {
                     case Constants.USR_APPS_TAB_POS:
                         usrAppsFrg.filterList(mCurFilter);
@@ -653,15 +641,14 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         switch (id) {
-           
+
             case R.id.menu_sort:
 
                 SortTypeDialog = new SortTypeDialogFragment();
                 Bundle bundle = new Bundle();
-                if(mPager.getCurrentItem() == Constants.USR_APPS_TAB_POS){
+                if (mPager.getCurrentItem() == Constants.USR_APPS_TAB_POS) {
                     bundle.putInt(SortTypeDialogFragment.SELECTED_ITEM, usrAppsFrg.getListSortType());
-                }
-                else if(mPager.getCurrentItem() == Constants.BACKUP_APPS_TAB_POS){
+                } else if (mPager.getCurrentItem() == Constants.BACKUP_APPS_TAB_POS) {
                     bundle.putInt(SortTypeDialogFragment.SELECTED_ITEM, backupAppsFrg.getListSortType());
                 }
                 SortTypeDialog.setArguments(bundle);
@@ -696,22 +683,23 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
         private String curFileName = "";
         private int totalFileSize = 0;
         private int curFileNum = 0;
-        
-        
-        public MoveAppsToNewPath(String old_path, String new_path){
+
+        public MoveAppsToNewPath(String old_path, String new_path) {
             oldPath = old_path;
-            newPath = new_path;    
+            newPath = new_path;
         }
-        
+
         @Override
         protected void onPreExecute() {
-            progDialog = new MyProgressDialog(MainActivity.this,getString(R.string.moving_akps),getString(R.string.moving_akps));
+            progDialog =
+                    new MyProgressDialog(MainActivity.this, getString(R.string.moving_akps),
+                            getString(R.string.moving_akps));
             progDialog.setCancelable(false);
             progDialog.setArcProgressMax(100);
             progDialog.setArcBottomText(getString(R.string.moving_akps));
             progDialog.show();
         }
-        
+
         @Override
         protected void onProgressUpdate(Integer...values) {
             // TODO Auto-generated method stub
@@ -724,20 +712,20 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
             progDialog.setArcProgress(percentage);
             progDialog.setArcBottomText(curFileNum + "/" + totalFileSize);
         }
-        
+
         @Override
         protected Void doInBackground(Void...params) {
             // TODO Auto-generated method stub
             File oldDir = new File(oldPath);
             File newDir = new File(newPath);
             File[] files = oldDir.listFiles(new ApkFileFilter());
-            if(files != null){
+            if (files != null) {
                 totalFileSize = files.length;
-                for(File fileEntry : files){
+                for (File fileEntry : files) {
                     try {
                         curFileNum++;
                         FileUtils.moveFileToDirectory(fileEntry, newDir, true);
-                        //FileUtils.copyFileToDirectory(fileEntry, newDir);
+                        // FileUtils.copyFileToDirectory(fileEntry, newDir);
                         curFileName = fileEntry.getName();
                         publishProgress();
                     } catch (IOException e) {
@@ -746,18 +734,16 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
                     }
                 }
             }
-            
-/*            try {
-                //FileUtils.copyDirectory(new File(oldPath), new File(newPath));
-                FileUtils.cleanDirectory(oldDir);//.deleteDirectory(new File(ev.oldPath));
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }*/
-            
+
+            /*
+             * try { //FileUtils.copyDirectory(new File(oldPath), new File(newPath));
+             * FileUtils.cleanDirectory(oldDir);//.deleteDirectory(new File(ev.oldPath)); } catch (IOException e) { //
+             * TODO Auto-generated catch block e.printStackTrace(); }
+             */
+
             return null;
         }
-        
+
         @Override
         protected void onCancelled() {
         }
@@ -772,10 +758,9 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
             toast.setText(R.string.move_success);
             toast.show();
         }
-        
+
     }
-    
-    
+
     private class GetApps extends AsyncTask<Boolean, Integer, Void> {
         private List<PackageInfo> packages;
         private PackageManager pManager;
@@ -807,10 +792,12 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
             packages = pManager.getInstalledPackages(0);
             fullAppListSize = packages.size();
 
-            progDialog = new MyProgressDialog(MainActivity.this,getString(R.string.loading_apps),getString(R.string.loading_apps));
+            progDialog =
+                    new MyProgressDialog(MainActivity.this, getString(R.string.loading_apps),
+                            getString(R.string.loading_apps));
             progDialog.setCancelable(false);
             progDialog.setArcProgressMax(100);
-            progDialog.setArcBottomText(""+fullAppListSize);
+            progDialog.setArcBottomText("" + fullAppListSize);
             progDialog.show();
         }
 
@@ -830,10 +817,10 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
             // PackageManager.GET_UNINSTALLED_PACKAGES |
             // PackageManager.GET_DISABLED_COMPONENTS);
             sIsSdcardReady = Utils.getAppIconCacheDir(thisActivityCtx) == null ? false : true;
-            if(!sIsSdcardReady){
+            if (!sIsSdcardReady) {
                 PackageInfo packageInfo;
                 AppInfo tmpInfo;
-                for (int i = 0 ; i < fullAppListSize; i++) {
+                for (int i = 0; i < fullAppListSize; i++) {
                     Log.i("ttt", "processing app " + (i + 1) + " / " + fullAppListSize);
                     packageInfo = packages.get(i);
                     tmpInfo = Utils.buildAppInfoEntry(thisActivityCtx, packageInfo, pManager, false, true);
@@ -843,10 +830,9 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
                         UserAppFullList.add(tmpInfo);
                     }
                     curAppName = tmpInfo.appName;
-                    publishProgress(i + 1);  
+                    publishProgress(i + 1);
                 }
-            }
-            else{
+            } else {
                 boolean deleteAllAppInfoDone = false;
                 if (params[0]) {
                     DaoUtils.deleteAllAppInfo(thisActivityCtx);
@@ -901,7 +887,7 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
                         Utils.deleteAppIconDir(Utils.getAppIconCacheDir(thisActivityCtx));
                     }
 
-                    for (int i = 0 ; i < fullAppListSize; i++) {
+                    for (int i = 0; i < fullAppListSize; i++) {
 
                         // publishProgress("" + (i + 1));
                         Log.i("ttt", "processing app " + (i + 1) + " / " + fullAppListSize);
@@ -927,8 +913,6 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
                 }
                 appInfoSession.clear();
             }
-            
-            
 
             // 用户程序排序
             Utils.sortUserAppList(thisActivityCtx, UserAppFullList);
@@ -944,7 +928,7 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
                 curAppInfo = SysAppFullList.get(i);
                 // curSectionStr = curAppInfo.appName.substring(0, 1).toUpperCase(Locale.getDefault());
                 curSectionStr = Utils.GetFirstChar(curAppInfo.appName);// .substring(0,
-                                                                           // 1).toUpperCase(Locale.getDefault());
+                                                                       // 1).toUpperCase(Locale.getDefault());
                 if (!Character.isLetter(curSectionStr.charAt(0)))// 其他的开始的字母，放入#未分类
                 {
                     curSectionStr = "#";
@@ -983,7 +967,7 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
             }
             sectionItemsTreeMap.clear();
             sectionItemsTreeMap = null;
-            //appInfoSession.clear();
+            // appInfoSession.clear();
             System.gc();
             return null;
         }
@@ -1137,28 +1121,27 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
         switch (ev.DrawerItem) {
             case REFRESH:
                 new GetApps().execute(true);
-                //also refresh backupTab
-                /*if(backupAppsFrg.isLoadingRunning()){
-                    backupAppsFrg.cancelLoading();
-                }
-                backupAppsFrg.forceReLoad();*/
+                // also refresh backupTab
+                /*
+                 * if(backupAppsFrg.isLoadingRunning()){ backupAppsFrg.cancelLoading(); } backupAppsFrg.forceReLoad();
+                 */
+                break;
+            case SETTINGS:
                 break;
             case CHG_BACKUP_DIR:
-                
-                if(backupAppsFrg.isLoadingRunning()){
+
+                if (backupAppsFrg.isLoadingRunning()) {
                     backupAppsFrg.cancelLoading();
                 }
-                new MoveAppsToNewPath(ev.oldPath,ev.newPath).execute();
-                /*try {
-                    FileUtils.copyDirectory(new File(ev.oldPath), new File(ev.newPath));
-                    FileUtils.cleanDirectory(new File(ev.oldPath));//.deleteDirectory(new File(ev.oldPath));
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-                
-                backupAppsFrg.startLoading();*/
-                
+                new MoveAppsToNewPath(ev.oldPath, ev.newPath).execute();
+                /*
+                 * try { FileUtils.copyDirectory(new File(ev.oldPath), new File(ev.newPath));
+                 * FileUtils.cleanDirectory(new File(ev.oldPath));//.deleteDirectory(new File(ev.oldPath)); } catch
+                 * (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); }
+                 * 
+                 * backupAppsFrg.startLoading();
+                 */
+
                 break;
         }
     }
@@ -1170,7 +1153,7 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         } else {
             mPager.setPagingEnabled(true);
-            if(mPager.getCurrentItem() == Constants.USR_APPS_TAB_POS){
+            if (mPager.getCurrentItem() == Constants.USR_APPS_TAB_POS) {
                 mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
             }
         }
@@ -1184,13 +1167,12 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
     public void onEventMainThread(BackupAppEvent ev) {
         ArrayList<AppInfo> list = ev.appList;
         long requiredSpace = Utils.calculateTotalFileRawSize(list);
-        if(Utils.isSdcardSpaceEnough(requiredSpace)){
+        if (Utils.isSdcardSpaceEnough(requiredSpace)) {
             new BackUpApps(ev.appList, ev.sendAfterBackup).execute();
-        }
-        else{
+        } else {
             T(R.string.no_enough_space);
         }
-        
+
     }
 
     private class AppUpdateReceiver extends BroadcastReceiver {
@@ -1207,7 +1189,7 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
                 AppInfo newAppInfo = null;
                 if (DaoUtils.getByPackageName(thisActivityCtx, NewPkgName) != null)// 安装过--更新
                 {
-                    //verify user list
+                    // verify user list
                     for (int i = 0, size = UserAppFullList.size(); i < size; i++) {
                         if (UserAppFullList.get(i).getPackageName().equals(NewPkgName)) {
 
@@ -1224,10 +1206,10 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
                             break;
                         }
                     }
-                    
-                    //verify sys list
-                    for(int i = 0 ; i < SysAppFullListWapper.size();i++){
-                        if(SysAppFullListWapper.get(i).type == SysAppListItem.APP_ITEM){
+
+                    // verify sys list
+                    for (int i = 0; i < SysAppFullListWapper.size(); i++) {
+                        if (SysAppFullListWapper.get(i).type == SysAppListItem.APP_ITEM) {
                             if (SysAppFullListWapper.get(i).appinfo.getPackageName().equals(NewPkgName)) {
 
                                 DaoUtils.deleteAppInfo(thisActivityCtx, SysAppFullListWapper.get(i).appinfo);
@@ -1245,8 +1227,7 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
                             }
                         }
                     }
-                } 
-                else// 没有安装过, 重新来过
+                } else// 没有安装过, 重新来过
                 {
                     // startRefreshAppInfoList();
                     newAppInfo = Utils.buildAppInfoEntry(thisActivityCtx, NewPkgName);
@@ -1262,8 +1243,8 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
                 toast.setText(getString(R.string.new_app_installed) + " "
                         + Utils.pkgNameToAppName(thisActivityCtx, NewPkgName));
                 toast.show();
-                EventBus.getDefault().post(new AppUpdateEvent(AppState.APP_ADDED,NewPkgName,newAppInfo));
-                L.d("app---added: "+NewPkgName);
+                EventBus.getDefault().post(new AppUpdateEvent(AppState.APP_ADDED, NewPkgName, newAppInfo));
+                L.d("app---added: " + NewPkgName);
                 // startRefreshAppInfoList();
 
             } else if (intent.getAction().equals(Intent.ACTION_PACKAGE_REMOVED)) {
@@ -1272,7 +1253,7 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
                 String RemovedPkgName = intent.getDataString().substring(8);
                 ArrayList<AppInfo> tmpUserDisplayList = usrAppsFrg.getDisplayList();
                 AppInfo targetAppInfo = null;
-                for (int i = 0,size = UserAppFullList.size(); i < size; i++) {
+                for (int i = 0, size = UserAppFullList.size(); i < size; i++) {
                     if (UserAppFullList.get(i).packageName.equals(RemovedPkgName)) {
                         targetAppInfo = UserAppFullList.get(i);
                         DaoUtils.deleteAppInfo(thisActivityCtx, targetAppInfo);
@@ -1285,36 +1266,29 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
                             tmpUserDisplayList.remove(i);
                         }
                     }
-                    if(targetAppInfo != null){
+                    if (targetAppInfo != null) {
                         break;
                     }
                 }
-                
-               /* if(targetAppInfo == null){
-                    //verify sys list
-                    for(int i = 0 ; i < SysAppFullListWapper.size();i++){
-                        if(SysAppFullListWapper.get(i).type == SysAppListItem.APP_ITEM){
-                            if (SysAppFullListWapper.get(i).appinfo.getPackageName().equals(RemovedPkgName)) {
-                                targetAppInfo = SysAppFullListWapper.get(i).appinfo;
-                                //DaoUtils.deleteAppInfo(thisActivityCtx, targetAppInfo);
-                                toast.setText(getString(R.string.app_removed_name) + " " + targetAppInfo.appName);
-                                //SysAppFullListWapper.remove(i);
-                                sysAppsFrg.notifyDataSetChanged();
-                                break;
-                            }
-                        }
-                    }
-                }*/
+
+                /*
+                 * if(targetAppInfo == null){ //verify sys list for(int i = 0 ; i < SysAppFullListWapper.size();i++){
+                 * if(SysAppFullListWapper.get(i).type == SysAppListItem.APP_ITEM){ if
+                 * (SysAppFullListWapper.get(i).appinfo.getPackageName().equals(RemovedPkgName)) { targetAppInfo =
+                 * SysAppFullListWapper.get(i).appinfo; //DaoUtils.deleteAppInfo(thisActivityCtx, targetAppInfo);
+                 * toast.setText(getString(R.string.app_removed_name) + " " + targetAppInfo.appName);
+                 * //SysAppFullListWapper.remove(i); sysAppsFrg.notifyDataSetChanged(); break; } } } }
+                 */
                 toast.show();
-                EventBus.getDefault().post(new AppUpdateEvent(AppState.APP_REMOVED,RemovedPkgName,targetAppInfo));
-                L.d("app---removed: "+RemovedPkgName);
+                EventBus.getDefault().post(new AppUpdateEvent(AppState.APP_REMOVED, RemovedPkgName, targetAppInfo));
+                L.d("app---removed: " + RemovedPkgName);
                 // updateSlidingTabTitle(Constants.USR_APPS_TAB_POS);
             } else if (intent.getAction().equals(Intent.ACTION_PACKAGE_CHANGED)) {
                 String PkgName = intent.getDataString().substring(8);
                 String appName = Utils.pkgNameToAppName(thisActivityCtx, PkgName);
                 toast.setText("PACKAGE_CHANGED: " + appName);
                 toast.show();
-                EventBus.getDefault().post(new AppUpdateEvent(AppState.APP_CHANGED,PkgName,null));
+                EventBus.getDefault().post(new AppUpdateEvent(AppState.APP_CHANGED, PkgName, null));
                 Log.i("ttt", "PACKAGE_CHANGED: " + PkgName);
                 // startRefreshAppInfoList();
             }
@@ -1333,25 +1307,23 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
         }
 
     }
-    
+
     private class SdcardUpdateReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
             // TODO Auto-generated method stub
-            String action = intent.getAction();  
+            String action = intent.getAction();
             T(R.string.sdcard_changed);
             finish();
-//            if(action.equals(Intent.ACTION_MEDIA_EJECT)){  
-//                finish();
-//            }else if(action.equals(Intent.ACTION_MEDIA_MOUNTED)){  
-//                
-//            } 
+            // if(action.equals(Intent.ACTION_MEDIA_EJECT)){
+            // finish();
+            // }else if(action.equals(Intent.ACTION_MEDIA_MOUNTED)){
+            //
+            // }
         }
 
     }
-    
-    
 
     @Override
     public void OnUserAppListDataSetChanged() {
@@ -1394,9 +1366,9 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
         protected void onProgressUpdate(String...values) {
             // TODO Auto-generated method stub
             super.onProgressUpdate(values);
-            //progDialog.setArcProgress(Integer.valueOf(values[0]));
+            // progDialog.setArcProgress(Integer.valueOf(values[0]));
             // progDialog.setMessage(getString(R.string.saving_app) + " " + values[1]);
-            
+
             int percentage = (int) (((float) Integer.valueOf(values[0]) / (float) AppListSize) * 100f);
             progDialog.setArcProgress(percentage);
             progDialog.setArcBottomText(values[0] + "/" + AppListSize);
@@ -1406,11 +1378,13 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
         @Override
         protected void onPreExecute() {
             unregisterReceivers();
-           
-            progDialog = new MyProgressDialog(MainActivity.this,getString(R.string.saving_apps),getString(R.string.saving_apps));
+
+            progDialog =
+                    new MyProgressDialog(MainActivity.this, getString(R.string.saving_apps),
+                            getString(R.string.saving_apps));
             progDialog.setCancelable(false);
             progDialog.setArcProgressMax(100);
-            progDialog.setArcBottomText(""+AppList.size());
+            progDialog.setArcBottomText("" + AppList.size());
             progDialog.show();
         }
 
@@ -1482,7 +1456,7 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
             }
             registerReceivers();
             if (SuccAppList.size() > 0) {
-                if(sActionMode != null){
+                if (sActionMode != null) {
                     sActionMode.finish();
                 }
                 EventBus.getDefault().post(new AppBackupSuccEvent(SuccAppList));
@@ -1490,7 +1464,7 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
         }
     }
 
-    //排序图表点击
+    // 排序图表点击
     @Override
     public void onSortTypeListItemClick(DialogInterface dialog, int which) {
         // TODO Auto-generated method stub
@@ -1501,14 +1475,14 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
                 Utils.setUserAppListSortType(thisActivityCtx, which);
                 Utils.sortUserAppList(thisActivityCtx, UserAppFullList);
                 processSortMenuIcon(which);
-                
+
                 usrAppsFrg.setListSortType(which);
                 usrAppsFrg.collapseLastOpenItem(false);
                 usrAppsFrg.notifyDataSetChanged();
-                
+
                 break;
             case Constants.SYS_APPS_TAB_POS:
-                
+
                 break;
             case Constants.BACKUP_APPS_TAB_POS:
                 if (backupAppsFrg.getListSortType() == which)
@@ -1516,15 +1490,15 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
                 Utils.setBackUpAppListSortType(thisActivityCtx, which);
                 Utils.sortBackUpAppList(thisActivityCtx, backupAppsFrg.getAppList());
                 processSortMenuIcon(which);
-                
+
                 backupAppsFrg.setListSortType(which);
                 backupAppsFrg.notifyDataSetChanged();
 
                 break;
         }
     }
-    
-    private void processSortMenuIcon(int which){
+
+    private void processSortMenuIcon(int which) {
         switch (which) {
             case SortTypeDialogFragment.LIST_SORT_TYPE_NAME_ASC:
                 sortMenuItem.setIcon(R.drawable.name_asc);
@@ -1546,8 +1520,8 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
                 break;
         }
     }
-    
-    private void DismissAllDialog(){
+
+    private void DismissAllDialog() {
         Utils.DismissDialog(SortTypeDialog);
     }
 }

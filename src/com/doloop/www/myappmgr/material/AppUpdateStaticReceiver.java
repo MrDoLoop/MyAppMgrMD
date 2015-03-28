@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.dao.DaoUtils;
+import com.doloop.www.myappmgr.material.utils.Constants;
 import com.doloop.www.myappmgr.material.utils.Utils;
 
 public class AppUpdateStaticReceiver extends BroadcastReceiver {
@@ -43,13 +44,16 @@ public class AppUpdateStaticReceiver extends BroadcastReceiver {
                 Toast.makeText(context, "MD-added:" + appName, Toast.LENGTH_SHORT).show();
             } else if (intent.getAction().equals(Intent.ACTION_PACKAGE_CHANGED)) {
                 Log.i("ttt", "AppUpdateStaticReceiver: changed-- " + PkgName);
-                // DaoUtils.deleteAllAppInfo(context);
-                DaoUtils.deleteAppInfo(context, PkgName);
-                AppInfo app = Utils.buildAppInfoEntry(context, PkgName);
-                DaoUtils.insert(context, app);
-                DaoUtils.destroy();
-                //EventBus.getDefault().post(new AppUpdateEvent(intent.getAction(),PkgName, app));
-                Toast.makeText(context, "MD-changed:" + appName, Toast.LENGTH_SHORT).show();
+                
+                if(Constants.HANDLE_PKG_CHG){
+                    // DaoUtils.deleteAllAppInfo(context);
+                    DaoUtils.deleteAppInfo(context, PkgName);
+                    AppInfo app = Utils.buildAppInfoEntry(context, PkgName);
+                    DaoUtils.insert(context, app);
+                    DaoUtils.destroy();
+                    //EventBus.getDefault().post(new AppUpdateEvent(intent.getAction(),PkgName, app));
+                    Toast.makeText(context, "MD-changed:" + appName, Toast.LENGTH_SHORT).show();
+                } 
             }
         }
     }
