@@ -222,8 +222,8 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
 
         // Row Container    
         menuLayout = (FilterMenuLayout) findViewById(R.id.menu);
-        FilterMenu.Builder menuBuilder = new FilterMenu.Builder(this).addItem(R.drawable.ic_action_add).addItem(R.drawable.ic_action_clock)
-                .addItem(R.drawable.ic_action_clock).addItem(R.drawable.ic_action_clock)
+        FilterMenu.Builder menuBuilder = new FilterMenu.Builder(this).addItem(R.drawable.play_white).addItem(R.drawable.info_white)
+                .addItem(R.drawable.backup_white).addItem(R.drawable.send_white)
                 .attach(menuLayout)
                 .withListener(new FilterMenu.OnMenuChangeListener() {
 
@@ -331,7 +331,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                 });
         
         if(!curAppInfo.isSysApp){//不是系统app添加uninstall
-            menuBuilder.addItem(R.drawable.ic_action_clock);
+            menuBuilder.addItem(R.drawable.delete_white2);
         }
         
         menuBuilder.build();
