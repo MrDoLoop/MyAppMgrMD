@@ -44,7 +44,10 @@
                     android:id="@+id/app_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@+id/item_menu"
                     android:layout_weight="1"
+                    android:layout_marginRight="25dp"
                     android:ellipsize="end"
                     android:singleLine="true"
                     android:text="App Name"
@@ -73,16 +76,72 @@
                     android:text="App Version"
                     android:textColor="@color/gray" />
             </LinearLayout>
+
+            <ImageView
+                android:id="@+id/item_menu"
+                android:layout_width="35dp"
+                android:layout_height="match_parent"
+                android:layout_alignBottom="@+id/text_linear"
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@+id/text_linear"
+                android:scaleType="fitStart"
+                android:src="@drawable/item_menu_sel" />
         </RelativeLayout>
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/hoverLayout"
             android:layout_width="match_parent"
             android:layout_height="65dp"
             android:background="@drawable/list_row_item_pressed_bg"
-            android:visibility="gone"
             android:descendantFocusability="beforeDescendants"
-            android:padding="5dp" />
+            android:orientation="horizontal"
+            android:paddingBottom="5dp"
+            android:paddingLeft="55dp"
+            android:paddingRight="5dp"
+            android:paddingTop="5dp"
+            android:visibility="gone"
+            android:weightSum="5" >
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="#335566"
+                android:focusable="false" >
+            </ImageView>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="#113355"
+                android:focusable="false" >
+            </ImageView>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="#335566"
+                android:focusable="false" >
+            </ImageView>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="#113355"
+                android:focusable="false" >
+            </ImageView>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="#335566"
+                android:focusable="false" >
+            </ImageView>
+        </LinearLayout>
     </android.support.v7.widget.CardView>
 
 </RelativeLayout>
