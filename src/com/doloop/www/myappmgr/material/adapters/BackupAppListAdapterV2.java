@@ -481,7 +481,7 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
     public void onClick(View v) {
         // TODO Auto-generated method stub
         int pos = (Integer) v.getTag();
-        mIconClickListener.OnIconClickListener(pos);
+        mIconClickListener.OnIconClick(pos);
         /*AppInfo appInfo = null;
         try {// 因为添加了动画，点击过快的话，删除动画还没有完成，此处就崩溃了
             appInfo = mAppListDisplay.get(pos);

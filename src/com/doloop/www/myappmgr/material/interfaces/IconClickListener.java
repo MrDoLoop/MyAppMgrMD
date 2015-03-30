@@ -1,5 +1,5 @@
 package com.doloop.www.myappmgr.material.interfaces;
 
 public interface IconClickListener {
-    public void OnIconClickListener(int position);
+    public void OnIconClick(int position);
 }

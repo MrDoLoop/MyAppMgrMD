@@ -26,9 +26,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.animation.Animation.AnimationListener;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListAdapter;
@@ -46,20 +43,20 @@ import com.doloop.www.myappmgr.material.events.BackupAppEvent;
 import com.doloop.www.myappmgr.material.events.ViewNewBackupAppEvent;
 import com.doloop.www.myappmgr.material.fragments.SelectionDialogFragment.SelectionDialogClickListener;
 import com.doloop.www.myappmgr.material.interfaces.IconClickListener;
+import com.doloop.www.myappmgr.material.interfaces.ItemMenuClickListener;
 import com.doloop.www.myappmgr.material.utils.SysAppListItem;
 import com.doloop.www.myappmgr.material.utils.Utils;
 import com.doloop.www.myappmgr.material.widgets.IndexBarView;
 import com.doloop.www.myappmgr.material.widgets.IndexBarView.OnIndexItemClickListener;
 import com.doloop.www.myappmgr.material.widgets.PinnedSectionListView;
 import com.doloop.www.myappmgr.material.R;
-import com.nineoldandroids.animation.ObjectAnimator;
-import com.nineoldandroids.view.ViewPropertyAnimator;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.listeners.ActionClickListener;
 
 import de.greenrobot.event.EventBus;
 
-public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLongClickListener, IconClickListener,SelectionDialogClickListener {
+public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLongClickListener, 
+    IconClickListener,SelectionDialogClickListener, ItemMenuClickListener{
     private SysAppListAdapter mAdapter;
     private PinnedSectionListView mPinnedSectionListView;
     private static Context mContext;
@@ -108,7 +105,7 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
         mIndexBarView = (IndexBarView) FragmentView.findViewById(R.id.indexBarView);
         mPinnedSectionListView = (PinnedSectionListView) FragmentView.findViewById(android.R.id.list);
         mEmptyView = FragmentView.findViewById(R.id.emptyView);
-
+        
         mPinnedSectionListView.setOnItemLongClickListener(this);
         PopTextView = (TextView) FragmentView.findViewById(R.id.popTextView);
         mIndexBarView.setOnIndexItemClickListener(new OnIndexItemClickListener() {
@@ -309,7 +306,7 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
     }
 
     public void setData(ArrayList<SysAppListItem> datalist, TreeMap<String, Integer> map) {
-        mAdapter = new SysAppListAdapter(mContext, datalist, map, this);
+        mAdapter = new SysAppListAdapter(mContext, datalist, map, this, this);
         mAdapter.setSysAppListDataSetChangedListener((SysAppListDataSetChangedListener) mContext);
         mPinnedSectionListView.setAdapter(mAdapter);
         mIndexBarView.setExistIndexArray(new ArrayList<String>(map.keySet()));
@@ -326,8 +323,39 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
         };
         mAdapter.registerDataSetObserver(mDataSetObserver);
         mPinnedSectionListView.setEmptyView(mEmptyView);
+        /*mPinnedSectionListView.setOnScrollListener(new OnScrollListener(){
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                // TODO Auto-generated method stub
+                if(mAdapter.isAnyHoverShowed()){
+                    int lastHoverPos = mAdapter.getLastHoverShowedPos();
+                    if(lastHoverPos >= mPinnedSectionListView.getFirstVisiblePosition() &&  lastHoverPos <= mPinnedSectionListView.getLastVisiblePosition()){
+                        View itemView = mPinnedSectionListView.getChildAt(lastHoverPos - mPinnedSectionListView.getFirstVisiblePosition());
+                        mAdapter.hideHover(itemView, lastHoverPos, true);
+                    }
+                    else{
+                        
+                    }
+                }
+            }
+
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                // TODO Auto-generated method stub
+                
+            }});*/
     }
 
+    public void hideLastShoedHover(){
+        int lastHoverPos = mAdapter.getLastHoverShowedPos();
+        if(lastHoverPos >= mPinnedSectionListView.getFirstVisiblePosition() &&  lastHoverPos <= mPinnedSectionListView.getLastVisiblePosition()){
+            View itemView = mPinnedSectionListView.getChildAt(lastHoverPos - mPinnedSectionListView.getFirstVisiblePosition());
+            mAdapter.hideHover(itemView, lastHoverPos, true);
+        }
+    }
+    
+    
     public void resetIndexBarView() {
         mIndexBarView.reset();
     }
@@ -350,47 +378,25 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
                     mAdapter.toggleSelection(position, true);
                     updateActionModeTitle();
                 } else {
-//                    String toastMsg =
-//                            item.appinfo.appName + " \n" + item.appinfo.packageName + " \n" + item.appinfo.apkFilePath;
-//                    MainActivity.T(toastMsg);
-//                    // 滚动text
-//                    TextView appVersion = (TextView) v.findViewById(R.id.app_version);
-//                    if (appVersion.isSelected()) {
-//                        appVersion.setSelected(false);
-//                    }
-//                    appVersion.setSelected(true);
-                    
-                    if(!mAdapter.isHoverAniIsRunning()){
+                    if(!mAdapter.hoverAniIsRunning()){
                         if(mAdapter.getLastHoverShowedPos() == position){
                             mAdapter.hideHover(v, position, true);
                         }
-                        else{
-                            if(mAdapter.isAnyHoverShowed()){
-                                int lastHoverPos = mAdapter.getLastHoverShowedPos();
-                                if(lastHoverPos >= mPinnedSectionListView.getFirstVisiblePosition() &&  lastHoverPos <= mPinnedSectionListView.getLastVisiblePosition()){
-                                    View itemView = mPinnedSectionListView.getChildAt(lastHoverPos - mPinnedSectionListView.getFirstVisiblePosition());
-                                    mAdapter.hideHover(itemView, position, true);
-                                }
-                                else{
-                                    
-                                }
+                        else{ 
+                          //启动详情页的
+                            AppDetailActivity.curAppInfo = item.appinfo;
+                            Intent intent = new Intent(getActivity(), AppDetailActivity.class);
+                            if(Utils.playAniAppDetails(getActivity())){
+                                int[] revealStartPos = Utils.findViewCenterXY(v);
+                                intent.putExtra(AppDetailActivity.REVEAL_START_POSITION, revealStartPos);
+                                startActivity(intent);
+                                getActivity().overridePendingTransition(0, 0);
                             }
-                            mAdapter.showHover(v, position, true);   
+                            else{
+                                Utils.startActivtyWithAni(getActivity(), intent);
+                            }
                         }
                     }
-                    
-                   /*//启动详情页的
-                    AppDetailActivity.curAppInfo = item.appinfo;
-                    Intent intent = new Intent(getActivity(), AppDetailActivity.class);
-                    if(Utils.playAniAppDetails(getActivity())){
-                        int[] revealStartPos = Utils.findViewCenterXY(v);
-                        intent.putExtra(AppDetailActivity.REVEAL_START_POSITION, revealStartPos);
-                        startActivity(intent);
-                        getActivity().overridePendingTransition(0, 0);
-                    }
-                    else{
-                        Utils.startActivtyWithAni(getActivity(), intent);
-                    }*/
                 }
             }
         } else {
@@ -501,7 +507,7 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
     }
 
     @Override
-    public void OnIconClickListener(int position) {
+    public void OnIconClick(int position) {
         // TODO Auto-generated method stub
         if (isInActoinMode) {
             // mAdapter.toggleSelection(position,true);
@@ -660,6 +666,22 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
                     // TODO Auto-generated method stub
                     MainActivity.sActionMode.finish();
                 }}, 500);
+        }
+    }
+
+    @Override
+    public void OnItemMenuClick(int position, View listItemView) {
+        // TODO Auto-generated method stub
+        if(!mAdapter.hoverAniIsRunning()){
+            if(mAdapter.getLastHoverShowedPos() == position){
+                mAdapter.hideHover(listItemView, position, true);
+            }
+            else{
+                if(mAdapter.isAnyHoverShowed()){
+                    hideLastShoedHover();
+                }
+                mAdapter.showHover(listItemView, position, true);   
+            }
         }
     }
     

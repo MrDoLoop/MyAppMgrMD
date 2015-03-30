@@ -746,7 +746,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
     // IconClickListener--start
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     @Override
-    public void OnIconClickListener(int position) {
+    public void OnIconClick(int position) {
         // TODO Auto-generated method stub
         if (isInActoinMode) {
             // mAdapter.toggleSelection(position,true);

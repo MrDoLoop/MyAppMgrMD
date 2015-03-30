@@ -371,6 +371,6 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
     public void onClick(View v) {
         // TODO Auto-generated method stub
         int pos = (Integer) v.getTag();
-        mIconClickListener.OnIconClickListener(pos);
+        mIconClickListener.OnIconClick(pos);
     }
 }

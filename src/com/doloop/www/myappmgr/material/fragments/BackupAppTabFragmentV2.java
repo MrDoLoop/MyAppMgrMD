@@ -497,7 +497,7 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
     // LoaderBackgroundMoreWorkListener-end
 
     @Override
-    public void OnIconClickListener(final int position) {
+    public void OnIconClick(final int position) {
         // TODO Auto-generated method stub
 /*        final View view = mListView.getChildAt(position - mListView.getFirstVisiblePosition());
         if(view != null){
