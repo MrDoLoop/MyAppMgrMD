@@ -28,9 +28,7 @@ import com.doloop.www.myappmgr.material.widgets.RoundCornerProgressBar;
 import com.doloop.www.myappmgr.material.R;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.download.ImageDownloader.Scheme;
+import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Picasso.LoadedFrom;
 import com.squareup.picasso.Target;
 
@@ -40,12 +38,12 @@ public class BackupAppListAdapter extends RecyclerView.Adapter<RecyclerView.View
     //private RoundCornerProgressBar mHeaderProcessbar;
     private HeaderViewHolder mHeaderViewHolder;
     
-    private DisplayImageOptions options = new DisplayImageOptions.Builder()  
-    .showImageOnLoading(R.drawable.backupapp_holder)
-    .cacheInMemory(true)  
-    .cacheOnDisk(false)  
-    .bitmapConfig(Bitmap.Config.ARGB_8888)  
-    .build(); 
+//    private DisplayImageOptions options = new DisplayImageOptions.Builder()  
+//    .showImageOnLoading(R.drawable.backupapp_holder)
+//    .cacheInMemory(true)  
+//    .cacheOnDisk(false)  
+//    .bitmapConfig(Bitmap.Config.ARGB_8888)  
+//    .build(); 
     
 
     public BackupAppListDataSetChangedListener mBackupAppListDataSetChangedListener;
@@ -160,9 +158,9 @@ public class BackupAppListAdapter extends RecyclerView.Adapter<RecyclerView.View
             holder.RootLayout.setTag(appInfo);
 
             if (appInfo.iconBitmap == null) {
-                ImageLoader.getInstance().displayImage(Scheme.FILE.wrap(appInfo.getAppIconCachePath(mCtx).getAbsolutePath()), 
-                        holder.AppIconImageView, options);
-                //Picasso.with(mCtx).load(appInfo.getAppIconCachePath(mCtx)).noFade().into(holder);
+//                ImageLoader.getInstance().displayImage(Scheme.FILE.wrap(appInfo.getAppIconCachePath(mCtx).getAbsolutePath()), 
+//                        holder.AppIconImageView, options);
+                Picasso.with(mCtx).load(appInfo.getAppIconCachePath(mCtx)).noFade().into(holder);
                 //holder.AppIconImageView.setImageDrawable(Utils.getIconDrawable(mCtx, appInfo.packageName));
             } else {
                 holder.AppIconImageView.setImageBitmap(appInfo.iconBitmap);
