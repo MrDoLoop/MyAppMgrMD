@@ -22,6 +22,7 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.UnderlineSpan;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.DecelerateInterpolator;
@@ -69,6 +70,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
     private Point revalStartPosition;
     private View appIcon;
     private View rootFrame;
+    private boolean isBlockedScrollView = false;
     private static final int OPEN_ACTION = 0;
     private static final int INFO_ACTION = 1;
     private static final int BACKUP_ACTION = 2;
@@ -128,6 +130,17 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
             contentRootView.setVisibility(View.INVISIBLE);
             rootScrollView.setBackgroundColor(Color.TRANSPARENT);
             rootFrame.setBackgroundColor(Color.TRANSPARENT);
+            //为了防止在动画还没有播放完就开始滑动scrollview
+            isBlockedScrollView = true;
+            rootScrollView.setOnTouchListener(new View.OnTouchListener() {
+
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    // TODO Auto-generated method stub
+                    return isBlockedScrollView;
+                }
+            });
+            
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
 
@@ -191,7 +204,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                                 public void onAnimationEnd(Animator animation) {
                                     
                                     revealView.setVisibility(View.GONE);
-
+                                    isBlockedScrollView = false;
                                    //这里设置底部的padding，在长屏幕下。如果先设置了底部的padding，reaveal消失的时候，底部会出现一个空条
                                     if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT && Utils.hasNavBar(AppDetailActivity.this)) {
                                         SystemBarTintManager tintManager = new SystemBarTintManager(AppDetailActivity.this);
