@@ -74,6 +74,15 @@
                     android:textColor="@color/gray" />
             </LinearLayout>
         </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/hoverLayout"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:background="@drawable/list_row_item_pressed_bg"
+            android:visibility="gone"
+            android:descendantFocusability="beforeDescendants"
+            android:padding="5dp" />
     </android.support.v7.widget.CardView>
 
 </RelativeLayout>
