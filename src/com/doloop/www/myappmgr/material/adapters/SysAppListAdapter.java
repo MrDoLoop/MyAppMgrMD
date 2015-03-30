@@ -11,6 +11,9 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
@@ -29,52 +32,79 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Picasso.LoadedFrom;
 import com.squareup.picasso.Target;
 
-public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListAdapter, Filterable, View.OnClickListener{
+public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListAdapter, Filterable,
+        View.OnClickListener {
 
     private ArrayList<SysAppListItem> mSysAppListWapperFull;
     private ArrayList<SysAppListItem> mSysAppListWapperDisplay;
-    
+
     private TreeMap<String, Integer> mSectionInListPosMapFull;
-    private TreeMap<String, Integer> mSectionInListPosMapDisplay; 
-    // private Context mContext;
-    
+    private TreeMap<String, Integer> mSectionInListPosMapDisplay;
+    private int mHoverShowedPos = -1;
+    //private View mLastShowedHoverView = null;
+    private boolean hoverAniIsRunning = false;
+
     private SysAppFilter filter;
 
     private Context mCtx;
     private int selectedCnt = 0;
-    
+
     public IconClickListener mIconClickListener;
 
     public void setIconClickListener(IconClickListener l) {
-          this.mIconClickListener = l;
+        this.mIconClickListener = l;
     }
-    
+
     public ArrayList<SysAppListItem> getSysAppListWapperDisplay() {
         return mSysAppListWapperDisplay;
     }
+
     public TreeMap<String, Integer> getSectionInListPosMapDisplay() {
         return mSectionInListPosMapDisplay;
     }
-    
-   /* public SysAppListFilterResultListener mFilterResultListener;
-    
-    // Container Activity must implement this interface
-    public interface SysAppListFilterResultListener {
-        public void onSysAppListFilterResultPublish(ArrayList<SysAppListItem> ResultSysAppList,TreeMap<String, Integer> ResultPosMap);
+
+    /*
+     * public SysAppListFilterResultListener mFilterResultListener;
+     * 
+     * // Container Activity must implement this interface public interface SysAppListFilterResultListener { public void
+     * onSysAppListFilterResultPublish(ArrayList<SysAppListItem> ResultSysAppList,TreeMap<String, Integer>
+     * ResultPosMap); }
+     * 
+     * public void setSysAppListFilterResultListener(SysAppListFilterResultListener sysAppListFilterResultListener) {
+     * this.mFilterResultListener = sysAppListFilterResultListener; }
+     */
+
+    public boolean isHoverAniIsRunning(){
+        return hoverAniIsRunning;
+    }
+    public void setHoverShowedPos(int pos) {
+        mHoverShowedPos = pos;
     }
 
-    public void setSysAppListFilterResultListener(SysAppListFilterResultListener sysAppListFilterResultListener) {
-        this.mFilterResultListener = sysAppListFilterResultListener;
-    }*/
-    
+    public void resetHoverShowedPos() {
+        mHoverShowedPos = -1;
+    }
+
+    public int getLastHoverShowedPos() {
+        return mHoverShowedPos;
+    }
+
+    public boolean isAnyHoverShowed() {
+        if (mHoverShowedPos == -1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     public void selectAll() {
         // mSelectedItems.clear();
         int size = getCount();
         for (int i = 0; i < size; i++) {
-            if(getItem(i).type == SysAppListItem.APP_ITEM){
+            if (getItem(i).type == SysAppListItem.APP_ITEM) {
                 getItem(i).appinfo.selected = true;
             }
-                    
+
         }
         selectedCnt = getAppItemsCount();
         this.notifyDataSetChanged();
@@ -84,16 +114,15 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
         // mSelectedItems.clear();
         int size = getCount();
         for (int i = 0; i < size; i++) {
-            if(getItem(i).type == SysAppListItem.APP_ITEM){
+            if (getItem(i).type == SysAppListItem.APP_ITEM) {
                 getItem(i).appinfo.selected = false;
             }
-                    
+
         }
         selectedCnt = 0;
         this.notifyDataSetChanged();
     }
-    
-    
+
     public void toggleSelection(int position, boolean refreshList) {
         // setSelectedItem(position, !mSelectedItems.containsKey(position), refreshList);
         // String thePkgName = getItem(position).packageName;
@@ -105,13 +134,13 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
         if (val) {
             getItem(position).appinfo.selected = true;
             selectedCnt++;
-            if(selectedCnt > getAppItemsCount()){
+            if (selectedCnt > getAppItemsCount()) {
                 selectedCnt = getAppItemsCount();
             }
         } else {
             getItem(position).appinfo.selected = false;
             selectedCnt--;
-            if(selectedCnt < 0){
+            if (selectedCnt < 0) {
                 selectedCnt = 0;
             }
             // mSelectedItems.remove(getItem(position).packageName);
@@ -138,12 +167,12 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
         ArrayList<AppInfo> retList = new ArrayList<AppInfo>();
         ArrayList<SysAppListItem> curList = getDisplayList();
         for (SysAppListItem listItem : curList) {
-            if(listItem.type == SysAppListItem.APP_ITEM){
+            if (listItem.type == SysAppListItem.APP_ITEM) {
                 if (listItem.appinfo.selected) {
                     retList.add(listItem.appinfo);
                 }
             }
-           
+
         }
 
         return retList;
@@ -151,29 +180,31 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
          * ArrayList<AppInfo> list = new ArrayList<AppInfo>(mSelectedItems.values()); return list;
          */
     }
-    
-    public ArrayList<SysAppListItem> getDisplayList(){
+
+    public ArrayList<SysAppListItem> getDisplayList() {
         return mSysAppListWapperDisplay;
     }
-    
-    
+
     public SysAppListDataSetChangedListener mSysAppListDataSetChangedListener;
+
     public interface SysAppListDataSetChangedListener {
         public void OnSysAppListDataSetChanged(ArrayList<SysAppListItem> ResultSysAppList,
                 TreeMap<String, Integer> ResultPosMap);
     }
+
     public void setSysAppListDataSetChangedListener(SysAppListDataSetChangedListener l) {
         this.mSysAppListDataSetChangedListener = l;
     }
+
     public SysAppListDataSetChangedListener getSysAppListDataSetChangedListener() {
         return this.mSysAppListDataSetChangedListener;
     }
-    
-    
-    public SysAppListAdapter(Context ctx, ArrayList<SysAppListItem> list, TreeMap<String, Integer> map, IconClickListener l) {
+
+    public SysAppListAdapter(Context ctx, ArrayList<SysAppListItem> list, TreeMap<String, Integer> map,
+            IconClickListener l) {
         mCtx = ctx;
         mSysAppListWapperFull = mSysAppListWapperDisplay = list;
-        mSectionInListPosMapFull = mSectionInListPosMapDisplay =  map;
+        mSectionInListPosMapFull = mSectionInListPosMapDisplay = map;
         mIconClickListener = l;
     }
 
@@ -188,12 +219,11 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
         // TODO Auto-generated method stub
         return mSysAppListWapperDisplay.get(position);
     }
-    
-    public boolean isAppItem(int position){
-        if(getItem(position).type == SysAppListItem.APP_ITEM){
+
+    public boolean isAppItem(int position) {
+        if (getItem(position).type == SysAppListItem.APP_ITEM) {
             return true;
-        }
-        else{
+        } else {
             return false;
         }
     }
@@ -204,8 +234,127 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
         return 0;
     }
 
+    public void showHover(View listItemView, final int position, boolean withAni) {
+        final View hoverView = listItemView.findViewById(R.id.hoverLayout);
+        hoverView.setVisibility(View.VISIBLE);
+        if (withAni) {
+            hoverView.clearAnimation();
+            Animation ani = AnimationUtils.loadAnimation(mCtx, R.anim.push_left_in);
+            ani.setAnimationListener(new AnimationListener() {
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    // TODO Auto-generated method stub
+                    setHoverShowedPos(position);
+                    notifyDataSetChanged();
+                    hoverAniIsRunning = false;
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+                    // TODO Auto-generated method stub
+
+                }
+
+                @Override
+                public void onAnimationStart(Animation animation) {
+                    // TODO Auto-generated method stub
+                    hoverAniIsRunning = true;
+                }
+            });
+            hoverView.startAnimation(ani);
+            setHoverShowedPos(position);
+        }
+        else{
+            hoverAniIsRunning = false;
+            setHoverShowedPos(position);
+            notifyDataSetChanged();
+        }
+
+    }
+
+   /* public void hideLastHoverShowedPos(boolean withAni, int listFirstVisiablePos, int listLastVisiablePos){
+        if(mLastShowedHoverView == null){
+            return;
+        } 
+        if(withAni){
+            mLastShowedHoverView.clearAnimation();
+            Animation ani = AnimationUtils.loadAnimation(mCtx, R.anim.push_right_out);
+            ani.setAnimationListener(new AnimationListener() {
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    // TODO Auto-generated method stub
+                    //hoverView.setVisibility(View.GONE);
+                    resetHoverShowedPos();
+                    notifyDataSetChanged();
+                    hoverAniIsRunning = false;
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+                    // TODO Auto-generated method stub
+
+                }
+
+                @Override
+                public void onAnimationStart(Animation animation) {
+                    // TODO Auto-generated method stub
+                    hoverAniIsRunning = true;
+                }
+            });
+            mLastShowedHoverView.startAnimation(ani);
+            resetHoverShowedPos();
+        }
+        else{
+            hoverAniIsRunning = false;
+            resetHoverShowedPos();
+            notifyDataSetChanged();
+        }
+       
+    }*/
+    
+    
+    public void hideHover(View listItemView, int position, boolean withAni) {
+        final View hoverView = listItemView.findViewById(R.id.hoverLayout);
+        hoverView.setVisibility(View.VISIBLE);
+        if (withAni) {
+            hoverView.clearAnimation();
+            Animation ani = AnimationUtils.loadAnimation(mCtx, R.anim.push_right_out);
+            ani.setAnimationListener(new AnimationListener() {
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    // TODO Auto-generated method stub
+                    //hoverView.setVisibility(View.GONE);
+                    notifyDataSetChanged();
+                    hoverAniIsRunning = false;
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+                    // TODO Auto-generated method stub
+
+                }
+
+                @Override
+                public void onAnimationStart(Animation animation) {
+                    // TODO Auto-generated method stub
+                    hoverAniIsRunning = true;
+                }
+            });
+            hoverView.startAnimation(ani);
+            resetHoverShowedPos();
+        }
+        else{
+            hoverAniIsRunning = false;
+            resetHoverShowedPos();
+            notifyDataSetChanged();
+        }
+    }
+
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         // TODO Auto-generated method stub
         SectionViewHolder sectionHolder;
         AppItemViewHolder appItemHolder;
@@ -227,31 +376,31 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
                 appItemHolder = new AppItemViewHolder();
                 convertView = LayoutInflater.from(mCtx).inflate(R.layout.sys_app_info_item, parent, false);
 
+                appItemHolder.HoverLayout = (RelativeLayout) convertView.findViewById(R.id.hoverLayout);
+               /* appItemHolder.HoverLayout.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        // TODO Auto-generated method stub
+                        //hideHover(v, position, true);
+                    }
+                });*/
                 appItemHolder.RootLayout = (RelativeLayout) convertView.findViewById(R.id.rootLayout);
                 appItemHolder.AppNameTextView = (TextView) convertView.findViewById(R.id.app_name);
                 appItemHolder.AppVersionTextView = (TextView) convertView.findViewById(R.id.app_version);
                 appItemHolder.AppPkgTextView = (TextView) convertView.findViewById(R.id.app_pkgname);
                 appItemHolder.AppIconImageView = (ImageView) convertView.findViewById(R.id.app_icon);
                 appItemHolder.AppIconImageView.setOnClickListener(this);
-                /*appItemHolder.AppIconImageView.setOnClickListener(new View.OnClickListener() {
-                    
-                    @Override
-                    public void onClick(View v) {
-                        // TODO Auto-generated method stub
-                        int pos = (Integer) v.getTag();
-                        Intent intent = mCtx.getPackageManager().getLaunchIntentForPackage(getItem(pos).appinfo.packageName);
-                        if (intent != null) {
-                            try{
-                                mCtx.startActivity(intent);
-                            }catch(Exception e){
-                                MainActivity.T(R.string.error);
-                            }
-                            
-                        } else {
-                            MainActivity.T(R.string.error);
-                        }
-                    }
-                });*/
+                /*
+                 * appItemHolder.AppIconImageView.setOnClickListener(new View.OnClickListener() {
+                 * 
+                 * @Override public void onClick(View v) { // TODO Auto-generated method stub int pos = (Integer)
+                 * v.getTag(); Intent intent =
+                 * mCtx.getPackageManager().getLaunchIntentForPackage(getItem(pos).appinfo.packageName); if (intent !=
+                 * null) { try{ mCtx.startActivity(intent); }catch(Exception e){ MainActivity.T(R.string.error); }
+                 * 
+                 * } else { MainActivity.T(R.string.error); } } });
+                 */
                 convertView.setTag(appItemHolder);
 
             } else {
@@ -260,49 +409,61 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
 
             AppInfo appInfo = item.appinfo;
 
+//            if(hoverAniIsRunning)
+//            {
+//                mHoverShowedPos
+//            }
+            appItemHolder.HoverLayout.clearAnimation();
+            if (mHoverShowedPos == position) {
+                appItemHolder.HoverLayout.setVisibility(View.VISIBLE);
+            } else {
+                appItemHolder.HoverLayout.setVisibility(View.GONE);
+            }
+
             appItemHolder.AppNameTextView.setText(appInfo.appName);
             appItemHolder.AppVersionTextView.setText("v" + appInfo.versionName + " | " + appInfo.appSizeStr + " | "
                     + appInfo.lastModifiedTimeStr);
             appItemHolder.AppPkgTextView.setText(appInfo.packageName);
-            
+
             appItemHolder.AppVersionTextView.setSelected(false);
             // appViewHolder.AppIconImageView.setImageDrawable(appInfo.iconDrawable);
             // Picasso.with(mCtx).load(new File(Utilities.getAppIconCacheDir(mCtx), appInfo.packageName +
             // ".png")).into(appViewHolder.AppIconImageView);
             appItemHolder.AppIconImageView.setTag(position);
             appItemHolder.RootLayout.setTag(appInfo);
-  
+
             if (appInfo.iconBitmap == null) {
                 Picasso.with(mCtx).load(appInfo.getAppIconCachePath(mCtx)).noFade().into(appItemHolder);
-                //appItemHolder.AppIconImageView.setImageDrawable(Utils.getIconDrawable(mCtx, appInfo.packageName));
+                // appItemHolder.AppIconImageView.setImageDrawable(Utils.getIconDrawable(mCtx, appInfo.packageName));
             } else {
                 appItemHolder.AppIconImageView.setImageBitmap(appInfo.iconBitmap);
             }
 
             if (SysAppsTabFragment.isInActoinMode) {
+                appItemHolder.HoverLayout.setVisibility(View.GONE);
                 appItemHolder.AppIconImageView.setOnClickListener(null);
                 appItemHolder.AppIconImageView.setClickable(false);
                 appItemHolder.AppIconImageView.setBackgroundResource(R.drawable.imageview_border_red);
                 if (appInfo.selected) {
                     appItemHolder.RootLayout.setBackgroundResource(R.drawable.list_row_item_pressed_bg);
-                    //holder.AppIconImageView.setBackgroundResource(R.drawable.imageview_border_blue);
                 } else {
                     appItemHolder.RootLayout.setBackgroundResource(R.drawable.list_row_item_bg);
-                    //holder.AppIconImageView.setBackgroundResource(R.drawable.user_app_icon_bg);
+                    //测试清楚
+                    appItemHolder.RootLayout.setBackgroundResource(0);
                 }
             } else {
                 appItemHolder.AppIconImageView.setOnClickListener(this);
                 appItemHolder.AppIconImageView.setClickable(true);
                 appItemHolder.RootLayout.setBackgroundResource(R.drawable.list_row_item_bg);
+                //测试清楚
+                appItemHolder.RootLayout.setBackgroundResource(0);
                 appItemHolder.AppIconImageView.setBackgroundResource(R.drawable.sys_app_icon_bg);
             }
-            
-            
         }
 
         return convertView;
     }
-    
+
     @Override
     public int getViewTypeCount() {
         return 2;
@@ -318,21 +479,22 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
         return viewType == SysAppListItem.LIST_SECTION;
     }
 
-    public int getAppItemsCount(){
+    public int getAppItemsCount() {
         return mSysAppListWapperDisplay.size() - mSectionInListPosMapDisplay.keySet().size();
     }
+
     /**
      * 
      * @param sectionTxt
      * @return -1: not found, >-1: position
      */
     public int getSectionPostionInList(String sectionTxt) {
-        if(mSectionInListPosMapDisplay.get(sectionTxt) != null){
-           return mSectionInListPosMapDisplay.get(sectionTxt).intValue();
+        if (mSectionInListPosMapDisplay.get(sectionTxt) != null) {
+            return mSectionInListPosMapDisplay.get(sectionTxt).intValue();
         }
         return -1;
     }
-    
+
     private static class SectionViewHolder {
         TextView sectionTextView;
     }
@@ -343,6 +505,7 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
         TextView AppPkgTextView;
         ImageView AppIconImageView;
         RelativeLayout RootLayout;
+        RelativeLayout HoverLayout;
 
         @Override
         public void onBitmapFailed(Drawable bitmap) {
@@ -353,10 +516,10 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
         public void onBitmapLoaded(Bitmap bitmap, LoadedFrom from) {
             // TODO Auto-generated method stub
             AppIconImageView.setImageBitmap(bitmap);
-            if(Constants.SAVE_APP_ICON_IN_OBJ){
+            if (Constants.SAVE_APP_ICON_IN_OBJ) {
                 AppInfo appInfo = (AppInfo) RootLayout.getTag();
-                //if (appInfo.iconBitmap == null) 
-                //if(appInfo != null)
+                // if (appInfo.iconBitmap == null)
+                // if(appInfo != null)
                 {
                     appInfo.iconBitmap = bitmap;
                 }
@@ -379,65 +542,63 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
         return filter;
     }
 
-    
     private class SysAppFilter extends Filter {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             // TODO Auto-generated method stub
             // 存储过滤的值
-            //mSysAppListWapperDisplay = mSysAppListWapperFull;
+            // mSysAppListWapperDisplay = mSysAppListWapperFull;
             mSectionInListPosMapDisplay = mSectionInListPosMapFull;
 
             FilterResults retval = new FilterResults();
             retval.values = mSysAppListWapperFull;
             retval.count = mSysAppListWapperFull.size();
-       
+
             if (!TextUtils.isEmpty(constraint)) {
-   
+
                 ArrayList<SysAppListItem> filteredAppList = new ArrayList<SysAppListItem>();
-                TreeMap<String, Integer> filteredSectionInListPosMap = new TreeMap<String, Integer>(); 
-                
+                TreeMap<String, Integer> filteredSectionInListPosMap = new TreeMap<String, Integer>();
+
                 for (SysAppListItem sysAppListItem : mSysAppListWapperFull) {
-     
-                    if(sysAppListItem.type == SysAppListItem.LIST_SECTION){
-                        if(filteredAppList.size() == 0){
+
+                    if (sysAppListItem.type == SysAppListItem.LIST_SECTION) {
+                        if (filteredAppList.size() == 0) {
                             filteredAppList.add(sysAppListItem);
                             filteredSectionInListPosMap.put(sysAppListItem.sectionTxt, 0);
-                        }
-                        else{
-                            SysAppListItem lastItem = filteredAppList.get(filteredAppList.size()-1);
-                            if(lastItem.type == SysAppListItem.LIST_SECTION){
+                        } else {
+                            SysAppListItem lastItem = filteredAppList.get(filteredAppList.size() - 1);
+                            if (lastItem.type == SysAppListItem.LIST_SECTION) {
                                 filteredSectionInListPosMap.remove(lastItem.sectionTxt);
-                                filteredAppList.remove(filteredAppList.size()-1);
+                                filteredAppList.remove(filteredAppList.size() - 1);
                             }
-                            
+
                             filteredAppList.add(sysAppListItem);
-                            filteredSectionInListPosMap.put(sysAppListItem.sectionTxt, filteredAppList.size()-1);
+                            filteredSectionInListPosMap.put(sysAppListItem.sectionTxt, filteredAppList.size() - 1);
                         }
-                        
-                    }
-                    else if(sysAppListItem.type == SysAppListItem.APP_ITEM){
-                        if(sysAppListItem.appinfo.appName.toLowerCase(Locale.getDefault()).contains(constraint)
-                                || sysAppListItem.appinfo.appNamePinyin.toLowerCase(Locale.getDefault()).contains(constraint))
+
+                    } else if (sysAppListItem.type == SysAppListItem.APP_ITEM) {
+                        if (sysAppListItem.appinfo.appName.toLowerCase(Locale.getDefault()).contains(constraint)
+                                || sysAppListItem.appinfo.appNamePinyin.toLowerCase(Locale.getDefault()).contains(
+                                        constraint))
                             filteredAppList.add(sysAppListItem);
                     }
                 }
-                //如果最后一项是section 去掉
-                SysAppListItem lastItem = filteredAppList.get(filteredAppList.size()-1);
-                if(lastItem.type == SysAppListItem.LIST_SECTION){
+                // 如果最后一项是section 去掉
+                SysAppListItem lastItem = filteredAppList.get(filteredAppList.size() - 1);
+                if (lastItem.type == SysAppListItem.LIST_SECTION) {
                     filteredSectionInListPosMap.remove(lastItem.sectionTxt);
-                    filteredAppList.remove(filteredAppList.size()-1);
+                    filteredAppList.remove(filteredAppList.size() - 1);
                 }
 
-                //一定要clear自后在addAll不能直接mSysAppListWapperDisplay = filteredAppList,
-                //似乎是内存没有刷新，list没有内容更新
-//                mSysAppListWapperDisplay.clear();
-//                mSysAppListWapperDisplay.addAll(filteredAppList);
-//                mSectionInListPosMapDisplay = filteredSectionInListPosMap;
-                
+                // 一定要clear自后在addAll不能直接mSysAppListWapperDisplay = filteredAppList,
+                // 似乎是内存没有刷新，list没有内容更新
+                // mSysAppListWapperDisplay.clear();
+                // mSysAppListWapperDisplay.addAll(filteredAppList);
+                // mSectionInListPosMapDisplay = filteredSectionInListPosMap;
+
                 retval.values = filteredAppList;
                 retval.count = filteredAppList.size();
-                mSectionInListPosMapDisplay = filteredSectionInListPosMap;    
+                mSectionInListPosMapDisplay = filteredSectionInListPosMap;
             }
 
             return retval;
@@ -447,21 +608,23 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
         @SuppressWarnings("unchecked")
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            
-            mSysAppListWapperDisplay = (ArrayList<SysAppListItem>)results.values;
-            /*if (mFilterResultListener != null) {
-                mFilterResultListener.onSysAppListFilterResultPublish(mSysAppListWapperDisplay, mSectionInListPosMapDisplay);
-            }*/
+
+            mSysAppListWapperDisplay = (ArrayList<SysAppListItem>) results.values;
+            /*
+             * if (mFilterResultListener != null) {
+             * mFilterResultListener.onSysAppListFilterResultPublish(mSysAppListWapperDisplay,
+             * mSectionInListPosMapDisplay); }
+             */
             notifyDataSetChanged();
         }
 
     }
+
     @Override
     public void onClick(View v) {
         // TODO Auto-generated method stub
         int pos = (Integer) v.getTag();
         mIconClickListener.OnIconClickListener(pos);
     }
-    
-    
+
 }
