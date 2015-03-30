@@ -68,6 +68,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
     private FilterMenuLayout menuLayout;
     private Point revalStartPosition;
     private View appIcon;
+    private View rootFrame;
     private static final int OPEN_ACTION = 0;
     private static final int INFO_ACTION = 1;
     private static final int BACKUP_ACTION = 2;
@@ -88,6 +89,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
         
         playStartAni = Utils.playAniAppDetails(this);
         
+        rootFrame  = findViewById(R.id.root_frame);
         headerImgView = findViewById(R.id.header_image);
         appIcon = findViewById(R.id.app_icon);
         contentRootView = findViewById(R.id.content_root);
@@ -109,8 +111,8 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
        
         
         //强制使reveal填满屏幕，如果内容不够长，reveal只有屏幕的一点
-        revealView.getLayoutParams().height = Utils.getScreenHeight(this);
-        revealView.requestLayout();
+//        revealView.getLayoutParams().height = Utils.getScreenHeight(this);
+//        revealView.requestLayout();
 
         if(playStartAni){
             //默认是从屏幕中心开始
@@ -125,6 +127,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
             headerImgView.setVisibility(View.INVISIBLE);
             contentRootView.setVisibility(View.INVISIBLE);
             rootScrollView.setBackgroundColor(Color.TRANSPARENT);
+            rootFrame.setBackgroundColor(Color.TRANSPARENT);
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
 
@@ -212,7 +215,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                             .setDuration(1000).setStartDelay(400).start();
                             
                             rootScrollView.setBackgroundColor(getResources().getColor(R.color.windows_bg));
-                            
+                            rootFrame.setBackgroundColor(getResources().getColor(R.color.windows_bg));
                         }
                         
                     });
