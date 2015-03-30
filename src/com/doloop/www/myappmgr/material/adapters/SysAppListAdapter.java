@@ -440,6 +440,7 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
             }
 
             if (SysAppsTabFragment.isInActoinMode) {
+                resetHoverShowedPos();
                 appItemHolder.HoverLayout.setVisibility(View.GONE);
                 appItemHolder.AppIconImageView.setOnClickListener(null);
                 appItemHolder.AppIconImageView.setClickable(false);
