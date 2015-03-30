@@ -26,6 +26,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.Animation.AnimationListener;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListAdapter;
@@ -49,6 +52,8 @@ import com.doloop.www.myappmgr.material.widgets.IndexBarView;
 import com.doloop.www.myappmgr.material.widgets.IndexBarView.OnIndexItemClickListener;
 import com.doloop.www.myappmgr.material.widgets.PinnedSectionListView;
 import com.doloop.www.myappmgr.material.R;
+import com.nineoldandroids.animation.ObjectAnimator;
+import com.nineoldandroids.view.ViewPropertyAnimator;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.listeners.ActionClickListener;
 
@@ -330,7 +335,7 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
     public void setExistIndexArray(ArrayList<String> list) {
         mIndexBarView.setExistIndexArray(list);
     }
-
+    
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         // TODO Auto-generated method stub
@@ -341,53 +346,56 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
             if (item.type == SysAppListItem.LIST_SECTION) {
                 getListView().setSelection(position);
             } else if (item.type == SysAppListItem.APP_ITEM) {
-
                 if (isInActoinMode) {
                     mAdapter.toggleSelection(position, true);
                     updateActionModeTitle();
                 } else {
-                   /* String toastMsg =
-                            item.appinfo.appName + " \n" + item.appinfo.packageName + " \n" + item.appinfo.apkFilePath;
-                    MainActivity.T(toastMsg);
-                    // 滚动text
-                    TextView appVersion = (TextView) v.findViewById(R.id.app_version);
-                    if (appVersion.isSelected()) {
-                        appVersion.setSelected(false);
-                    }
-                    appVersion.setSelected(true);*/
+//                    String toastMsg =
+//                            item.appinfo.appName + " \n" + item.appinfo.packageName + " \n" + item.appinfo.apkFilePath;
+//                    MainActivity.T(toastMsg);
+//                    // 滚动text
+//                    TextView appVersion = (TextView) v.findViewById(R.id.app_version);
+//                    if (appVersion.isSelected()) {
+//                        appVersion.setSelected(false);
+//                    }
+//                    appVersion.setSelected(true);
                     
+                    if(!mAdapter.isHoverAniIsRunning()){
+                        if(mAdapter.getLastHoverShowedPos() == position){
+                            mAdapter.hideHover(v, position, true);
+                        }
+                        else{
+                            if(mAdapter.isAnyHoverShowed()){
+                                int lastHoverPos = mAdapter.getLastHoverShowedPos();
+                                if(lastHoverPos >= mPinnedSectionListView.getFirstVisiblePosition() &&  lastHoverPos <= mPinnedSectionListView.getLastVisiblePosition()){
+                                    View itemView = mPinnedSectionListView.getChildAt(lastHoverPos - mPinnedSectionListView.getFirstVisiblePosition());
+                                    mAdapter.hideHover(itemView, position, true);
+                                }
+                                else{
+                                    
+                                }
+                            }
+                            mAdapter.showHover(v, position, true);   
+                        }
+                    }
+                    
+                   /*//启动详情页的
                     AppDetailActivity.curAppInfo = item.appinfo;
                     Intent intent = new Intent(getActivity(), AppDetailActivity.class);
                     if(Utils.playAniAppDetails(getActivity())){
-                        int[] revealStartPos = Utils.findViewCenterXY(v);//v.findViewById(R.id.app_icon)
+                        int[] revealStartPos = Utils.findViewCenterXY(v);
                         intent.putExtra(AppDetailActivity.REVEAL_START_POSITION, revealStartPos);
                         startActivity(intent);
                         getActivity().overridePendingTransition(0, 0);
                     }
                     else{
                         Utils.startActivtyWithAni(getActivity(), intent);
-                    }
+                    }*/
                 }
             }
         } else {
             MainActivity.T("SysApp Item " + position);
         }
-
-        /*
-         * String viewContentDesStr = v.getContentDescription().toString(); if (viewContentDesStr.contains("-"))// app
-         * view "section-position" { // 滚动text TextView appVersion = (TextView) v.findViewById(R.id.app_version); if
-         * (appVersion.isSelected()) { appVersion.setSelected(false); } appVersion.setSelected(true);
-         * 
-         * String[] DesStr = viewContentDesStr.split("-"); int section = Integer.parseInt(DesStr[0]); int pos =
-         * Integer.parseInt(DesStr[1]);
-         * 
-         * AppInfo appinfo = mAdapter.getItem(section, pos);
-         * 
-         * 
-         * String toastMsg = appinfo.appName + " \n" + appinfo.packageName + " \n" + appinfo.apkFilePath;
-         * 
-         * MainActivity.T(toastMsg); } else// section { mPinnedSectionListView.setSelection(position); }
-         */
     }
 
     public void updateActionModeTitle() {

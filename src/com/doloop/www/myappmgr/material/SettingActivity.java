@@ -103,7 +103,12 @@ public class SettingActivity extends SwipeBackActivity implements FolderSelectCa
 
             @Override
             public void onClick(View v) {
-                new FolderSelectorDialog().show(getSupportFragmentManager(), SettingActivity.this);
+                if(MainActivity.sIsSdcardReady){
+                    new FolderSelectorDialog().show(getSupportFragmentManager(), SettingActivity.this);
+                }
+                else{
+                    MainActivity.T(R.string.no_sd);
+                }
             }
         });
         playAniAppDetails = findViewById(R.id.app_details_ani);

@@ -152,7 +152,7 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
     public static ActionMode sActionMode = null;
     private static Toast toast;
 
-    private static boolean sIsSdcardReady = false;
+    public static boolean sIsSdcardReady = false;
 
     private SortTypeDialogFragment SortTypeDialog;
     // private UserAppListMoreActionDialogFragment UserAppListMoreActionDialog;
