@@ -844,13 +844,19 @@ public class Utils {
     }
     
     public static void chooseSendByApp(Context ctx, ArrayList<Uri> Uris) {
-        Intent sendIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
-        sendIntent.setType("application/vnd.android.package-archive");
-        sendIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, Uris);// 添加附件
-        sendIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Share apps");// 主题
-        sendIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Enjoy apps, thanks"); // 邮件主体
-        sendIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        ctx.startActivity(Intent.createChooser(sendIntent, ctx.getString(R.string.send_by)));// Chooser的标题
+        
+        if(Uris.size() == 1){
+            chooseSendByApp(ctx, Uris.get(0));
+        }
+        else{
+            Intent sendIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+            sendIntent.setType("application/vnd.android.package-archive");
+            sendIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, Uris);// 添加附件
+            sendIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Share apps");// 主题
+            sendIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Enjoy apps, thanks"); // 邮件主体
+            sendIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            ctx.startActivity(Intent.createChooser(sendIntent, ctx.getString(R.string.send_by)));// Chooser的标题
+        }
     }
 
     public static boolean playAniAppDetails(Context ctx) {
