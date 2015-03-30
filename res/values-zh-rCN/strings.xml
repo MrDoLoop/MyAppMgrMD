@@ -49,6 +49,7 @@
     <string name="cancel">取消</string>
     <string name="ok">确定</string>
     <string name="no">否</string>
+    <string name="no_sd">没有可用的sd卡</string>
     <string name="yes">是</string>
     <string name="default_dir">默认目录</string>
     <string name="back_dir">备份文件夹</string>

@@ -50,6 +50,7 @@
     <string name="default_dir">Def. Dir</string>
     <string name="ok">OK</string>
      <string name="no">No</string>
+     <string name="no_sd">No Sd card available</string>
     <string name="yes">Yes</string>
     <string name="back_dir">Backup Dir</string>
     <string name="sd_free">SD Free</string>
