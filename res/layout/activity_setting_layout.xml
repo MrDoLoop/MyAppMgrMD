@@ -25,98 +25,92 @@
         android:background="@color/windows_bg" >
 
         <LinearLayout
+            android:id="@+id/content_frame"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="15dp" >
+            android:paddingBottom="15dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp" >
 
-            <LinearLayout
-                android:id="@+id/content_frame"
+            <include
+                android:id="@+id/common_cate"
+                layout="@layout/pref_category" />
+
+            <include
+                android:id="@+id/backup_dir"
+                layout="@layout/pref_two_rows" />
+
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:paddingLeft="15dp"
-                android:paddingRight="15dp" >
+                android:layout_height="1dp"
+                android:background="@color/dividers" />
 
-                <include
-                    android:id="@+id/common_cate"
-                    layout="@layout/pref_category" />
+            <include
+                android:id="@+id/app_details_ani"
+                layout="@layout/pref_two_rows_chk" />
 
-                <include
-                    android:id="@+id/backup_dir"
-                    layout="@layout/pref_two_rows" />
+            <include
+                android:id="@+id/info_cate"
+                layout="@layout/pref_category" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/dividers" />
+            <include
+                android:id="@+id/opensource"
+                layout="@layout/pref_two_rows" />
 
-                <include
-                    android:id="@+id/app_details_ani"
-                    layout="@layout/pref_two_rows_chk" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/dividers" />
 
-                <include
-                    android:id="@+id/info_cate"
-                    layout="@layout/pref_category" />
+            <include
+                android:id="@+id/app_info"
+                layout="@layout/pref_two_rows_icon"
+                android:clickable="true" />
 
-                <include
-                    android:id="@+id/opensource"
-                    layout="@layout/pref_two_rows" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/dividers" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/dividers" />
+            <TextView
+                android:id="@+id/email_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="15dp"
+                android:drawableLeft="@drawable/email"
+                android:drawablePadding="3dp"
+                android:gravity="center_vertical"
+                android:text="nilaile8@gmail.com"
+                android:textColor="@color/link_txt_sel"
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
-                <include
-                    android:id="@+id/app_info"
-                    layout="@layout/pref_two_rows_icon"
-                    android:clickable="true" />
+            <TextView
+                android:id="@+id/qq_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:drawableLeft="@drawable/qq"
+                android:drawablePadding="3dp"
+                android:gravity="center_vertical"
+                android:text="510887760"
+                android:textColor="@color/link_txt_sel"
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/dividers" />
-
-                <TextView
-                    android:id="@+id/email_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="15dp"
-                    android:drawableLeft="@drawable/email"
-                    android:drawablePadding="3dp"
-                    android:gravity="center_vertical"
-                    android:text="nilaile8@gmail.com"
-                    android:textColor="@color/link_txt_sel"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/qq_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="10dp"
-                    android:drawableLeft="@drawable/qq"
-                    android:drawablePadding="3dp"
-                    android:gravity="center_vertical"
-                    android:text="510887760"
-                    android:textColor="@color/link_txt_sel"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/copy_right_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="10dp"
-                    android:gravity="center"
-                    android:text="@string/copy_right"
-                    android:textColor="@color/gray"
-                    android:textSize="13sp" />
-            </LinearLayout>
+            <TextView
+                android:id="@+id/copy_right_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:text="@string/copy_right"
+                android:textColor="@color/gray"
+                android:textSize="13sp" />
         </LinearLayout>
     </ScrollView>
 
