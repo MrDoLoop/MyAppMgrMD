@@ -26,6 +26,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListAdapter;
@@ -323,35 +325,52 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
         };
         mAdapter.registerDataSetObserver(mDataSetObserver);
         mPinnedSectionListView.setEmptyView(mEmptyView);
-        /*mPinnedSectionListView.setOnScrollListener(new OnScrollListener(){
+        mPinnedSectionListView.setOnScrollListener(new OnScrollListener(){
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 // TODO Auto-generated method stub
-                if(mAdapter.isAnyHoverShowed()){
-                    int lastHoverPos = mAdapter.getLastHoverShowedPos();
-                    if(lastHoverPos >= mPinnedSectionListView.getFirstVisiblePosition() &&  lastHoverPos <= mPinnedSectionListView.getLastVisiblePosition()){
-                        View itemView = mPinnedSectionListView.getChildAt(lastHoverPos - mPinnedSectionListView.getFirstVisiblePosition());
-                        mAdapter.hideHover(itemView, lastHoverPos, true);
-                    }
-                    else{
-                        
-                    }
-                }
+//                if(mAdapter.isAnyHoverShowed()){
+//                    int lastHoverPos = mAdapter.getLastHoverShowedPos();
+//                    if(lastHoverPos >= mPinnedSectionListView.getFirstVisiblePosition() &&  lastHoverPos <= mPinnedSectionListView.getLastVisiblePosition()){
+//                        View itemView = mPinnedSectionListView.getChildAt(lastHoverPos - mPinnedSectionListView.getFirstVisiblePosition());
+//                        mAdapter.hideHover(itemView, lastHoverPos, true);
+//                    }
+//                    else{
+//                        
+//                    }
+//                }
             }
 
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
                 // TODO Auto-generated method stub
-                
-            }});*/
+                switch (scrollState) {
+                    case AbsListView.OnScrollListener.SCROLL_STATE_IDLE:
+                        
+                        break;
+                    case AbsListView.OnScrollListener.SCROLL_STATE_FLING: 
+                    case AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
+                      if(mAdapter.isAnyHoverShowed()){
+                          int lastHoverPos = mAdapter.getLastHoverShowedPos();
+                          if(lastHoverPos >= mPinnedSectionListView.getFirstVisiblePosition() &&  lastHoverPos <= mPinnedSectionListView.getLastVisiblePosition()){
+                              View itemView = mPinnedSectionListView.getChildAt(lastHoverPos - mPinnedSectionListView.getFirstVisiblePosition());
+                              mAdapter.hideHover(itemView, lastHoverPos, true, true);
+                          }
+                          else{
+                              
+                          }
+                      }
+                      break;
+                }
+            }});
     }
 
-    public void hideLastShoedHover(){
+    public void hideLastShowedHover(){
         int lastHoverPos = mAdapter.getLastHoverShowedPos();
         if(lastHoverPos >= mPinnedSectionListView.getFirstVisiblePosition() &&  lastHoverPos <= mPinnedSectionListView.getLastVisiblePosition()){
             View itemView = mPinnedSectionListView.getChildAt(lastHoverPos - mPinnedSectionListView.getFirstVisiblePosition());
-            mAdapter.hideHover(itemView, lastHoverPos, true);
+            mAdapter.hideHover(itemView, lastHoverPos, true, false);
         }
     }
     
@@ -380,7 +399,7 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
                 } else {
                     if(!mAdapter.hoverAniIsRunning()){
                         if(mAdapter.getLastHoverShowedPos() == position){
-                            mAdapter.hideHover(v, position, true);
+                            mAdapter.hideHover(v, position, true, true);
                         }
                         else{ 
                           //Æô¶¯ÏêÇéÒ³µÄ
@@ -674,13 +693,13 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
         // TODO Auto-generated method stub
         if(!mAdapter.hoverAniIsRunning()){
             if(mAdapter.getLastHoverShowedPos() == position){
-                mAdapter.hideHover(listItemView, position, true);
+                mAdapter.hideHover(listItemView, position, true, true);
             }
             else{
                 if(mAdapter.isAnyHoverShowed()){
-                    hideLastShoedHover();
+                    hideLastShowedHover();
                 }
-                mAdapter.showHover(listItemView, position, true);   
+                mAdapter.showHover(listItemView, position, true, true);   
             }
         }
     }
