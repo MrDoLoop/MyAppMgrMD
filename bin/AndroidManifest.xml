@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.doloop.www.myappmgrmaterial"
+    package="com.doloop.www.myappmgr.material"
     android:versionCode="1"
     android:versionName="1.0 初心版" >
 
@@ -32,6 +32,14 @@
         </activity>
 		<activity
             android:name="com.doloop.www.myappmgr.material.AppDetailActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.AppDetails" 
+            android:windowSoftInputMode="adjustNothing" >
+        </activity>
+        <activity
+            android:name="com.doloop.www.myappmgr.material.SettingActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
