@@ -68,7 +68,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
     private View shadowView;
     private FilterMenuLayout menuLayout;
     private Point revalStartPosition;
-    private View appIcon;
+    private ImageView appIcon;
     private View rootFrame;
     private boolean isBlockedScrollView = false;
     private static final int OPEN_ACTION = 0;
@@ -93,7 +93,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
         
         rootFrame  = findViewById(R.id.root_frame);
         headerImgView = findViewById(R.id.header_image);
-        appIcon = findViewById(R.id.app_icon);
+        appIcon = (ImageView) findViewById(R.id.app_icon);
         contentRootView = findViewById(R.id.content_root);
         rootScrollView = (ObservableScrollView) findViewById(R.id.root_scroll_view);
         
@@ -174,24 +174,12 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                             
                             contentRootView.setVisibility(View.INVISIBLE);
                             headerImgView.setVisibility(View.INVISIBLE);
+                            appIcon.setEnabled(false);
                             //shadowView.setVisibility(View.INVISIBLE);
                         }
 
                         @Override
                         public void onAnimationEnd(Animator animation) {
-                            // TODO Auto-generated method stub
-//                            revealView.hide(p.x, p.y, Color.TRANSPARENT, new AnimatorListenerAdapter(){
-    //
-//                                @Override
-//                                public void onAnimationEnd(Animator animation) {
-//                                    // TODO Auto-generated method stub
-//                                    revealView.setVisibility(View.GONE);
-//                                }
-//                                
-//                            });
-                            //revealView.setVisibility(View.GONE);
-                            //ViewPropertyAnimator.animate(revealView).alpha(0).setDuration(150).start();
-                            //getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.primary_dark));
                             
                             ViewPropertyAnimator.animate(revealView).alpha(0).setDuration(500).start();
                             contentRootView.setVisibility(View.VISIBLE);
@@ -225,7 +213,15 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                            
                             
                             ViewPropertyAnimator.animate(appIcon).alpha(1).scaleX(1).scaleY(1).alpha(1f).setInterpolator(new DecelerateInterpolator(3.f))
-                            .setDuration(1000).setStartDelay(400).start();
+                            .setDuration(1000).setStartDelay(400).setListener(new AnimatorListenerAdapter(){
+
+                                @Override
+                                public void onAnimationEnd(Animator animation) {
+                                    // TODO Auto-generated method stub
+                                    appIcon.setEnabled(true);
+                                }
+                                
+                            }).start();
                             
                             rootScrollView.setBackgroundColor(getResources().getColor(R.color.windows_bg));
                             rootFrame.setBackgroundColor(getResources().getColor(R.color.windows_bg));
@@ -366,13 +362,13 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
 
             TextView appName = (TextView) findViewById(R.id.app_name);
             appName.setText(curAppInfo.appName);
-            final ImageView appIcon = (ImageView) findViewById(R.id.app_icon);
+            appIcon = (ImageView) findViewById(R.id.app_icon);
             appIcon.setImageDrawable(Utils.getIconDrawable(this, curAppInfo.packageName));
             appIcon.setOnClickListener(new View.OnClickListener() {
                 
                 @Override
                 public void onClick(View v) {
-                    // TODO Auto-generated method stub
+                    appIcon.setEnabled(false);
                     //ObjectAnimator rotationAni = ObjectAnimator.ofFloat(appIcon, "rotationY", 0f, 360f);
                     ObjectAnimator scaleXAni = ObjectAnimator.ofFloat(appIcon, "scaleY", 1f, 0.5f, 1f);
                     ObjectAnimator scaleYAni = ObjectAnimator.ofFloat(appIcon, "scaleX", 1f, 0.5f, 1f);
