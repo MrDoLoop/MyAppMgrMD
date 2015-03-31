@@ -77,15 +77,18 @@
                     android:textColor="@color/gray" />
             </LinearLayout>
 
-            <ImageView
+            <TextView
                 android:id="@+id/item_menu"
-                android:layout_width="35dp"
+                android:layout_width="55dp"
                 android:layout_height="match_parent"
                 android:layout_alignBottom="@+id/text_linear"
                 android:layout_alignParentRight="true"
                 android:layout_alignTop="@+id/text_linear"
-                android:scaleType="fitStart"
-                android:src="@drawable/item_menu_sel" />
+                android:textColor="@color/link_txt_sel"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:gravity="top|right"
+                android:text="\u00B7\u00B7\u00B7"/>
         </RelativeLayout>
 
         <LinearLayout
