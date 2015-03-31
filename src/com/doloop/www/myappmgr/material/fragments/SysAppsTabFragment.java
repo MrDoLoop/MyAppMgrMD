@@ -348,6 +348,7 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
                 // TODO Auto-generated method stub
+                MainActivity.dismissSnackbar();
                 switch (scrollState) {
                     case AbsListView.OnScrollListener.SCROLL_STATE_IDLE:
                         
@@ -522,7 +523,7 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
             }).actionColorList(mContext.getResources().getColorStateList(R.color.snackbar_action_sel))
                     .swipeToDismiss(false).showAnimation(mShowAniSnackBar).dismissAnimation(true)
                     .animationText(mAniText).duration(Snackbar.SnackbarDuration.LENGTH_SHORT)
-                    .attachToAbsListView(mPinnedSectionListView).text(spanString).show(getActivity());
+                    .text(spanString).show(getActivity());
 
             EventBus.getDefault().post(new AppBackupSuccEvent(itemAppInfo));
         }
