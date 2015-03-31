@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.DataSetObserver;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.MenuItemCompat;
@@ -38,6 +39,7 @@ import com.doloop.www.myappmgr.material.AppDetailActivity;
 import com.doloop.www.myappmgr.material.MainActivity;
 import com.doloop.www.myappmgr.material.adapters.SysAppListAdapter;
 import com.doloop.www.myappmgr.material.adapters.SysAppListAdapter.SysAppListDataSetChangedListener;
+import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.events.ActionModeToggleEvent;
 import com.doloop.www.myappmgr.material.events.AppBackupSuccEvent;
 import com.doloop.www.myappmgr.material.events.AppUpdateEvent;
@@ -45,6 +47,7 @@ import com.doloop.www.myappmgr.material.events.BackupAppEvent;
 import com.doloop.www.myappmgr.material.events.ViewNewBackupAppEvent;
 import com.doloop.www.myappmgr.material.fragments.SelectionDialogFragment.SelectionDialogClickListener;
 import com.doloop.www.myappmgr.material.interfaces.IconClickListener;
+import com.doloop.www.myappmgr.material.interfaces.IhoverMenuClickListener;
 import com.doloop.www.myappmgr.material.interfaces.ItemMenuClickListener;
 import com.doloop.www.myappmgr.material.utils.SysAppListItem;
 import com.doloop.www.myappmgr.material.utils.Utils;
@@ -58,7 +61,7 @@ import com.nispok.snackbar.listeners.ActionClickListener;
 import de.greenrobot.event.EventBus;
 
 public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLongClickListener, 
-    IconClickListener,SelectionDialogClickListener, ItemMenuClickListener{
+    IconClickListener,SelectionDialogClickListener, ItemMenuClickListener,IhoverMenuClickListener{
     private SysAppListAdapter mAdapter;
     private PinnedSectionListView mPinnedSectionListView;
     private static Context mContext;
@@ -308,7 +311,7 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
     }
 
     public void setData(ArrayList<SysAppListItem> datalist, TreeMap<String, Integer> map) {
-        mAdapter = new SysAppListAdapter(mContext, datalist, map, this, this);
+        mAdapter = new SysAppListAdapter(mContext, datalist, map, this, this, this);
         mAdapter.setSysAppListDataSetChangedListener((SysAppListDataSetChangedListener) mContext);
         mPinnedSectionListView.setAdapter(mAdapter);
         mIndexBarView.setExistIndexArray(new ArrayList<String>(map.keySet()));
@@ -485,17 +488,17 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
     }
 
     // ±¸·Ýapp
-    private void backupApp(SysAppListItem item) {
+    private void backupApp(AppInfo itemAppInfo) {
         String mBackUpFolder = Utils.getBackUpAPKfileDir(mContext);
-        String sdAPKfileName = Utils.BackupApp(item.appinfo, mBackUpFolder);
+        String sdAPKfileName = Utils.BackupApp(itemAppInfo, mBackUpFolder);
         if (sdAPKfileName != null) {
             // MainActivity.T(R.string.backup_success);
             SpannableString spanString =
-                    new SpannableString(item.appinfo.appName + " " + mContext.getString(R.string.backup_success));
-            spanString.setSpan(new UnderlineSpan(), 0, item.appinfo.appName.length(),
+                    new SpannableString(itemAppInfo.appName + " " + mContext.getString(R.string.backup_success));
+            spanString.setSpan(new UnderlineSpan(), 0, itemAppInfo.appName.length(),
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             spanString.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color.theme_blue_light)), 0,
-                    item.appinfo.appName.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    itemAppInfo.appName.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
             Snackbar mSnackbar = MainActivity.getSnackbar(false);
             boolean mAniText = false;
@@ -521,7 +524,7 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
                     .animationText(mAniText).duration(Snackbar.SnackbarDuration.LENGTH_SHORT)
                     .attachToAbsListView(mPinnedSectionListView).text(spanString).show(getActivity());
 
-            EventBus.getDefault().post(new AppBackupSuccEvent(item.appinfo));
+            EventBus.getDefault().post(new AppBackupSuccEvent(itemAppInfo));
         }
     }
 
@@ -701,6 +704,31 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
                 }
                 mAdapter.showHover(listItemView, position, true, true);   
             }
+        }
+    }
+
+    @Override
+    public void OnMenuClick(int viewId,int listPos, AppInfo appInfo) {
+        // TODO Auto-generated method stub
+        switch (viewId){
+            case R.id.launch:
+                if(!Utils.launchApp(getActivity(), appInfo)){
+                    MainActivity.T(R.string.launch_fail);
+                }
+                break;
+            case R.id.details:
+                Utils.showInstalledAppDetails(getActivity(), appInfo.packageName);
+                break;
+            case R.id.backup:
+                backupApp(appInfo);
+                break;
+            case R.id.market:
+                Utils.startMarketSearch(getActivity(), appInfo);
+                break;
+            case R.id.send:
+                Utils.chooseSendByApp(getActivity(), Uri.parse("file://" + appInfo.apkFilePath));
+                break;
+                
         }
     }
     

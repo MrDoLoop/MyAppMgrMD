@@ -235,18 +235,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                                 {
                                     MainActivity.T("You catch me!! NAN Made app");
                                 } else {
-                                    Intent intent =
-                                            getActivity().getPackageManager().getLaunchIntentForPackage(
-                                                    targetpackageName);
-                                    if (intent != null) {
-                                        if (intent != null) {
-                                            try {
-                                                startActivity(intent);
-                                            } catch (Exception e) {
-                                                MainActivity.T(R.string.launch_fail);
-                                            }
-                                        }
-                                    } else {
+                                    if(!Utils.launchApp(getActivity(), selectItem)){
                                         MainActivity.T(R.string.launch_fail);
                                     }
                                 }
@@ -874,13 +863,15 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
         // TODO Auto-generated method stub
         if (item == 0)// google play
         {
-            if (Utils.isAnyStoreInstalled(getActivity())) {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appInfo.packageName)));
-            } else {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id="
-                        + appInfo.packageName)));
-            }
-        } else if (item == 1) // send
+//            if (Utils.isAnyStoreInstalled(getActivity())) {
+//                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appInfo.packageName)));
+//            } else {
+//                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id="
+//                        + appInfo.packageName)));
+//            }
+            Utils.startMarketSearch(getActivity(), appInfo);
+        } 
+        else if (item == 1) // send
         {
             Utils.chooseSendByApp(getActivity(), Uri.parse("file://" + appInfo.apkFilePath));
             

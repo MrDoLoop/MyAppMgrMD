@@ -70,10 +70,34 @@ import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.fragments.SortTypeDialogFragment;
 
 public class Utils {
-    
+
+    public static boolean launchApp(Context ctx, AppInfo appInfo) {
+        Intent intent = ctx.getPackageManager().getLaunchIntentForPackage(appInfo.packageName);
+        if (intent != null) {
+            try {
+                ctx.startActivity(intent);
+                return true;
+            } catch (Exception e) {
+                return false;
+            }
+
+        } else {
+            return false;
+        }
+    }
+
+    public static void startMarketSearch(Context ctx, AppInfo appInfo) {
+        if (Utils.isAnyStoreInstalled(ctx)) {
+            ctx.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appInfo.packageName)));
+        } else {
+            ctx.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id="
+                    + appInfo.packageName)));
+        }
+    }
+
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @SuppressWarnings("deprecation")
-    public static void copyToClipboard(Context ctx,CharSequence label, CharSequence copiedText){
+    public static void copyToClipboard(Context ctx, CharSequence label, CharSequence copiedText) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             ClipboardManager clipboard = (ClipboardManager) ctx.getSystemService(Context.CLIPBOARD_SERVICE);
             ClipData clip = ClipData.newPlainText(label, copiedText);
@@ -84,339 +108,306 @@ public class Utils {
             clipboardManager.setText(copiedText);
         }
     }
-    
-    public static void startActivtyWithAni(Activity activity, Intent intent){
+
+    public static void startActivtyWithAni(Activity activity, Intent intent) {
         activity.startActivity(intent);
         activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
-    
-    public static void finishActivtyWithAni(Activity activity){
+
+    public static void finishActivtyWithAni(Activity activity) {
         activity.finish();
         activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
-    
+
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @SuppressWarnings("deprecation")
-    public static void setBackgroundDrawable(View view, Drawable drawable){
-        if(android.os.Build.VERSION.SDK_INT >= 16){
+    public static void setBackgroundDrawable(View view, Drawable drawable) {
+        if (android.os.Build.VERSION.SDK_INT >= 16) {
             view.setBackground(drawable);
-        }
-        else{
+        } else {
             view.setBackgroundDrawable(drawable);
         }
     }
-    
+
     public static int getScreenWidth(Context ctx) {
         WindowManager wm = (WindowManager) ctx.getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics outMetrics = new DisplayMetrics();
         wm.getDefaultDisplay().getMetrics(outMetrics);
         return outMetrics.widthPixels;
     }
-    
+
     public static int getScreenHeight(Context ctx) {
         WindowManager wm = (WindowManager) ctx.getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics outMetrics = new DisplayMetrics();
         wm.getDefaultDisplay().getMetrics(outMetrics);
         return outMetrics.heightPixels;
     }
-    
-    public static int[] findViewCenterXY(View view){
+
+    public static int[] findViewCenterXY(View view) {
         final int[] l0 = new int[2];
         view.getLocationOnScreen(l0);
         int x = view.getWidth() / 2 + l0[0];
         int y = view.getHeight() / 2 + l0[1];
-        return new int[]{x,y};
+        return new int[] { x, y };
     }
-    
-    public static boolean isMeizuDev(){
-        if(android.os.Build.BRAND.toLowerCase(Locale.getDefault()).contains("meizu")) {
+
+    public static boolean isMeizuDev() {
+        if (android.os.Build.BRAND.toLowerCase(Locale.getDefault()).contains("meizu")) {
             return true;
-        }
-        else{
+        } else {
             return false;
         }
     }
-    
-    /*public static Point getLocationInView(View src, View target) {
-        final int[] l0 = new int[2];
-        src.getLocationOnScreen(l0);
 
-        final int[] l1 = new int[2];
-        target.getLocationOnScreen(l1);
+    /*
+     * public static Point getLocationInView(View src, View target) { final int[] l0 = new int[2];
+     * src.getLocationOnScreen(l0);
+     * 
+     * final int[] l1 = new int[2]; target.getLocationOnScreen(l1);
+     * 
+     * l1[0] = l1[0] - l0[0] + target.getWidth() / 2; l1[1] = l1[1] - l0[1] + target.getHeight() / 2;
+     * 
+     * return new Point(l1[0], l1[1]); }
+     */
 
-        l1[0] = l1[0] - l0[0] + target.getWidth() / 2;
-        l1[1] = l1[1] - l0[1] + target.getHeight() / 2;
-
-        return new Point(l1[0], l1[1]);
-    }*/
-    
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     public static boolean hasNavBar(Context context) {
-        
-        if(android.os.Build.BRAND.toLowerCase(Locale.getDefault()).contains("meizu") || Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH )
-        {
+
+        if (android.os.Build.BRAND.toLowerCase(Locale.getDefault()).contains("meizu")
+                || Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             return false;
-        }
-        else{
-            //https://stackoverflow.com/questions/16092431/check-for-navigation-bar/23181183#23181183
+        } else {
+            // https://stackoverflow.com/questions/16092431/check-for-navigation-bar/23181183#23181183
             Resources resources = context.getResources();
             int id = resources.getIdentifier("config_showNavigationBar", "bool", "android");
             if (id > 0) {
                 return resources.getBoolean(id);
-            } else {    // Check for keys
+            } else { // Check for keys
                 boolean hasMenuKey = ViewConfiguration.get(context).hasPermanentMenuKey();
                 boolean hasBackKey = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_BACK);
                 return !hasMenuKey && !hasBackKey;
             }
         }
     }
-    
-    public static boolean isSdcardSpaceEnough(long requiredSpace){
-        if(requiredSpace < getSdFreeSpaceRawSize()){
+
+    public static boolean isSdcardSpaceEnough(long requiredSpace) {
+        if (requiredSpace < getSdFreeSpaceRawSize()) {
             return true;
-        }
-        else{
+        } else {
             return false;
         }
     }
-    
-    public static void stopScroll(AbsListView view)
-    {//http://stackoverflow.com/questions/6369491/stop-listview-scroll-animation
-        //http://stackoverflow.com/questions/7819145/stop-scrolling-in-a-listview
-        try
-        {
+
+    public static void stopScroll(AbsListView view) {// http://stackoverflow.com/questions/6369491/stop-listview-scroll-animation
+                                                     // http://stackoverflow.com/questions/7819145/stop-scrolling-in-a-listview
+        try {
             Field field = android.widget.AbsListView.class.getDeclaredField("mFlingRunnable");
             field.setAccessible(true);
             Object flingRunnable = field.get(view);
-            if (flingRunnable != null)
-            {
+            if (flingRunnable != null) {
                 Method method = Class.forName("android.widget.AbsListView$FlingRunnable").getDeclaredMethod("endFling");
                 method.setAccessible(true);
                 method.invoke(flingRunnable);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    
-    
+
     public static void hideInputMethod(Context ctx, View focusedView) {
-        InputMethodManager inputMethodManager =
-                (InputMethodManager) ctx.getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager inputMethodManager = (InputMethodManager) ctx.getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(focusedView.getWindowToken(), 0);
-       /* if (inputMethodManager.isActive()) {
-            inputMethodManager.hideSoftInputFromWindow(focusedView.getWindowToken(), 0);
-        }*/
+        /*
+         * if (inputMethodManager.isActive()) { inputMethodManager.hideSoftInputFromWindow(focusedView.getWindowToken(),
+         * 0); }
+         */
     }
-    
-    //http://stackoverflow.com/questions/3394765/how-to-check-available-space-on-android-device-on-mini-sd-card
-    
-    public static String[] calculateTotalFileInfo(ArrayList<AppInfo> list){
+
+    // http://stackoverflow.com/questions/3394765/how-to-check-available-space-on-android-device-on-mini-sd-card
+
+    public static String[] calculateTotalFileInfo(ArrayList<AppInfo> list) {
         long size = 0;
-        for(AppInfo appInfo : list){
+        for (AppInfo appInfo : list) {
             size += appInfo.appRawSize;
         }
-        String[] retVal = new String[2]; 
-        retVal[0] = ""+size;
+        String[] retVal = new String[2];
+        retVal[0] = "" + size;
         retVal[1] = formatFileSize(size);
         return retVal;
     }
-    
-    public static String calculateTotalFileSizeStr(ArrayList<AppInfo> list){
+
+    public static String calculateTotalFileSizeStr(ArrayList<AppInfo> list) {
         long size = 0;
-        for(AppInfo appInfo : list){
+        for (AppInfo appInfo : list) {
             size += appInfo.appRawSize;
         }
         return formatFileSize(size);
     }
-    
-    public static long calculateTotalFileRawSize(ArrayList<AppInfo> list){
+
+    public static long calculateTotalFileRawSize(ArrayList<AppInfo> list) {
         long size = 0;
-        for(AppInfo appInfo : list){
+        for (AppInfo appInfo : list) {
             size += appInfo.appRawSize;
         }
         return size;
     }
-    
-    public static String getBackupDirSizeStr(Context ctx){
+
+    public static String getBackupDirSizeStr(Context ctx) {
         return FileUtils.byteCountToDisplaySize(FileUtils.sizeOfDirectory(new File(getBackUpAPKfileDir(ctx))));
     }
-    
+
     /**
      * 
      * @return [0]:rawSize [1]: 显示string
      */
     @SuppressWarnings("deprecation")
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
-    public static String[] getSdUsedSpaceInfo(){
+    public static String[] getSdUsedSpaceInfo() {
         long usedSpace = -1L;
         StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
-        if(android.os.Build.VERSION.SDK_INT >= 18){
+        if (android.os.Build.VERSION.SDK_INT >= 18) {
             usedSpace = (stat.getBlockCountLong() - stat.getAvailableBlocksLong()) * stat.getBlockSizeLong();
-        }
-        else{
+        } else {
             usedSpace = ((long) stat.getBlockCount() - (long) stat.getAvailableBlocks()) * (long) stat.getBlockSize();
-        }   
-        String[] retVal = new String[2]; 
-        retVal[0] = ""+usedSpace;
+        }
+        String[] retVal = new String[2];
+        retVal[0] = "" + usedSpace;
         retVal[1] = formatFileSize(usedSpace);
-        //Formatter.formatFileSize(ctx, availableSpace);
+        // Formatter.formatFileSize(ctx, availableSpace);
         return retVal;
     }
+
     @SuppressWarnings("deprecation")
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
-    public static String getSdUsedSpaceStr(){
+    public static String getSdUsedSpaceStr() {
         long usedSpace = -1L;
         StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
-        if(android.os.Build.VERSION.SDK_INT >= 18){
+        if (android.os.Build.VERSION.SDK_INT >= 18) {
             usedSpace = (stat.getBlockCountLong() - stat.getAvailableBlocksLong()) * stat.getBlockSizeLong();
-        }
-        else{
+        } else {
             usedSpace = ((long) stat.getBlockCount() - (long) stat.getAvailableBlocks()) * (long) stat.getBlockSize();
-        }   
-       
+        }
+
         return formatFileSize(usedSpace);
     }
+
     @SuppressWarnings("deprecation")
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
-    public static long getSdUsedSpaceRawSize(){
+    public static long getSdUsedSpaceRawSize() {
         long usedSpace = -1L;
         StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
-        if(android.os.Build.VERSION.SDK_INT >= 18){
+        if (android.os.Build.VERSION.SDK_INT >= 18) {
             usedSpace = (stat.getBlockCountLong() - stat.getAvailableBlocksLong()) * stat.getBlockSizeLong();
-        }
-        else{
+        } else {
             usedSpace = ((long) stat.getBlockCount() - (long) stat.getAvailableBlocks()) * (long) stat.getBlockSize();
-        }   
-       
+        }
+
         return usedSpace;
     }
-    
-    
-    
-    
+
     /**
      * 
      * @return [0]:rawSize [1]: 显示string
      */
-    /*@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
-    public static String[] getSdFreeSpaceInfo(){
-        long availableSpace = -1L;
-        StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
-        if(android.os.Build.VERSION.SDK_INT >= 18){
-            availableSpace = (long) stat.getAvailableBlocksLong() * (long) stat.getBlockSizeLong();
-        }
-        else{
-            availableSpace = (long) stat.getAvailableBlocks() * (long) stat.getBlockSize();
-        }   
-        String[] retVal = new String[2]; 
-        retVal[0] = ""+availableSpace;
-        retVal[1] = formatFileSize(availableSpace);
-        //Formatter.formatFileSize(ctx, availableSpace);
-        return retVal;
-    }
-    
-    
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
-    public static String getSdFreeSpaceStr(){
-        long availableSpace = -1L;
-        StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
-        if(android.os.Build.VERSION.SDK_INT >= 18){
-            availableSpace = (long) stat.getAvailableBlocksLong() * (long) stat.getBlockSizeLong();
-        }
-        else{
-            availableSpace = (long) stat.getAvailableBlocks() * (long) stat.getBlockSize();
-        }   
-        String retVal = formatFileSize(availableSpace);
-        //Formatter.formatFileSize(ctx, availableSpace);
-        return retVal;
-    }*/
+    /*
+     * @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2) public static String[] getSdFreeSpaceInfo(){ long availableSpace =
+     * -1L; StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
+     * if(android.os.Build.VERSION.SDK_INT >= 18){ availableSpace = (long) stat.getAvailableBlocksLong() * (long)
+     * stat.getBlockSizeLong(); } else{ availableSpace = (long) stat.getAvailableBlocks() * (long) stat.getBlockSize();
+     * } String[] retVal = new String[2]; retVal[0] = ""+availableSpace; retVal[1] = formatFileSize(availableSpace);
+     * //Formatter.formatFileSize(ctx, availableSpace); return retVal; }
+     * 
+     * 
+     * @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2) public static String getSdFreeSpaceStr(){ long availableSpace =
+     * -1L; StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
+     * if(android.os.Build.VERSION.SDK_INT >= 18){ availableSpace = (long) stat.getAvailableBlocksLong() * (long)
+     * stat.getBlockSizeLong(); } else{ availableSpace = (long) stat.getAvailableBlocks() * (long) stat.getBlockSize();
+     * } String retVal = formatFileSize(availableSpace); //Formatter.formatFileSize(ctx, availableSpace); return retVal;
+     * }
+     */
     @SuppressWarnings("deprecation")
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
-    public static long getSdFreeSpaceRawSize(){
+    public static long getSdFreeSpaceRawSize() {
         long availableSpace = -1L;
         StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
-        if(android.os.Build.VERSION.SDK_INT >= 18){
+        if (android.os.Build.VERSION.SDK_INT >= 18) {
             availableSpace = (long) stat.getAvailableBlocksLong() * (long) stat.getBlockSizeLong();
-        }
-        else{
+        } else {
             availableSpace = (long) stat.getAvailableBlocks() * (long) stat.getBlockSize();
         }
-        //Formatter.formatFileSize(ctx, availableSpace);
+        // Formatter.formatFileSize(ctx, availableSpace);
         return availableSpace;
     }
+
     @SuppressWarnings("deprecation")
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
-    public static String[] getSdTotalSpaceInfo(){
+    public static String[] getSdTotalSpaceInfo() {
         long totalSpace = -1L;
         StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
-        if(android.os.Build.VERSION.SDK_INT >= 18){
+        if (android.os.Build.VERSION.SDK_INT >= 18) {
             totalSpace = (long) stat.getBlockCountLong() * (long) stat.getBlockSizeLong();
-        }
-        else{
+        } else {
             totalSpace = (long) stat.getBlockCount() * (long) stat.getBlockSize();
-        }   
-        String[] retVal = new String[2]; 
-        retVal[0] = ""+totalSpace;
+        }
+        String[] retVal = new String[2];
+        retVal[0] = "" + totalSpace;
         retVal[1] = formatFileSize(totalSpace);
         return retVal;
     }
-    
-    
+
     @SuppressWarnings("deprecation")
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
-    public static long getSdTotalSpaceRawSize(){
+    public static long getSdTotalSpaceRawSize() {
         long totalSpace = -1L;
         StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
-        if(android.os.Build.VERSION.SDK_INT >= 18){
+        if (android.os.Build.VERSION.SDK_INT >= 18) {
             totalSpace = (long) stat.getBlockCountLong() * (long) stat.getBlockSizeLong();
-        }
-        else{
+        } else {
             totalSpace = (long) stat.getBlockCount() * (long) stat.getBlockSize();
-        }   
-       
+        }
+
         return totalSpace;
     }
+
     @SuppressWarnings("deprecation")
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
-    public static String getSdTotalSpace(){
+    public static String getSdTotalSpace() {
         long totalSpace = -1L;
         StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
-        if(android.os.Build.VERSION.SDK_INT >= 18){
+        if (android.os.Build.VERSION.SDK_INT >= 18) {
             totalSpace = (long) stat.getBlockCountLong() * (long) stat.getBlockSizeLong();
-        }
-        else{
+        } else {
             totalSpace = (long) stat.getBlockCount() * (long) stat.getBlockSize();
-        }   
+        }
         String retVal = formatFileSize(totalSpace);
-        //Formatter.formatFileSize(ctx, availableSpace);
+        // Formatter.formatFileSize(ctx, availableSpace);
         return retVal;
     }
-    
+
     public static void DismissDialog(DialogFragment D_fragment) {
         if (D_fragment != null && D_fragment.getDialog() != null && D_fragment.getDialog().isShowing()) {
             D_fragment.dismiss();
         }
     }
-    
+
     /**
      * 返回这个app在list中的位置
+     * 
      * @param appInfo
      * @param list
      * @return 返回这个app在list中的位置,没有找到返回-1
      */
-    public static int isAppInfoInList(AppInfo appInfo, ArrayList<AppInfo> list){
+    public static int isAppInfoInList(AppInfo appInfo, ArrayList<AppInfo> list) {
         int i = 0;
-        for(AppInfo aEntry : list){
-            if(appInfo.packageName.equals(aEntry.packageName) && (appInfo.versionCode == aEntry.versionCode)){
+        for (AppInfo aEntry : list) {
+            if (appInfo.packageName.equals(aEntry.packageName) && (appInfo.versionCode == aEntry.versionCode)) {
                 return i;
             }
             i++;
         }
         return -1;
     }
-    
+
     public static AppInfo getLastBackupAppFromSD(Context ctx) {
         File backupFolder = new File(Utils.getBackUpAPKfileDir(ctx));
         File[] files = backupFolder.listFiles(new ApkFileFilter());
@@ -470,7 +461,7 @@ public class Utils {
 
     public static void sortBackUpAppList(Context ctx, ArrayList<AppInfo> list) {
         boolean foundDummy = false;
-        if(list.size() > 1 && list.get(0) == AppInfo.DUMMY_APPINFO){
+        if (list.size() > 1 && list.get(0) == AppInfo.DUMMY_APPINFO) {
             list.remove(0);
             foundDummy = true;
         }
@@ -494,12 +485,11 @@ public class Utils {
                 Collections.sort(list, new LastBackupTimeComparator(false));
                 break;
         }
-        if(foundDummy){
-            list.add(0,AppInfo.DUMMY_APPINFO);
+        if (foundDummy) {
+            list.add(0, AppInfo.DUMMY_APPINFO);
         }
     }
-    
-    
+
     public static void sortUserAppList(Context ctx, ArrayList<AppInfo> list) {
         switch (getUserAppListSortType(ctx)) {
             case SortTypeDialogFragment.LIST_SORT_TYPE_NAME_ASC:
@@ -524,22 +514,21 @@ public class Utils {
     }
 
     public static void verifyApp(Context context, AppInfo appInfo) {
-        //检查sd上的icon缓存
-        if(!isAppIconOnSd(context,appInfo)){
+        // 检查sd上的icon缓存
+        if (!isAppIconOnSd(context, appInfo)) {
             appInfo.iconBitmap = drawableToBitmap(getIconDrawable(context, appInfo.packageName));
             saveAppIconOnSd(context, appInfo);
         }
-        /*File file = appInfo.getAppIconCachePath(context);
-        if (!file.exists()) {
-            // appInfo.iconDrawable = getIconDrawable(context, appInfo.packageName);
-            appInfo.iconBitmap = drawableToBitmap(getIconDrawable(context, appInfo.packageName));
-            saveAppIconOnSd(context, appInfo);
-        }*/
+        /*
+         * File file = appInfo.getAppIconCachePath(context); if (!file.exists()) { // appInfo.iconDrawable =
+         * getIconDrawable(context, appInfo.packageName); appInfo.iconBitmap = drawableToBitmap(getIconDrawable(context,
+         * appInfo.packageName)); saveAppIconOnSd(context, appInfo); }
+         */
     }
 
     public static boolean deleteAppIconInCache(Context context, AppInfo appInfo) {
         File file = appInfo.getAppIconCachePath(context);
-        //File file = new File(Utils.getAppIconCacheDir(context), pkgName + ".png");
+        // File file = new File(Utils.getAppIconCacheDir(context), pkgName + ".png");
         if (file.exists()) {
             if (file.isFile()) {
                 return file.delete();
@@ -603,17 +592,18 @@ public class Utils {
         return theAppName;
     }
 
-    public static boolean isAppIconOnSd(Context ctx, AppInfo appInfo){
+    public static boolean isAppIconOnSd(Context ctx, AppInfo appInfo) {
         File file = appInfo.getAppIconCachePath(ctx);
         if (file.exists()) {
             return true;
-        }
-        else{
+        } else {
             return false;
         }
     }
+
     /**
      * save之后iconBitmap字段==null
+     * 
      * @param context
      * @param appInfo
      * @return
@@ -626,11 +616,10 @@ public class Utils {
         Bitmap bitmap = null;
         try {
             outStream = new FileOutputStream(file);
-            if(appInfo.iconBitmap == null){
+            if (appInfo.iconBitmap == null) {
                 bitmap = Utils.getIconBitmap(context, appInfo.packageName);
-            }
-            else{
-                bitmap = appInfo.iconBitmap; 
+            } else {
+                bitmap = appInfo.iconBitmap;
             }
 
             if (bitmap.compress(Bitmap.CompressFormat.PNG, 100, outStream)) {
@@ -648,6 +637,7 @@ public class Utils {
             return false;
         }
     }
+
     /**
      * 
      * @param context
@@ -674,7 +664,7 @@ public class Utils {
         }
 
         tmpInfo.versionCode = packageInfo.versionCode;
-        //tmpInfo.iconBitmap = drawableToBitmap(packageInfo.applicationInfo.loadIcon(pManager));
+        // tmpInfo.iconBitmap = drawableToBitmap(packageInfo.applicationInfo.loadIcon(pManager));
         // tmpInfo.iconDrawable = packageInfo.applicationInfo.loadIcon(pManager);
         // tmpInfo.appIconBytes = Utilities.DrawableToByteArray(tmpInfo.iconDrawable);
         // tmpInfo.firstTimeInstallDate = simpleDateFormat.format(new Date(packageInfo.firstInstallTime));
@@ -696,22 +686,19 @@ public class Utils {
         {
             tmpInfo.isSysApp = true;
         }
-        
-        
-        if(holdAppIcon || saveAppIconOnSd){
+
+        if (holdAppIcon || saveAppIconOnSd) {
             Bitmap iconBitmap = drawableToBitmap(packageInfo.applicationInfo.loadIcon(pManager));
-            
+
             if (saveAppIconOnSd) {
                 tmpInfo.iconBitmap = iconBitmap;
-                saveAppIconOnSd(context, tmpInfo);//save之后iconBitmap字段==null
+                saveAppIconOnSd(context, tmpInfo);// save之后iconBitmap字段==null
             }
-            
-            if(holdAppIcon){
+
+            if (holdAppIcon) {
                 tmpInfo.iconBitmap = iconBitmap;
             }
         }
-        
-        
 
         return tmpInfo;
     }
@@ -729,11 +716,11 @@ public class Utils {
     }
 
     public static Bitmap drawableToBitmap(Drawable drawable) {
-        
-        if(drawable == null){
+
+        if (drawable == null) {
             return null;
         }
-        
+
         if (drawable instanceof BitmapDrawable) {
             return ((BitmapDrawable) drawable).getBitmap();
         }
@@ -837,18 +824,17 @@ public class Utils {
 
     public static void chooseSendByAppWithAppList(Context ctx, ArrayList<AppInfo> appList) {
         ArrayList<Uri> SnedApkUris = new ArrayList<Uri>();
-        for(AppInfo appInfo : appList){
+        for (AppInfo appInfo : appList) {
             SnedApkUris.add(Uri.parse("file://" + appInfo.apkFilePath));
         }
         Utils.chooseSendByApp(ctx, SnedApkUris);
     }
-    
+
     public static void chooseSendByApp(Context ctx, ArrayList<Uri> Uris) {
-        
-        if(Uris.size() == 1){
+
+        if (Uris.size() == 1) {
             chooseSendByApp(ctx, Uris.get(0));
-        }
-        else{
+        } else {
             Intent sendIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
             sendIntent.setType("application/vnd.android.package-archive");
             sendIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, Uris);// 添加附件
@@ -870,8 +856,7 @@ public class Utils {
         // shPrefEdit.commit();
         SharedPreferencesCompat.apply(shPrefEdit);
     }
-    
-    
+
     public static boolean isAppListInDb(Context ctx) {
         boolean retVal = ctx.getSharedPreferences("MyAppMgrSharedPreferences", 0).getBoolean("isAppListInDb", false);
         return retVal;
@@ -890,7 +875,7 @@ public class Utils {
                         SortTypeDialogFragment.LIST_SORT_TYPE_LAST_MOD_TIME_DES);
         return type;
     }
-    
+
     public static int getBackUpAppListSortType(Context ctx) {
         int type =
                 ctx.getSharedPreferences("MyAppMgrSharedPreferences", 0).getInt("BackUpAppListSortType",
@@ -904,14 +889,13 @@ public class Utils {
         // shPrefEdit.commit();
         SharedPreferencesCompat.apply(shPrefEdit);
     }
-    
+
     public static void setBackUpAppListSortType(Context ctx, int sortType) {
         SharedPreferences.Editor shPrefEdit = ctx.getSharedPreferences("MyAppMgrSharedPreferences", 0).edit();
         shPrefEdit.putInt("BackUpAppListSortType", sortType);
         // shPrefEdit.commit();
         SharedPreferencesCompat.apply(shPrefEdit);
     }
-    
 
     public static int dp2px(Context ctx, float dpValue) {
         final float scale = ctx.getResources().getDisplayMetrics().density;
@@ -937,15 +921,17 @@ public class Utils {
         }
     }
 
-    public static void saveBackUpAPKfileDir(Context ctx, String path){
+    public static void saveBackUpAPKfileDir(Context ctx, String path) {
         SharedPreferences.Editor shPrefEdit = ctx.getSharedPreferences("MyAppMgrSharedPreferences", 0).edit();
         shPrefEdit.putString("backupApkFileDir", path);
         SharedPreferencesCompat.apply(shPrefEdit);
     }
-    
+
     public static String getBackUpAPKfileDir(Context ctx) {
-        String path = ctx.getSharedPreferences("MyAppMgrSharedPreferences", 0).getString("backupApkFileDir", Constants.DEF_BACKUP_DIR);
-        
+        String path =
+                ctx.getSharedPreferences("MyAppMgrSharedPreferences", 0).getString("backupApkFileDir",
+                        Constants.DEF_BACKUP_DIR);
+
         File backUpFileDir = new File(path);
         if (!backUpFileDir.exists()) {
             backUpFileDir.mkdirs();
@@ -1142,7 +1128,7 @@ public class Utils {
     {
         try {
             PackageInfo pi = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-            return "v "+pi.versionName;
+            return "v " + pi.versionName;
         } catch (NameNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -1206,7 +1192,7 @@ public class Utils {
 
         return dateformat;
     }
-    
+
     @SuppressLint("SimpleDateFormat")
     public static SimpleDateFormat getLocalDataDigitalDisplayFormatFull() {
         /**
@@ -1244,28 +1230,28 @@ public class Utils {
 
         return dateformat;
     }
-    
-    
+
     /**
      * 只有年月日
+     * 
      * @param date
      * @return
      */
-    public static String formatTimeDisplay(Date date){
-        SimpleDateFormat dateFormat =  getLocalDataDigitalDisplayFormat();
+    public static String formatTimeDisplay(Date date) {
+        SimpleDateFormat dateFormat = getLocalDataDigitalDisplayFormat();
         return dateFormat.format(date);
     }
-    
+
     /**
      * 年月日时分秒
+     * 
      * @param date
      * @return
      */
-    public static String formatTimeDisplayFull(Date date){
-        SimpleDateFormat dateFormat =  getLocalDataDigitalDisplayFormatFull();
+    public static String formatTimeDisplayFull(Date date) {
+        SimpleDateFormat dateFormat = getLocalDataDigitalDisplayFormatFull();
         return dateFormat.format(date);
     }
-    
 
     public static String formatFileSize(long length) {
         String result = null;
@@ -1283,15 +1269,15 @@ public class Utils {
             result = Long.toString(length) + " B";
         return result;
     }
-    
+
     public static float dp2px(Resources resources, float dp) {
         final float scale = resources.getDisplayMetrics().density;
-        return  dp * scale + 0.5f;
+        return dp * scale + 0.5f;
     }
 
-    public static float sp2px(Resources resources, float sp){
+    public static float sp2px(Resources resources, float sp) {
         final float scale = resources.getDisplayMetrics().scaledDensity;
         return sp * scale;
     }
-    
+
 }

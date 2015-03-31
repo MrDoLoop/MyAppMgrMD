@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.fragments.SysAppsTabFragment;
 import com.doloop.www.myappmgr.material.interfaces.IconClickListener;
+import com.doloop.www.myappmgr.material.interfaces.IhoverMenuClickListener;
 import com.doloop.www.myappmgr.material.interfaces.ItemMenuClickListener;
 import com.doloop.www.myappmgr.material.utils.Constants;
 import com.doloop.www.myappmgr.material.utils.SysAppListItem;
@@ -53,7 +54,7 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
     private int selectedCnt = 0;
 
     private ItemMenuClickListener mItemMenuClickListener;
-    
+    private IhoverMenuClickListener mIhoverMenuClickListener;
     private IconClickListener mIconClickListener;
 
     public void setIconClickListener(IconClickListener l) {
@@ -206,12 +207,13 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
     }
 
     public SysAppListAdapter(Context ctx, ArrayList<SysAppListItem> list, TreeMap<String, Integer> map,
-            IconClickListener l1,ItemMenuClickListener l2) {
+            IconClickListener l1,ItemMenuClickListener l2, IhoverMenuClickListener l3) {
         mCtx = ctx;
         mSysAppListWapperFull = mSysAppListWapperDisplay = list;
         mSectionInListPosMapFull = mSectionInListPosMapDisplay = map;
         mIconClickListener = l1;
         mItemMenuClickListener = l2;
+        mIhoverMenuClickListener = l3;
     }
 
     @Override
@@ -397,6 +399,18 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
                 appItemHolder.hoverMenu.setOnClickListener(this);
                 appItemHolder.HoverLayout = (LinearLayout) convertView.findViewById(R.id.hoverLayout);
                 appItemHolder.HoverLayout.setOnClickListener(this);
+                
+                appItemHolder.hoverMenuBackup = convertView.findViewById(R.id.backup);
+                appItemHolder.hoverMenuDetails = convertView.findViewById(R.id.details);
+                appItemHolder.hoverMenuLaunch = convertView.findViewById(R.id.launch);
+                appItemHolder.hoverMenuMarket = convertView.findViewById(R.id.market);
+                appItemHolder.hoverMenuSend = convertView.findViewById(R.id.send);
+                
+                appItemHolder.hoverMenuBackup.setOnClickListener(this);
+                appItemHolder.hoverMenuDetails.setOnClickListener(this);
+                appItemHolder.hoverMenuLaunch.setOnClickListener(this);
+                appItemHolder.hoverMenuMarket.setOnClickListener(this);
+                appItemHolder.hoverMenuSend.setOnClickListener(this);
                
                 appItemHolder.RootLayout = (RelativeLayout) convertView.findViewById(R.id.rootLayout);
                 appItemHolder.AppNameTextView = (TextView) convertView.findViewById(R.id.app_name);
@@ -404,16 +418,7 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
                 appItemHolder.AppPkgTextView = (TextView) convertView.findViewById(R.id.app_pkgname);
                 appItemHolder.AppIconImageView = (ImageView) convertView.findViewById(R.id.app_icon);
                 appItemHolder.AppIconImageView.setOnClickListener(this);
-                /*
-                 * appItemHolder.AppIconImageView.setOnClickListener(new View.OnClickListener() {
-                 * 
-                 * @Override public void onClick(View v) { // TODO Auto-generated method stub int pos = (Integer)
-                 * v.getTag(); Intent intent =
-                 * mCtx.getPackageManager().getLaunchIntentForPackage(getItem(pos).appinfo.packageName); if (intent !=
-                 * null) { try{ mCtx.startActivity(intent); }catch(Exception e){ MainActivity.T(R.string.error); }
-                 * 
-                 * } else { MainActivity.T(R.string.error); } } });
-                 */
+               
                 convertView.setTag(appItemHolder);
 
             } else {
@@ -524,6 +529,11 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
         RelativeLayout RootLayout;
         LinearLayout HoverLayout;
         TextView hoverMenu;
+        View hoverMenuLaunch;
+        View hoverMenuDetails;
+        View hoverMenuBackup;
+        View hoverMenuMarket;
+        View hoverMenuSend;
 
         @Override
         public void onBitmapFailed(Drawable bitmap) {
@@ -635,18 +645,27 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
     @Override
     public void onClick(View v) {
         // TODO Auto-generated method stub
-        if(v.getId() == R.id.app_icon){
+        int viewId = v.getId();
+        if(viewId == R.id.app_icon){
             int pos = (Integer) v.getTag();
             mIconClickListener.OnIconClick(pos); 
         }
-        else if(v.getId() == R.id.item_menu){
+        else if(viewId == R.id.item_menu){
             int pos = (Integer) v.getTag();     
             mItemMenuClickListener.OnItemMenuClick(pos,(View) v.getParent().getParent());
         }
-        else if(v.getId() == R.id.hoverLayout){
+        else if(viewId == R.id.hoverLayout){
             int pos = (Integer) v.getTag();
             mItemMenuClickListener.OnItemMenuClick(pos,(View) v.getParent());
         }
+        else if(viewId == R.id.launch || viewId == R.id.details || 
+                viewId == R.id.backup || viewId == R.id.market || viewId == R.id.send){
+            View hoverLayout = (View)v.getParent();
+            int pos = (Integer) hoverLayout.getTag();
+            
+            mIhoverMenuClickListener.OnMenuClick(viewId, pos, getItem(pos).appinfo);
+        }
+        
     }
 
 }
