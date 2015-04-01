@@ -3,292 +3,270 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content" >
 
-    <android.support.v7.widget.CardView
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/cardContent"
-        style="@style/MyCardViewStyle"
+    <LinearLayout
+        android:id="@+id/cardHolder"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp" >
+        android:layout_height="wrap_content" >
 
-        <RelativeLayout
-            android:id="@+id/rootLayout"
+        <android.support.v7.widget.CardView
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/cardContent"
+            style="@style/MyCardViewStyle"
             android:layout_width="match_parent"
-            android:layout_height="65dp"
-            android:background="@drawable/list_row_item_bg"
-            android:descendantFocusability="beforeDescendants"
-            android:padding="5dp" >
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp" >
 
-            <ImageView
-                android:id="@+id/app_icon"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:background="@drawable/sys_app_icon_bg"
-                android:padding="3dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/sysapp_holder" />
-
-            <LinearLayout
-                android:id="@+id/text_linear"
+            <RelativeLayout
+                android:id="@+id/rootLayout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="5dp"
-                android:layout_toRightOf="@+id/app_icon"
-                android:orientation="vertical"
-                android:weightSum="3" >
+                android:layout_height="65dp"
+                android:background="@drawable/list_row_item_bg"
+                android:descendantFocusability="beforeDescendants"
+                android:padding="5dp" >
 
-                <TextView
-                    android:id="@+id/app_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                <ImageView
+                    android:id="@+id/app_icon"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:layout_alignParentLeft="true"
-                    android:layout_marginRight="25dp"
-                    android:layout_toLeftOf="@+id/item_menu"
-                    android:layout_weight="1"
-                    android:ellipsize="end"
-                    android:singleLine="true"
-                    android:text="App Name"
-                    android:textColor="@color/black"
-                    android:textSize="15sp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/sys_app_icon_bg"
+                    android:padding="3dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/sysapp_holder" />
+
+                <LinearLayout
+                    android:id="@+id/text_linear"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:layout_toRightOf="@+id/app_icon"
+                    android:orientation="vertical"
+                    android:weightSum="3" >
+
+                    <TextView
+                        android:id="@+id/app_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginRight="25dp"
+                        android:layout_toLeftOf="@+id/item_menu"
+                        android:layout_weight="1"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:text="App Name"
+                        android:textColor="@color/black"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/app_pkgname"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ellipsize="middle"
+                        android:singleLine="true"
+                        android:text="App pkg"
+                        android:textColor="@color/gray" />
+
+                    <TextView
+                        android:id="@+id/app_version"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ellipsize="marquee"
+                        android:marqueeRepeatLimit="1"
+                        android:singleLine="true"
+                        android:text="App Version"
+                        android:textColor="@color/gray" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/item_menu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignBottom="@+id/text_linear"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignTop="@+id/text_linear"
+                    android:gravity="top|right"
+                    android:text="\u00B7\u00B7\u00B7"
+                    android:textColor="@color/link_txt_sel"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
+            </RelativeLayout>
 
-                <TextView
-                    android:id="@+id/app_pkgname"
+            <LinearLayout
+                android:id="@+id/hoverLayout"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:background="@drawable/list_row_item_pressed_bg"
+                android:descendantFocusability="beforeDescendants"
+                android:orientation="horizontal"
+                android:paddingBottom="5dp"
+                android:paddingLeft="55dp"
+                android:paddingRight="5dp"
+                android:paddingTop="5dp"
+                android:visibility="gone"
+                android:weightSum="5" >
+
+                <LinearLayout
+                    android:id="@+id/launch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:ellipsize="middle"
-                    android:singleLine="true"
-                    android:text="App pkg"
-                    android:textColor="@color/gray" />
+                    android:background="@drawable/sys_hover_menu_item_bg"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical" >
 
-                <TextView
-                    android:id="@+id/app_version"
+                    <ImageView
+                        android:id="@+id/openImageView"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_horizontal"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/open" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:text="@string/open"
+                        android:textColor="@color/black"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/details"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
                     android:layout_weight="1"
-                    android:ellipsize="marquee"
-                    android:marqueeRepeatLimit="1"
-                    android:singleLine="true"
-                    android:text="App Version"
-                    android:textColor="@color/gray" />
-            </LinearLayout>
+                    android:background="@drawable/sys_hover_menu_item_bg"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical" >
 
-            <TextView
-                android:id="@+id/item_menu"
-                android:layout_width="55dp"
-                android:layout_height="match_parent"
-                android:layout_alignBottom="@+id/text_linear"
-                android:layout_alignParentRight="true"
-                android:layout_alignTop="@+id/text_linear"
-                android:gravity="top|right"
-                android:text="\u00B7\u00B7\u00B7"
-                android:textColor="@color/link_txt_sel"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-        </RelativeLayout>
+                    <ImageView
+                        android:id="@+id/infoImageView"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_horizontal"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/info" />
 
-        <LinearLayout
-            android:id="@+id/hoverLayout"
-            android:layout_width="match_parent"
-            android:layout_height="65dp"
-            android:background="@drawable/list_row_item_pressed_bg"
-            android:descendantFocusability="beforeDescendants"
-            android:orientation="horizontal"
-            android:paddingBottom="5dp"
-            android:paddingLeft="55dp"
-            android:paddingRight="5dp"
-            android:paddingTop="5dp"
-            android:visibility="gone"
-            android:weightSum="5" >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:text="@string/info"
+                        android:textColor="@color/black"
+                        android:textSize="12sp" />
+                </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/launch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/sys_hover_menu_item_bg"
-                android:gravity="center_vertical"
-                android:orientation="vertical" >
-
-                <ImageView
-                    android:id="@+id/openImageView"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center_horizontal"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/open" />
-
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/backup"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:ellipsize="end"
-                    android:singleLine="true"
-                    android:text="@string/open"
-                    android:textColor="@color/black"
-                    android:textSize="12sp" />
-            </LinearLayout>
+                    android:layout_marginLeft="2dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/sys_hover_menu_item_bg"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical" >
 
-            <LinearLayout
-                android:id="@+id/details"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:layout_weight="1"
-                android:background="@drawable/sys_hover_menu_item_bg"
-                android:gravity="center_vertical"
-                android:orientation="vertical" >
+                    <ImageView
+                        android:id="@+id/backupImageView"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_horizontal"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/download" />
 
-                <ImageView
-                    android:id="@+id/infoImageView"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center_horizontal"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/info" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:text="@string/backup"
+                        android:textColor="@color/black"
+                        android:textSize="12sp" />
+                </LinearLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/market"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:ellipsize="end"
-                    android:singleLine="true"
-                    android:text="@string/info"
-                    android:textColor="@color/black"
-                    android:textSize="12sp" />
-            </LinearLayout>
+                    android:layout_marginLeft="2dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/sys_hover_menu_item_bg"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical" >
 
-            <!--
-            <ImageView
-                android:id="@+id/details"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#113355"
-                android:focusable="false" >
-            </ImageView>
-            -->
+                    <ImageView
+                        android:id="@+id/marketImageView"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_horizontal"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/google_play_80x80" />
 
-            <LinearLayout
-                android:id="@+id/backup"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:layout_weight="1"
-                android:background="@drawable/sys_hover_menu_item_bg"
-                android:gravity="center_vertical"
-                android:orientation="vertical" >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:text="@string/google_play"
+                        android:textColor="@color/black"
+                        android:textSize="12sp" />
+                </LinearLayout>
 
-                <ImageView
-                    android:id="@+id/backupImageView"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center_horizontal"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/download" />
-
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/send"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:ellipsize="end"
-                    android:singleLine="true"
-                    android:text="@string/backup"
-                    android:textColor="@color/black"
-                    android:textSize="12sp" />
+                    android:layout_marginLeft="2dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/sys_hover_menu_item_bg"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical" >
+
+                    <ImageView
+                        android:id="@+id/sendImageView"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_horizontal"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/send1_80x80" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:text="@string/send"
+                        android:textColor="@color/black"
+                        android:textSize="12sp" />
+                </LinearLayout>
             </LinearLayout>
+        </android.support.v7.widget.CardView>
+    </LinearLayout>
 
-             <LinearLayout
-                android:id="@+id/market"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:layout_weight="1"
-                android:background="@drawable/sys_hover_menu_item_bg"
-                android:gravity="center_vertical"
-                android:orientation="vertical" >
-
-                <ImageView
-                    android:id="@+id/marketImageView"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center_horizontal"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/google_play_80x80" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:ellipsize="end"
-                    android:singleLine="true"
-                    android:text="@string/google_play"
-                    android:textColor="@color/black"
-                    android:textSize="12sp" />
-            </LinearLayout>
-            
-             <LinearLayout
-                android:id="@+id/send"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:layout_weight="1"
-                android:background="@drawable/sys_hover_menu_item_bg"
-                android:gravity="center_vertical"
-                android:orientation="vertical" >
-
-                <ImageView
-                    android:id="@+id/sendImageView"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center_horizontal"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/send1_80x80" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:ellipsize="end"
-                    android:singleLine="true"
-                    android:text="@string/send"
-                    android:textColor="@color/black"
-                    android:textSize="12sp" />
-            </LinearLayout>
-            
-            <!--
-            <ImageView
-                android:id="@+id/backup"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#335566"
-                android:focusable="false" >
-            </ImageView>
-            -->
-
-            <!-- <ImageView
-                android:id="@+id/market"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#113355"
-                android:focusable="false" >
-            </ImageView>
-
-            <ImageView
-                android:id="@+id/send"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#335566"
-                android:focusable="false" >
-            </ImageView> -->
-        </LinearLayout>
-    </android.support.v7.widget.CardView>
+    <Button
+        android:id="@+id/item_menu_cover"
+        android:layout_width="70dp"
+        android:layout_height="match_parent"
+        android:layout_alignBottom="@+id/cardHolder"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/cardHolder"
+        android:layout_marginRight="20dp"
+        android:background="@color/transparent"
+        android:clickable="true"
+        android:focusable="false" />
 
 </RelativeLayout>
