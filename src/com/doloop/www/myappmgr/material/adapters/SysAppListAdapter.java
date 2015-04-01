@@ -358,7 +358,7 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
     public View getView(final int position, View convertView, ViewGroup parent) {
         // TODO Auto-generated method stub
         SectionViewHolder sectionHolder;
-        AppItemViewHolder appItemHolder;
+        final AppItemViewHolder appItemHolder;
         SysAppListItem item = getItem(position);
         int viewType = getItemViewType(position);
 
@@ -388,15 +388,15 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
                     public boolean onTouch(View v, MotionEvent event) {
                         
                         // TODO Auto-generated method stub
-                        View listItem = (View)v.getParent();
-                        TextView hoverMenu = (TextView) listItem.findViewById(R.id.item_menu);
+//                        View listItem = (View)v.getParent();
+//                        TextView hoverMenu = (TextView) listItem.findViewById(R.id.item_menu);
                         
                         switch (event.getAction()) {
                             case MotionEvent.ACTION_DOWN:
                             {
                              //按住事件发生后执行代码的区域
                                 v.setFocusable(true);
-                                hoverMenu.setTextColor(mCtx.getResources().getColor(R.color.primary));
+                                appItemHolder.hoverMenu.setTextColor(mCtx.getResources().getColor(R.color.primary));
                                 return true;
                             }
                             case MotionEvent.ACTION_MOVE:    
@@ -406,15 +406,15 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
                             }
                             case MotionEvent.ACTION_CANCEL:
                             {
-                                hoverMenu.setTextColor(mCtx.getResources().getColor(R.color.secondary_text));
+                                appItemHolder.hoverMenu.setTextColor(mCtx.getResources().getColor(R.color.secondary_text));
                                 break;
                             }
                             case MotionEvent.ACTION_UP:
                             {
                              //松开事件发生后执行代码的区域
                                 //v.requestFocus();
-                                hoverMenu.performClick();
-                                hoverMenu.setTextColor(mCtx.getResources().getColor(R.color.secondary_text));
+                                appItemHolder.hoverMenu.performClick();
+                                appItemHolder.hoverMenu.setTextColor(mCtx.getResources().getColor(R.color.secondary_text));
                                 v.setFocusable(false);
                                 return true;
                              
