@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -45,7 +46,7 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
     private TreeMap<String, Integer> mSectionInListPosMapFull;
     private TreeMap<String, Integer> mSectionInListPosMapDisplay;
     private int mHoverShowedPos = -1;
-    //private View mLastShowedHoverView = null;
+    // private View mLastShowedHoverView = null;
     private boolean hoverAniIsRunning = false;
 
     private SysAppFilter filter;
@@ -80,9 +81,10 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
      * this.mFilterResultListener = sysAppListFilterResultListener; }
      */
 
-    public boolean hoverAniIsRunning(){
+    public boolean hoverAniIsRunning() {
         return hoverAniIsRunning;
     }
+
     public void setHoverShowedPos(int pos) {
         mHoverShowedPos = pos;
     }
@@ -207,7 +209,7 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
     }
 
     public SysAppListAdapter(Context ctx, ArrayList<SysAppListItem> list, TreeMap<String, Integer> map,
-            IconClickListener l1,ItemMenuClickListener l2, IhoverMenuClickListener l3) {
+            IconClickListener l1, ItemMenuClickListener l2, IhoverMenuClickListener l3) {
         mCtx = ctx;
         mSysAppListWapperFull = mSysAppListWapperDisplay = list;
         mSectionInListPosMapFull = mSectionInListPosMapDisplay = map;
@@ -242,9 +244,13 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
         return 0;
     }
 
-    public void showHover(View listItemView, final int position, boolean withAni,final boolean callNotifyDataSetChanged) {
+    public void
+            showHover(View listItemView, final int position, boolean withAni, final boolean callNotifyDataSetChanged) {
         final View hoverView = listItemView.findViewById(R.id.hoverLayout);
         hoverView.setVisibility(View.VISIBLE);
+        //View menuCoverView = listItemView.findViewById(R.id.item_menu_cover);
+        // menuCoverView.setClickable(false);
+
         if (withAni) {
             hoverView.clearAnimation();
             Animation ani = AnimationUtils.loadAnimation(mCtx, R.anim.slide_btm_in);
@@ -254,7 +260,7 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
                 public void onAnimationEnd(Animation animation) {
                     // TODO Auto-generated method stub
                     setHoverShowedPos(position);
-                    if(callNotifyDataSetChanged){
+                    if (callNotifyDataSetChanged) {
                         notifyDataSetChanged();
                     }
                     hoverAniIsRunning = false;
@@ -274,62 +280,42 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
             });
             hoverView.startAnimation(ani);
             setHoverShowedPos(position);
-        }
-        else{
+        } else {
             hoverAniIsRunning = false;
             setHoverShowedPos(position);
-            if(callNotifyDataSetChanged){
+            if (callNotifyDataSetChanged) {
                 notifyDataSetChanged();
             }
         }
 
     }
 
-   /* public void hideLastHoverShowedPos(boolean withAni, int listFirstVisiablePos, int listLastVisiablePos){
-        if(mLastShowedHoverView == null){
-            return;
-        } 
-        if(withAni){
-            mLastShowedHoverView.clearAnimation();
-            Animation ani = AnimationUtils.loadAnimation(mCtx, R.anim.push_right_out);
-            ani.setAnimationListener(new AnimationListener() {
+    /*
+     * public void hideLastHoverShowedPos(boolean withAni, int listFirstVisiablePos, int listLastVisiablePos){
+     * if(mLastShowedHoverView == null){ return; } if(withAni){ mLastShowedHoverView.clearAnimation(); Animation ani =
+     * AnimationUtils.loadAnimation(mCtx, R.anim.push_right_out); ani.setAnimationListener(new AnimationListener() {
+     * 
+     * @Override public void onAnimationEnd(Animation animation) { // TODO Auto-generated method stub
+     * //hoverView.setVisibility(View.GONE); resetHoverShowedPos(); notifyDataSetChanged(); hoverAniIsRunning = false; }
+     * 
+     * @Override public void onAnimationRepeat(Animation animation) { // TODO Auto-generated method stub
+     * 
+     * }
+     * 
+     * @Override public void onAnimationStart(Animation animation) { // TODO Auto-generated method stub
+     * hoverAniIsRunning = true; } }); mLastShowedHoverView.startAnimation(ani); resetHoverShowedPos(); } else{
+     * hoverAniIsRunning = false; resetHoverShowedPos(); notifyDataSetChanged(); }
+     * 
+     * }
+     */
 
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    // TODO Auto-generated method stub
-                    //hoverView.setVisibility(View.GONE);
-                    resetHoverShowedPos();
-                    notifyDataSetChanged();
-                    hoverAniIsRunning = false;
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-                    // TODO Auto-generated method stub
-
-                }
-
-                @Override
-                public void onAnimationStart(Animation animation) {
-                    // TODO Auto-generated method stub
-                    hoverAniIsRunning = true;
-                }
-            });
-            mLastShowedHoverView.startAnimation(ani);
-            resetHoverShowedPos();
-        }
-        else{
-            hoverAniIsRunning = false;
-            resetHoverShowedPos();
-            notifyDataSetChanged();
-        }
-       
-    }*/
-    
-    
-    public void hideHover(View listItemView, int position, boolean withAni,final boolean callNotifyDataSetChanged) {
+    public void hideHover(View listItemView, int position, boolean withAni, final boolean callNotifyDataSetChanged) {
         final View hoverView = listItemView.findViewById(R.id.hoverLayout);
         hoverView.setVisibility(View.VISIBLE);
+
+        //View menuCoverView = listItemView.findViewById(R.id.item_menu_cover);
+        // menuCoverView.setClickable(true);
+
         if (withAni) {
             hoverView.clearAnimation();
             Animation ani = AnimationUtils.loadAnimation(mCtx, R.anim.slide_up_out);
@@ -338,8 +324,8 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
                 @Override
                 public void onAnimationEnd(Animation animation) {
                     // TODO Auto-generated method stub
-                    //hoverView.setVisibility(View.GONE);
-                    if(callNotifyDataSetChanged){
+                    // hoverView.setVisibility(View.GONE);
+                    if (callNotifyDataSetChanged) {
                         notifyDataSetChanged();
                     }
                     hoverAniIsRunning = false;
@@ -359,11 +345,10 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
             });
             hoverView.startAnimation(ani);
             resetHoverShowedPos();
-        }
-        else{
+        } else {
             hoverAniIsRunning = false;
             resetHoverShowedPos();
-            if(callNotifyDataSetChanged){
+            if (callNotifyDataSetChanged) {
                 notifyDataSetChanged();
             }
         }
@@ -396,6 +381,59 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
                 String menuTxt = appItemHolder.hoverMenu.getText().toString();
                 appItemHolder.hoverMenu.setText(Html.fromHtml("<sup>"+menuTxt+"</sup>"));
                 
+                appItemHolder.hoverMenuCover = convertView.findViewById(R.id.item_menu_cover);
+                appItemHolder.hoverMenuCover.setOnTouchListener(new View.OnTouchListener() {
+                    
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        
+                        // TODO Auto-generated method stub
+                        View listItem = (View)v.getParent();
+                        TextView hoverMenu = (TextView) listItem.findViewById(R.id.item_menu);
+                        
+                        switch (event.getAction()) {
+                            case MotionEvent.ACTION_DOWN:
+                            {
+                             //按住事件发生后执行代码的区域
+                                v.setFocusable(true);
+                                hoverMenu.setTextColor(mCtx.getResources().getColor(R.color.primary));
+                                return true;
+                            }
+                            case MotionEvent.ACTION_MOVE:    
+                            {
+                             //移动事件发生后执行代码的区域
+                                return true;
+                            }
+                            case MotionEvent.ACTION_CANCEL:
+                            {
+                                hoverMenu.setTextColor(mCtx.getResources().getColor(R.color.secondary_text));
+                                break;
+                            }
+                            case MotionEvent.ACTION_UP:
+                            {
+                             //松开事件发生后执行代码的区域
+                                //v.requestFocus();
+                                hoverMenu.performClick();
+                                hoverMenu.setTextColor(mCtx.getResources().getColor(R.color.secondary_text));
+                                v.setFocusable(false);
+                                return true;
+                             
+                            }
+                        }
+                        return true;
+                    }
+                });
+//                appItemHolder.hoverMenuCover.setOnClickListener(new View.OnClickListener() {
+//                    
+//                    @Override
+//                    public void onClick(View v) {
+//                        // TODO Auto-generated method stub
+//                        L.d("cover click");
+//                       
+//                        //appItemHolder.hoverMenu.performClick();
+//                    }
+//                });
+  
                 appItemHolder.hoverMenu.setOnClickListener(this);
                 appItemHolder.HoverLayout = (LinearLayout) convertView.findViewById(R.id.hoverLayout);
                 appItemHolder.HoverLayout.setOnClickListener(this);
@@ -427,6 +465,7 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
 
             AppInfo appInfo = item.appinfo;
             appItemHolder.HoverLayout.clearAnimation();
+            hoverAniIsRunning = false;
             if (mHoverShowedPos == position) {
                 appItemHolder.HoverLayout.setVisibility(View.VISIBLE);
             } else {
@@ -469,11 +508,19 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
             } else {
                 appItemHolder.hoverMenu.setVisibility(View.VISIBLE);
                 if(mHoverShowedPos == position) {//hover显示行
+                    //appItemHolder.hoverMenu.setClickable(false);
+                    //appItemHolder.hoverMenu.setVisibility(View.GONE);
+                    appItemHolder.hoverMenuCover.setClickable(false);
+                    //appItemHolder.hoverMenuCover.setVisibility(View.GONE);
                     appItemHolder.AppIconImageView.setOnClickListener(null);
                     appItemHolder.AppIconImageView.setClickable(false);
                     appItemHolder.AppIconImageView.setBackgroundResource(R.drawable.imageview_border_red);
                 }
                 else{
+                    //appItemHolder.hoverMenu.setClickable(true);
+                    //appItemHolder.hoverMenu.setVisibility(View.VISIBLE);
+                    appItemHolder.hoverMenuCover.setClickable(true);
+                    //appItemHolder.hoverMenuCover.setVisibility(View.VISIBLE);
                     appItemHolder.AppIconImageView.setOnClickListener(this);
                     appItemHolder.AppIconImageView.setClickable(true); 
                     appItemHolder.AppIconImageView.setBackgroundResource(R.drawable.sys_app_icon_bg);
@@ -481,6 +528,7 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
                 
                 appItemHolder.RootLayout.setBackgroundResource(R.drawable.list_row_item_bg);
             }
+            //appItemHolder.RootLayout.setBackgroundResource(0);
         }
 
         return convertView;
@@ -529,6 +577,7 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
         RelativeLayout RootLayout;
         LinearLayout HoverLayout;
         TextView hoverMenu;
+        View hoverMenuCover;
         View hoverMenuLaunch;
         View hoverMenuDetails;
         View hoverMenuBackup;
@@ -646,26 +695,32 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
     public void onClick(View v) {
         // TODO Auto-generated method stub
         int viewId = v.getId();
-        if(viewId == R.id.app_icon){
+        if (viewId == R.id.app_icon) {
             int pos = (Integer) v.getTag();
-            mIconClickListener.OnIconClick(pos); 
-        }
-        else if(viewId == R.id.item_menu){
-            int pos = (Integer) v.getTag();     
-            mItemMenuClickListener.OnItemMenuClick(pos,(View) v.getParent().getParent());
-        }
-        else if(viewId == R.id.hoverLayout){
+            mIconClickListener.OnIconClick(pos);
+        } else if (viewId == R.id.item_menu) {
             int pos = (Integer) v.getTag();
-            mItemMenuClickListener.OnItemMenuClick(pos,(View) v.getParent());
-        }
-        else if(viewId == R.id.launch || viewId == R.id.details || 
-                viewId == R.id.backup || viewId == R.id.market || viewId == R.id.send){
-            View hoverLayout = (View)v.getParent();
+            mItemMenuClickListener.OnItemMenuClick(pos, (View) v.getParent().getParent());
+        } else if (viewId == R.id.hoverLayout) {
+            int pos = (Integer) v.getTag();
+            mItemMenuClickListener.OnItemMenuClick(pos, (View) v.getParent());
+        } else if (viewId == R.id.launch || viewId == R.id.details || viewId == R.id.backup || viewId == R.id.market
+                || viewId == R.id.send) {
+            View hoverLayout = (View) v.getParent();
             int pos = (Integer) hoverLayout.getTag();
-            
             mIhoverMenuClickListener.OnMenuClick(viewId, pos, getItem(pos).appinfo);
         }
-        
+
+    }
+
+    private View findRootLayou(View startView) {
+        View retView = (View) startView.getParent();
+
+        if (retView instanceof android.support.v7.widget.CardView) {
+            return retView;
+        } else {
+            return findRootLayou(retView);
+        }
     }
 
 }
