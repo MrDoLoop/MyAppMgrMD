@@ -511,10 +511,10 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
                     appItemHolder.RootLayout.setBackgroundResource(R.drawable.list_row_item_bg);
                 }
             } else {
-                //appItemHolder.hoverMenu.setVisibility(View.VISIBLE);
+                appItemHolder.hoverMenu.setVisibility(View.VISIBLE);
                 if(mHoverShowedPos == position) {//hoverœ‘ æ––
                     //appItemHolder.hoverMenu.setClickable(false);
-                    appItemHolder.hoverMenu.setVisibility(View.GONE);
+                    //appItemHolder.hoverMenu.setVisibility(View.GONE);
                     //appItemHolder.hoverMenuCover.setClickable(false);
                     appItemHolder.hoverMenuCover.setVisibility(View.GONE);
                     appItemHolder.AppIconImageView.setOnClickListener(null);
@@ -523,7 +523,7 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
                 }
                 else{
                     //appItemHolder.hoverMenu.setClickable(true);
-                    appItemHolder.hoverMenu.setVisibility(View.VISIBLE);
+                    //appItemHolder.hoverMenu.setVisibility(View.VISIBLE);
                     //appItemHolder.hoverMenuCover.setClickable(true);
                     appItemHolder.hoverMenuCover.setVisibility(View.VISIBLE);
                     appItemHolder.AppIconImageView.setOnClickListener(this);
