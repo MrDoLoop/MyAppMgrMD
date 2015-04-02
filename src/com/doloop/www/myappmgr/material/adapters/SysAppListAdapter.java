@@ -33,7 +33,6 @@ import com.doloop.www.myappmgr.material.utils.Constants;
 import com.doloop.www.myappmgr.material.utils.SysAppListItem;
 import com.doloop.www.myappmgr.material.widgets.PinnedSectionListView.PinnedSectionListAdapter;
 import com.doloop.www.myappmgr.material.R;
-import com.nineoldandroids.view.ViewHelper;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Picasso.LoadedFrom;
 import com.squareup.picasso.Target;
@@ -277,7 +276,7 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
                 public void onAnimationStart(Animation animation) {
                     // TODO Auto-generated method stub
                     hoverAniIsRunning = true;
-                    ViewHelper.setTranslationY(hoverView, 0);
+                    //ViewHelper.setTranslationY(hoverView, 0);
                 }
             });
             hoverView.startAnimation(ani);
@@ -316,7 +315,7 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
         if (withAni) {
             hoverView.clearAnimation();
             Animation ani = AnimationUtils.loadAnimation(mCtx, R.anim.slide_up_out);
-            ani.setFillAfter(true);
+            //ani.setFillAfter(true);
             ani.setAnimationListener(new AnimationListener() {
 
                 @Override
@@ -324,8 +323,7 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
                     // TODO Auto-generated method stub
                     hoverAniIsRunning = false;
                     hoverMenuCover.setVisibility(View.VISIBLE);
-                    //ViewHelper.setAlpha(hoverView, 0f);
-                    ViewHelper.setTranslationY(hoverView, -hoverView.getHeight());
+                    //ViewHelper.setTranslationY(hoverView, -hoverView.getHeight());
                     hoverView.setVisibility(View.INVISIBLE);
                     //notifyDataSetChanged();
                 }
@@ -341,7 +339,7 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
                     // TODO Auto-generated method stub
                     hoverAniIsRunning = true;
                     hoverView.setVisibility(View.INVISIBLE);
-                    ViewHelper.setTranslationY(hoverView, 0);
+                    //ViewHelper.setTranslationY(hoverView, 0);
                 }
             });
             hoverView.startAnimation(ani);
