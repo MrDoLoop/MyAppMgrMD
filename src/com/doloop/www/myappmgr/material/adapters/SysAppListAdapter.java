@@ -387,7 +387,7 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
                 
                 appItemHolder.hoverMenuCover = convertView.findViewById(R.id.item_menu_cover);
                 appItemHolder.hoverMenuCover.setOnTouchListener(new View.OnTouchListener() {
-                    
+                    //为了使得 menu 的...变色，所以用了touch事件
                     @Override
                     public boolean onTouch(View v, MotionEvent event) {
                         
@@ -428,13 +428,9 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
                     }
                 });
 //                appItemHolder.hoverMenuCover.setOnClickListener(new View.OnClickListener() {
-//                    
 //                    @Override
 //                    public void onClick(View v) {
-//                        // TODO Auto-generated method stub
-//                        L.d("cover click");
-//                       
-//                        //appItemHolder.hoverMenu.performClick();
+//                        appItemHolder.hoverMenu.performClick();
 //                    }
 //                });
   
