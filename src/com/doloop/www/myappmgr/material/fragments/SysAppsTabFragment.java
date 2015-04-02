@@ -359,7 +359,7 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
                           int lastHoverPos = mAdapter.getLastHoverShowedPos();
                           if(lastHoverPos >= mPinnedSectionListView.getFirstVisiblePosition() &&  lastHoverPos <= mPinnedSectionListView.getLastVisiblePosition()){
                               View itemView = mPinnedSectionListView.getChildAt(lastHoverPos - mPinnedSectionListView.getFirstVisiblePosition());
-                              mAdapter.hideHover(itemView, lastHoverPos, true, true);
+                              mAdapter.hideHover(itemView, lastHoverPos, true);
                           }
                           else{
                               
@@ -374,7 +374,7 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
         int lastHoverPos = mAdapter.getLastHoverShowedPos();
         if(lastHoverPos >= mPinnedSectionListView.getFirstVisiblePosition() &&  lastHoverPos <= mPinnedSectionListView.getLastVisiblePosition()){
             View itemView = mPinnedSectionListView.getChildAt(lastHoverPos - mPinnedSectionListView.getFirstVisiblePosition());
-            mAdapter.hideHover(itemView, lastHoverPos, true, false);
+            mAdapter.hideHover(itemView, lastHoverPos, true);
         }
     }
     
@@ -403,7 +403,7 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
                 } else {
                     if(!mAdapter.hoverAniIsRunning()){
                         if(mAdapter.getLastHoverShowedPos() == position){
-                            mAdapter.hideHover(v, position, true, true);
+                            mAdapter.hideHover(v, position, true);
                         }
                         else{ 
                           //Æô¶¯ÏêÇéÒ³µÄ
@@ -697,13 +697,13 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
         // TODO Auto-generated method stub
         if(!mAdapter.hoverAniIsRunning()){
             if(mAdapter.getLastHoverShowedPos() == position){
-                mAdapter.hideHover(listItemView, position, true, true);
+                mAdapter.hideHover(listItemView, position, true);
             }
             else{
                 if(mAdapter.isAnyHoverShowed()){
                     hideLastShowedHover();
                 }
-                mAdapter.showHover(listItemView, position, true, true);   
+                mAdapter.showHover(listItemView, position, true);   
             }
         }
     }

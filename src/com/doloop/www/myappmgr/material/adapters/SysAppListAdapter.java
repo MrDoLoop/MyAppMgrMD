@@ -33,6 +33,7 @@ import com.doloop.www.myappmgr.material.utils.Constants;
 import com.doloop.www.myappmgr.material.utils.SysAppListItem;
 import com.doloop.www.myappmgr.material.widgets.PinnedSectionListView.PinnedSectionListAdapter;
 import com.doloop.www.myappmgr.material.R;
+import com.nineoldandroids.view.ViewHelper;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Picasso.LoadedFrom;
 import com.squareup.picasso.Target;
@@ -244,26 +245,26 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
         return 0;
     }
 
-    public void
-            showHover(View listItemView, final int position, boolean withAni, final boolean callNotifyDataSetChanged) {
+    public void showHover(View listItemView, final int position, boolean withAni) {
         final View hoverView = listItemView.findViewById(R.id.hoverLayout);
         hoverView.setVisibility(View.VISIBLE);
-        //View menuCoverView = listItemView.findViewById(R.id.item_menu_cover);
-        // menuCoverView.setClickable(false);
-
+        
+        final View hoverMenuCover = listItemView.findViewById(R.id.item_menu_cover);
+        //hoverMenuCover.setVisibility(View.VISIBLE);
+        
         if (withAni) {
             hoverView.clearAnimation();
             Animation ani = AnimationUtils.loadAnimation(mCtx, R.anim.slide_btm_in);
+            ani.setFillAfter(true);
             ani.setAnimationListener(new AnimationListener() {
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
                     // TODO Auto-generated method stub
                     setHoverShowedPos(position);
-                    if (callNotifyDataSetChanged) {
-                        notifyDataSetChanged();
-                    }
+                    hoverMenuCover.setVisibility(View.GONE);
                     hoverAniIsRunning = false;
+                    //ViewHelper.setTranslationY(hoverView, 0);
                 }
 
                 @Override
@@ -276,18 +277,16 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
                 public void onAnimationStart(Animation animation) {
                     // TODO Auto-generated method stub
                     hoverAniIsRunning = true;
+                    ViewHelper.setTranslationY(hoverView, 0);
                 }
             });
             hoverView.startAnimation(ani);
             setHoverShowedPos(position);
         } else {
             hoverAniIsRunning = false;
+            hoverMenuCover.setVisibility(View.GONE);
             setHoverShowedPos(position);
-            if (callNotifyDataSetChanged) {
-                notifyDataSetChanged();
-            }
         }
-
     }
 
     /*
@@ -309,26 +308,26 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
      * }
      */
 
-    public void hideHover(View listItemView, int position, boolean withAni, final boolean callNotifyDataSetChanged) {
+    public void hideHover(View listItemView, int position, boolean withAni) {
         final View hoverView = listItemView.findViewById(R.id.hoverLayout);
         hoverView.setVisibility(View.VISIBLE);
-
-        //View menuCoverView = listItemView.findViewById(R.id.item_menu_cover);
-        // menuCoverView.setClickable(true);
-
+        //ViewHelper.setAlpha(hoverView, 1f);
+        final View hoverMenuCover = listItemView.findViewById(R.id.item_menu_cover);
         if (withAni) {
             hoverView.clearAnimation();
             Animation ani = AnimationUtils.loadAnimation(mCtx, R.anim.slide_up_out);
+            ani.setFillAfter(true);
             ani.setAnimationListener(new AnimationListener() {
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
                     // TODO Auto-generated method stub
-                    // hoverView.setVisibility(View.GONE);
-                    if (callNotifyDataSetChanged) {
-                        notifyDataSetChanged();
-                    }
                     hoverAniIsRunning = false;
+                    hoverMenuCover.setVisibility(View.VISIBLE);
+                    //ViewHelper.setAlpha(hoverView, 0f);
+                    ViewHelper.setTranslationY(hoverView, -hoverView.getHeight());
+                    hoverView.setVisibility(View.INVISIBLE);
+                    //notifyDataSetChanged();
                 }
 
                 @Override
@@ -341,16 +340,17 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
                 public void onAnimationStart(Animation animation) {
                     // TODO Auto-generated method stub
                     hoverAniIsRunning = true;
+                    hoverView.setVisibility(View.INVISIBLE);
+                    ViewHelper.setTranslationY(hoverView, 0);
                 }
             });
             hoverView.startAnimation(ani);
             resetHoverShowedPos();
         } else {
             hoverAniIsRunning = false;
+            hoverMenuCover.setVisibility(View.VISIBLE);
+            hoverView.setVisibility(View.GONE);
             resetHoverShowedPos();
-            if (callNotifyDataSetChanged) {
-                notifyDataSetChanged();
-            }
         }
     }
 
@@ -496,7 +496,8 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
                 resetHoverShowedPos();
                 appItemHolder.HoverLayout.setVisibility(View.GONE);
                 appItemHolder.hoverMenu.setVisibility(View.GONE);
-                
+                appItemHolder.hoverMenuCover.setVisibility(View.GONE);
+                //appItemHolder.hoverMenuCover.setClickable(false);
                 appItemHolder.AppIconImageView.setOnClickListener(null);
                 appItemHolder.AppIconImageView.setClickable(false);
                 appItemHolder.AppIconImageView.setBackgroundResource(R.drawable.imageview_border_red);
@@ -506,21 +507,21 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
                     appItemHolder.RootLayout.setBackgroundResource(R.drawable.list_row_item_bg);
                 }
             } else {
-                appItemHolder.hoverMenu.setVisibility(View.VISIBLE);
+                //appItemHolder.hoverMenu.setVisibility(View.VISIBLE);
                 if(mHoverShowedPos == position) {//hoverœ‘ æ––
                     //appItemHolder.hoverMenu.setClickable(false);
-                    //appItemHolder.hoverMenu.setVisibility(View.GONE);
-                    appItemHolder.hoverMenuCover.setClickable(false);
-                    //appItemHolder.hoverMenuCover.setVisibility(View.GONE);
+                    appItemHolder.hoverMenu.setVisibility(View.GONE);
+                    //appItemHolder.hoverMenuCover.setClickable(false);
+                    appItemHolder.hoverMenuCover.setVisibility(View.GONE);
                     appItemHolder.AppIconImageView.setOnClickListener(null);
                     appItemHolder.AppIconImageView.setClickable(false);
                     appItemHolder.AppIconImageView.setBackgroundResource(R.drawable.imageview_border_red);
                 }
                 else{
                     //appItemHolder.hoverMenu.setClickable(true);
-                    //appItemHolder.hoverMenu.setVisibility(View.VISIBLE);
-                    appItemHolder.hoverMenuCover.setClickable(true);
-                    //appItemHolder.hoverMenuCover.setVisibility(View.VISIBLE);
+                    appItemHolder.hoverMenu.setVisibility(View.VISIBLE);
+                    //appItemHolder.hoverMenuCover.setClickable(true);
+                    appItemHolder.hoverMenuCover.setVisibility(View.VISIBLE);
                     appItemHolder.AppIconImageView.setOnClickListener(this);
                     appItemHolder.AppIconImageView.setClickable(true); 
                     appItemHolder.AppIconImageView.setBackgroundResource(R.drawable.sys_app_icon_bg);
@@ -700,10 +701,10 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
             mIconClickListener.OnIconClick(pos);
         } else if (viewId == R.id.item_menu) {
             int pos = (Integer) v.getTag();
-            mItemMenuClickListener.OnItemMenuClick(pos, (View) v.getParent().getParent());
+            mItemMenuClickListener.OnItemMenuClick(pos, findRootLayout(v));
         } else if (viewId == R.id.hoverLayout) {
             int pos = (Integer) v.getTag();
-            mItemMenuClickListener.OnItemMenuClick(pos, (View) v.getParent());
+            mItemMenuClickListener.OnItemMenuClick(pos, findRootLayout(v));
         } else if (viewId == R.id.launch || viewId == R.id.details || viewId == R.id.backup || viewId == R.id.market
                 || viewId == R.id.send) {
             View hoverLayout = (View) v.getParent();
@@ -713,13 +714,13 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
 
     }
 
-    private View findRootLayou(View startView) {
+    private View findRootLayout(View startView) {
         View retView = (View) startView.getParent();
 
-        if (retView instanceof android.support.v7.widget.CardView) {
+        if (retView.getId() == R.id.list_item_root) {
             return retView;
         } else {
-            return findRootLayou(retView);
+            return findRootLayout(retView);
         }
     }
 
