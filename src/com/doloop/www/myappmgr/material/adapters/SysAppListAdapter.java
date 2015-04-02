@@ -40,6 +40,9 @@ import com.squareup.picasso.Target;
 public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListAdapter, Filterable,
         View.OnClickListener {
 
+    public static final int ANI_FROM_TOP = 0;
+    public static final int ANI_FROM_BTM = 1;
+    
     private ArrayList<SysAppListItem> mSysAppListWapperFull;
     private ArrayList<SysAppListItem> mSysAppListWapperDisplay;
 
@@ -244,7 +247,11 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
         return 0;
     }
 
-    public void showHover(View listItemView, final int position, boolean withAni) {
+    public void showHover(View listItemView, int position, boolean withAni){
+        showHover(listItemView, position, withAni, true);
+    }
+    
+    public void showHover(View listItemView, final int position, boolean withAni, boolean slideBtmIn) {
         final View hoverView = listItemView.findViewById(R.id.hoverLayout);
         hoverView.setVisibility(View.VISIBLE);
         
@@ -253,7 +260,13 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
         
         if (withAni) {
             hoverView.clearAnimation();
-            Animation ani = AnimationUtils.loadAnimation(mCtx, R.anim.slide_btm_in);
+            Animation ani;
+            if(slideBtmIn){
+                ani = AnimationUtils.loadAnimation(mCtx, R.anim.slide_btm_in);
+            }
+            else{
+                ani = AnimationUtils.loadAnimation(mCtx, R.anim.slide_up_in);
+            } 
             ani.setFillAfter(true);
             ani.setAnimationListener(new AnimationListener() {
 
@@ -276,6 +289,7 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
                 public void onAnimationStart(Animation animation) {
                     // TODO Auto-generated method stub
                     hoverAniIsRunning = true;
+                    hoverMenuCover.setVisibility(View.GONE);
                     //ViewHelper.setTranslationY(hoverView, 0);
                 }
             });
@@ -288,33 +302,24 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
         }
     }
 
-    /*
-     * public void hideLastHoverShowedPos(boolean withAni, int listFirstVisiablePos, int listLastVisiablePos){
-     * if(mLastShowedHoverView == null){ return; } if(withAni){ mLastShowedHoverView.clearAnimation(); Animation ani =
-     * AnimationUtils.loadAnimation(mCtx, R.anim.push_right_out); ani.setAnimationListener(new AnimationListener() {
-     * 
-     * @Override public void onAnimationEnd(Animation animation) { // TODO Auto-generated method stub
-     * //hoverView.setVisibility(View.GONE); resetHoverShowedPos(); notifyDataSetChanged(); hoverAniIsRunning = false; }
-     * 
-     * @Override public void onAnimationRepeat(Animation animation) { // TODO Auto-generated method stub
-     * 
-     * }
-     * 
-     * @Override public void onAnimationStart(Animation animation) { // TODO Auto-generated method stub
-     * hoverAniIsRunning = true; } }); mLastShowedHoverView.startAnimation(ani); resetHoverShowedPos(); } else{
-     * hoverAniIsRunning = false; resetHoverShowedPos(); notifyDataSetChanged(); }
-     * 
-     * }
-     */
-
-    public void hideHover(View listItemView, int position, boolean withAni) {
+    public void hideHover(View listItemView, int position, boolean withAni){
+        hideHover(listItemView, position, withAni, true);
+    }
+    public void hideHover(View listItemView, int position, boolean withAni, boolean slideUpAni) {
         final View hoverView = listItemView.findViewById(R.id.hoverLayout);
         hoverView.setVisibility(View.VISIBLE);
         //ViewHelper.setAlpha(hoverView, 1f);
         final View hoverMenuCover = listItemView.findViewById(R.id.item_menu_cover);
         if (withAni) {
+            Animation ani;
             hoverView.clearAnimation();
-            Animation ani = AnimationUtils.loadAnimation(mCtx, R.anim.slide_up_out);
+            if(slideUpAni){
+                ani = AnimationUtils.loadAnimation(mCtx, R.anim.slide_up_out);
+            }
+            else{
+                ani = AnimationUtils.loadAnimation(mCtx, R.anim.slide_btm_out);
+            }
+            
             //ani.setFillAfter(true);
             ani.setAnimationListener(new AnimationListener() {
 
@@ -339,6 +344,7 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
                     // TODO Auto-generated method stub
                     hoverAniIsRunning = true;
                     hoverView.setVisibility(View.INVISIBLE);
+                    hoverMenuCover.setVisibility(View.VISIBLE);
                     //ViewHelper.setTranslationY(hoverView, 0);
                 }
             });
