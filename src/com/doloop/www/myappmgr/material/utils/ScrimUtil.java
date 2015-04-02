@@ -20,17 +20,17 @@ public class ScrimUtil {
      * Creates an approximated cubic gradient using a multi-stop linear gradient. See <a
      * href="https://plus.google.com/+RomanNurik/posts/2QvHVFWrHZf">this post</a> for more details.
      */
-    public static Drawable makeCubicGradientScrimDrawable(int baseColor, int numStops, int gravity) {
-        numStops = Math.max(numStops, 2);
+    public static Drawable makeCubicGradientScrimDrawable(int baseColor, int numSteps, int gravity) {
+        numSteps = Math.max(numSteps, 2);
         PaintDrawable paintDrawable = new PaintDrawable();
         paintDrawable.setShape(new RectShape());
-        final int[] stopColors = new int[numStops];
+        final int[] stopColors = new int[numSteps];
         int red = Color.red(baseColor);
         int green = Color.green(baseColor);
         int blue = Color.blue(baseColor);
         int alpha = Color.alpha(baseColor);
-        for (int i = 0; i < numStops; i++) {
-            float x = i * 1f / (numStops - 1);
+        for (int i = 0; i < numSteps; i++) {
+            float x = i * 1f / (numSteps - 1);
             //float opacity = MathUtil.constrain(0, 1, FloatMath.pow(x, 3));
             //https://github.com/romannurik/muzei/blob/2d33da034b8f5044633420cbc97bda8cf1e96ede/android-client-common/src/main/java/com/google/android/apps/muzei/util/MathUtil.java
             float opacity = (float) Math.max(0, Math.min(1, Math.pow(x, 3)));
