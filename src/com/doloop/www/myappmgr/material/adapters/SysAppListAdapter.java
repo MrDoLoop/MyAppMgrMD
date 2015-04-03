@@ -24,6 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.util.TypefaceHelper;
 import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.fragments.SysAppsTabFragment;
 import com.doloop.www.myappmgr.material.interfaces.IconClickListener;
@@ -33,6 +34,7 @@ import com.doloop.www.myappmgr.material.utils.Constants;
 import com.doloop.www.myappmgr.material.utils.SysAppListItem;
 import com.doloop.www.myappmgr.material.widgets.PinnedSectionListView.PinnedSectionListAdapter;
 import com.doloop.www.myappmgr.material.R;
+import com.doloop.www.myappmgr.material.SettingActivity;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Picasso.LoadedFrom;
 import com.squareup.picasso.Target;
@@ -376,6 +378,7 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
                 appItemHolder.hoverMenu = (TextView) convertView.findViewById(R.id.item_menu);
                 String menuTxt = appItemHolder.hoverMenu.getText().toString();
                 appItemHolder.hoverMenu.setText(Html.fromHtml("<sup>"+menuTxt+"</sup>"));
+                appItemHolder.hoverMenu.setTypeface(TypefaceHelper.get(mCtx, "RobotoMedium"));
                 
                 appItemHolder.hoverMenuCover = convertView.findViewById(R.id.item_menu_cover);
                 appItemHolder.hoverMenuCover.setOnTouchListener(new View.OnTouchListener() {
