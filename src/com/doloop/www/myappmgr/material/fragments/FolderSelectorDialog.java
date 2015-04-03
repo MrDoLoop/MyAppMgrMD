@@ -17,7 +17,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -25,9 +24,9 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.MaterialDialog.Builder;
 import com.afollestad.materialdialogs.MaterialDialog.ButtonCallback;
+import com.doloop.www.myappmgr.material.R;
 import com.doloop.www.myappmgr.material.utils.Constants;
 import com.doloop.www.myappmgr.material.utils.Utils;
-import com.doloop.www.myappmgr.material.R;
 
 /**
  * @author Aidan Follestad (afollestad)
