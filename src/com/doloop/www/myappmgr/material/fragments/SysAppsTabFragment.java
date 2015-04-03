@@ -355,11 +355,12 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
                         break;
                     case AbsListView.OnScrollListener.SCROLL_STATE_FLING: 
                     case AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
-                      if(mAdapter.isAnyHoverShowed()){
+                      if(mAdapter.isAnyHoverShowed() && !mAdapter.hoverAniIsRunning()){
                           int lastHoverPos = mAdapter.getLastHoverShowedPos();
                           if(lastHoverPos >= mPinnedSectionListView.getFirstVisiblePosition() &&  lastHoverPos <= mPinnedSectionListView.getLastVisiblePosition()){
                               View itemView = mPinnedSectionListView.getChildAt(lastHoverPos - mPinnedSectionListView.getFirstVisiblePosition());
                               mAdapter.hideHover(itemView, lastHoverPos, true);
+                              //mAdapter.resetHoverShowedPos();
                           }
                           else{
                               
