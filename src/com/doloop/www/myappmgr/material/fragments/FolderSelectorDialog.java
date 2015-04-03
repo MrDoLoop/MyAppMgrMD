@@ -13,7 +13,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -132,8 +134,45 @@ public class FolderSelectorDialog extends DialogFragment implements MaterialDial
                 public void onClick(View v) {
                     // TODO Auto-generated method stub
                    
-                    FrameLayout layout = (FrameLayout) View.inflate(getActivity(), R.layout.md_input_dialog, null);
-                    final EditText mEditText = (EditText) layout.findViewById(android.R.id.edit);
+                    FrameLayout layout = (FrameLayout) View.inflate(getActivity(), R.layout.simple_input, null);
+                    final com.rey.material.widget.EditText mEditText = (com.rey.material.widget.EditText) layout.findViewById(android.R.id.edit);
+                    
+                   /* mEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                        
+                        @Override
+                        public void onFocusChange(View v, boolean hasFocus) {
+                            if(!hasFocus)
+                                mEditText.setError(null);
+                        }
+                    });*/
+                    mEditText.addTextChangedListener(new TextWatcher(){
+
+                        @Override
+                        public void afterTextChanged(Editable s) {
+                            // TODO Auto-generated method stub
+                            mEditText.setDividerAni(true);
+                            String newFolderName = s.toString().trim();
+                            if(isFileNameExists(newFolderName)){
+                                mEditText.setError(getString(R.string.folder_name_exists));
+                            }
+                            else{
+                                mEditText.setError(null);
+                            }
+                        }
+
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                            // TODO Auto-generated method stub
+                            
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+                            // TODO Auto-generated method stub
+                            
+                        }});
+                    
+                    
                     Builder mBuilder = new MaterialDialog.Builder(getActivity())
                     .title(R.string.new_folder)
                     //.icon(getDialogIcon())
@@ -144,7 +183,7 @@ public class FolderSelectorDialog extends DialogFragment implements MaterialDial
                         @Override
                         public void onPositive(MaterialDialog dialog) {
                             mEditText.setError(null);
-                            String newFolderName = mEditText.getText().toString();
+                            String newFolderName = mEditText.getText().toString().trim();
                             
                             if(TextUtils.isEmpty(newFolderName)){
                                 mEditText.setError(getString(R.string.not_null));
@@ -242,7 +281,18 @@ public class FolderSelectorDialog extends DialogFragment implements MaterialDial
         show(fm, "FOLDER_SELECTOR");
     }
 
-
+    private boolean isFileNameExists(String filename){
+        boolean foundSameName = false;
+        for(File file : parentContents){
+            if(file.getName().equalsIgnoreCase(filename)){
+                foundSameName = true;
+                break;
+            }
+        }
+        return foundSameName;
+    }
+    
+    
     private static class FolderSorter implements Comparator<File> {
         @Override
         public int compare(File lhs, File rhs) {
