@@ -10,6 +10,16 @@
         <attr name="cpv_animAutostart" format="boolean" />
         <attr name="cpv_animSteps" format="integer" />
     </declare-styleable> -->
+    
+    <style name="AniCheckBox">
+        <item name="cbd_width">18dp</item>
+        <item name="cbd_height">18dp</item>
+        <item name="cbd_boxSize">16dp</item>
+        <item name="cbd_cornerRadius">2dp</item>
+        <item name="cbd_strokeSize">2dp</item>
+        <item name="cbd_animDuration">@android:integer/config_mediumAnimTime</item>
+    </style>
+    
      <declare-styleable name="FilterMenuLayout">
         <attr name="primaryColor" format="color|reference"/>
         <attr name="primaryDarkColor" format="color|reference"/>
