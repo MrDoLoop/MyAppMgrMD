@@ -40,9 +40,6 @@ import com.squareup.picasso.Target;
 public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListAdapter, Filterable,
         View.OnClickListener {
 
-    public static final int ANI_FROM_TOP = 0;
-    public static final int ANI_FROM_BTM = 1;
-    
     private ArrayList<SysAppListItem> mSysAppListWapperFull;
     private ArrayList<SysAppListItem> mSysAppListWapperDisplay;
 
@@ -399,7 +396,7 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
                             case MotionEvent.ACTION_DOWN:
                             {
                              //按住事件发生后执行代码的区域
-                                v.setFocusable(true);
+                                //v.setFocusable(true);
                                 appItemHolder.hoverMenu.setTextColor(mCtx.getResources().getColor(R.color.primary));
                                 return true;
                             }
@@ -419,7 +416,7 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
                                 //v.requestFocus();
                                 appItemHolder.hoverMenu.performClick();
                                 appItemHolder.hoverMenu.setTextColor(mCtx.getResources().getColor(R.color.secondary_text));
-                                v.setFocusable(false);
+                                //v.setFocusable(false);
                                 return true;
                              
                             }
