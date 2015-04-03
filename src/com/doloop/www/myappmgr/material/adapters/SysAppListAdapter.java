@@ -264,7 +264,7 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
             else{
                 ani = AnimationUtils.loadAnimation(mCtx, R.anim.slide_up_in);
             } 
-            ani.setFillAfter(true);
+            //ani.setFillAfter(true);
             ani.setAnimationListener(new AnimationListener() {
 
                 @Override
