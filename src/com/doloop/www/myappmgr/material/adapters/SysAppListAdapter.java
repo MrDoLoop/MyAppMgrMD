@@ -34,7 +34,6 @@ import com.doloop.www.myappmgr.material.utils.Constants;
 import com.doloop.www.myappmgr.material.utils.SysAppListItem;
 import com.doloop.www.myappmgr.material.widgets.PinnedSectionListView.PinnedSectionListAdapter;
 import com.doloop.www.myappmgr.material.R;
-import com.doloop.www.myappmgr.material.SettingActivity;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Picasso.LoadedFrom;
 import com.squareup.picasso.Target;
@@ -432,8 +431,10 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
                 appItemHolder.hoverMenu.setOnClickListener(this);
                 appItemHolder.HoverLayout = (LinearLayout) convertView.findViewById(R.id.hoverLayout);
                 appItemHolder.HoverLayout.setOnClickListener(this);
-                
-                appItemHolder.hoverMenuBackup = convertView.findViewById(R.id.backup);
+                for(int i = 0;i<appItemHolder.HoverLayout.getChildCount();i++){
+                    appItemHolder.HoverLayout.getChildAt(i).setOnClickListener(this);
+                }
+                /*appItemHolder.hoverMenuBackup = convertView.findViewById(R.id.backup);
                 appItemHolder.hoverMenuDetails = convertView.findViewById(R.id.details);
                 appItemHolder.hoverMenuLaunch = convertView.findViewById(R.id.launch);
                 appItemHolder.hoverMenuMarket = convertView.findViewById(R.id.market);
@@ -443,7 +444,7 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
                 appItemHolder.hoverMenuDetails.setOnClickListener(this);
                 appItemHolder.hoverMenuLaunch.setOnClickListener(this);
                 appItemHolder.hoverMenuMarket.setOnClickListener(this);
-                appItemHolder.hoverMenuSend.setOnClickListener(this);
+                appItemHolder.hoverMenuSend.setOnClickListener(this);*/
                
                 appItemHolder.RootLayout = (RelativeLayout) convertView.findViewById(R.id.rootLayout);
                 appItemHolder.AppNameTextView = (TextView) convertView.findViewById(R.id.app_name);
