@@ -273,13 +273,11 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
                     setHoverShowedPos(position);
                     hoverMenuCover.setVisibility(View.GONE);
                     hoverAniIsRunning = false;
-                    //ViewHelper.setTranslationY(hoverView, 0);
                 }
 
                 @Override
                 public void onAnimationRepeat(Animation animation) {
                     // TODO Auto-generated method stub
-
                 }
 
                 @Override
@@ -287,7 +285,6 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
                     // TODO Auto-generated method stub
                     hoverAniIsRunning = true;
                     hoverMenuCover.setVisibility(View.GONE);
-                    //ViewHelper.setTranslationY(hoverView, 0);
                 }
             });
             hoverView.startAnimation(ani);
@@ -305,7 +302,7 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
     public void hideHover(View listItemView, int position, boolean withAni, boolean slideUpAni) {
         final View hoverView = listItemView.findViewById(R.id.hoverLayout);
         hoverView.setVisibility(View.VISIBLE);
-        //ViewHelper.setAlpha(hoverView, 1f);
+        
         final View hoverMenuCover = listItemView.findViewById(R.id.item_menu_cover);
         if (withAni) {
             Animation ani;
@@ -325,8 +322,7 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
                     // TODO Auto-generated method stub
                     hoverAniIsRunning = false;
                     hoverMenuCover.setVisibility(View.VISIBLE);
-                    //ViewHelper.setTranslationY(hoverView, -hoverView.getHeight());
-                    hoverView.setVisibility(View.INVISIBLE);
+                    hoverView.setVisibility(View.GONE);
                     //notifyDataSetChanged();
                 }
 
@@ -342,7 +338,6 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
                     hoverAniIsRunning = true;
                     hoverView.setVisibility(View.INVISIBLE);
                     hoverMenuCover.setVisibility(View.VISIBLE);
-                    //ViewHelper.setTranslationY(hoverView, 0);
                 }
             });
             hoverView.startAnimation(ani);
