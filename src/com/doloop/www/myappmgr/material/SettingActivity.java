@@ -14,7 +14,6 @@ import android.text.TextPaint;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -115,10 +114,10 @@ public class SettingActivity extends SwipeBackActivity implements FolderSelectCa
         boolean playAni = Utils.playAniAppDetails(this);
         if (playAni) {
             fillTwoRowsChkBox(playAniAppDetails, getString(R.string.play_ani_app_details),
-                    getString(R.string.play_ani), playAni);
+                    getString(R.string.play_ani), playAni, false);
         } else {
             fillTwoRowsChkBox(playAniAppDetails, getString(R.string.play_ani_app_details),
-                    getString(R.string.not_paly_ani), playAni);
+                    getString(R.string.not_paly_ani), playAni, false);
         }
         playAniAppDetails.setOnClickListener(new View.OnClickListener() {
 
@@ -128,10 +127,10 @@ public class SettingActivity extends SwipeBackActivity implements FolderSelectCa
                 Utils.setPlayAniAppDetails(SettingActivity.this, playAni);
                 if (playAni) {
                     fillTwoRowsChkBox(playAniAppDetails, getString(R.string.play_ani_app_details),
-                            getString(R.string.play_ani), playAni);
+                            getString(R.string.play_ani), playAni, true);
                 } else {
                     fillTwoRowsChkBox(playAniAppDetails, getString(R.string.play_ani_app_details),
-                            getString(R.string.not_paly_ani), playAni);
+                            getString(R.string.not_paly_ani), playAni, true);
                 }
             }
         });
@@ -206,14 +205,19 @@ public class SettingActivity extends SwipeBackActivity implements FolderSelectCa
         fillTwoRowsInfo(ItemView, getString(titleId), getString(summaryId));
     }
 
-    private void fillTwoRowsChkBox(View ItemView, int titleId, int summaryId, boolean isChecked) {
-        fillTwoRowsChkBox(ItemView, getString(titleId), getString(summaryId), isChecked);
+    private void fillTwoRowsChkBox(View ItemView, int titleId, int summaryId, boolean isChecked, boolean playCheckAni) {
+        fillTwoRowsChkBox(ItemView, getString(titleId), getString(summaryId), isChecked, playCheckAni);
     }
 
-    private void fillTwoRowsChkBox(View ItemView, String titleId, String summaryId, boolean isChecked) {
+    private void fillTwoRowsChkBox(View ItemView, String titleId, String summaryId, boolean isChecked, boolean playCheckAni) {
         fillTwoRowsInfo(ItemView, titleId, summaryId);
-        CheckBox chk = (CheckBox) ItemView.findViewById(R.id.chkbox);
-        chk.setChecked(isChecked);
+        com.rey.material.widget.CheckBox chk = (com.rey.material.widget.CheckBox) ItemView.findViewById(R.id.chkbox);
+        if(playCheckAni){
+            chk.setChecked(isChecked);
+        }
+        else{
+            chk.setCheckedImmediately(isChecked);
+        }
     }
 
     private void fillTwoRowsIcon(View ItemView, String title, String summary, int IconResId) {
