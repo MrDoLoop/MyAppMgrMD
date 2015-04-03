@@ -6,15 +6,16 @@
     android:background="@drawable/md_selector"
     android:padding="16dp" >
 
-    <CheckBox
+    <com.rey.material.widget.CheckBox
         android:id="@+id/chkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:focusable="false"
         android:clickable="false"
+        style="@style/AniCheckBox"
         android:layout_centerVertical="true" >
-    </CheckBox>
+    </com.rey.material.widget.CheckBox>
 
     <LinearLayout
         android:layout_width="match_parent"
