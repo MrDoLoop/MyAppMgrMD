@@ -321,6 +321,9 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
             public void onChanged() {
                 // TODO Auto-generated method stub
                 super.onChanged();
+                if(mAdapter.isAnyHoverShowed()) {
+                    hideLastShowedHover(false, false);
+                }
                 mAdapter.getSysAppListDataSetChangedListener().OnSysAppListDataSetChanged(
                         mAdapter.getSysAppListWapperDisplay(), mAdapter.getSectionInListPosMapDisplay());
             }
@@ -371,11 +374,11 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
             }});
     }
 
-    public void hideLastShowedHover(boolean aniDirection){
+    public void hideLastShowedHover(boolean palyAni, boolean aniDirection){
         int lastHoverPos = mAdapter.getLastHoverShowedPos();
         if(lastHoverPos >= mPinnedSectionListView.getFirstVisiblePosition() &&  lastHoverPos <= mPinnedSectionListView.getLastVisiblePosition()){
             View itemView = mPinnedSectionListView.getChildAt(lastHoverPos - mPinnedSectionListView.getFirstVisiblePosition());
-            mAdapter.hideHover(itemView, lastHoverPos, true, aniDirection);
+            mAdapter.hideHover(itemView, lastHoverPos, palyAni, aniDirection);
         }
     }
     
@@ -706,7 +709,7 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
                     if(mAdapter.getLastHoverShowedPos() <= position){
                         aniDirection = false;
                     }
-                    hideLastShowedHover(aniDirection);
+                    hideLastShowedHover(true, aniDirection);
                 }
                 mAdapter.showHover(listItemView, position, true,aniDirection);   
             }
