@@ -250,12 +250,10 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                                     Intent intent = getPackageManager().getLaunchIntentForPackage(
                                             curAppInfo.packageName);
                                     if (intent != null) {
-                                        if (intent != null) {
-                                            try {
-                                                startActivity(intent);
-                                            } catch (Exception e) {
-                                                MainActivity.T(R.string.launch_fail);
-                                            }
+                                        try {
+                                            startActivity(intent);
+                                        } catch (Exception e) {
+                                            MainActivity.T(R.string.launch_fail);
                                         }
                                     } else {
                                         MainActivity.T(R.string.launch_fail);
@@ -350,9 +348,9 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
 
         if (curAppInfo != null) {
 
-            Intent intent = new Intent();
-            intent.setPackage(curAppInfo.packageName);
-            intent.addCategory(Intent.CATEGORY_LAUNCHER);
+            Intent intent = getPackageManager().getLaunchIntentForPackage(
+                    curAppInfo.packageName);
+            
             ResolveInfo appResolveInfo = null;
             try {
                 appResolveInfo = getPackageManager().resolveActivity(intent, 0);
@@ -446,9 +444,10 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
             view = rowContainer.findViewById(R.id.row_componement);
             if (appResolveInfo != null) {
                 String componementStr = "";
-                ComponentName componentName =
-                        new ComponentName(appResolveInfo.activityInfo.applicationInfo.packageName,
-                                appResolveInfo.activityInfo.name);
+                ComponentName componentName = intent.getComponent();
+//                ComponentName componentName =
+//                        new ComponentName(appResolveInfo.activityInfo.applicationInfo.packageName,
+//                                appResolveInfo.activityInfo.name);
                 if (componentName != null) {
                     componementStr = componentName.toString();
                 }
