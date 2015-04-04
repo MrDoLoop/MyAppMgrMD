@@ -181,21 +181,15 @@ public class FolderSelectorDialog extends DialogFragment implements MaterialDial
                     .callback(new ButtonCallback(){
                         @Override
                         public void onPositive(MaterialDialog dialog) {
-                            mEditText.setError(null);
+                            //mEditText.setError(null);
+                            mEditText.setDividerAni(true);
                             String newFolderName = mEditText.getText().toString().trim();
                             
                             if(TextUtils.isEmpty(newFolderName)){
                                 mEditText.setError(getString(R.string.not_null));
                             }
                             else{
-                                boolean foundSameName = false;
-                                for(File file : parentContents){
-                                    if(file.getName().equalsIgnoreCase(newFolderName)){
-                                        foundSameName = true;
-                                        break;
-                                    }
-                                }
-                                if(foundSameName){
+                                if(isFileNameExists(newFolderName)) {
                                     mEditText.setError(getString(R.string.folder_name_exists));
                                 }
                                 else{
