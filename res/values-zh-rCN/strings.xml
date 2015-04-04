@@ -72,7 +72,7 @@
 	<string name="componement">组件</string>
 	<string name="copied">已复制</string>
 	<string name="none_info">无信息</string>
-	
+	<string name="new_name">新名字</string>
 	<string name="common">常规</string>
 	<string name="settings">设定</string>
 	<string name="play_ani_app_details">App详情页是否播放动画</string>
