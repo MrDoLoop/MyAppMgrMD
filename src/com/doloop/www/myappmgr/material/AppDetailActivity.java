@@ -2,7 +2,7 @@ package com.doloop.www.myappmgr.material;
 
 import java.util.ArrayList;
 import java.util.Date;
-
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -29,7 +29,6 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.events.AppBackupSuccEvent;
 import com.doloop.www.myappmgr.material.events.AppUpdateEvent;
@@ -53,7 +52,6 @@ import com.nineoldandroids.view.ViewPropertyAnimator;
 import com.nispok.snackbar.Snackbar;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.readystatesoftware.systembartint.SystemBarTintManager.SystemBarConfig;
-
 import de.greenrobot.event.EventBus;
 
 //http://frogermcs.github.io/InstaMaterial-concept-part-6-user-profile/
@@ -84,6 +82,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
     private boolean canLaunch = false;
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,7 +94,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
         
         rootFrame  = findViewById(R.id.root_frame);
         headerImgView = (KenBurnsSupportView) findViewById(R.id.header_image);
-        headerImgView.setResourceIds(R.drawable.n52, R.drawable.ic_user_background, R.drawable.background);
+        headerImgView.setResourceIds(R.drawable.ic_user_background, R.drawable.background);
         appIcon = (ImageView) findViewById(R.id.app_icon);
         contentRootView = findViewById(R.id.content_root);
         rootScrollView = (ObservableScrollView) findViewById(R.id.root_scroll_view);
@@ -137,6 +136,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
             isBlockedScrollView = true;
             rootScrollView.setOnTouchListener(new View.OnTouchListener() {
 
+                
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     // TODO Auto-generated method stub
