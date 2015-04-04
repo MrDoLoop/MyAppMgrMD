@@ -5,6 +5,7 @@ import java.util.Locale;
 import java.util.TreeMap;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.text.Html;
@@ -253,6 +254,20 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
         final View hoverView = listItemView.findViewById(R.id.hoverLayout);
         hoverView.setVisibility(View.VISIBLE);
         
+        View launchView = hoverView.findViewById(R.id.launch);
+
+        SysAppListItem item = getItem(position);
+        
+        Intent launchIntent = mCtx.getPackageManager().getLaunchIntentForPackage(
+                item.appinfo.packageName);
+        
+        if(launchIntent == null){
+            launchView.setVisibility(View.GONE);
+        }
+        else{
+            launchView.setVisibility(View.VISIBLE); 
+        }
+
         final View hoverMenuCover = listItemView.findViewById(R.id.item_menu_cover);
         //hoverMenuCover.setVisibility(View.VISIBLE);
         
