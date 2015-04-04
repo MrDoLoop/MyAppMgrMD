@@ -109,7 +109,7 @@
                 android:paddingRight="5dp"
                 android:paddingTop="5dp"
                 android:visibility="gone"
-                android:weightSum="5" >
+                >
 
                 <LinearLayout
                     android:id="@+id/launch"

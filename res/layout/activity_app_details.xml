@@ -25,11 +25,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" >
 
-            <View
+		<com.doloop.www.myappmgr.material.widgets.KenBurnsSupportView
                 android:id="@+id/header_image"
+               
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
                 android:background="@drawable/ic_user_background" />
+           <!--  <View
+                android:id="@+id/header_image"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:background="@drawable/ic_user_background" /> -->
 
             <RelativeLayout
                 android:id="@+id/content_root"
