@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:layout_alignParentTop="true"
-        android:background="@drawable/background" >
+        android:background="@drawable/ic_user_background" >
 
         <!--
              <com.doloop.www.myappmgr.material.widgets.CircularImageView
