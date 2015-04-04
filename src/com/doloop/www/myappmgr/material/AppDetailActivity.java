@@ -40,6 +40,7 @@ import com.doloop.www.myappmgr.material.utils.Constants;
 import com.doloop.www.myappmgr.material.utils.ScrimUtil;
 import com.doloop.www.myappmgr.material.utils.Utils;
 import com.doloop.www.myappmgr.material.widgets.CircularRevealView;
+import com.doloop.www.myappmgr.material.widgets.KenBurnsSupportView;
 import com.doloop.www.myappmgr.material.widgets.ObservableScrollView;
 import com.doloop.www.myappmgr.material.widgets.ObservableScrollViewCallbacks;
 import com.doloop.www.myappmgr.material.widgets.ScrollState;
@@ -62,7 +63,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
     private View rowContainer;
     private ObservableScrollView rootScrollView;
     private View headerView;
-    private View headerImgView;
+    private KenBurnsSupportView headerImgView;
     private CircularRevealView revealView;
     private View contentRootView;
     private View shadowView;
@@ -80,6 +81,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
     public static final String REVEAL_START_POSITION = "REVEAL_START_POSITION";
     
     private boolean playStartAni = true;
+    private boolean canLaunch = false;
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
@@ -92,7 +94,8 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
         playStartAni = Utils.playAniAppDetails(this);
         
         rootFrame  = findViewById(R.id.root_frame);
-        headerImgView = findViewById(R.id.header_image);
+        headerImgView = (KenBurnsSupportView) findViewById(R.id.header_image);
+        headerImgView.setResourceIds(R.drawable.n52, R.drawable.ic_user_background, R.drawable.background);
         appIcon = (ImageView) findViewById(R.id.app_icon);
         contentRootView = findViewById(R.id.content_root);
         rootScrollView = (ObservableScrollView) findViewById(R.id.root_scroll_view);
@@ -233,14 +236,136 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
         }
 
         // Row Container    
+       
+
+        if (curAppInfo != null) {
+
+            Intent intent = getPackageManager().getLaunchIntentForPackage(
+                    curAppInfo.packageName);
+            
+            ResolveInfo appResolveInfo = null;
+            try {
+                appResolveInfo = getPackageManager().resolveActivity(intent, 0);
+                canLaunch = true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                canLaunch = false;
+            }
+
+            TextView appName = (TextView) findViewById(R.id.app_name);
+            appName.setText(curAppInfo.appName);
+            appIcon = (ImageView) findViewById(R.id.app_icon);
+            appIcon.setImageDrawable(Utils.getIconDrawable(this, curAppInfo.packageName));
+            appIcon.setOnClickListener(new View.OnClickListener() {
+                
+                @Override
+                public void onClick(View v) {
+                    appIcon.setEnabled(false);
+                    //ObjectAnimator rotationAni = ObjectAnimator.ofFloat(appIcon, "rotationY", 0f, 360f);
+                    ObjectAnimator scaleXAni = ObjectAnimator.ofFloat(appIcon, "scaleX", 1f, 0.5f, 1f);
+                    ObjectAnimator scaleYAni = ObjectAnimator.ofFloat(appIcon, "scaleY", 1f, 0.5f, 1f);
+                    //ObjectAnimator alphaAni = ObjectAnimator.ofFloat(appIcon, "alpha", 0.5f, 1f);
+                    AnimatorSet set = new AnimatorSet();
+                    set.playTogether(scaleXAni,scaleYAni);//alphaAni rotationAni
+                    set.setDuration(1000);
+                    set.setInterpolator(new BounceInterpolator ()); //AnticipateOvershootInterpolator OvershootInterpolator
+                    set.addListener(new AnimatorListenerAdapter(){
+                        @Override
+                        public void onAnimationEnd(Animator arg0) {
+                            // TODO Auto-generated method stub
+                            appIcon.setEnabled(true);
+                        }
+
+                        @Override
+                        public void onAnimationStart(Animator arg0) {
+                            // TODO Auto-generated method stub
+                            appIcon.setEnabled(false);
+                        } 
+                    });
+                    set.start();
+                    
+                 /*   ani.addListener(new AnimatorListenerAdapter(){
+
+                        @Override
+                        public void onAnimationEnd(Animator arg0) {
+                            // TODO Auto-generated method stub
+                            appIcon.setEnabled(true);
+                        }
+
+                        @Override
+                        public void onAnimationStart(Animator arg0) {
+                            // TODO Auto-generated method stub
+                            appIcon.setEnabled(false);
+                        }} );
+                    ani.start();*/
+                    /*ViewPropertyAnimator.animate(appIcon).cancel();
+                    ViewPropertyAnimator.animate(appIcon).rotation(360f).setDuration(1000).setListener(new AnimatorListenerAdapter() {
+                        
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                            appIcon.setEnabled(false);
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            appIcon.setEnabled(true);
+                        }
+                    }).start();*/
+                }
+            });
+            
+            View view = rowContainer.findViewById(R.id.row_pkgname);
+            fillRow(view, getString(R.string.pkg_name), curAppInfo.packageName);
+
+            view = rowContainer.findViewById(R.id.row_version);
+            fillRow(view, getString(R.string.version), curAppInfo.versionName + " (" + curAppInfo.versionCode + ")");
+
+            view = rowContainer.findViewById(R.id.row_apk_info);
+            fillRow(view, getString(R.string.apk_info),
+                    curAppInfo.apkFilePath + "\n" + Utils.formatFileSize(curAppInfo.appRawSize));
+
+            view = rowContainer.findViewById(R.id.row_time_info);
+            fillRow(view, getString(R.string.last_updated_time),
+                    Utils.formatTimeDisplayFull(new Date(curAppInfo.lastModifiedRawTime)));
+
+            view = rowContainer.findViewById(R.id.row_activity);
+            if (appResolveInfo != null) {
+                fillRow(view, getString(R.string.activity), appResolveInfo.activityInfo.name);
+            } else {
+                fillRow(view, getString(R.string.activity), "");
+            }
+
+            view = rowContainer.findViewById(R.id.row_componement);
+            if (appResolveInfo != null) {
+                String componementStr = "";
+                ComponentName componentName = intent.getComponent();
+//                ComponentName componentName =
+//                        new ComponentName(appResolveInfo.activityInfo.applicationInfo.packageName,
+//                                appResolveInfo.activityInfo.name);
+                if (componentName != null) {
+                    componementStr = componentName.toString();
+                }
+                fillRow(view, getString(R.string.componement), componementStr);
+            } else {
+                fillRow(view, getString(R.string.componement), "");
+            }
+        }
+        
         menuLayout = (FilterMenuLayout) findViewById(R.id.menu);
-        FilterMenu.Builder menuBuilder = new FilterMenu.Builder(this).addItem(R.drawable.play_white).addItem(R.drawable.info_white)
-                .addItem(R.drawable.backup_white).addItem(R.drawable.send_white)
-                .attach(menuLayout)
+        FilterMenu.Builder menuBuilder = new FilterMenu.Builder(this);
+        if(canLaunch){
+            menuBuilder.addItem(R.drawable.play_white);
+        }
+        menuBuilder.addItem(R.drawable.info_white)
+                .addItem(R.drawable.backup_white).addItem(R.drawable.send_white).attach(menuLayout)
                 .withListener(new FilterMenu.OnMenuChangeListener() {
 
                     @Override
                     public void onMenuItemClick(View view, int position) {
+                        if(!canLaunch){
+                            position = position + 1;
+                        }
+                        
                         switch (position) {
                             case OPEN_ACTION://启动
                                 if (Constants.MY_PACKAGE_NAME.equals(curAppInfo.packageName))// 避免再次启动自己app
@@ -345,117 +470,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
         }
         
         menuBuilder.build();
-
-        if (curAppInfo != null) {
-
-            Intent intent = getPackageManager().getLaunchIntentForPackage(
-                    curAppInfo.packageName);
-            
-            ResolveInfo appResolveInfo = null;
-            try {
-                appResolveInfo = getPackageManager().resolveActivity(intent, 0);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            TextView appName = (TextView) findViewById(R.id.app_name);
-            appName.setText(curAppInfo.appName);
-            appIcon = (ImageView) findViewById(R.id.app_icon);
-            appIcon.setImageDrawable(Utils.getIconDrawable(this, curAppInfo.packageName));
-            appIcon.setOnClickListener(new View.OnClickListener() {
-                
-                @Override
-                public void onClick(View v) {
-                    appIcon.setEnabled(false);
-                    //ObjectAnimator rotationAni = ObjectAnimator.ofFloat(appIcon, "rotationY", 0f, 360f);
-                    ObjectAnimator scaleXAni = ObjectAnimator.ofFloat(appIcon, "scaleY", 1f, 0.5f, 1f);
-                    ObjectAnimator scaleYAni = ObjectAnimator.ofFloat(appIcon, "scaleX", 1f, 0.5f, 1f);
-                    //ObjectAnimator alphaAni = ObjectAnimator.ofFloat(appIcon, "alpha", 0.5f, 1f);
-                    AnimatorSet set = new AnimatorSet();
-                    set.playTogether(scaleXAni,scaleYAni);//alphaAni rotationAni
-                    set.setDuration(1000);
-                    set.setInterpolator(new BounceInterpolator ()); //AnticipateOvershootInterpolator OvershootInterpolator
-                    set.addListener(new AnimatorListenerAdapter(){
-                        @Override
-                        public void onAnimationEnd(Animator arg0) {
-                            // TODO Auto-generated method stub
-                            appIcon.setEnabled(true);
-                        }
-
-                        @Override
-                        public void onAnimationStart(Animator arg0) {
-                            // TODO Auto-generated method stub
-                            appIcon.setEnabled(false);
-                        } 
-                    });
-                    set.start();
-                    
-                 /*   ani.addListener(new AnimatorListenerAdapter(){
-
-                        @Override
-                        public void onAnimationEnd(Animator arg0) {
-                            // TODO Auto-generated method stub
-                            appIcon.setEnabled(true);
-                        }
-
-                        @Override
-                        public void onAnimationStart(Animator arg0) {
-                            // TODO Auto-generated method stub
-                            appIcon.setEnabled(false);
-                        }} );
-                    ani.start();*/
-                    /*ViewPropertyAnimator.animate(appIcon).cancel();
-                    ViewPropertyAnimator.animate(appIcon).rotation(360f).setDuration(1000).setListener(new AnimatorListenerAdapter() {
-                        
-                        @Override
-                        public void onAnimationStart(Animator animation) {
-                            appIcon.setEnabled(false);
-                        }
-
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            appIcon.setEnabled(true);
-                        }
-                    }).start();*/
-                }
-            });
-            
-            View view = rowContainer.findViewById(R.id.row_pkgname);
-            fillRow(view, getString(R.string.pkg_name), curAppInfo.packageName);
-
-            view = rowContainer.findViewById(R.id.row_version);
-            fillRow(view, getString(R.string.version), curAppInfo.versionName + " (" + curAppInfo.versionCode + ")");
-
-            view = rowContainer.findViewById(R.id.row_apk_info);
-            fillRow(view, getString(R.string.apk_info),
-                    curAppInfo.apkFilePath + "\n" + Utils.formatFileSize(curAppInfo.appRawSize));
-
-            view = rowContainer.findViewById(R.id.row_time_info);
-            fillRow(view, getString(R.string.last_updated_time),
-                    Utils.formatTimeDisplayFull(new Date(curAppInfo.lastModifiedRawTime)));
-
-            view = rowContainer.findViewById(R.id.row_activity);
-            if (appResolveInfo != null) {
-                fillRow(view, getString(R.string.activity), appResolveInfo.activityInfo.name);
-            } else {
-                fillRow(view, getString(R.string.activity), "");
-            }
-
-            view = rowContainer.findViewById(R.id.row_componement);
-            if (appResolveInfo != null) {
-                String componementStr = "";
-                ComponentName componentName = intent.getComponent();
-//                ComponentName componentName =
-//                        new ComponentName(appResolveInfo.activityInfo.applicationInfo.packageName,
-//                                appResolveInfo.activityInfo.name);
-                if (componentName != null) {
-                    componementStr = componentName.toString();
-                }
-                fillRow(view, getString(R.string.componement), componementStr);
-            } else {
-                fillRow(view, getString(R.string.componement), "");
-            }
-        }
+        
     }
 
     @Override
