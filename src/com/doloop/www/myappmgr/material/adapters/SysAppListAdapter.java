@@ -408,7 +408,7 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
                             {
                              //按住事件发生后执行代码的区域
                                 //v.setFocusable(true);
-                                appItemHolder.hoverMenu.setTextColor(mCtx.getResources().getColor(R.color.primary));
+                                appItemHolder.hoverMenu.setTextColor(mCtx.getResources().getColor(R.color.lt_gray));
                                 return true;
                             }
                             case MotionEvent.ACTION_MOVE:    
