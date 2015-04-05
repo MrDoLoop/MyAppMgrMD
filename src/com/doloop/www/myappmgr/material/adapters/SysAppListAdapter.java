@@ -260,10 +260,10 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
         SysAppListItem item = getItem(position);
         
         if(Utils.canLaunch(mCtx, item.appinfo)){
-            launchView.setVisibility(View.GONE);
+            launchView.setVisibility(View.VISIBLE);
         }
         else{
-            launchView.setVisibility(View.VISIBLE); 
+            launchView.setVisibility(View.GONE); 
         }
 
         final View hoverMenuCover = listItemView.findViewById(R.id.item_menu_cover);
