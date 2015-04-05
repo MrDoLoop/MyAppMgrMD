@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.TreeMap;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.text.Html;
@@ -26,6 +26,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.util.TypefaceHelper;
+import com.doloop.www.myappmgr.material.R;
 import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.fragments.SysAppsTabFragment;
 import com.doloop.www.myappmgr.material.interfaces.IconClickListener;
@@ -33,8 +34,8 @@ import com.doloop.www.myappmgr.material.interfaces.IhoverMenuClickListener;
 import com.doloop.www.myappmgr.material.interfaces.ItemMenuClickListener;
 import com.doloop.www.myappmgr.material.utils.Constants;
 import com.doloop.www.myappmgr.material.utils.SysAppListItem;
+import com.doloop.www.myappmgr.material.utils.Utils;
 import com.doloop.www.myappmgr.material.widgets.PinnedSectionListView.PinnedSectionListAdapter;
-import com.doloop.www.myappmgr.material.R;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Picasso.LoadedFrom;
 import com.squareup.picasso.Target;
@@ -258,10 +259,7 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
 
         SysAppListItem item = getItem(position);
         
-        Intent launchIntent = mCtx.getPackageManager().getLaunchIntentForPackage(
-                item.appinfo.packageName);
-        
-        if(launchIntent == null){
+        if(Utils.canLaunch(mCtx, item.appinfo)){
             launchView.setVisibility(View.GONE);
         }
         else{
@@ -397,6 +395,7 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
                 appItemHolder.hoverMenuCover = convertView.findViewById(R.id.item_menu_cover);
                 appItemHolder.hoverMenuCover.setOnTouchListener(new View.OnTouchListener() {
                     //为了使得 menu 的...变色，所以用了touch事件
+                    @SuppressLint("ClickableViewAccessibility")
                     @Override
                     public boolean onTouch(View v, MotionEvent event) {
                         
