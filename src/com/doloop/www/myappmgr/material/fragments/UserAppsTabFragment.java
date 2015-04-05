@@ -37,6 +37,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.doloop.slideexpandable.library.ActionSlideExpandableListView;
+import com.doloop.slideexpandable.library.IExpendButtonClickListener;
 import com.doloop.www.myappmgr.material.AppDetailActivity;
 import com.doloop.www.myappmgr.material.MainActivity;
 import com.doloop.www.myappmgr.material.adapters.UserAppListAdapter;
@@ -59,7 +60,8 @@ import com.nispok.snackbar.listeners.ActionClickListener;
 import de.greenrobot.event.EventBus;
 
 public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollListener,
-        UserAppMoreActionListItemClickListener, SelectionDialogClickListener,AdapterView.OnItemLongClickListener, IconClickListener {
+        UserAppMoreActionListItemClickListener, SelectionDialogClickListener,AdapterView.OnItemLongClickListener, IconClickListener, 
+        IExpendButtonClickListener {
 
     private static Context mContext;
     private UserAppListAdapter mAdapter;
@@ -448,6 +450,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
         mAdapter.setUserAppListDataSetChangedListener((UserAppListDataSetChangedListener) mContext);
         mActionSlideExpandableListView.setAdapter(mAdapter);
         mActionSlideExpandableListView.setEmptyView(mEmptyView);
+        mActionSlideExpandableListView.setOnExpendButtonClickListener(this);
         mDataSetObserver = new DataSetObserver() {
 
             @Override
@@ -943,6 +946,24 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                 break;
             default:
                 break;
+        }
+    }
+
+    @Override
+    public void OnExpendButtonClick(int position, boolean expand, View expendableArea) {
+        // TODO Auto-generated method stub
+        if(expand){
+            AppInfo appInfo = mAdapter.getItem(position);
+            View launchAction = expendableArea.findViewById(R.id.openActionLayout);
+            if(Utils.canLaunch(mContext, appInfo))
+            {
+                launchAction.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                launchAction.setVisibility(View.GONE);
+            }
+            
         }
     }
 

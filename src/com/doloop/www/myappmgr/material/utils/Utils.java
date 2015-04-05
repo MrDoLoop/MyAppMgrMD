@@ -71,6 +71,16 @@ import com.doloop.www.myappmgr.material.fragments.SortTypeDialogFragment;
 
 public class Utils {
 
+    public static boolean canLaunch(Context ctx, AppInfo appInfo){
+        Intent intent = ctx.getPackageManager().getLaunchIntentForPackage(appInfo.packageName);
+        if (intent != null) {
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    
     public static boolean launchApp(Context ctx, AppInfo appInfo) {
         Intent intent = ctx.getPackageManager().getLaunchIntentForPackage(appInfo.packageName);
         if (intent != null) {

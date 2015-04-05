@@ -52,6 +52,7 @@ class SlideExpandableListView extends ListView {
 	 * Important: This method call setOnItemClickListener, so the value will be reset
 	 */
 	public void enableExpandOnItemClick() {
+	    
 		this.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -60,8 +61,11 @@ class SlideExpandableListView extends ListView {
 			}
 		});
 	}
-
-
+	
+	public void setOnExpendButtonClickListener(IExpendButtonClickListener l){
+	    adapter.setOnExpendButtonClickListener(l);
+    }
+	
 //	@Override
 //	public Parcelable onSaveInstanceState() {
 //		if(adapter != null) return adapter.onSaveInstanceState(super.onSaveInstanceState());

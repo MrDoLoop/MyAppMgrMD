@@ -27,6 +27,13 @@ import com.nineoldandroids.view.ViewHelper;
  * @date 6/9/12 4:41 PM
  */
 public abstract class AbstractSlideExpandableListAdapter extends WrapperListAdapterImpl {
+    
+    private IExpendButtonClickListener mIExpendButtonClickListener;
+    
+    public void setOnExpendButtonClickListener(IExpendButtonClickListener l){
+        mIExpendButtonClickListener = l;
+    }
+    
     /**
      * Reference to the last expanded list item. Since lists are recycled this might be null if though there is an
      * expanded list item
@@ -207,7 +214,7 @@ public abstract class AbstractSlideExpandableListAdapter extends WrapperListAdap
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-
+               
                 Animation a = target.getAnimation();
 
                 if (a != null && a.hasStarted() && !a.hasEnded()) {
@@ -235,6 +242,15 @@ public abstract class AbstractSlideExpandableListAdapter extends WrapperListAdap
                             target.getVisibility() == View.VISIBLE ? ExpandCollapseAnimation.COLLAPSE
                                     : ExpandCollapseAnimation.EXPAND;
 
+                    if(mIExpendButtonClickListener != null){
+                        if(type == ExpandCollapseAnimation.EXPAND){
+                            mIExpendButtonClickListener.OnExpendButtonClick(position, true, target);
+                        }
+                        else{
+                            mIExpendButtonClickListener.OnExpendButtonClick(position, false, target);
+                        }
+                    }
+                    
                     // remember the state
                     if (type == ExpandCollapseAnimation.EXPAND) {
                         openItems.set(position, true);
