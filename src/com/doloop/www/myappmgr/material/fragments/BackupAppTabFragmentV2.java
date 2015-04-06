@@ -48,6 +48,7 @@ import com.doloop.www.myappmgr.material.events.ActionModeToggleEvent;
 import com.doloop.www.myappmgr.material.events.AppBackupSuccEvent;
 import com.doloop.www.myappmgr.material.events.ViewNewBackupAppEvent;
 import com.doloop.www.myappmgr.material.fragments.SelectionDialogFragment.SelectionDialogClickListener;
+import com.doloop.www.myappmgr.material.interfaces.IPopupMenuClickListener;
 import com.doloop.www.myappmgr.material.interfaces.IconClickListener;
 import com.doloop.www.myappmgr.material.utils.BackupAppListLoader;
 import com.doloop.www.myappmgr.material.utils.BackupAppListLoader.LoaderBckgrdIsAboutToDeliverListener;
@@ -64,7 +65,7 @@ import de.greenrobot.event.EventBus;
 
 public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.LoaderCallbacks<ArrayList<AppInfo>>,
         ListView.OnScrollListener, IconClickListener,AdapterView.OnItemLongClickListener,
-        LoaderBckgrdIsAboutToDeliverListener,SelectionDialogClickListener {
+        LoaderBckgrdIsAboutToDeliverListener,SelectionDialogClickListener, IPopupMenuClickListener {
     private static BackupAppTabFragmentV2 uniqueInstance = null;
     private static Context mContext;
     private ListView mListView;
@@ -216,7 +217,7 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
         mListView.setOnItemLongClickListener(this);
         mListView.setOnScrollListener(this);
         
-        mAdapter = new BackupAppListAdapterV2(mContext, mAppList,BackupAppTabFragmentV2.this);
+        mAdapter = new BackupAppListAdapterV2(mContext, mAppList,BackupAppTabFragmentV2.this,BackupAppTabFragmentV2.this);
         mListView.setAdapter(mAdapter);
 
         return FragmentView;
@@ -975,6 +976,32 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
                     // TODO Auto-generated method stub
                     MainActivity.sActionMode.finish();
                 }}, 500);
+        }
+    }
+
+    @Override
+    public void OnPopupMenuClick(int menuListPos, int appListPos, AppInfo appInfo) {
+        // TODO Auto-generated method stub
+        switch (menuListPos){
+            case 0://install
+                if (TextUtils.isEmpty(appInfo.backupFilePath)) {
+                    Utils.installAPK(getActivity(), appInfo.apkFilePath);
+                } else {
+                    Utils.installAPK(getActivity(), appInfo.backupFilePath);
+                }
+                break;
+            case 1:
+                View childView = mListView.getChildAt(appListPos - mListView.getFirstVisiblePosition());
+                if(childView != null){
+                    runDeleteItemAni(childView ,appListPos);
+                }
+                break;
+            case 2://market search
+                Utils.startMarketSearch(getActivity(), appInfo);
+                break;  
+            case 3://send
+                Utils.chooseSendByApp(getActivity(), Uri.parse("file://" + appInfo.apkFilePath));
+                break;
         }
     }
     
