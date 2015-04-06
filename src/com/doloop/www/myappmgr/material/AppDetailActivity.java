@@ -2,6 +2,8 @@ package com.doloop.www.myappmgr.material;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.ComponentName;
@@ -29,10 +31,12 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.events.AppBackupSuccEvent;
 import com.doloop.www.myappmgr.material.events.AppUpdateEvent;
 import com.doloop.www.myappmgr.material.filtermenu.FilterMenu;
+import com.doloop.www.myappmgr.material.filtermenu.FilterMenuItemWapper;
 import com.doloop.www.myappmgr.material.filtermenu.FilterMenuLayout;
 import com.doloop.www.myappmgr.material.swipeback.lib.SwipeBackActivity;
 import com.doloop.www.myappmgr.material.utils.Constants;
@@ -52,6 +56,7 @@ import com.nineoldandroids.view.ViewPropertyAnimator;
 import com.nispok.snackbar.Snackbar;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.readystatesoftware.systembartint.SystemBarTintManager.SystemBarConfig;
+
 import de.greenrobot.event.EventBus;
 
 //http://frogermcs.github.io/InstaMaterial-concept-part-6-user-profile/
@@ -70,16 +75,32 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
     private ImageView appIcon;
     private View rootFrame;
     private boolean isBlockedScrollView = false;
-    private static final int OPEN_ACTION = 0;
-    private static final int INFO_ACTION = 1;
-    private static final int BACKUP_ACTION = 2;
-    private static final int SEND_ACTION = 3;
-    private static final int UNINSTALL_ACTION = 4;
+//    private static final int OPEN_ACTION = 0;
+//    private static final int INFO_ACTION = 1;
+//    private static final int BACKUP_ACTION = 2;
+//    private static final int SEND_ACTION = 3;
+//    private static final int UNINSTALL_ACTION = 4;
+
+    private static final String OPEN_ACTION = "OPEN_ACTION";
+    private static final String INFO_ACTION = "INFO_ACTION";
+    private static final String BACKUP_ACTION = "BACKUP_ACTION";
+    private static final String SEND_ACTION = "SEND_ACTION";
+    private static final String UNINSTALL_ACTION = "UNINSTALL_ACTION";
+    private static final String DELETE_ACTION = "DELETE_ACTION";
+    private static final String INSTALL_ACTION = "INSTALL_ACTION";
+    
     
     public static final String REVEAL_START_POSITION = "REVEAL_START_POSITION";
     
     private boolean playStartAni = true;
     private boolean canLaunch = false;
+    
+    public static final String APP_TYPE = "APP_TYPE";
+    public static final int APP_TYPE_USER = 0;
+    public static final int APP_TYPE_SYS = 1;
+    public static final int APP_TYPE_BACKUP = 2;
+    private int curAppType = 0;
+    
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @SuppressLint("ClickableViewAccessibility")
@@ -89,6 +110,8 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
         setContentView(R.layout.activity_app_details);
         
         EventBus.getDefault().register(this);
+        
+        curAppType = getIntent().getIntExtra(APP_TYPE, APP_TYPE_USER);
         
         playStartAni = Utils.playAniAppDetails(this);
         
@@ -112,11 +135,6 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
         shadowView = this.findViewById(R.id.shadow);
         Utils.setBackgroundDrawable(shadowView, shadow);
         //ViewHelper.setAlpha(shadowView, 0f);
-       
-        
-        //强制使reveal填满屏幕，如果内容不够长，reveal只有屏幕的一点
-//        revealView.getLayoutParams().height = Utils.getScreenHeight(this);
-//        revealView.requestLayout();
 
         if(playStartAni){
             //默认是从屏幕中心开始
@@ -339,9 +357,6 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
             if (appResolveInfo != null) {
                 String componementStr = "";
                 ComponentName componentName = intent.getComponent();
-//                ComponentName componentName =
-//                        new ComponentName(appResolveInfo.activityInfo.applicationInfo.packageName,
-//                                appResolveInfo.activityInfo.name);
                 if (componentName != null) {
                     componementStr = componentName.toString();
                 }
@@ -353,20 +368,141 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
         
         menuLayout = (FilterMenuLayout) findViewById(R.id.menu);
         FilterMenu.Builder menuBuilder = new FilterMenu.Builder(this);
-        if(canLaunch){
-            menuBuilder.addItem(R.drawable.play_white);
+        buildActionMenu(menuBuilder);
+        menuBuilder.attach(menuLayout);
+        menuBuilder.build();
+        
+    }
+    
+    private void buildActionMenu(FilterMenu.Builder menuBuilder){
+        ArrayList<FilterMenuItemWapper> itemsWapper = new ArrayList<FilterMenuItemWapper>();
+        switch (curAppType){
+            case APP_TYPE_USER:
+                if(canLaunch){
+                    itemsWapper.add(new FilterMenuItemWapper(R.drawable.play_white, OPEN_ACTION));
+                }
+                itemsWapper.add(new FilterMenuItemWapper(R.drawable.delete_white2, UNINSTALL_ACTION));
+                itemsWapper.add(new FilterMenuItemWapper(R.drawable.info_white, INFO_ACTION));
+                itemsWapper.add(new FilterMenuItemWapper(R.drawable.backup_white, BACKUP_ACTION));
+                itemsWapper.add(new FilterMenuItemWapper(R.drawable.send_white, SEND_ACTION));
+                break;
+            case APP_TYPE_SYS:
+                if(canLaunch){
+                    itemsWapper.add(new FilterMenuItemWapper(R.drawable.play_white, OPEN_ACTION));
+                }
+                itemsWapper.add(new FilterMenuItemWapper(R.drawable.info_white, INFO_ACTION));
+                itemsWapper.add(new FilterMenuItemWapper(R.drawable.backup_white, BACKUP_ACTION));
+                itemsWapper.add(new FilterMenuItemWapper(R.drawable.send_white, SEND_ACTION));
+                break;
+            case APP_TYPE_BACKUP:
+                itemsWapper.add(new FilterMenuItemWapper(R.drawable.play_white, INSTALL_ACTION));
+                itemsWapper.add(new FilterMenuItemWapper(R.drawable.delete_white2, DELETE_ACTION));
+                itemsWapper.add(new FilterMenuItemWapper(R.drawable.send_white, SEND_ACTION));
+                break;  
         }
-        menuBuilder.addItem(R.drawable.info_white)
-                .addItem(R.drawable.backup_white).addItem(R.drawable.send_white).attach(menuLayout)
-                .withListener(new FilterMenu.OnMenuChangeListener() {
+        menuBuilder.addItemList(itemsWapper);
+        
+        menuBuilder.withListener(new FilterMenu.OnMenuChangeListener() {
 
                     @Override
-                    public void onMenuItemClick(View view, int position) {
-                        if(!canLaunch){
-                            position = position + 1;
+                    public void onMenuItemClick(View view, int position, FilterMenuItemWapper itemWapper) {
+                       if(itemWapper.MenuTag.equalsIgnoreCase(OPEN_ACTION)) {
+                           if (Constants.MY_PACKAGE_NAME.equals(curAppInfo.packageName))// 避免再次启动自己app
+                           {
+                               MainActivity.T("You catch me!! NAN Made app");
+                           } else {
+                               Intent intent = getPackageManager().getLaunchIntentForPackage(
+                                       curAppInfo.packageName);
+                               if (intent != null) {
+                                   try {
+                                       startActivity(intent);
+                                   } catch (Exception e) {
+                                       MainActivity.T(R.string.launch_fail);
+                                   }
+                               } else {
+                                   MainActivity.T(R.string.launch_fail);
+                               }
+                           }
+                       }
+                       else if(itemWapper.MenuTag.equalsIgnoreCase(INFO_ACTION)) {
+                           Utils.showInstalledAppDetails(AppDetailActivity.this, curAppInfo.packageName);
+                       }
+                       else if(itemWapper.MenuTag.equalsIgnoreCase(UNINSTALL_ACTION)) {
+                           Uri packageUri = Uri.parse("package:" + curAppInfo.packageName);
+                           Intent uninstallIntent;
+                           if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                               uninstallIntent = new Intent(Intent.ACTION_DELETE, packageUri);
+                           } else {
+                               uninstallIntent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE, packageUri);
+                           }
+                           startActivity(uninstallIntent);            
+                       }
+                       else if(itemWapper.MenuTag.equalsIgnoreCase(BACKUP_ACTION)) {
+                           String mBackUpFolder = Utils.getBackUpAPKfileDir(AppDetailActivity.this);
+                           String sdAPKfileName = Utils.BackupApp(curAppInfo, mBackUpFolder);
+                           if (sdAPKfileName != null) {
+                               // MainActivity.T(R.string.backup_success);
+                               SpannableString spanString =
+                                       new SpannableString(curAppInfo.appName + " "
+                                               + getString(R.string.backup_success));
+                               spanString.setSpan(new UnderlineSpan(), 0, curAppInfo.appName.length(),
+                                       Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                               spanString.setSpan(
+                                       new ForegroundColorSpan(getResources().getColor(
+                                               R.color.theme_blue_light)), 0, curAppInfo.appName.length(),
+                                       Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                               Snackbar mSnackbar = MainActivity.getSnackbar(false);
+                               boolean mAniText = false;
+                               boolean mShowAniSnackBar = true;
+                               if (mSnackbar != null) {
+                                   if (mSnackbar.isShowing()) {
+                                       if (!spanString.toString().equalsIgnoreCase(mSnackbar.getText().toString())) {
+                                           mAniText = true;
+                                       }
+                                       mShowAniSnackBar = false;
+                                       mSnackbar.dismissAnimation(false);
+                                       mSnackbar.dismiss();
+                                   }
+                                   mSnackbar = MainActivity.getSnackbar(true);
+                               }
+                               mSnackbar.swipeToDismiss(false).showAnimation(mShowAniSnackBar)
+                                       .dismissAnimation(true).animationText(mAniText)
+                                       .duration(Snackbar.SnackbarDuration.LENGTH_SHORT)
+                                       .text(spanString);
+                               mSnackbar.show(AppDetailActivity.this);
+
+                               EventBus.getDefault().post(new AppBackupSuccEvent(curAppInfo));
+                           }
+                           else {
+                               MainActivity.T(R.string.error);
+                           }
+                       }
+                        else if(itemWapper.MenuTag.equalsIgnoreCase(SEND_ACTION)) {
+                            String BACK_UP_FOLDER = Utils.getBackUpAPKfileDir(AppDetailActivity.this);
+                            String sdApkfileName = Utils.BackupApp(curAppInfo, BACK_UP_FOLDER);
+                            if (sdApkfileName != null) {
+                                ArrayList<AppInfo> list = new ArrayList<AppInfo>();
+                                list.add(curAppInfo);
+                                EventBus.getDefault().post(new AppBackupSuccEvent(list));
+                                Utils.chooseSendByApp(AppDetailActivity.this, Uri.parse("file://" + sdApkfileName));
+                            } else {
+                                MainActivity.T(R.string.error);
+                            }
                         }
-                        
-                        switch (position) {
+                        else if(itemWapper.MenuTag.equalsIgnoreCase(INSTALL_ACTION)) {
+                              if (TextUtils.isEmpty(curAppInfo.backupFilePath)) {
+                                  Utils.installAPK(AppDetailActivity.this, curAppInfo.apkFilePath);
+                              } else {
+                                  Utils.installAPK(AppDetailActivity.this, curAppInfo.backupFilePath);
+                              }
+                        }
+                        else if(itemWapper.MenuTag.equalsIgnoreCase(DELETE_ACTION)) {
+                            
+                        }
+                       
+                       /* 
+                        switch (itemWapper.MenuTag) {
                             case OPEN_ACTION://启动
                                 if (Constants.MY_PACKAGE_NAME.equals(curAppInfo.packageName))// 避免再次启动自己app
                                 {
@@ -451,7 +587,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                                     MainActivity.T(R.string.error);
                                 }
                                 break;
-                        }
+                        }*/
                     }
 
                     @Override
@@ -464,15 +600,10 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
 
                     }
                 });
-        
-        if(!curAppInfo.isSysApp){//不是系统app添加uninstall
-            menuBuilder.addItem(R.drawable.delete_white2);
-        }
-        
-        menuBuilder.build();
-        
     }
-
+    
+    
+    
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
