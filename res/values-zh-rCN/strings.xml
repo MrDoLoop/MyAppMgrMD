@@ -12,6 +12,7 @@
 	<string name="info">信息</string>
 	<string name="backup">备份</string>
 	<string name="delete">删除</string>
+	<string name="install">安装</string>
 	<string name="backup_success">备份成功</string>
 	<string name="uninstall">卸载</string>
 	<string name="no_enough_space">没有足够的空间</string>

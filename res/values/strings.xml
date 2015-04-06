@@ -13,6 +13,7 @@
     <string name="info">Info</string>
     <string name="backup">Backup</string>
     <string name="delete">Delete</string>
+    <string name="install">Install</string>
     <string name="backup_success">Backup success</string>
     <string name="uninstall">Uninstall</string>
     <string name="no_enough_space">No enough space</string>
