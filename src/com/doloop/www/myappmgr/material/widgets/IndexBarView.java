@@ -52,6 +52,7 @@ public class IndexBarView extends LinearLayout {
     private int singleIndexHeight = 0;
     private boolean doReset = false;
     private int selectItemTextColor = getResources().getColor(R.color.theme_blue_light);
+    private int noneExistPopupTextColor = getResources().getColor(R.color.white3);
     private int normalTextColor = Color.LTGRAY;
     private int existItemTextColor = Color.BLACK;
     private ArrayList<String> existedIndexArray = new ArrayList<String>();
@@ -209,7 +210,14 @@ public class IndexBarView extends LinearLayout {
             handler.removeCallbacks(dismissRunnable);
             mPopView.clearAnimation();
             mPopView.setVisibility(View.VISIBLE);
-            ((TextView) mPopView).setText(mIndexArray[item]);
+            TextView popTv = (TextView) mPopView;
+            if(existedIndexArray.contains(mIndexArray[item])){
+                popTv.setTextColor(Color.WHITE);
+            }
+            else{
+                popTv.setTextColor(noneExistPopupTextColor);
+            }
+            popTv.setText(mIndexArray[item]);
             return;
         }
 
