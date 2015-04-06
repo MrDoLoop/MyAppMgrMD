@@ -3,25 +3,35 @@ package com.doloop.www.myappmgr.material.adapters;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.support.v7.app.ActionBar.LayoutParams;
+import android.support.v7.widget.ListPopupWindow;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.util.TypefaceHelper;
 import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.fragments.BackupAppTabFragmentV2;
 import com.doloop.www.myappmgr.material.interfaces.IconClickListener;
 import com.doloop.www.myappmgr.material.utils.Constants;
 import com.doloop.www.myappmgr.material.utils.Utils;
 import com.doloop.www.myappmgr.material.widgets.RoundCornerProgressBar;
+import com.doloop.www.myappmgr.material.MainActivity;
 import com.doloop.www.myappmgr.material.R;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
@@ -273,7 +283,7 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
         AppInfo appInfo = mAppListDisplay.get(position);
 
         int viewType = getItemViewType(position);
-        ItemViewHolder itemHolder;
+        final ItemViewHolder itemHolder;
         HeaderViewHolder headerHolder;
 
         if (viewType == TYPE_HEADER) {
@@ -359,6 +369,54 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
                 itemHolder.AppIconImageView.setOnClickListener(this);
                 itemHolder.RootLayout = (RelativeLayout) convertView.findViewById(R.id.rootLayout);
                 itemHolder.needInflate = false;
+                itemHolder.itemMenu = (TextView) convertView.findViewById(R.id.item_menu);
+                String menuTxt = itemHolder.itemMenu.getText().toString();
+                itemHolder.itemMenu.setText(Html.fromHtml("<sup>"+menuTxt+"</sup>"));
+                itemHolder.itemMenu.setTypeface(TypefaceHelper.get(mCtx, "RobotoMedium"));
+                itemHolder.itemMenu.setOnClickListener(this);
+                itemHolder.hoverMenuCover = convertView.findViewById(R.id.item_menu_cover);
+                itemHolder.hoverMenuCover.setOnTouchListener(new View.OnTouchListener() {
+                    //为了使得 menu 的...变色，所以用了touch事件
+                    @SuppressLint("ClickableViewAccessibility")
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        
+                        // TODO Auto-generated method stub
+//                        View listItem = (View)v.getParent();
+//                        TextView hoverMenu = (TextView) listItem.findViewById(R.id.item_menu);
+                        
+                        switch (event.getAction()) {
+                            case MotionEvent.ACTION_DOWN:
+                            {
+                             //按住事件发生后执行代码的区域
+                                //v.setFocusable(true);
+                                itemHolder.itemMenu.setTextColor(mCtx.getResources().getColor(R.color.lt_gray));
+                                return true;
+                            }
+                            case MotionEvent.ACTION_MOVE:    
+                            {
+                             //移动事件发生后执行代码的区域
+                                return true;
+                            }
+                            case MotionEvent.ACTION_CANCEL:
+                            {
+                                itemHolder.itemMenu.setTextColor(mCtx.getResources().getColor(R.color.secondary_text));
+                                break;
+                            }
+                            case MotionEvent.ACTION_UP:
+                            {
+                             //松开事件发生后执行代码的区域
+                                //v.requestFocus();
+                                itemHolder.itemMenu.performClick();
+                                itemHolder.itemMenu.setTextColor(mCtx.getResources().getColor(R.color.secondary_text));
+                                //v.setFocusable(false);
+                                return true;
+                             
+                            }
+                        }
+                        return true;
+                    }
+                });
                 /*itemHolder.RootLayout.setOnClickListener(new View.OnClickListener() {
 
                     @Override
@@ -399,6 +457,7 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
             convertView.clearAnimation();
             itemHolder.AppIconImageView.setTag(position);
             itemHolder.RootLayout.setTag(position);
+            itemHolder.itemMenu.setTag(position);
             
             if (BackupAppTabFragmentV2.isInActoinMode) {
                 itemHolder.AppIconImageView.setOnClickListener(null);
@@ -429,6 +488,8 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
         TextView AppFileNameTextView;
         ImageView AppIconImageView;
         RelativeLayout RootLayout;
+        TextView itemMenu;
+        View hoverMenuCover;
         public boolean needInflate;
 
         @Override
@@ -480,8 +541,35 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
     @Override
     public void onClick(View v) {
         // TODO Auto-generated method stub
-        int pos = (Integer) v.getTag();
-        mIconClickListener.OnIconClick(pos);
+        int viewId = v.getId();
+        if(viewId == R.id.app_icon){
+            int pos = (Integer) v.getTag();
+            mIconClickListener.OnIconClick(pos);
+        }
+        else if(viewId == R.id.item_menu){
+            int pos = (Integer) v.getTag();
+            
+            final ListPopupWindow mListPopupWindow = new ListPopupWindow(mCtx);
+            final String itmes[]={mCtx.getString(R.string.install),mCtx.getString(R.string.delete),
+                    mCtx.getString(R.string.google_play),mCtx.getString(R.string.send)};
+            //mListPopupWindow.setAdapter(new ArrayAdapter<String>(mCtx, android.R.layout.simple_list_item_1, itmes));
+            mListPopupWindow.setAdapter(new ArrayAdapter<String>(mCtx, R.layout.popup_menu_item, itmes));
+            //ListPopupWindowAdapter adapter = new ListPopupWindowAdapter(mCtx,itmes);
+            //mListPopupWindow.setAdapter(adapter);
+            mListPopupWindow.setOnItemClickListener(new OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> arg0, View arg1, int position,long arg3) {
+                    mListPopupWindow.dismiss();
+                    MainActivity.T(itmes[position]);
+                }
+              });
+            mListPopupWindow.setAnchorView(v);
+            mListPopupWindow.setWidth(300);
+            mListPopupWindow.setHeight(LayoutParams.WRAP_CONTENT);
+            mListPopupWindow.setModal(false);
+            mListPopupWindow.show();
+        }
+        
         /*AppInfo appInfo = null;
         try {// 因为添加了动画，点击过快的话，删除动画还没有完成，此处就崩溃了
             appInfo = mAppListDisplay.get(pos);
