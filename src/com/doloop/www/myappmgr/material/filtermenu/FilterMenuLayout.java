@@ -352,7 +352,7 @@ public class FilterMenuLayout extends ViewGroup{
                     if(menu!=null){
                         if(menu.getListener()!=null) {
                             collapse(true);
-                            menu.getListener().onMenuItemClick(touchedItem.getView(), touchedItem.getPosition());
+                            menu.getListener().onMenuItemClick(touchedItem.getView(), touchedItem.getPosition(), menu.getFilterMenuItemWapper(touchedItem.getPosition()));
                         }
                     }
                     touchedItem.getView().setPressed(false);
