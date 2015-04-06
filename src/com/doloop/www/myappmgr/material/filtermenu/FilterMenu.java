@@ -20,6 +20,8 @@ import com.nineoldandroids.view.ViewHelper;
 public class FilterMenu  implements IMenu{
 
     private List<Item> items = new ArrayList<Item>();
+    private List<FilterMenuItemWapper> itemsWapper = new ArrayList<FilterMenuItemWapper>();
+    
     private OnMenuChangeListener listener;
     private FilterMenuLayout layout;
 //    /**
@@ -50,7 +52,7 @@ public class FilterMenu  implements IMenu{
                         if(layout!=null){
                             layout.collapse(true);
                         }
-                        getListener().onMenuItemClick(item.getView(), item.getPosition());
+                        getListener().onMenuItemClick(item.getView(), item.getPosition(), itemsWapper.get(item.getPosition()));
                     }
                 }
             });
@@ -85,14 +87,24 @@ public class FilterMenu  implements IMenu{
     public void setItems(List<Item> items) {
         this.items = items;
     }
+    
+    public void setItemsWapper(List<FilterMenuItemWapper> itemsWapper) {
+        this.itemsWapper = itemsWapper;
+    }
+    
+    public FilterMenuItemWapper getFilterMenuItemWapper(int position){
+        return itemsWapper.get(position);
+    }
 
     public static interface OnMenuChangeListener{
-        void onMenuItemClick(View view, int position);
+        void onMenuItemClick(View view, int position, FilterMenuItemWapper itemWapper);
         void onMenuCollapse();
         void onMenuExpand();
     }
     public static class Builder{
         private List<Item> items = new ArrayList<Item>();
+        private List<FilterMenuItemWapper> itemsWapper = new ArrayList<FilterMenuItemWapper>();
+        
         OnMenuChangeListener listener;
         private Context ctx;
         private LayoutInflater inflater;
@@ -130,7 +142,15 @@ public class FilterMenu  implements IMenu{
 
             return this;
         }
-
+        
+        public Builder addItemList(ArrayList<FilterMenuItemWapper> list){
+            for(FilterMenuItemWapper filterMenuItem : list){
+                addItem(filterMenuItem.IconResId);
+            }
+            itemsWapper = list;
+            return this;
+        }
+        
         public Builder attach(FilterMenuLayout view){
             this.layout = view;
             return this;
@@ -139,6 +159,7 @@ public class FilterMenu  implements IMenu{
         public FilterMenu build() {
             FilterMenu menu = new FilterMenu();
             menu.setItems(items);
+            menu.setItemsWapper(itemsWapper);
             menu.setListener(this.listener);
             menu.setMenuLayout(this.layout);
             return menu;
