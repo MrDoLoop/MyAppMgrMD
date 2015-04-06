@@ -10,6 +10,7 @@ import org.apache.commons.io.FileUtils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
@@ -37,6 +38,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.doloop.www.myappmgr.material.AppDetailActivity;
 import com.doloop.www.myappmgr.material.MainActivity;
 import com.doloop.www.myappmgr.material.adapters.BackupAppListAdapterV2;
 import com.doloop.www.myappmgr.material.adapters.BackupAppListAdapterV2.BackupAppListDataSetChangedListener;
@@ -692,11 +694,25 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
                 mAdapter.toggleSelection(position, true);
                 updateActionModeTitle();
             } else {
-                if (TextUtils.isEmpty(item.backupFilePath)) {
-                    Utils.installAPK(getActivity(), item.apkFilePath);
-                } else {
-                    Utils.installAPK(getActivity(), item.backupFilePath);
+              //启动详情页的
+                AppDetailActivity.curAppInfo = item;
+                Intent intent = new Intent(getActivity(), AppDetailActivity.class);
+                if(Utils.playAniAppDetails(getActivity())){
+                    int[] revealStartPos = Utils.findViewCenterXY(v);
+                    intent.putExtra(AppDetailActivity.REVEAL_START_POSITION, revealStartPos);
+                    intent.putExtra(AppDetailActivity.APP_TYPE, AppDetailActivity.APP_TYPE_BACKUP);
+                    startActivity(intent);
+                    getActivity().overridePendingTransition(0, 0);
                 }
+                else{
+                    Utils.startActivtyWithAni(getActivity(), intent);
+                }
+                //安装app
+//                if (TextUtils.isEmpty(item.backupFilePath)) {
+//                    Utils.installAPK(getActivity(), item.apkFilePath);
+//                } else {
+//                    Utils.installAPK(getActivity(), item.backupFilePath);
+//                }
             }
         } else {
             MainActivity.T("BackupApp Item " + position);
