@@ -27,11 +27,11 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.util.TypefaceHelper;
 import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.fragments.BackupAppTabFragmentV2;
+import com.doloop.www.myappmgr.material.interfaces.IPopupMenuClickListener;
 import com.doloop.www.myappmgr.material.interfaces.IconClickListener;
 import com.doloop.www.myappmgr.material.utils.Constants;
 import com.doloop.www.myappmgr.material.utils.Utils;
 import com.doloop.www.myappmgr.material.widgets.RoundCornerProgressBar;
-import com.doloop.www.myappmgr.material.MainActivity;
 import com.doloop.www.myappmgr.material.R;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
@@ -52,8 +52,8 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
 
     private int selectedCnt = 0;
     
-    public IconClickListener mIconClickListener;
-    
+    private IconClickListener mIconClickListener;
+    private IPopupMenuClickListener mIPopupMenuClickListener;
     /*
      * private DisplayImageOptions options = new DisplayImageOptions.Builder()
      * .showImageOnLoading(R.drawable.backupapp_holder) .cacheInMemory(true) .cacheOnDisk(false)
@@ -182,12 +182,13 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
 
     }
 
-    public BackupAppListAdapterV2(Context ctx, ArrayList<AppInfo> appList,IconClickListener l) {
+    public BackupAppListAdapterV2(Context ctx, ArrayList<AppInfo> appList,IconClickListener l1, IPopupMenuClickListener l2) {
         appList.add(0, AppInfo.DUMMY_APPINFO);
         mIsDataInit = false;
         mAppListFull = mAppListDisplay = appList;
         mCtx = ctx;
-        mIconClickListener = l;
+        mIconClickListener = l1;
+        mIPopupMenuClickListener = l2;
     }
 
     public void setDataSource(ArrayList<AppInfo> appList) {
@@ -460,6 +461,8 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
             itemHolder.itemMenu.setTag(position);
             
             if (BackupAppTabFragmentV2.isInActoinMode) {
+                itemHolder.itemMenu.setVisibility(View.GONE);
+                itemHolder.hoverMenuCover.setVisibility(View.GONE);
                 itemHolder.AppIconImageView.setOnClickListener(null);
                 itemHolder.AppIconImageView.setClickable(false);
                 itemHolder.AppIconImageView.setBackgroundResource(R.drawable.imageview_border_orange);
@@ -471,6 +474,8 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
                     //holder.AppIconImageView.setBackgroundResource(R.drawable.user_app_icon_bg);
                 }
             } else {
+                itemHolder.itemMenu.setVisibility(View.VISIBLE);
+                itemHolder.hoverMenuCover.setVisibility(View.VISIBLE);
                 itemHolder.AppIconImageView.setOnClickListener(this);
                 itemHolder.AppIconImageView.setClickable(true);
                 itemHolder.RootLayout.setBackgroundResource(R.drawable.list_row_item_bg);
@@ -547,7 +552,7 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
             mIconClickListener.OnIconClick(pos);
         }
         else if(viewId == R.id.item_menu){
-            int pos = (Integer) v.getTag();
+            final int pos = (Integer) v.getTag();
             
             final ListPopupWindow mListPopupWindow = new ListPopupWindow(mCtx);
             final String itmes[]={mCtx.getString(R.string.install),mCtx.getString(R.string.delete),
@@ -560,7 +565,7 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
                 @Override
                 public void onItemClick(AdapterView<?> arg0, View arg1, int position,long arg3) {
                     mListPopupWindow.dismiss();
-                    MainActivity.T(itmes[position]);
+                    mIPopupMenuClickListener.OnPopupMenuClick(position, pos, mAppListDisplay.get(pos));
                 }
               });
             mListPopupWindow.setAnchorView(v);
