@@ -40,12 +40,14 @@ import android.widget.TextView;
 
 import com.doloop.www.myappmgr.material.AppDetailActivity;
 import com.doloop.www.myappmgr.material.MainActivity;
+import com.doloop.www.myappmgr.material.R;
 import com.doloop.www.myappmgr.material.adapters.BackupAppListAdapterV2;
 import com.doloop.www.myappmgr.material.adapters.BackupAppListAdapterV2.BackupAppListDataSetChangedListener;
 import com.doloop.www.myappmgr.material.adapters.BackupAppListAdapterV2.ItemViewHolder;
 import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.events.ActionModeToggleEvent;
 import com.doloop.www.myappmgr.material.events.AppBackupSuccEvent;
+import com.doloop.www.myappmgr.material.events.BackupAppDeletedEvent;
 import com.doloop.www.myappmgr.material.events.ViewNewBackupAppEvent;
 import com.doloop.www.myappmgr.material.fragments.SelectionDialogFragment.SelectionDialogClickListener;
 import com.doloop.www.myappmgr.material.interfaces.IPopupMenuClickListener;
@@ -53,11 +55,8 @@ import com.doloop.www.myappmgr.material.interfaces.IconClickListener;
 import com.doloop.www.myappmgr.material.utils.BackupAppListLoader;
 import com.doloop.www.myappmgr.material.utils.BackupAppListLoader.LoaderBckgrdIsAboutToDeliverListener;
 import com.doloop.www.myappmgr.material.utils.Utils;
-import com.doloop.www.myappmgr.material.R;
 import com.nineoldandroids.animation.Animator;
-import com.nineoldandroids.animation.Animator.AnimatorListener;
 import com.nineoldandroids.animation.AnimatorListenerAdapter;
-import com.nineoldandroids.animation.ValueAnimator;
 import com.nineoldandroids.view.ViewHelper;
 import com.nineoldandroids.view.ViewPropertyAnimator;
 
@@ -353,11 +352,19 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
         mAdapter.filterList(str);
     }
 
+    public void onEventMainThread(BackupAppDeletedEvent ev){
+//        int pos = Utils.isAppInfoInList(ev.mAppInfo, mAppList);
+//        if(pos != -1){
+//            mAppList.remove(pos);
+//        }
+        mAppList.remove(ev.mAppInfo);
+        mAdapter.notifyDataSetChanged();
+    }
+    
     public void onEventMainThread(ViewNewBackupAppEvent ev) {
         if(newBackupAppPos != -1){
             mListView.setSelection(newBackupAppPos);
 
-            
             mHandler.postDelayed(new Runnable(){
                 @Override
                 public void run() {
@@ -850,7 +857,7 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
     }
     
     
-    private void performDismiss(final View dismissView, final int dismissPosition) {
+    /*private void performDismiss(final View dismissView, final int dismissPosition) {
         final ViewGroup.LayoutParams lp = dismissView.getLayoutParams();//锟斤拷取item锟侥诧拷锟街诧拷锟斤拷
         final int originalHeight = dismissView.getHeight();//item锟侥高讹拷
 
@@ -901,7 +908,7 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
             }
         });
 
-    }
+    }*/
 
 
 
