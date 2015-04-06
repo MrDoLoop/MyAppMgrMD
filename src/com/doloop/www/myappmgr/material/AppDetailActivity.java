@@ -2,8 +2,6 @@ package com.doloop.www.myappmgr.material;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.ComponentName;
@@ -374,6 +372,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
         
     }
     
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     private void buildActionMenu(FilterMenu.Builder menuBuilder){
         ArrayList<FilterMenuItemWapper> itemsWapper = new ArrayList<FilterMenuItemWapper>();
         switch (curAppType){
