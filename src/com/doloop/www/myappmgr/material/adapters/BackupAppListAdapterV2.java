@@ -25,6 +25,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.util.TypefaceHelper;
+import com.doloop.www.myappmgr.material.R;
 import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.fragments.BackupAppTabFragmentV2;
 import com.doloop.www.myappmgr.material.interfaces.IPopupMenuClickListener;
@@ -32,7 +33,6 @@ import com.doloop.www.myappmgr.material.interfaces.IconClickListener;
 import com.doloop.www.myappmgr.material.utils.Constants;
 import com.doloop.www.myappmgr.material.utils.Utils;
 import com.doloop.www.myappmgr.material.widgets.RoundCornerProgressBar;
-import com.doloop.www.myappmgr.material.R;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.squareup.picasso.Picasso;
@@ -558,7 +558,8 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
             final String itmes[]={mCtx.getString(R.string.install),mCtx.getString(R.string.delete),
                     mCtx.getString(R.string.google_play),mCtx.getString(R.string.send)};
             //mListPopupWindow.setAdapter(new ArrayAdapter<String>(mCtx, android.R.layout.simple_list_item_1, itmes));
-            mListPopupWindow.setAdapter(new ArrayAdapter<String>(mCtx, R.layout.popup_menu_item, itmes));
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(mCtx, R.layout.popup_menu_item, itmes);
+            mListPopupWindow.setAdapter(adapter);
             //ListPopupWindowAdapter adapter = new ListPopupWindowAdapter(mCtx,itmes);
             //mListPopupWindow.setAdapter(adapter);
             mListPopupWindow.setOnItemClickListener(new OnItemClickListener() {
@@ -570,6 +571,7 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
               });
             mListPopupWindow.setAnchorView(v);
             mListPopupWindow.setWidth(300);
+            
             mListPopupWindow.setHeight(LayoutParams.WRAP_CONTENT);
             mListPopupWindow.setModal(false);
             mListPopupWindow.show();
@@ -597,5 +599,39 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
             MainActivity.T(R.string.error);
         }*/
     }
+    
+    /*private int measureContentWidth(ListAdapter listAdapter) {
+        ViewGroup mMeasureParent = null;
+        int maxWidth = 0;
+        View itemView = null;
+        int itemType = 0;
+
+        final ListAdapter adapter = listAdapter;
+        final int widthMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
+        final int heightMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
+        final int count = adapter.getCount();
+        for (int i = 0; i < count; i++) {
+            final int positionType = adapter.getItemViewType(i);
+            if (positionType != itemType) {
+                itemType = positionType;
+                itemView = null;
+            }
+
+            if (mMeasureParent == null) {
+                mMeasureParent = new FrameLayout(mCtx);
+            }
+
+            itemView = adapter.getView(i, itemView, mMeasureParent);
+            itemView.measure(widthMeasureSpec, heightMeasureSpec);
+
+            final int itemWidth = itemView.getMeasuredWidth();
+
+            if (itemWidth > maxWidth) {
+                maxWidth = itemWidth;
+            }
+        }
+
+        return maxWidth;
+    }*/
 
 }
