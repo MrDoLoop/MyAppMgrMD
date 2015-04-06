@@ -105,7 +105,7 @@
                 android:descendantFocusability="beforeDescendants"
                 android:orientation="horizontal"
                 android:paddingBottom="5dp"
-                android:paddingLeft="53dp"
+                android:paddingLeft="54dp"
                 android:paddingRight="5dp"
                 android:paddingTop="5dp"
                 android:visibility="gone"
