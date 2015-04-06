@@ -3,107 +3,109 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content" >
 
-    <android.support.v7.widget.CardView
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/cardContent"
-        style="@style/MyCardViewStyle"
+    <LinearLayout
+        android:id="@+id/cardHolder"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp" >
+        android:layout_height="wrap_content" >
 
-        <RelativeLayout
-            android:id="@+id/rootLayout"
+        <android.support.v7.widget.CardView
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/cardContent"
+            style="@style/MyCardViewStyle"
             android:layout_width="match_parent"
-            android:layout_height="65dp"
-            android:background="@drawable/list_row_item_bg"
-            android:descendantFocusability="beforeDescendants"
-            android:padding="5dp" >
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp" >
 
-            <ImageView
-                android:id="@+id/app_icon"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:background="@drawable/backup_app_icon_bg"
-                android:padding="3dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/backupapp_holder" />
-
-            <LinearLayout
-                android:id="@+id/text_linear"
+            <RelativeLayout
+                android:id="@+id/rootLayout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="5dp"
-                android:layout_toRightOf="@+id/app_icon"
-                android:orientation="vertical"
-                android:weightSum="3" >
+                android:layout_height="65dp"
+                android:background="@drawable/list_row_item_bg"
+                android:descendantFocusability="beforeDescendants"
+                android:padding="5dp" >
+
+                <ImageView
+                    android:id="@+id/app_icon"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/backup_app_icon_bg"
+                    android:padding="3dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/backupapp_holder" />
+
+                <LinearLayout
+                    android:id="@+id/text_linear"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:layout_toRightOf="@+id/app_icon"
+                    android:orientation="vertical"
+                    android:weightSum="3" >
+
+                    <TextView
+                        android:id="@+id/app_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="25dp"
+                        android:layout_weight="1"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:text="App Name"
+                        android:textColor="@color/black"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/app_filename"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ellipsize="middle"
+                        android:singleLine="true"
+                        android:text="App Version"
+                        android:textColor="@color/gray" />
+
+                    <TextView
+                        android:id="@+id/app_version"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ellipsize="marquee"
+                        android:marqueeRepeatLimit="1"
+                        android:singleLine="true"
+                        android:text="App Version"
+                        android:textColor="@color/gray" />
+                </LinearLayout>
 
                 <TextView
-                    android:id="@+id/app_name"
-                    android:layout_width="match_parent"
+                    android:id="@+id/item_menu"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:ellipsize="end"
-                    android:singleLine="true"
-                    android:text="App Name"
-                    android:textColor="@color/black"
-                    android:textSize="15sp"
+                    
+                    android:layout_alignParentRight="true"
+                    android:layout_alignTop="@+id/text_linear"
+                    android:gravity="top|right"
+                    android:text="\u00B7\u00B7\u00B7"
+                    android:textColor="@color/link_txt_sel"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
+    </LinearLayout>
 
-                <TextView
-                    android:id="@+id/app_filename"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:ellipsize="middle"
-                    android:singleLine="true"
-                    android:text="App Version"
-                    android:textColor="@color/gray" />
-
-                <TextView
-                    android:id="@+id/app_version"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:ellipsize="marquee"
-                    android:marqueeRepeatLimit="1"
-                    android:singleLine="true"
-                    android:text="App Version"
-                    android:textColor="@color/gray" />
-            </LinearLayout>
-
-            <!--
-                 <TextView
-                android:id="@+id/app_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/app_icon"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_toRightOf="@+id/app_icon"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:text="App Name"
-                android:textColor="@color/black"
-                android:textSize="15sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/app_version"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/app_icon"
-                android:layout_alignLeft="@+id/app_name"
-                android:layout_alignRight="@+id/app_name"
-                android:ellipsize="marquee"
-                android:marqueeRepeatLimit="1"
-                android:singleLine="true"
-                android:text="App Version"
-                android:textColor="@color/gray" />
-            -->
-        </RelativeLayout>
-    </android.support.v7.widget.CardView>
+    <Button
+        android:id="@+id/item_menu_cover"
+        android:layout_width="60dp"
+        android:layout_height="match_parent"
+        android:layout_alignBottom="@+id/cardHolder"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/cardHolder"
+        android:layout_marginRight="20dp"
+        android:background="@color/transparent"
+        android:clickable="true"
+        android:focusable="false" />
 
 </RelativeLayout>
