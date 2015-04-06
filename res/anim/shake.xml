@@ -19,4 +19,4 @@
     android:duration="800"
     android:fromXDelta="0"
     android:interpolator="@anim/cycle_5"
-    android:toXDelta="18" />
+    android:toXDelta="15" />
