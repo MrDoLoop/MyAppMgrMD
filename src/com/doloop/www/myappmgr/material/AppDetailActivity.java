@@ -78,11 +78,6 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
     private ImageView appIcon;
     private View rootFrame;
     private boolean isBlockedScrollView = false;
-//    private static final int OPEN_ACTION = 0;
-//    private static final int INFO_ACTION = 1;
-//    private static final int BACKUP_ACTION = 2;
-//    private static final int SEND_ACTION = 3;
-//    private static final int UNINSTALL_ACTION = 4;
 
     private static final String OPEN_ACTION = "OPEN_ACTION";
     private static final String INFO_ACTION = "INFO_ACTION";
@@ -102,8 +97,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
     public static final int APP_TYPE_USER = 0;
     public static final int APP_TYPE_SYS = 1;
     public static final int APP_TYPE_BACKUP = 2;
-    private int curAppType = 0;
-    
+    private int curAppType = 0;  
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @SuppressLint("ClickableViewAccessibility")
@@ -342,8 +336,15 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
             fillRow(view, getString(R.string.version), curAppInfo.versionName + " (" + curAppInfo.versionCode + ")");
 
             view = rowContainer.findViewById(R.id.row_apk_info);
-            fillRow(view, getString(R.string.apk_info),
-                    curAppInfo.apkFilePath + "\n" + Utils.formatFileSize(curAppInfo.appRawSize));
+            if(curAppType == APP_TYPE_BACKUP)
+            {
+                fillRow(view, getString(R.string.apk_info),
+                        curAppInfo.backupFilePath + "\n" + Utils.formatFileSize(curAppInfo.appRawSize));    
+            }
+            else{
+                fillRow(view, getString(R.string.apk_info),
+                        curAppInfo.apkFilePath + "\n" + Utils.formatFileSize(curAppInfo.appRawSize));
+            }
 
             view = rowContainer.findViewById(R.id.row_time_info);
             fillRow(view, getString(R.string.last_updated_time),
@@ -358,14 +359,14 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
 
             view = rowContainer.findViewById(R.id.row_componement);
             if (appResolveInfo != null) {
-                String componementStr = "";
+                String componentStr = "";
                 ComponentName componentName = intent.getComponent();
                 if (componentName != null) {
-                    componementStr = componentName.toString();
+                    componentStr = componentName.toString();
                 }
-                fillRow(view, getString(R.string.componement), componementStr);
+                fillRow(view, getString(R.string.component), componentStr);
             } else {
-                fillRow(view, getString(R.string.componement), "");
+                fillRow(view, getString(R.string.component), "");
             }
         }
         
@@ -377,7 +378,6 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
         
     }
     
-    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     private void buildActionMenu(FilterMenu.Builder menuBuilder){
         ArrayList<FilterMenuItemWapper> itemsWapper = new ArrayList<FilterMenuItemWapper>();
         switch (curAppType){
@@ -385,9 +385,9 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                 if(canLaunch){
                     itemsWapper.add(new FilterMenuItemWapper(R.drawable.play_white, OPEN_ACTION));
                 }
-                itemsWapper.add(new FilterMenuItemWapper(R.drawable.delete_white2, UNINSTALL_ACTION));
                 itemsWapper.add(new FilterMenuItemWapper(R.drawable.info_white, INFO_ACTION));
                 itemsWapper.add(new FilterMenuItemWapper(R.drawable.backup_white, BACKUP_ACTION));
+                itemsWapper.add(new FilterMenuItemWapper(R.drawable.delete_white2, UNINSTALL_ACTION));
                 itemsWapper.add(new FilterMenuItemWapper(R.drawable.send_white, SEND_ACTION));
                 break;
             case APP_TYPE_SYS:
@@ -432,20 +432,12 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                            Utils.showInstalledAppDetails(AppDetailActivity.this, curAppInfo.packageName);
                        }
                        else if(itemWapper.MenuTag.equalsIgnoreCase(UNINSTALL_ACTION)) {
-                           Uri packageUri = Uri.parse("package:" + curAppInfo.packageName);
-                           Intent uninstallIntent;
-                           if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-                               uninstallIntent = new Intent(Intent.ACTION_DELETE, packageUri);
-                           } else {
-                               uninstallIntent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE, packageUri);
-                           }
-                           startActivity(uninstallIntent);            
+                           Utils.uninstallApp(AppDetailActivity.this, curAppInfo);
                        }
                        else if(itemWapper.MenuTag.equalsIgnoreCase(BACKUP_ACTION)) {
                            String mBackUpFolder = Utils.getBackUpAPKfileDir(AppDetailActivity.this);
                            String sdAPKfileName = Utils.BackupApp(curAppInfo, mBackUpFolder);
                            if (sdAPKfileName != null) {
-                               // MainActivity.T(R.string.backup_success);
                                SpannableString spanString =
                                        new SpannableString(curAppInfo.appName + " "
                                                + getString(R.string.backup_success));

@@ -301,14 +301,15 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                                 }
                                 break;
                             case R.id.uninstallActionLayout:
-                                Uri packageUri = Uri.parse("package:" + targetpackageName);
+                                Utils.uninstallApp(getActivity(), selectItem);
+                                /*Uri packageUri = Uri.parse("package:" + targetpackageName);
                                 Intent uninstallIntent;
                                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
                                     uninstallIntent = new Intent(Intent.ACTION_DELETE, packageUri);
                                 } else {
                                     uninstallIntent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE, packageUri);
                                 }
-                                startActivity(uninstallIntent);
+                                startActivity(uninstallIntent);*/
                                 break;
                             case R.id.moreActionLayout:
                                 UserAppListMoreActionDialog = new UserAppListMoreActionDialogFragment();
@@ -793,15 +794,15 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                                         ArrayList<AppInfo> list = mAdapter.getSelectedItemList();
                                         for (int i = 0; i < list.size(); i++) {
                                             tmpAppInfo = list.get(i);
-
-                                            Uri packageUri = Uri.parse("package:" + tmpAppInfo.packageName);
+                                            Utils.uninstallApp(getActivity(), tmpAppInfo);
+                                            /*Uri packageUri = Uri.parse("package:" + tmpAppInfo.packageName);
                                             Intent uninstallIntent;
                                             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
                                                 uninstallIntent = new Intent(Intent.ACTION_DELETE, packageUri);
                                             } else {
                                                 uninstallIntent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE, packageUri);
                                             }
-                                            startActivity(uninstallIntent);
+                                            startActivity(uninstallIntent);*/
                                         }
                                         
                                         finishActionMode();
