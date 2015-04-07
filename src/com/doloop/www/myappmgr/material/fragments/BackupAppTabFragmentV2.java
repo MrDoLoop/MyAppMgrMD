@@ -47,11 +47,11 @@ import com.doloop.www.myappmgr.material.adapters.BackupAppListAdapterV2.ItemView
 import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.events.ActionModeToggleEvent;
 import com.doloop.www.myappmgr.material.events.AppBackupSuccEvent;
-import com.doloop.www.myappmgr.material.events.BackupAppDeletedEvent;
 import com.doloop.www.myappmgr.material.events.ViewNewBackupAppEvent;
 import com.doloop.www.myappmgr.material.fragments.SelectionDialogFragment.SelectionDialogClickListener;
 import com.doloop.www.myappmgr.material.interfaces.IPopupMenuClickListener;
 import com.doloop.www.myappmgr.material.interfaces.IconClickListener;
+import com.doloop.www.myappmgr.material.unused.BackupAppDeletedEvent;
 import com.doloop.www.myappmgr.material.utils.BackupAppListLoader;
 import com.doloop.www.myappmgr.material.utils.BackupAppListLoader.LoaderBckgrdIsAboutToDeliverListener;
 import com.doloop.www.myappmgr.material.utils.Utils;
