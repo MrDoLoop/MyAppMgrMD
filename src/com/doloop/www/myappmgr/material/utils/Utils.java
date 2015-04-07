@@ -1090,6 +1090,18 @@ public class Utils {
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+    public static void uninstallApp(Context ctx, AppInfo appInfo){
+        Uri packageUri = Uri.parse("package:" + appInfo.packageName);
+        Intent uninstallIntent;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            uninstallIntent = new Intent(Intent.ACTION_DELETE, packageUri);
+        } else {
+            uninstallIntent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE, packageUri);
+        }
+        ctx.startActivity(uninstallIntent);   
+    }
+    
     /**
      * 调用系统InstalledAppDetails界面显示已安装应用程序的详细信息。 对于Android 2.3（Api Level 9）以上，使用SDK提供的接口；
      * 2.3以下，使用非公开的接口（查看InstalledAppDetails源码）。
@@ -1098,6 +1110,7 @@ public class Utils {
      * 
      * @param packageName 应用程序的包名
      */
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     @SuppressLint("InlinedApi")
     public static void showInstalledAppDetails(Context context, String packageName) {
         String SCHEME = "package";
