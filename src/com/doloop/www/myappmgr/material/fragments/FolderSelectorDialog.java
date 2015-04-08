@@ -210,6 +210,7 @@ public class FolderSelectorDialog extends DialogFragment implements MaterialDial
                         @Override
                         public void onNegative(MaterialDialog dialog) {
                             // TODO Auto-generated method stub
+                            Utils.hideInputMethod(getActivity(),mEditText);
                             dialog.dismiss();
                         }
                     })
