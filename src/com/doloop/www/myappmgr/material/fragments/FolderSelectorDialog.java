@@ -9,6 +9,7 @@ import java.util.Locale;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.DialogFragment;
@@ -196,7 +197,7 @@ public class FolderSelectorDialog extends DialogFragment implements MaterialDial
                                     //
                                     File newDir = new File(parentFolder.getAbsolutePath()+File.separator+newFolderName);
                                     newDir.mkdir();
-                                    Utils.hideInputMethod(getActivity(),mEditText);
+                                    Utils.hideInputMethod(getActivity(), mEditText);
                                     dialog.dismiss();
                                     
                                     parentContents = listFiles();
@@ -210,8 +211,14 @@ public class FolderSelectorDialog extends DialogFragment implements MaterialDial
                         @Override
                         public void onNegative(MaterialDialog dialog) {
                             // TODO Auto-generated method stub
-                            Utils.hideInputMethod(getActivity(),mEditText);
+                            Utils.hideInputMethod(getActivity(), mEditText);
                             dialog.dismiss();
+                        }
+                    })
+                    .dismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            
                         }
                     })
                     .customView(layout, false);
