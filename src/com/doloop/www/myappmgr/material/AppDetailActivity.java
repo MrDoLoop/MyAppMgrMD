@@ -150,8 +150,6 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
             //为了防止在动画还没有播放完就开始滑动scrollview
             isBlockedScrollView = true;
             rootScrollView.setOnTouchListener(new View.OnTouchListener() {
-
-                
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     // TODO Auto-generated method stub
@@ -169,31 +167,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                         
                         @Override
                         public void onAnimationStart(Animator animation) {
-                            
-                           
-                          //向下移动+alpha
-                            ViewHelper.setTranslationY(rowContainer, 250);
-                            ViewHelper.setAlpha(rowContainer, 0.5f);
-                            
-                            //向上移动+alpha
-                            ViewHelper.setTranslationY(headerImgView, -200);
-                            ViewHelper.setAlpha(headerImgView, 0.5f);
-                            
-                            ViewHelper.setAlpha(shadowView, 0.5f);
-                            ViewHelper.setTranslationY(shadowView, -200);
-              
-                            //ViewHelper.setTranslationY(headerView, -200);
-                            ViewHelper.setScaleX(appIcon, 0);
-                            ViewHelper.setScaleY(appIcon, 0);
-                            ViewHelper.setAlpha(appIcon, 0.0f);
-                            
-                            //隐藏
-                            ViewHelper.setAlpha(headerView, 0.0f);
-                            
-                            contentRootView.setVisibility(View.INVISIBLE);
-                            headerImgView.setVisibility(View.INVISIBLE);
-                            appIcon.setEnabled(false);
-                            //shadowView.setVisibility(View.INVISIBLE);
+                            prepareAni();
                         }
 
                         @Override
@@ -377,6 +351,33 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
         menuBuilder.build();
         
     }
+    
+    private void prepareAni(){
+        //向下移动+alpha
+        ViewHelper.setTranslationY(rowContainer, 250);
+        ViewHelper.setAlpha(rowContainer, 0.5f);
+        
+        //向上移动+alpha
+        ViewHelper.setTranslationY(headerImgView, -200);
+        ViewHelper.setAlpha(headerImgView, 0.5f);
+        
+        ViewHelper.setAlpha(shadowView, 0.5f);
+        ViewHelper.setTranslationY(shadowView, -200);
+
+        //ViewHelper.setTranslationY(headerView, -200);
+        ViewHelper.setScaleX(appIcon, 0);
+        ViewHelper.setScaleY(appIcon, 0);
+        ViewHelper.setAlpha(appIcon, 0.0f);
+        
+        //隐藏
+        ViewHelper.setAlpha(headerView, 0.0f);
+        
+        contentRootView.setVisibility(View.INVISIBLE);
+        headerImgView.setVisibility(View.INVISIBLE);
+        appIcon.setEnabled(false);
+        //shadowView.setVisibility(View.INVISIBLE);
+    }
+    
     
     private void buildActionMenu(FilterMenu.Builder menuBuilder){
         ArrayList<FilterMenuItemWapper> itemsWapper = new ArrayList<FilterMenuItemWapper>();
