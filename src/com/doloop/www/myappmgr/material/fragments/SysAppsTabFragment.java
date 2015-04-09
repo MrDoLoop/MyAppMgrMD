@@ -285,7 +285,10 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
         super.onDestroy();
         mHandler.removeCallbacksAndMessages(null);
         EventBus.getDefault().unregister(this);
-        mAdapter.unregisterDataSetObserver(mDataSetObserver);
+        if (mAdapter != null && mDataSetObserver != null){
+            mAdapter.unregisterDataSetObserver(mDataSetObserver);
+        }
+        
         mAdapter = null;
         mPinnedSectionListView = null;
         mContext = null;

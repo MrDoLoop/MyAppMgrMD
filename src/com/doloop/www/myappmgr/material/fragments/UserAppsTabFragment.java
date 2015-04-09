@@ -419,7 +419,9 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
         super.onDestroy();
         mHandler.removeCallbacksAndMessages(null);
         EventBus.getDefault().unregister(this);
-        mAdapter.unregisterDataSetObserver(mDataSetObserver);
+        if(mAdapter != null){
+            mAdapter.unregisterDataSetObserver(mDataSetObserver);
+        }
         mAdapter = null;
         mActionSlideExpandableListView = null;
         mContext = null;
