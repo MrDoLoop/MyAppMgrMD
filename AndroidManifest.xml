@@ -48,7 +48,7 @@
         </activity>
         
         <receiver android:name="com.doloop.www.myappmgr.material.AppUpdateStaticReceiver" >
-            <intent-filter>
+            <intent-filter android:priority="1000">
                 <action android:name="android.intent.action.PACKAGE_ADDED" />
                 <action android:name="android.intent.action.PACKAGE_CHANGED" />
                 <action android:name="android.intent.action.PACKAGE_REMOVED" />
