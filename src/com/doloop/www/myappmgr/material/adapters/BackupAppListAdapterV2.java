@@ -556,7 +556,7 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
             
             final ListPopupWindow mListPopupWindow = new ListPopupWindow(mCtx);
             final String itmes[]={mCtx.getString(R.string.install),mCtx.getString(R.string.delete),
-                    mCtx.getString(R.string.google_play),mCtx.getString(R.string.send)};
+                    mCtx.getString(R.string.google_play),mCtx.getString(R.string.share)};
             //mListPopupWindow.setAdapter(new ArrayAdapter<String>(mCtx, android.R.layout.simple_list_item_1, itmes));
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(mCtx, R.layout.popup_menu_item, itmes);
             mListPopupWindow.setAdapter(adapter);

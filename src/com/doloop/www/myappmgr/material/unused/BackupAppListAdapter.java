@@ -1,4 +1,4 @@
-package com.doloop.www.myappmgr.material.adapters;
+package com.doloop.www.myappmgr.material.unused;
 
 import java.io.File;
 import java.util.ArrayList;
