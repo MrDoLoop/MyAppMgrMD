@@ -17,7 +17,7 @@ public class App extends Application {
         super.onCreate();
 
         // 崩溃处理初始化
-        //if(!BuildConfig.DEBUG)
+        if(!BuildConfig.DEBUG)
         {
             InitCrashHandler();
         }
