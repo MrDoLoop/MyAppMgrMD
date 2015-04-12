@@ -400,6 +400,25 @@ public class Utils {
         }
     }
 
+    
+    /**
+     * 返回这个app在list中的位置
+     * 
+     * @param appInfo
+     * @param list
+     * @return 返回这个app在list中的位置,没有找到返回-1
+     */
+    public static int isAppInfoInList(PackageInfo thePackageInfo, ArrayList<AppInfo> list) {
+        int i = 0;
+        for (AppInfo aEntry : list) {
+            if (thePackageInfo.packageName.equals(aEntry.packageName) && (thePackageInfo.versionCode == aEntry.versionCode)) {
+                return i;
+            }
+            i++;
+        }
+        return -1;
+    }
+    
     /**
      * 返回这个app在list中的位置
      * 
