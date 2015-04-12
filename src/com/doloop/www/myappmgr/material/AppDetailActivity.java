@@ -74,7 +74,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
     private View contentRootView;
     private View shadowView;
     private FilterMenuLayout menuLayout;
-    private Point revalStartPosition;
+    private Point revealStartPosition;
     private ImageView appIcon;
     private View rootFrame;
     private boolean isBlockedScrollView = false;
@@ -137,10 +137,10 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
             //默认是从屏幕中心开始
             int[] pos = getIntent().getIntArrayExtra(REVEAL_START_POSITION);
             if(pos != null){
-                revalStartPosition = new Point(pos[0], pos[1]);
+                revealStartPosition = new Point(pos[0], pos[1]);
             }
             else{
-                revalStartPosition = new Point(Utils.getScreenWidth(AppDetailActivity.this)/2, Utils.getScreenHeight(AppDetailActivity.this)/2);
+                revealStartPosition = new Point(Utils.getScreenWidth(AppDetailActivity.this)/2, Utils.getScreenHeight(AppDetailActivity.this)/2);
             }
             
             headerImgView.setVisibility(View.INVISIBLE);
@@ -163,7 +163,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                 @Override
                 public void run() {
                     int color = Color.parseColor("#00bcd4");//getResources().getColor(R.color.windows_bg);//Color.parseColor("#00bcd4");
-                    revealView.reveal(revalStartPosition.x, revalStartPosition.y, color, 30, 700, new AnimatorListenerAdapter(){
+                    revealView.reveal(revealStartPosition.x, revealStartPosition.y, color, 30, 700, new AnimatorListenerAdapter(){
                         
                         @Override
                         public void onAnimationStart(Animator animation) {
@@ -389,7 +389,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                 itemsWapper.add(new FilterMenuItemWapper(R.drawable.info_white, INFO_ACTION));
                 itemsWapper.add(new FilterMenuItemWapper(R.drawable.backup_white, BACKUP_ACTION));
                 itemsWapper.add(new FilterMenuItemWapper(R.drawable.delete_white2, UNINSTALL_ACTION));
-                itemsWapper.add(new FilterMenuItemWapper(R.drawable.send_white, SEND_ACTION));
+                itemsWapper.add(new FilterMenuItemWapper(R.drawable.share_white, SEND_ACTION));
                 break;
             case APP_TYPE_SYS:
                 if(canLaunch){
@@ -397,12 +397,12 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                 }
                 itemsWapper.add(new FilterMenuItemWapper(R.drawable.info_white, INFO_ACTION));
                 itemsWapper.add(new FilterMenuItemWapper(R.drawable.backup_white, BACKUP_ACTION));
-                itemsWapper.add(new FilterMenuItemWapper(R.drawable.send_white, SEND_ACTION));
+                itemsWapper.add(new FilterMenuItemWapper(R.drawable.share_white, SEND_ACTION));
                 break;
             case APP_TYPE_BACKUP:
                 itemsWapper.add(new FilterMenuItemWapper(R.drawable.play_white, INSTALL_ACTION));
                 itemsWapper.add(new FilterMenuItemWapper(R.drawable.delete_white2, DELETE_ACTION));
-                itemsWapper.add(new FilterMenuItemWapper(R.drawable.send_white, SEND_ACTION));
+                itemsWapper.add(new FilterMenuItemWapper(R.drawable.share_white, SEND_ACTION));
                 break;  
         }
         menuBuilder.addItemList(itemsWapper);
