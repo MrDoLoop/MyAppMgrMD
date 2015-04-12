@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -845,39 +846,54 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
                             (ArrayList<AppInfo>) appInfoSession.getAppInfoDao().queryBuilder()
                                     .where(Properties.IsSysApp.eq("false")).list();
 
-                    /*
-                     * AppInfo MyAppInfo =
-                     * appInfoSession.getAppInfoDao().queryBuilder().where(Properties.PackageName.eq(Constants
-                     * .MY_PACKAGE_NAME)).unique(); if(MyAppInfo == null) {
-                     * UserAppFullList.add(Utilities.buildAppInfoEntry(thisActivityCtx, Constants.MY_PACKAGE_NAME)); }
-                     */
                     SysAppFullList =
                             (ArrayList<AppInfo>) appInfoSession.queryBuilder(AppInfo.class)
                                     .where(Properties.IsSysApp.eq("true")).list();
 
-                    int appCount = 0;
-                    int mySelfPos = -1;
-                    for (int i = 0, size = UserAppFullList.size(); i < size; i++, appCount++) {
-                        publishProgress((appCount + 1));
-                        if (Constants.MY_PACKAGE_NAME.equals(UserAppFullList.get(i).packageName)) {
-                            mySelfPos = i;
+                    boolean foundMyself = false;
+                    for(int i = 0 ; i < fullAppListSize ; i++) {
+                        PackageInfo thePackageInfo = packages.get(i);
+                        boolean thePackageInfoFound = false;
+                        int posInList = -1;
+                        publishProgress((i + 1));
+                        
+                        if ((thePackageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+                           //user app
+                            posInList = Utils.isAppInfoInList(thePackageInfo, UserAppFullList);
+                            if(posInList != -1){
+                                thePackageInfoFound = true;
+                                if(Constants.MY_PACKAGE_NAME.equals(thePackageInfo.packageName)) {
+                                    foundMyself = true;
+                                    UserAppFullList.set(posInList,
+                                            Utils.buildAppInfoEntry(thisActivityCtx, Constants.MY_PACKAGE_NAME));
+                                }
+                            }
+                        } 
+                        else// sys app
+                        {
+                            posInList = Utils.isAppInfoInList(thePackageInfo, SysAppFullList);
+                            if(posInList != -1){
+                                thePackageInfoFound = true;
+                            }
                         }
-                        Utils.verifyApp(thisActivityCtx, UserAppFullList.get(i));
-                        UserAppFullList.get(i).appIconBytes = null;
-                    }
-                    // 重新建立自己
-                    if (mySelfPos == -1) {
-                        UserAppFullList.add(Utils.buildAppInfoEntry(thisActivityCtx, Constants.MY_PACKAGE_NAME));
-                    } else {
-                        UserAppFullList.set(mySelfPos,
-                                Utils.buildAppInfoEntry(thisActivityCtx, Constants.MY_PACKAGE_NAME));
-                    }
 
-                    for (int i = 0, size = SysAppFullList.size(); i < size; i++, appCount++) {
-                        publishProgress((appCount + 1));
-                        Utils.verifyApp(thisActivityCtx, SysAppFullList.get(i));
-                        SysAppFullList.get(i).appIconBytes = null;
+                        if(!thePackageInfoFound) {
+                            AppInfo tmpInfo = Utils.buildAppInfoEntry(thisActivityCtx, thePackageInfo, pManager, true, false);
+                            if (tmpInfo.isSysApp) {
+                                SysAppFullList.add(tmpInfo);
+                            } else {
+                                if(Constants.MY_PACKAGE_NAME.equals(thePackageInfo.packageName)) {
+                                    foundMyself = true;
+                                }
+                                UserAppFullList.add(tmpInfo);
+                            }
+                        }
                     }
+                    
+                    if(!foundMyself){
+                        UserAppFullList.add(Utils.buildAppInfoEntry(thisActivityCtx, Constants.MY_PACKAGE_NAME));
+                    }
+                    
                 } else {
                     PackageInfo packageInfo;
                     AppInfo tmpInfo;
@@ -991,8 +1007,6 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
 
             mPagerSlidingTabStrip.notifyDataSetChanged();
             registerReceivers();
-            // registerReceiver(mAppUpdateReceiver, AppIntentFilter);
-            // registerReceiver(LangUpdateReceiver, LangIntentFilter);
         }
     }
 
