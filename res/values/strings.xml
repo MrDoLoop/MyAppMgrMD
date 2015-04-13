@@ -29,6 +29,7 @@
     <string name="saving_app">Saving App:</string>
     <string name="saving_apps">Saving Apps</string>
     <string name="error">Error</string>
+    <string name="crash_msg">Sorry, crash happened.</string>
     <string name="loading_apps">Loading Apps&#8230;</string>
     <string name="moving_akps">Moving Apks&#8230;</string>
     <string name="new_app_installed">New App Installed:</string>
