@@ -23,17 +23,29 @@
             android:src="@drawable/header_icon"
             app:border="true"
             app:border_width="3dp"
-            app:shadow="false" />
-        -->
+            app:shadow="false" />-->
 
-        <com.doloop.www.myappmgr.material.widgets.CircleImageView
-            android:id="@+id/header_image"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+        <app.mosn.zdepthshadowlayout.ZDepthShadowLayout
+            android:id="@+id/zDepthShadowLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:src="@drawable/header_icon"
-            app:border_color="@color/white"
-            app:border_width="3dp" />
+            app:z_depth="z_depth2"
+            app:z_depth_paddingBottom="z_depth5"
+            app:z_depth_paddingLeft="z_depth5"
+            app:z_depth_paddingRight="z_depth5"
+            app:z_depth_paddingTop="z_depth5"
+            app:z_depth_shape="oval" >
+
+            <com.doloop.www.myappmgr.material.widgets.CircleImageView
+                android:id="@+id/header_image"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center"
+                android:src="@drawable/header_icon"
+                app:border_color="@color/white"
+                app:border_width="3dp" />
+        </app.mosn.zdepthshadowlayout.ZDepthShadowLayout>
     </RelativeLayout>
 
     <TextView
