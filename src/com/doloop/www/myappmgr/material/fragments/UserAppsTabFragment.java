@@ -500,10 +500,10 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
             
             AppDetailActivity.curAppInfo = selectItem;
             Intent intent = new Intent(getActivity(), AppDetailActivity.class);
+            intent.putExtra(AppDetailActivity.APP_TYPE, AppDetailActivity.APP_TYPE_USER);
             if(Utils.playAniAppDetails(getActivity())){
                 int[] revealStartPos = Utils.findViewCenterXY(v);//v.findViewById(R.id.app_icon)
                 intent.putExtra(AppDetailActivity.REVEAL_START_POSITION, revealStartPos);
-                intent.putExtra(AppDetailActivity.APP_TYPE, AppDetailActivity.APP_TYPE_USER);
                 startActivity(intent);
                 getActivity().overridePendingTransition(0, 0);
             }

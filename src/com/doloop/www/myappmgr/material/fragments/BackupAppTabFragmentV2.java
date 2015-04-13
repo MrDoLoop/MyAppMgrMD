@@ -717,10 +717,10 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
               //启动详情页的
                 AppDetailActivity.curAppInfo = item;
                 Intent intent = new Intent(getActivity(), AppDetailActivity.class);
+                intent.putExtra(AppDetailActivity.APP_TYPE, AppDetailActivity.APP_TYPE_BACKUP);
                 if(Utils.playAniAppDetails(getActivity())){
                     int[] revealStartPos = Utils.findViewCenterXY(v);
                     intent.putExtra(AppDetailActivity.REVEAL_START_POSITION, revealStartPos);
-                    intent.putExtra(AppDetailActivity.APP_TYPE, AppDetailActivity.APP_TYPE_BACKUP);
                     startActivity(intent);
                     getActivity().overridePendingTransition(0, 0);
                 }
