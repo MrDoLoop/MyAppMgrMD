@@ -9,11 +9,11 @@
     <item
         android:id="@+id/menu_send"
         android:icon="@drawable/ic_search_white"
-        android:title="@string/send"
+        android:title="@string/share"
         app:showAsAction="never"/>
     <item
         android:id="@+id/menu_delete"
-        android:icon="@drawable/delete_white"
+        android:icon="@drawable/delete_white2"
         android:title="@string/delete"
         app:showAsAction="never"/>
 
