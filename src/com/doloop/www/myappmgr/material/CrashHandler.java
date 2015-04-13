@@ -5,6 +5,7 @@ import java.lang.Thread.UncaughtExceptionHandler;
 import com.doloop.www.myappmgr.material.utils.L;
 
 import android.content.Context;
+import android.widget.Toast;
 /**
  * 
  * @author zhaonan07
@@ -40,6 +41,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
     @Override
     public void uncaughtException(Thread thread, Throwable ex) {
         String errorMsg = BuildErrorMsg(ex);
+        Toast.makeText(mContext, R.string.crash_msg, Toast.LENGTH_SHORT).show();
         L.getLogger().e(errorMsg, true);
         //System.exit(0);
         android.os.Process.killProcess(android.os.Process.myPid());  
