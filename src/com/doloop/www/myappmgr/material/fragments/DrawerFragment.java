@@ -73,7 +73,7 @@ public class DrawerFragment extends Fragment {
         View tv = FragmentView.findViewById(R.id.logo_txt);
         NanAppMark.attach(tv);
       
-        final View headerImg = FragmentView.findViewById(R.id.header_image);
+        final View headerImg = FragmentView.findViewById(R.id.zDepthShadowLayout);
         headerImg.setOnClickListener(new View.OnClickListener() {
             
             @Override
