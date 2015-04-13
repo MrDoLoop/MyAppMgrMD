@@ -384,11 +384,13 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
         if (!mBackupAppListLoader.isLoadingRunning()) {// loading 已经结束了
             for (AppInfo aInfo : ev.AppInfoList) {
                 int pos = Utils.isAppInfoInList(aInfo, mAppList);
-               
+                Date date = new Date();
+                aInfo.lastBackUpRawTime = date.getTime();
+                aInfo.lastBackUpTimeStr = Utils.formatTimeDisplay(date);
                 if (pos == -1) {//没有找到
-                    Date date = new Date();
-                    aInfo.lastBackUpRawTime = date.getTime();
-                    aInfo.lastBackUpTimeStr = Utils.formatTimeDisplay(date);
+//                    Date date = new Date();
+//                    aInfo.lastBackUpRawTime = date.getTime();
+//                    aInfo.lastBackUpTimeStr = Utils.formatTimeDisplay(date);
                     mAppList.add(aInfo);
                     Utils.sortBackUpAppList(mContext, mAppList);
                     
@@ -397,6 +399,13 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
                     mAdapter.notifyDataSetChanged();
                 }
                 else{
+//                    Date date = new Date();
+//                    aInfo.lastBackUpRawTime = date.getTime();
+//                    aInfo.lastBackUpTimeStr = Utils.formatTimeDisplay(date);
+                    mAppList.set(pos, aInfo);
+                    Utils.sortBackUpAppList(mContext, mAppList);
+                    mAdapter.notifyDataSetChanged();
+                    
                     newBackupAppPos = pos;
                 }
             }
@@ -405,11 +414,14 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
             for (AppInfo aInfo : ev.AppInfoList) {
                 
                 int pos = Utils.isAppInfoInList(aInfo, mPendingNewAppInfo);
+                Date date = new Date();
+                aInfo.lastBackUpRawTime = date.getTime();
+                aInfo.lastBackUpTimeStr = Utils.formatTimeDisplay(date);
                 if (pos == -1) {
-                    Date date = new Date();
-                    aInfo.lastBackUpRawTime = date.getTime();
-                    aInfo.lastBackUpTimeStr = Utils.formatTimeDisplay(date);
                     mPendingNewAppInfo.add(aInfo);
+                }
+                else{
+                    mPendingNewAppInfo.set(pos,aInfo);
                 }
             }
         }
