@@ -479,7 +479,6 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
         UserAppFullList.clear();
         unregisterReceivers();
         EventBus.getDefault().unregister(this);
-        DaoUtils.destroy();
         AppUpdateStaticReceiver.handleEvent = true;
         toast = null;
         sActionMode = null;
@@ -841,12 +840,12 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
                 }
                 DaoSession appInfoSession = DaoUtils.getDaoSession(MainActivity.this, true);
                 if (Utils.isAppListInDb(MainActivity.this)) {
-
-                    UserAppFullList =
+                    //UserAppFullList
+                    ArrayList<AppInfo> UserAppFullListInDB = 
                             (ArrayList<AppInfo>) appInfoSession.getAppInfoDao().queryBuilder()
                                     .where(Properties.IsSysApp.eq("false")).list();
-
-                    SysAppFullList =
+                    //SysAppFullList
+                    ArrayList<AppInfo> SysAppFullListInDB = 
                             (ArrayList<AppInfo>) appInfoSession.queryBuilder(AppInfo.class)
                                     .where(Properties.IsSysApp.eq("true")).list();
 
@@ -859,26 +858,42 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
                         
                         if ((thePackageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
                            //user app
-                            posInList = Utils.isAppInfoInList(thePackageInfo, UserAppFullList);
+                            posInList = Utils.isAppInfoInList(thePackageInfo, UserAppFullListInDB);
                             if(posInList != -1){
                                 thePackageInfoFound = true;
                                 if(Constants.MY_PACKAGE_NAME.equals(thePackageInfo.packageName)) {
                                     foundMyself = true;
-                                    UserAppFullList.set(posInList,
-                                            Utils.buildAppInfoEntry(thisActivityCtx, Constants.MY_PACKAGE_NAME));
+                                    //重新生成自己
+                                    UserAppFullList.add(Utils.buildAppInfoEntry(thisActivityCtx, Constants.MY_PACKAGE_NAME));
                                 }
+                                else{
+                                    UserAppFullList.add(UserAppFullListInDB.get(posInList));
+                                }
+                                UserAppFullListInDB.remove(posInList);
                             }
                         } 
                         else// sys app
                         {
-                            posInList = Utils.isAppInfoInList(thePackageInfo, SysAppFullList);
+                            posInList = Utils.isAppInfoInList(thePackageInfo, SysAppFullListInDB);
                             if(posInList != -1){
                                 thePackageInfoFound = true;
+                                SysAppFullList.add(SysAppFullListInDB.get(posInList));
+                                SysAppFullListInDB.remove(posInList);
                             }
                         }
 
                         if(!thePackageInfoFound) {
+                            //建立appInfo并且插入数据库
                             AppInfo tmpInfo = Utils.buildAppInfoEntry(thisActivityCtx, thePackageInfo, pManager, true, false);
+                            try {
+                                // appInfoSession.insertOrReplace(tmpInfo);
+                                appInfoSession.insert(tmpInfo);
+                            } catch (Exception e) {
+                                Log.e("ttt", "app error: " + tmpInfo.appName + ", error: " + e.toString());
+                            } finally {
+                                tmpInfo.appIconBytes = null;
+                            }
+                            
                             if (tmpInfo.isSysApp) {
                                 SysAppFullList.add(tmpInfo);
                             } else {
@@ -893,6 +908,11 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
                     if(!foundMyself){
                         UserAppFullList.add(Utils.buildAppInfoEntry(thisActivityCtx, Constants.MY_PACKAGE_NAME));
                     }
+                    
+                    DaoUtils.deleteAppinfo(thisActivityCtx, UserAppFullListInDB);
+                    DaoUtils.deleteAppinfo(thisActivityCtx, SysAppFullListInDB);
+                    UserAppFullListInDB = null;
+                    SysAppFullListInDB = null;
                     
                 } else {
                     PackageInfo packageInfo;
