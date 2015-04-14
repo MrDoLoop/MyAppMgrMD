@@ -1,5 +1,7 @@
 package com.doloop.www.myappmgr.material.dao;
 
+import java.util.ArrayList;
+
 import android.content.Context;
 
 import com.doloop.www.myappmgr.material.dao.AppInfoDao.Properties;
@@ -13,6 +15,12 @@ public class DaoUtils {
     private static DaoMaster daoMaster;
     private static DaoSession daoSession;
 
+    public static void deleteAppinfo(Context ctx, ArrayList<AppInfo> list){
+        for(int i = 0, size = list.size();i<size;i++){
+            deleteAppInfo(ctx, list.get(i)); 
+        }
+    }
+    
     /**
      * È¡µÃDaoMaster
      *
@@ -39,6 +47,7 @@ public class DaoUtils {
                 daoSession.clear();
             }
             daoSession = null;
+            daoMaster = null;
         }
 
         if (daoSession == null) {
