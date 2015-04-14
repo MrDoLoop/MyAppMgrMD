@@ -64,6 +64,8 @@
                             android:layout_width="48dp"
                             android:layout_height="48dp"
                             android:scaleType="centerInside"
+                            android:contentDescription="@null"
+                    		android:padding="3dp"
                             android:src="@null" />
 
                         <TextView
