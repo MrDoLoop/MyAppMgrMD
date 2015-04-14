@@ -838,7 +838,16 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
                     DaoUtils.deleteAllAppInfo(thisActivityCtx);
                     deleteAllAppInfoDone = true;
                 }
-                DaoSession appInfoSession = DaoUtils.getDaoSession(MainActivity.this, true);
+                
+                DaoSession appInfoSession = null;
+                try{
+                    appInfoSession = DaoUtils.getDaoSession(MainActivity.this, true);
+                }catch(Exception e){
+                    L.getLogger().e(e.getMessage(), true);
+                    T(e.getMessage());
+                    return null;
+                }
+                
                 if (Utils.isAppListInDb(MainActivity.this)) {
                     //UserAppFullList
                     ArrayList<AppInfo> UserAppFullListInDB = 
