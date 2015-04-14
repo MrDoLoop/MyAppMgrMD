@@ -116,6 +116,20 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
         headerImgView = (KenBurnsSupportView) findViewById(R.id.header_image);
         headerImgView.setResourceIds(R.drawable.ic_user_background, R.drawable.background);
         appIcon = (ImageView) findViewById(R.id.app_icon);
+        switch (curAppType){
+            case APP_TYPE_USER:
+                appIcon.setBackgroundResource(R.drawable.imageview_border_blue);
+                break;
+            case APP_TYPE_SYS:
+                appIcon.setBackgroundResource(R.drawable.imageview_border_red);
+                break;
+            case APP_TYPE_BACKUP:
+                appIcon.setBackgroundResource(R.drawable.imageview_border_orange);
+                break;
+        }
+        
+        
+        
         contentRootView = findViewById(R.id.content_root);
         rootScrollView = (ObservableScrollView) findViewById(R.id.root_scroll_view);
         
