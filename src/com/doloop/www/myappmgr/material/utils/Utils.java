@@ -803,6 +803,8 @@ public class Utils {
     }
 
     public static Drawable ZoomDrawable(Bitmap bitmap, Context ctx) {
+        if(bitmap == null) return null;
+        
         int width = bitmap.getWidth();// drawable.getIntrinsicWidth();
         int height = bitmap.getHeight();// drawable.getIntrinsicHeight();
         int scale =
