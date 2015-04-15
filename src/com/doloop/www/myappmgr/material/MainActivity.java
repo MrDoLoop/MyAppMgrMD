@@ -477,6 +477,7 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
 
         SysAppFullList.clear();
         UserAppFullList.clear();
+        SysAppFullListWapper.clear();
         unregisterReceivers();
         EventBus.getDefault().unregister(this);
         AppUpdateStaticReceiver.handleEvent = true;
