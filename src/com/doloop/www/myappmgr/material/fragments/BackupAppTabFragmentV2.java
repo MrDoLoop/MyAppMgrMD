@@ -246,13 +246,21 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
         setRetainInstance(false);
         setHasOptionsMenu(false);
 
+       /* if (getLoaderManager().getLoader(LOADER_ID) == null) {
+            getLoaderManager().initLoader(LOADER_ID, null, this);
+        } else {
+            getLoaderManager().restartLoader(0, null, this);
+        }*/
+    }
+
+    public void startLoader(){
         if (getLoaderManager().getLoader(LOADER_ID) == null) {
             getLoaderManager().initLoader(LOADER_ID, null, this);
         } else {
             getLoaderManager().restartLoader(0, null, this);
         }
     }
-
+    
     // Called at the start of the visible lifetime.
     @Override
     public void onStart() {

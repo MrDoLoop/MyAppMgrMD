@@ -1033,7 +1033,7 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
             usrAppsFrg.setData(UserAppFullList);
 
             sysAppsFrg.setData(SysAppFullListWapper, mSectionInListPosMap);
-
+            backupAppsFrg.startLoader();
             mPagerSlidingTabStrip.notifyDataSetChanged();
             registerReceivers();
         }

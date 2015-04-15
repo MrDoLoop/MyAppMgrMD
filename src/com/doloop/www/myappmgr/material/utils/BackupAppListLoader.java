@@ -16,6 +16,8 @@ import android.util.Log;
 import android.view.View;
 
 import com.doloop.www.myappmgr.material.dao.AppInfo;
+import com.doloop.www.myappmgr.material.dao.DaoSession;
+import com.doloop.www.myappmgr.material.dao.DaoUtils;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.AnimatorListenerAdapter;
 import com.nineoldandroids.animation.ObjectAnimator;
@@ -141,6 +143,7 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
      */
     @Override
     public ArrayList<AppInfo> loadInBackground() {
+        //long startTime = System.currentTimeMillis();
         //后台加载
         /*try {
             Thread.sleep(20000);
@@ -170,6 +173,9 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
             PackageInfo packageInfo;
             if (files.length > 0) {
                 Arrays.sort(files, LastModifiedFileComparator.LASTMODIFIED_REVERSE);
+                DaoSession appInfoSession = DaoUtils.getDaoSession(getContext(), false);
+                ArrayList<AppInfo> mBaseList = (ArrayList<AppInfo>) appInfoSession.getAppInfoDao().loadAll();
+                
                 for (File file : files) {
 
                     packageInfo = pkgMgr.getPackageArchiveInfo(file.getAbsolutePath(), PackageManager.GET_ACTIVITIES);
@@ -182,10 +188,19 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
                         if (mLoadInBackgroundCanceled) {
                             entries.clear();
                             entries = new ArrayList<AppInfo>(files.length);
+                            mBaseList.clear();
+                            appInfoSession.clear();
                             break;
                         }
                         
-                        appInfo = Utils.buildAppInfoEntry(getContext(), packageInfo, pkgMgr, false, false);
+                        int appPos = Utils.isAppInfoInList(packageInfo, mBaseList);
+                        if(appPos != -1){
+                            appInfo = mBaseList.get(appPos);
+                        }
+                        else{
+                            appInfo = Utils.buildAppInfoEntry(getContext(), packageInfo, pkgMgr, false, false);
+                        }
+                        //appInfo = Utils.buildAppInfoEntry(getContext(), packageInfo, pkgMgr, false, false);
                         appInfo.backupFilePath = file.getAbsolutePath();
                         //加载本地文件之后,属性和本地文件的apk保持一致
                         appInfo.lastBackUpRawTime = appInfo.lastModifiedRawTime;
@@ -199,13 +214,16 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
                         appInfo.iconBitmap = null;
                     }
                 }
+                mBaseList.clear();
+                appInfoSession.clear();
             }
         }
        
-        if(mLoaderBackgroundMoreWorkListener != null){
+        if(!mLoadInBackgroundCanceled && mLoaderBackgroundMoreWorkListener != null){
             mLoaderBackgroundMoreWorkListener.onLoaderBckgrdIsAboutToDeliver(entries);
         }
-       
+        //long endTime = System.currentTimeMillis();
+        //L.d("load time: "+ (endTime - startTime));
         return entries;
     }
 
