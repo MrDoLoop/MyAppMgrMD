@@ -59,6 +59,7 @@ import com.nineoldandroids.view.ViewPropertyAnimator;
 import com.nispok.snackbar.Snackbar;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.readystatesoftware.systembartint.SystemBarTintManager.SystemBarConfig;
+import com.squareup.picasso.Picasso;
 
 import de.greenrobot.event.EventBus;
 
@@ -116,6 +117,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
         headerImgView = (KenBurnsSupportView) findViewById(R.id.header_image);
         headerImgView.setResourceIds(R.drawable.ic_user_background, R.drawable.background);
         appIcon = (ImageView) findViewById(R.id.app_icon);
+        Picasso.with(AppDetailActivity.this).load(curAppInfo.getAppIconCachePath(AppDetailActivity.this)).noFade().into(appIcon);
         switch (curAppType){
             case APP_TYPE_USER:
                 appIcon.setBackgroundResource(R.drawable.imageview_border_blue);
@@ -257,8 +259,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
 
             TextView appName = (TextView) findViewById(R.id.app_name);
             appName.setText(curAppInfo.appName);
-            appIcon = (ImageView) findViewById(R.id.app_icon);
-            appIcon.setImageDrawable(Utils.getIconDrawable(this, curAppInfo.packageName));
+            //appIcon.setImageBitmap(curAppInfo.iconBitmap);
             appIcon.setOnClickListener(new View.OnClickListener() {
                 
                 @Override
@@ -414,7 +415,12 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                 itemsWapper.add(new FilterMenuItemWapper(R.drawable.share_white, SEND_ACTION));
                 break;
             case APP_TYPE_BACKUP:
-                itemsWapper.add(new FilterMenuItemWapper(R.drawable.play_white, INSTALL_ACTION));
+                itemsWapper.add(new FilterMenuItemWapper(R.drawable.qq, INSTALL_ACTION));
+                
+                if(Utils.canBackupAppLaunch(AppDetailActivity.this, curAppInfo)) {
+                    itemsWapper.add(new FilterMenuItemWapper(R.drawable.play_white, OPEN_ACTION));
+                }
+                
                 itemsWapper.add(new FilterMenuItemWapper(R.drawable.delete_white2, DELETE_ACTION));
                 itemsWapper.add(new FilterMenuItemWapper(R.drawable.share_white, SEND_ACTION));
                 break;  
@@ -428,17 +434,9 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                        if(itemWapper.MenuTag.equalsIgnoreCase(OPEN_ACTION)) {
                            if (Constants.MY_PACKAGE_NAME.equals(curAppInfo.packageName))// 避免再次启动自己app
                            {
-                               MainActivity.T("You catch me!! NAN Made app");
+                               MainActivity.T(R.string.launch_myself);
                            } else {
-                               Intent intent = getPackageManager().getLaunchIntentForPackage(
-                                       curAppInfo.packageName);
-                               if (intent != null) {
-                                   try {
-                                       startActivity(intent);
-                                   } catch (Exception e) {
-                                       MainActivity.T(R.string.launch_fail);
-                                   }
-                               } else {
+                               if(!Utils.launchApp(AppDetailActivity.this, curAppInfo)) {
                                    MainActivity.T(R.string.launch_fail);
                                }
                            }
@@ -570,6 +568,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
     @Override
     protected void onDestroy() {
         // TODO Auto-generated method stub
+        curAppInfo.iconBitmap = null;
         curAppInfo = null;
         EventBus.getDefault().unregister(this);
         super.onDestroy();

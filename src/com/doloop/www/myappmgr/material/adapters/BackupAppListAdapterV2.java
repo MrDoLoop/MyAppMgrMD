@@ -7,17 +7,12 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.support.v7.app.ActionBar.LayoutParams;
-import android.support.v7.widget.ListPopupWindow;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -31,6 +26,8 @@ import com.doloop.www.myappmgr.material.fragments.BackupAppTabFragmentV2;
 import com.doloop.www.myappmgr.material.interfaces.IPopupMenuClickListener;
 import com.doloop.www.myappmgr.material.interfaces.IconClickListener;
 import com.doloop.www.myappmgr.material.utils.Constants;
+import com.doloop.www.myappmgr.material.utils.PopupListMenu;
+import com.doloop.www.myappmgr.material.utils.PopupListMenu.POPUP_MENU_LIST_ITEM;
 import com.doloop.www.myappmgr.material.utils.Utils;
 import com.doloop.www.myappmgr.material.widgets.RoundCornerProgressBar;
 import com.nineoldandroids.animation.AnimatorSet;
@@ -551,12 +548,33 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
             int pos = (Integer) v.getTag();
             mIconClickListener.OnIconClick(pos);
         }
-        else if(viewId == R.id.item_menu){
-            final int pos = (Integer) v.getTag();
+        else if(viewId == R.id.item_menu) {
+            int pos = (Integer) v.getTag();
             
-            final ListPopupWindow mListPopupWindow = new ListPopupWindow(mCtx);
-            final String itmes[]={mCtx.getString(R.string.install),mCtx.getString(R.string.delete),
-                    mCtx.getString(R.string.google_play),mCtx.getString(R.string.share)};
+            ArrayList<POPUP_MENU_LIST_ITEM> menuItems = new ArrayList<POPUP_MENU_LIST_ITEM>();
+            menuItems.add(POPUP_MENU_LIST_ITEM.INSTALL);
+            if(Utils.canBackupAppLaunch(mCtx, mAppListDisplay.get(pos))){
+                menuItems.add(POPUP_MENU_LIST_ITEM.OPEN);
+            }
+            menuItems.add(POPUP_MENU_LIST_ITEM.DELETE);
+            menuItems.add(POPUP_MENU_LIST_ITEM.MARKET);
+            menuItems.add(POPUP_MENU_LIST_ITEM.SHARE);
+            
+            PopupListMenu listMenu = new PopupListMenu(mCtx,menuItems,v,pos,mAppListDisplay.get(pos),mIPopupMenuClickListener);
+            listMenu.show();
+/*            final ListPopupWindow mListPopupWindow = new ListPopupWindow(mCtx);
+            final String itmes[];
+            if(Utils.canBackupAppLaunch(mCtx, mAppListDisplay.get(pos))){
+                itmes = new String[]{mCtx.getString(R.string.open), mCtx.getString(R.string.install),mCtx.getString(R.string.delete),
+                        mCtx.getString(R.string.google_play),mCtx.getString(R.string.share)};
+            }
+            else{
+                itmes = new String[]{mCtx.getString(R.string.install),mCtx.getString(R.string.delete),
+                        mCtx.getString(R.string.google_play),mCtx.getString(R.string.share)};
+            }
+            
+            
+            
             //mListPopupWindow.setAdapter(new ArrayAdapter<String>(mCtx, android.R.layout.simple_list_item_1, itmes));
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(mCtx, R.layout.popup_menu_item, itmes);
             mListPopupWindow.setAdapter(adapter);
@@ -574,7 +592,7 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
             
             mListPopupWindow.setHeight(LayoutParams.WRAP_CONTENT);
             mListPopupWindow.setModal(false);
-            mListPopupWindow.show();
+            mListPopupWindow.show();*/
         }
         
         /*AppInfo appInfo = null;

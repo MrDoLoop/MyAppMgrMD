@@ -53,7 +53,9 @@ import com.doloop.www.myappmgr.material.interfaces.IPopupMenuClickListener;
 import com.doloop.www.myappmgr.material.interfaces.IconClickListener;
 import com.doloop.www.myappmgr.material.unused.BackupAppDeletedEvent;
 import com.doloop.www.myappmgr.material.utils.BackupAppListLoader;
+import com.doloop.www.myappmgr.material.utils.Constants;
 import com.doloop.www.myappmgr.material.utils.BackupAppListLoader.LoaderBckgrdIsAboutToDeliverListener;
+import com.doloop.www.myappmgr.material.utils.PopupListMenu.POPUP_MENU_LIST_ITEM;
 import com.doloop.www.myappmgr.material.utils.Utils;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.AnimatorListenerAdapter;
@@ -1007,9 +1009,42 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
     }
 
     @Override
-    public void OnPopupMenuClick(int menuListPos, int appListPos, AppInfo appInfo) {
+    public void OnPopupMenuClick(POPUP_MENU_LIST_ITEM menuItem, int menuListPos, int appListPos, AppInfo appInfo) {
         // TODO Auto-generated method stub
-        switch (menuListPos){
+        switch (menuItem) {
+            case INSTALL:
+                if (TextUtils.isEmpty(appInfo.backupFilePath)) {
+                    Utils.installAPK(getActivity(), appInfo.apkFilePath);
+                } else {
+                    Utils.installAPK(getActivity(), appInfo.backupFilePath);
+                }
+                break;
+            case OPEN:
+                if(Constants.MY_PACKAGE_NAME.equals(appInfo.packageName)) {
+                    MainActivity.T(R.string.launch_myself);
+                }
+                else{
+                    if(!Utils.launchApp(getActivity(), appInfo)) {
+                        MainActivity.T(R.string.launch_fail);
+                    }
+                }
+                break;
+            case DELETE:
+                View childView = mListView.getChildAt(appListPos - mListView.getFirstVisiblePosition());
+                if(childView != null){
+                    runDeleteItemAni(childView ,appListPos);
+                }
+                break;
+            case MARKET:
+                Utils.startMarketSearch(getActivity(), appInfo);
+                break;
+            case SHARE:
+                Utils.chooseSendByApp(getActivity(), Uri.parse("file://" + appInfo.apkFilePath));
+                break;
+            default:
+                break;
+        }
+       /* switch (menuListPos){
             case 0://install
                 if (TextUtils.isEmpty(appInfo.backupFilePath)) {
                     Utils.installAPK(getActivity(), appInfo.apkFilePath);
@@ -1029,7 +1064,7 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
             case 3://send
                 Utils.chooseSendByApp(getActivity(), Uri.parse("file://" + appInfo.apkFilePath));
                 break;
-        }
+        }*/
     }
     
 }

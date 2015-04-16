@@ -235,7 +235,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                             case R.id.openActionLayout:
                                 if (thisAppPackageName.equals(targetpackageName))// 避免再次启动自己app
                                 {
-                                    MainActivity.T("You catch me!! NAN Made app");
+                                    MainActivity.T(R.string.launch_myself);
                                 } else {
                                     if(!Utils.launchApp(getActivity(), selectItem)){
                                         MainActivity.T(R.string.launch_fail);

@@ -109,6 +109,14 @@ public class Utils {
         Intent intent = ctx.getPackageManager().getLaunchIntentForPackage(appInfo.packageName);
         if (intent != null) {
             try {
+                //检查自己
+//                if(Constants.MY_PACKAGE_NAME.equals(appInfo.packageName)) {
+//                    //启动了自己
+//                }
+//                else{
+//                    ctx.startActivity(intent);
+//                }
+                
                 ctx.startActivity(intent);
                 return true;
             } catch (Exception e) {
