@@ -430,7 +430,7 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
         sdcardIntentFilter.addDataScheme("file");
         registerReceiver(mSdcardUpdateReceiver, sdcardIntentFilter);
 
-        new GetApps().execute(false);
+        new GetApps(false, true).execute();
     }
 
     @Override
@@ -762,12 +762,20 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
 
     }
 
-    private class GetApps extends AsyncTask<Boolean, Integer, Void> {
+    private class GetApps extends AsyncTask<Void, Integer, Void> {
         private List<PackageInfo> packages;
         private PackageManager pManager;
         private String curAppName;
         private int fullAppListSize;
-
+        private boolean mClearDB = false;
+        private boolean mStartLoadingBackupApp = false;
+        
+        public GetApps(boolean clearDB,boolean startLoadingBackupApp)
+        {
+            mClearDB = clearDB;
+            mStartLoadingBackupApp = startLoadingBackupApp;
+        }
+        
         @Override
         protected void onProgressUpdate(Integer...values) {
             // TODO Auto-generated method stub
@@ -784,7 +792,10 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
         @Override
         protected void onPreExecute() {
             unregisterReceivers();
-
+            if(backupAppsFrg.isLoadingRunning()) { 
+                backupAppsFrg.cancelLoading(); 
+                mStartLoadingBackupApp = true;
+            }
             // DismissDialog(SortTypeDialog);
             // DismissDialog(UserAppListMoreActionDialog);
             // DismissDialog(SelectionDialog);
@@ -803,7 +814,7 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
         }
 
         @Override
-        protected Void doInBackground(Boolean...params) {
+        protected Void doInBackground(Void...params) {
             // 用于显示用户app的list
             UserAppFullList.clear();
             // 用于显示系统app的list
@@ -835,7 +846,7 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
                 }
             } else {
                 boolean deleteAllAppInfoDone = false;
-                if (params[0]) {
+                if (mClearDB) {
                     DaoUtils.deleteAllAppInfo(thisActivityCtx);
                     deleteAllAppInfoDone = true;
                 }
@@ -1034,7 +1045,10 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
             usrAppsFrg.setData(UserAppFullList);
 
             sysAppsFrg.setData(SysAppFullListWapper, mSectionInListPosMap);
-            backupAppsFrg.startLoader();
+            if(mStartLoadingBackupApp){
+                backupAppsFrg.startLoader();
+            }
+            
             mPagerSlidingTabStrip.notifyDataSetChanged();
             registerReceivers();
         }
@@ -1164,7 +1178,7 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
         // mDrawerItemClickEvent = ev;
         switch (ev.DrawerItem) {
             case REFRESH:
-                new GetApps().execute(true);
+                new GetApps(true,false).execute();
                 // also refresh backupTab
                 /*
                  * if(backupAppsFrg.isLoadingRunning()){ backupAppsFrg.cancelLoading(); } backupAppsFrg.forceReLoad();

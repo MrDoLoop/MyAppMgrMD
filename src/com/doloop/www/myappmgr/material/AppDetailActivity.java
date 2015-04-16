@@ -415,12 +415,10 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                 itemsWapper.add(new FilterMenuItemWapper(R.drawable.share_white, SEND_ACTION));
                 break;
             case APP_TYPE_BACKUP:
-                itemsWapper.add(new FilterMenuItemWapper(R.drawable.qq, INSTALL_ACTION));
-                
                 if(Utils.canBackupAppLaunch(AppDetailActivity.this, curAppInfo)) {
                     itemsWapper.add(new FilterMenuItemWapper(R.drawable.play_white, OPEN_ACTION));
                 }
-                
+                itemsWapper.add(new FilterMenuItemWapper(R.drawable.add_white, INSTALL_ACTION));
                 itemsWapper.add(new FilterMenuItemWapper(R.drawable.delete_white2, DELETE_ACTION));
                 itemsWapper.add(new FilterMenuItemWapper(R.drawable.share_white, SEND_ACTION));
                 break;  
