@@ -84,7 +84,7 @@
 	<string name="share">分享</string>
 	<string name="open_soure_license">开源代码许可</string>
 	<string name="thx_github">感谢Github和Stackoverflow上的各种大神们!</string>
-	
 	<string name="copy_right">版权所有 \u00A9 2015 草 \u00B7 创 团队</string>
+	<string name="launch_myself">You catch me!! NAN Made app</string>
 	
 </resources>
