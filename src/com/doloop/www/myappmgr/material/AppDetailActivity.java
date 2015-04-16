@@ -566,7 +566,10 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
     @Override
     protected void onDestroy() {
         // TODO Auto-generated method stub
-        curAppInfo.iconBitmap = null;
+        if(curAppInfo != null){
+            curAppInfo.iconBitmap = null;
+        }
+        
         curAppInfo = null;
         EventBus.getDefault().unregister(this);
         super.onDestroy();
