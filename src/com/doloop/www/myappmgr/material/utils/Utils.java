@@ -71,6 +71,30 @@ import com.doloop.www.myappmgr.material.fragments.SortTypeDialogFragment;
 
 public class Utils {
 
+    public static boolean canBackupAppLaunch(Context ctx, AppInfo appInfo){
+        try {
+            PackageManager pm = ctx.getPackageManager();
+            PackageInfo packageInfo = pm.getPackageInfo(appInfo.packageName, 0);
+            if(packageInfo != null){
+                Intent intent = pm.getLaunchIntentForPackage(appInfo.packageName);
+                if (intent != null) {
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            }
+            else{
+                return false;
+            }
+            
+        } catch (NameNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
+        
+    } 
+    
     public static boolean canLaunch(Context ctx, AppInfo appInfo){
         Intent intent = ctx.getPackageManager().getLaunchIntentForPackage(appInfo.packageName);
         if (intent != null) {
