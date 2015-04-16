@@ -550,12 +550,11 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
         }
         else if(viewId == R.id.item_menu) {
             int pos = (Integer) v.getTag();
-            
             ArrayList<POPUP_MENU_LIST_ITEM> menuItems = new ArrayList<POPUP_MENU_LIST_ITEM>();
-            menuItems.add(POPUP_MENU_LIST_ITEM.INSTALL);
             if(Utils.canBackupAppLaunch(mCtx, mAppListDisplay.get(pos))){
                 menuItems.add(POPUP_MENU_LIST_ITEM.OPEN);
             }
+            menuItems.add(POPUP_MENU_LIST_ITEM.INSTALL);
             menuItems.add(POPUP_MENU_LIST_ITEM.DELETE);
             menuItems.add(POPUP_MENU_LIST_ITEM.MARKET);
             menuItems.add(POPUP_MENU_LIST_ITEM.SHARE);
