@@ -432,6 +432,11 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
 
                     @Override
                     public void onMenuItemClick(View view, int position, FilterMenuItemWapper itemWapper) {
+                        
+                        if(curAppInfo == null){
+                            return;
+                        } 
+                        
                        if(itemWapper.MenuTag.equalsIgnoreCase(OPEN_ACTION)) {
                            if (Constants.MY_PACKAGE_NAME.equals(curAppInfo.packageName))// 避免再次启动自己app
                            {
@@ -705,5 +710,14 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
     public void onUpOrCancelMotionEvent(ScrollState scrollState) {
         // TODO Auto-generated method stub
 
+    }
+    
+    
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // Save UI state changes to the savedInstanceState.
+        // This bundle will be passed to onCreate, onCreateView, and
+        // onCreateView if the parent Activity is killed and restarted.
+        // super.onSaveInstanceState(savedInstanceState);
     }
 }
