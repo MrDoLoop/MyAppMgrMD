@@ -445,7 +445,10 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
         
     }
     
-    public boolean isLoadingRunning(){
+    public boolean isLoadingRunning() {
+        if(mBackupAppListLoader == null) {
+            return false;
+        }
         return mBackupAppListLoader.isLoadingRunning();
     }
     
@@ -1044,27 +1047,6 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
             default:
                 break;
         }
-       /* switch (menuListPos){
-            case 0://install
-                if (TextUtils.isEmpty(appInfo.backupFilePath)) {
-                    Utils.installAPK(getActivity(), appInfo.apkFilePath);
-                } else {
-                    Utils.installAPK(getActivity(), appInfo.backupFilePath);
-                }
-                break;
-            case 1:
-                View childView = mListView.getChildAt(appListPos - mListView.getFirstVisiblePosition());
-                if(childView != null){
-                    runDeleteItemAni(childView ,appListPos);
-                }
-                break;
-            case 2://market search
-                Utils.startMarketSearch(getActivity(), appInfo);
-                break;  
-            case 3://send
-                Utils.chooseSendByApp(getActivity(), Uri.parse("file://" + appInfo.apkFilePath));
-                break;
-        }*/
     }
     
 }
