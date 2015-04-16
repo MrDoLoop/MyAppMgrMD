@@ -106,7 +106,10 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_details);
-        
+        if(curAppInfo == null){
+            finish();
+            return; 
+        } 
         EventBus.getDefault().register(this);
         
         curAppType = getIntent().getIntExtra(APP_TYPE, APP_TYPE_USER);
