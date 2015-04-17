@@ -1,5 +1,6 @@
 package com.doloop.www.myappmgr.material.adapters;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -41,13 +42,17 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
     private static final int TYPE_ITEM = 1;
     // private RoundCornerProgressBar mHeaderProcessbar;
     private HeaderViewHolder mHeaderViewHolder;
-    private boolean mIsDataInit = false;
+    //private boolean mIsDataInit = false;
 
     private ArrayList<AppInfo> mAppListDisplay;
     private ArrayList<AppInfo> mAppListFull;
     private Context mCtx;
 
     private int selectedCnt = 0;
+    
+    private static final int HEADER_DISPLAY_SIZE = 0;
+    private static final int HEADER_DISPLAY_PERCENTAGE = 1;
+    private int CUR_HEADER_DISPLAY = HEADER_DISPLAY_SIZE;
     
     private IconClickListener mIconClickListener;
     private IPopupMenuClickListener mIPopupMenuClickListener;
@@ -181,7 +186,7 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
 
     public BackupAppListAdapterV2(Context ctx, ArrayList<AppInfo> appList,IconClickListener l1, IPopupMenuClickListener l2) {
         appList.add(0, AppInfo.DUMMY_APPINFO);
-        mIsDataInit = false;
+        //mIsDataInit = false;
         mAppListFull = mAppListDisplay = appList;
         mCtx = ctx;
         mIconClickListener = l1;
@@ -190,7 +195,7 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
 
     public void setDataSource(ArrayList<AppInfo> appList) {
         appList.add(0, AppInfo.DUMMY_APPINFO);
-        mIsDataInit = true;
+        //mIsDataInit = true;
         mAppListFull = mAppListDisplay = appList;
     }
 
@@ -282,7 +287,7 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
 
         int viewType = getItemViewType(position);
         final ItemViewHolder itemHolder;
-        HeaderViewHolder headerHolder;
+        final HeaderViewHolder headerHolder;
 
         if (viewType == TYPE_HEADER) {
             if (convertView == null) {
@@ -291,7 +296,7 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
 
                 headerHolder.headerProcessbar = (RoundCornerProgressBar) convertView.findViewById(R.id.capacity_bar);
                 headerHolder.textLinear = (LinearLayout) convertView.findViewById(R.id.textLinear);
-                headerHolder. backupDirTv = (TextView) convertView.findViewById(R.id.textBackupDir);
+                headerHolder.backupDirTv = (TextView) convertView.findViewById(R.id.textBackupDir);
                 headerHolder.sdUsedTv = (TextView) convertView.findViewById(R.id.textSdUsed);
                 headerHolder.sdTotalTv = (TextView) convertView.findViewById(R.id.textSdTotal);
                 headerHolder.RootLayout = (LinearLayout) convertView.findViewById(R.id.bgLayout);
@@ -299,8 +304,20 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
 
                     @Override
                     public void onClick(View v) {
-
-                        AnimatorSet AniSet1 = buildHeaderTextItemAni(mHeaderViewHolder.backupDirTv);
+                        
+                        if(CUR_HEADER_DISPLAY == HEADER_DISPLAY_SIZE){
+                            CUR_HEADER_DISPLAY = HEADER_DISPLAY_PERCENTAGE;
+                        }
+                        else if(CUR_HEADER_DISPLAY == HEADER_DISPLAY_PERCENTAGE)
+                        {
+                            CUR_HEADER_DISPLAY = HEADER_DISPLAY_SIZE;
+                        }
+                        
+                        AnimatorSet AniSetTxtLinear = buildHeaderTextItemAni(mHeaderViewHolder.textLinear);
+                        AniSetTxtLinear.start();
+                        processHeaderTxtDisplay(headerHolder);
+                        
+                       /* AnimatorSet AniSet1 = buildHeaderTextItemAni(mHeaderViewHolder.backupDirTv);
                         AnimatorSet AniSet2 = buildHeaderTextItemAni(mHeaderViewHolder.sdUsedTv);
                         AnimatorSet AniSet3 = buildHeaderTextItemAni(mHeaderViewHolder.sdTotalTv);
 
@@ -308,8 +325,17 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
                         AniSet2.setStartDelay(200);
                         AniSet2.start();
                         AniSet3.setStartDelay(400);
-                        AniSet3.start();
+                        AniSet3.addListener(new AnimatorListenerAdapter(){
 
+                            @Override
+                            public void onAnimationStart(Animator animation) {
+                                // TODO Auto-generated method stub
+                                processHeaderTxtDisplay(headerHolder);
+                            }
+                            
+                        });
+                        AniSet3.start();*/
+                        
                         float[] progressInfo = getHeaderProgress();
                         float process = progressInfo[0];
                         float secProcess = progressInfo[1];
@@ -322,7 +348,7 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
                 headerHolder = (HeaderViewHolder) convertView.getTag();
             }
             
-            String[] sdUsedInfo = Utils.getSdUsedSpaceInfo();
+            /*String[] sdUsedInfo = Utils.getSdUsedSpaceInfo();
             String[] sdTotalInfo = Utils.getSdTotalSpaceInfo();
             String[] backupDirInfo = Utils.calculateTotalFileInfo(mAppListFull);
 
@@ -331,10 +357,11 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
             }
             else{
                 headerHolder.backupDirTv.setText(mCtx.getString(R.string.back_dir) + "\n" + "---" );
-            }
-            
+            }*/
+            processHeaderTxtDisplay(headerHolder);
+            /*headerHolder.backupDirTv.setText(mCtx.getString(R.string.back_dir) + "\n" + backupDirInfo[1]);
             headerHolder.sdUsedTv.setText(mCtx.getString(R.string.sd_used) + "\n" + sdUsedInfo[1]);
-            headerHolder.sdTotalTv.setText(mCtx.getString(R.string.sd_total) + "\n" + sdTotalInfo[1]);
+            headerHolder.sdTotalTv.setText(mCtx.getString(R.string.sd_total) + "\n" + sdTotalInfo[1]);*/
 
             float[] progressInfo = getHeaderProgress();
             float process = progressInfo[0];
@@ -651,4 +678,26 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
         return maxWidth;
     }*/
 
+    
+    private void processHeaderTxtDisplay(HeaderViewHolder headerHolder){
+        String[] sdUsedInfo = Utils.getSdUsedSpaceInfo();
+        String[] sdTotalInfo = Utils.getSdTotalSpaceInfo();
+        String[] backupDirInfo = Utils.calculateTotalFileInfo(mAppListFull);
+        
+        if(CUR_HEADER_DISPLAY == HEADER_DISPLAY_SIZE){
+            headerHolder.backupDirTv.setText(mCtx.getString(R.string.back_dir) + "\n" + backupDirInfo[1]);
+            headerHolder.sdUsedTv.setText(mCtx.getString(R.string.sd_used) + "\n" + sdUsedInfo[1]);
+            headerHolder.sdTotalTv.setText(mCtx.getString(R.string.sd_total) + "\n" + sdTotalInfo[1]);
+        }
+        else if(CUR_HEADER_DISPLAY == HEADER_DISPLAY_PERCENTAGE){
+            DecimalFormat fnum = new DecimalFormat("##0.00"); 
+            
+            headerHolder.backupDirTv.setText(mCtx.getString(R.string.back_dir) + "\n" + 
+                    fnum.format(Float.parseFloat(backupDirInfo[0]) / Float.parseFloat(sdTotalInfo[0]) * 100) + "%");
+            headerHolder.sdUsedTv.setText(mCtx.getString(R.string.sd_used) + "\n" + 
+                    fnum.format(Float.parseFloat(sdUsedInfo[0]) / Float.parseFloat(sdTotalInfo[0]) * 100) + "%");
+            headerHolder.sdTotalTv.setText(mCtx.getString(R.string.sd_total) + "\n" + sdTotalInfo[1]);
+        }
+    }
+    
 }
