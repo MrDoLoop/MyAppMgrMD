@@ -79,6 +79,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
     private Point revealStartPosition;
     private ImageView appIcon;
     private View rootFrame;
+    private ResolveInfo appResolveInfo = null;
     private boolean isBlockedScrollView = false;
 
     private static final String OPEN_ACTION = "OPEN_ACTION";
@@ -252,8 +253,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
 
             Intent intent = getPackageManager().getLaunchIntentForPackage(
                     curAppInfo.packageName);
-            
-            ResolveInfo appResolveInfo = null;
+
             try {
                 appResolveInfo = getPackageManager().resolveActivity(intent, 0);
                 canLaunch = true;
@@ -341,11 +341,51 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
             }
 
             view = rowContainer.findViewById(R.id.row_time_info);
-            fillRow(view, getString(R.string.time_info),
-                    getString(R.string.first_install_time)+"\n"+
-                    Utils.formatTimeDisplayFull(new Date(curAppInfo.firstTimeInstallRaw))+"\n\n"+
-                    getString(R.string.last_updated_time)+"\n"+
-                    Utils.formatTimeDisplayFull(new Date(curAppInfo.lastModifiedRawTime)));
+            if(curAppType == APP_TYPE_BACKUP){
+                fillRow(view, getString(R.string.time_info),
+                        getString(R.string.last_updated_time)+"\n"+
+                        Utils.formatTimeDisplayFull(new Date(curAppInfo.lastBackUpRawTime)));
+            }
+            else{
+                fillRow(view, getString(R.string.time_info),
+                        getString(R.string.last_updated_time)+"\n"+
+                        Utils.formatTimeDisplayFull(new Date(curAppInfo.lastModifiedRawTime)));
+            }
+            
+           /* if(curAppType == APP_TYPE_BACKUP){
+                if(appResolveInfo != null){
+                    PackageInfo packageInfo;
+                    try {
+                        packageInfo = getPackageManager().getPackageInfo(curAppInfo.packageName, 0);
+                        fillRow(view, getString(R.string.time_info),
+                                getString(R.string.first_install_time)+"\n"+
+                                Utils.formatTimeDisplayFull(new Date(packageInfo.firstInstallTime))+"\n\n"+
+                                getString(R.string.last_updated_time)+"\n"+
+                                Utils.formatTimeDisplayFull(new Date(curAppInfo.lastModifiedRawTime)));
+                    } catch (NameNotFoundException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                        fillRow(view, getString(R.string.time_info),
+                                getString(R.string.last_updated_time)+"\n"+
+                                Utils.formatTimeDisplayFull(new Date(curAppInfo.lastModifiedRawTime)));
+                    }
+                }
+                else{
+                    fillRow(view, getString(R.string.time_info),
+                            getString(R.string.last_updated_time)+"\n"+
+                            Utils.formatTimeDisplayFull(new Date(curAppInfo.lastModifiedRawTime)));
+                }
+            }
+            else{
+                fillRow(view, getString(R.string.time_info),
+                        getString(R.string.first_install_time)+"\n"+
+                        Utils.formatTimeDisplayFull(new Date(curAppInfo.firstTimeInstallRaw))+"\n\n"+
+                        getString(R.string.last_updated_time)+"\n"+
+                        Utils.formatTimeDisplayFull(new Date(curAppInfo.lastModifiedRawTime)));
+            }*/
+            
+            
+            
 
             view = rowContainer.findViewById(R.id.row_activity);
             if (appResolveInfo != null) {
@@ -460,7 +500,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                        }
                        else if(itemWapper.MenuTag.equalsIgnoreCase(BACKUP_ACTION)) {
                            String mBackUpFolder = Utils.getBackUpAPKfileDir(AppDetailActivity.this);
-                           String sdAPKfileName = Utils.BackupApp(curAppInfo, mBackUpFolder);
+                           String sdAPKfileName = Utils.BackupApp(AppDetailActivity.this,curAppInfo, mBackUpFolder);
                            if (sdAPKfileName != null) {
                                SpannableString spanString =
                                        new SpannableString(curAppInfo.appName + " "
@@ -499,8 +539,15 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                            }
                        }
                         else if(itemWapper.MenuTag.equalsIgnoreCase(SEND_ACTION)) {
-                            String BACK_UP_FOLDER = Utils.getBackUpAPKfileDir(AppDetailActivity.this);
-                            String sdApkfileName = Utils.BackupApp(curAppInfo, BACK_UP_FOLDER);
+                            if(curAppType == APP_TYPE_BACKUP){
+                                Utils.chooseSendByApp(AppDetailActivity.this, Uri.parse("file://" + curAppInfo.backupFilePath));
+                            }
+                            else{
+                                Utils.chooseSendByApp(AppDetailActivity.this, Uri.parse("file://" + curAppInfo.apkFilePath));
+                            }
+                            
+                            /*String BACK_UP_FOLDER = Utils.getBackUpAPKfileDir(AppDetailActivity.this);
+                            String sdApkfileName = Utils.BackupApp(AppDetailActivity.this, curAppInfo, BACK_UP_FOLDER);
                             if (sdApkfileName != null) {
                                 ArrayList<AppInfo> list = new ArrayList<AppInfo>();
                                 list.add(curAppInfo);
@@ -508,7 +555,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                                 Utils.chooseSendByApp(AppDetailActivity.this, Uri.parse("file://" + sdApkfileName));
                             } else {
                                 MainActivity.T(R.string.error);
-                            }
+                            }*/
                         }
                         else if(itemWapper.MenuTag.equalsIgnoreCase(INSTALL_ACTION)) {
                               if (TextUtils.isEmpty(curAppInfo.backupFilePath)) {

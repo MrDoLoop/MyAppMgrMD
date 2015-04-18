@@ -1,8 +1,10 @@
 package com.doloop.www.myappmgr.material.utils;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.comparator.LastModifiedFileComparator;
@@ -175,7 +177,7 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
                 Arrays.sort(files, LastModifiedFileComparator.LASTMODIFIED_REVERSE);
                 DaoSession appInfoSession = DaoUtils.getDaoSession(getContext(), false);
                 ArrayList<AppInfo> mBaseList = (ArrayList<AppInfo>) appInfoSession.getAppInfoDao().loadAll();
-                
+                SimpleDateFormat simpleDateFormat = Utils.getLocalDataDigitalDisplayFormat();
                 for (File file : files) {
 
                     packageInfo = pkgMgr.getPackageArchiveInfo(file.getAbsolutePath(), PackageManager.GET_ACTIVITIES);
@@ -205,8 +207,10 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
                         appInfo.apkFilePath = file.getAbsolutePath();
                         appInfo.backupFilePath = file.getAbsolutePath();
                         //加载本地文件之后,属性和本地文件的apk保持一致
-                        appInfo.lastBackUpRawTime = appInfo.lastModifiedRawTime;
-                        appInfo.lastBackUpTimeStr = appInfo.lastModifiedTimeStr;       
+                        appInfo.lastBackUpRawTime = file.lastModified();
+                        appInfo.lastBackUpTimeStr = simpleDateFormat.format(new Date(file.lastModified()));  
+                        appInfo.lastModifiedRawTime = file.lastModified();
+                        appInfo.lastModifiedTimeStr = simpleDateFormat.format(new Date(file.lastModified()));   
                         entries.add(appInfo);
                         
                         if(!Utils.isAppIconOnSd(getContext(),appInfo)){
