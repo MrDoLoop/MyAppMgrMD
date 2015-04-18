@@ -402,22 +402,16 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
 //                    aInfo.lastBackUpRawTime = date.getTime();
 //                    aInfo.lastBackUpTimeStr = Utils.formatTimeDisplay(date);
                     mAppList.add(aInfo);
-                    Utils.sortBackUpAppList(mContext, mAppList);
-                    
-                    newBackupAppPos = mAppList.indexOf(aInfo);
-                   
-                    mAdapter.notifyDataSetChanged();
                 }
                 else{
 //                    Date date = new Date();
 //                    aInfo.lastBackUpRawTime = date.getTime();
 //                    aInfo.lastBackUpTimeStr = Utils.formatTimeDisplay(date);
                     mAppList.set(pos, aInfo);
-                    Utils.sortBackUpAppList(mContext, mAppList);
-                    mAdapter.notifyDataSetChanged();
-                    
-                    newBackupAppPos = pos;
                 }
+                Utils.sortBackUpAppList(mContext, mAppList);
+                newBackupAppPos = mAppList.indexOf(aInfo);
+                mAdapter.notifyDataSetChanged();
             }
             
         } else {// loading 没有结束
