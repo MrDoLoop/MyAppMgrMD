@@ -1036,7 +1036,7 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
                 Utils.startMarketSearch(getActivity(), appInfo);
                 break;
             case SHARE:
-                Utils.chooseSendByApp(getActivity(), Uri.parse("file://" + appInfo.apkFilePath));
+                Utils.chooseSendByApp(getActivity(), Uri.parse("file://" + appInfo.backupFilePath));
                 break;
             default:
                 break;
