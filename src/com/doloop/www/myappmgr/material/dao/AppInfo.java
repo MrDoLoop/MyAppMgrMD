@@ -80,6 +80,33 @@ public class AppInfo {
         return false;
     }
     
+    public boolean getIsSysApp() {
+        return isSysApp;
+    }
+
+    public void setIsSysApp(boolean isSysApp) {
+        this.isSysApp = isSysApp;
+    }
+
+    public void print() {
+        Log.v("app", "Name:" + appName + " Package:" + packageName);
+        Log.v("app", "Name:" + appName + " versionName:" + versionName);
+        Log.v("app", "Name:" + appName + " versionCode:" + versionCode);
+    }
+
+    public String getBackupFileName_pkgName()
+    {
+        return packageName+"_v"+versionName+".apk";
+    }
+    
+    public String getBackupFileName_AppName()
+    {
+        return appName+"_v"+versionName+".apk";
+    }
+    
+    public File getAppIconCachePath(Context context){
+        return new File(Utils.getAppIconCacheDir(context), packageName + "-" +versionCode +".png");
+    }
     
     ////////////////
     
@@ -230,32 +257,6 @@ public class AppInfo {
         this.apkFilePath = apkFilePath;
     }
 
-    public boolean getIsSysApp() {
-        return isSysApp;
-    }
-
-    public void setIsSysApp(boolean isSysApp) {
-        this.isSysApp = isSysApp;
-    }
-
-    public void print() {
-        Log.v("app", "Name:" + appName + " Package:" + packageName);
-        Log.v("app", "Name:" + appName + " versionName:" + versionName);
-        Log.v("app", "Name:" + appName + " versionCode:" + versionCode);
-    }
-
-    public String getBackupFileName_pkgName()
-    {
-        return packageName+"_v"+versionName+".apk";
-    }
-    
-    public String getBackupFileName_AppName()
-    {
-        return appName+"_v"+versionName+".apk";
-    }
-    
-    public File getAppIconCachePath(Context context){
-        return new File(Utils.getAppIconCacheDir(context), packageName + "-" +versionCode +".png");
-    }
+   
     
 }
