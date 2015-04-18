@@ -42,6 +42,7 @@ import com.doloop.www.myappmgr.material.filtermenu.FilterMenuItemWapper;
 import com.doloop.www.myappmgr.material.filtermenu.FilterMenuLayout;
 import com.doloop.www.myappmgr.material.swipeback.lib.SwipeBackActivity;
 import com.doloop.www.myappmgr.material.unused.BackupAppDeletedEvent;
+import com.doloop.www.myappmgr.material.utils.AppIconRequestHandler;
 import com.doloop.www.myappmgr.material.utils.Constants;
 import com.doloop.www.myappmgr.material.utils.PicassoTools;
 import com.doloop.www.myappmgr.material.utils.ScrimUtil;
@@ -120,7 +121,8 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
         headerImgView = (KenBurnsSupportView) findViewById(R.id.header_image);
         headerImgView.setResourceIds(R.drawable.ic_user_background, R.drawable.background);
         appIcon = (ImageView) findViewById(R.id.app_icon);
-        PicassoTools.getInstance().load(curAppInfo.getAppIconCachePath(AppDetailActivity.this)).error(R.drawable.icon_error).noFade().into(appIcon);
+        PicassoTools.getInstance().load(AppIconRequestHandler.SCHEME_APP_ICON + ":" + curAppInfo.packageName)
+        .error(R.drawable.icon_error).noFade().into(appIcon);
         switch (curAppType){
             case APP_TYPE_USER:
                 appIcon.setBackgroundResource(R.drawable.imageview_border_blue);
