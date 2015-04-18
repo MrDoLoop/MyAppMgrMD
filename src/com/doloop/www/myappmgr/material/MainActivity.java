@@ -483,6 +483,7 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
         unregisterReceivers();
         EventBus.getDefault().unregister(this);
         AppUpdateStaticReceiver.handleEvent = true;
+        toast.cancel();
         toast = null;
         sActionMode = null;
         mSnackbar = null;
@@ -1342,7 +1343,7 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
                     if (UserAppFullList.get(i).packageName.equals(RemovedPkgName)) {
                         targetAppInfo = UserAppFullList.get(i);
                         //Çå³ýPicassoµÄÍ¼±ê»º´æ
-                        PicassoTools.getInstance().invalidate(targetAppInfo.getAppIconCachePath(thisActivityCtx));
+                        PicassoTools.getInstance().invalidate(targetAppInfo.getPicassoScheme());
                         DaoUtils.deleteAppInfo(thisActivityCtx, targetAppInfo);
                         toast.setText(getString(R.string.app_removed_name) + " " + targetAppInfo.appName);
                         UserAppFullList.remove(i);
