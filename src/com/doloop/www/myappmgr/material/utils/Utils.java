@@ -769,7 +769,7 @@ public class Utils {
             tmpInfo.isSysApp = true;
         }
 
-        if (holdAppIcon || saveAppIconOnSd) {
+        /*if (holdAppIcon || saveAppIconOnSd) {
             Bitmap iconBitmap = drawableToBitmap(packageInfo.applicationInfo.loadIcon(pManager));
 
             if (saveAppIconOnSd) {
@@ -780,7 +780,10 @@ public class Utils {
             if (holdAppIcon) {
                 tmpInfo.iconBitmap = iconBitmap;
             }
-        }
+            else{
+                tmpInfo.iconBitmap = null;
+            }
+        }*/
 
         return tmpInfo;
     }
