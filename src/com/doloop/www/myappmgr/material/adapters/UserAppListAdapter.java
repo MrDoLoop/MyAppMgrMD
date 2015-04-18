@@ -17,13 +17,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.doloop.www.myappmgr.material.R;
 import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.fragments.UserAppsTabFragment;
 import com.doloop.www.myappmgr.material.interfaces.IconClickListener;
-import com.doloop.www.myappmgr.material.utils.AppIconRequestHandler;
 import com.doloop.www.myappmgr.material.utils.Constants;
 import com.doloop.www.myappmgr.material.utils.PicassoTools;
-import com.doloop.www.myappmgr.material.R;
 import com.squareup.picasso.Picasso.LoadedFrom;
 import com.squareup.picasso.Target;
 
@@ -237,7 +236,7 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
         holder.bgLayout.setTag(appInfo);
         if (appInfo.iconBitmap == null) {
             //PicassoTools.getInstance().load(appInfo.getAppIconCachePath(mCtx)).noFade().into(holder);//.memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
-            PicassoTools.getInstance().load(AppIconRequestHandler.SCHEME_APP_ICON + ":" + appInfo.packageName).noFade().into(holder);
+            PicassoTools.getInstance().load(appInfo.getPicassoScheme()).noFade().into(holder);
         } else {
             holder.AppIconImageView.setImageBitmap(appInfo.iconBitmap);
         }

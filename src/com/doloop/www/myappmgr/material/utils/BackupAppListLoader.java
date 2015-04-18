@@ -183,6 +183,7 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
                     if (packageInfo != null) {
 
                         ApplicationInfo applicationInfo = packageInfo.applicationInfo;
+                        //以下2个属性赋值之后才能正确读出东西
                         applicationInfo.sourceDir = file.getAbsolutePath();
                         applicationInfo.publicSourceDir = file.getAbsolutePath();
                         if (mLoadInBackgroundCanceled) {

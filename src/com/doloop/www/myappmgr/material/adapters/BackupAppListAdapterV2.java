@@ -476,7 +476,7 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
                 // ImageLoader.getInstance().displayImage(Scheme.FILE.wrap(appInfo.getAppIconCachePath(mCtx).getAbsolutePath()),
                 // holder.AppIconImageView, options);
                 //PicassoTools.getInstance().load(appInfo.getAppIconCachePath(mCtx)).noFade().into(itemHolder);
-                PicassoTools.getInstance().load(AppIconRequestHandler.SCHEME_APP_ICON + ":" + appInfo.packageName).noFade().into(itemHolder);
+                PicassoTools.getInstance().load(AppIconRequestHandler.SCHEME_BACKUP_APP_ICON + ":" + appInfo.backupFilePath).noFade().into(itemHolder);
                 // holder.AppIconImageView.setImageDrawable(Utils.getIconDrawable(mCtx, appInfo.packageName));
             } else {
                 itemHolder.AppIconImageView.setImageBitmap(appInfo.iconBitmap);
@@ -526,7 +526,7 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
         @Override
         public void onBitmapFailed(Drawable bitmap) {
             // TODO Auto-generated method stub
-
+            AppIconImageView.setImageResource(R.drawable.icon_error);
         }
 
         @Override
