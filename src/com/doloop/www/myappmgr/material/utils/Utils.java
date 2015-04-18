@@ -6,7 +6,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
@@ -570,17 +569,20 @@ public class Utils {
         }
     }
 
+    
+    /**
+     * 函数里面什么都没有做
+     * @param context
+     * @param appInfo
+     */
+    @Deprecated
     public static void verifyApp(Context context, AppInfo appInfo) {
+        
         // 检查sd上的icon缓存
-        if (!isAppIconOnSd(context, appInfo)) {
-            appInfo.iconBitmap = drawableToBitmap(getIconDrawable(context, appInfo.packageName));
-            saveAppIconOnSd(context, appInfo);
-        }
-        /*
-         * File file = appInfo.getAppIconCachePath(context); if (!file.exists()) { // appInfo.iconDrawable =
-         * getIconDrawable(context, appInfo.packageName); appInfo.iconBitmap = drawableToBitmap(getIconDrawable(context,
-         * appInfo.packageName)); saveAppIconOnSd(context, appInfo); }
-         */
+//        if (!isAppIconOnSd(context, appInfo)) {
+//            appInfo.iconBitmap = drawableToBitmap(getIconDrawable(context, appInfo.packageName));
+//            saveAppIconOnSd(context, appInfo);
+//        }
     }
 
     public static boolean deleteAppIconInCache(Context context, AppInfo appInfo) {
@@ -641,7 +643,8 @@ public class Utils {
     public static Bitmap getIconBitmap(Context context, String pkgName) {
         Drawable iconDrawable = getIconDrawable(context, pkgName);
         if (iconDrawable != null) {
-            Bitmap bitmap = ((BitmapDrawable) iconDrawable).getBitmap();
+            Bitmap bitmap = drawableToBitmap(iconDrawable);
+            //Bitmap bitmap = ((BitmapDrawable) iconDrawable).getBitmap();
             return bitmap;
         }
         return null;
@@ -680,41 +683,43 @@ public class Utils {
         }
     }
 
-    /**
+    /**废弃了，里面什么都没有做
      * save之后iconBitmap字段==null
      * 
      * @param context
      * @param appInfo
      * @return
      */
+    @Deprecated
     public static boolean saveAppIconOnSd(Context context, AppInfo appInfo) {
-
-        OutputStream outStream = null;
-        // String extStorageDirectory = Environment.getExternalStorageDirectory().toString();
-        File file = appInfo.getAppIconCachePath(context);
-        Bitmap bitmap = null;
-        try {
-            outStream = new FileOutputStream(file);
-            if (appInfo.iconBitmap == null) {
-                bitmap = Utils.getIconBitmap(context, appInfo.packageName);
-            } else {
-                bitmap = appInfo.iconBitmap;
-            }
-
-            if (bitmap.compress(Bitmap.CompressFormat.PNG, 100, outStream)) {
-                outStream.flush();
-                outStream.close();
-                appInfo.iconBitmap = null;
-                return true;
-            }
-            appInfo.iconBitmap = null;
-            return false;
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            appInfo.iconBitmap = null;
-            return false;
-        }
+        appInfo.iconBitmap = null;
+        return false;
+//        OutputStream outStream = null;
+//        // String extStorageDirectory = Environment.getExternalStorageDirectory().toString();
+//        File file = appInfo.getAppIconCachePath(context);
+//        Bitmap bitmap = null;
+//        try {
+//            outStream = new FileOutputStream(file);
+//            if (appInfo.iconBitmap == null) {
+//                bitmap = Utils.getIconBitmap(context, appInfo.packageName);
+//            } else {
+//                bitmap = appInfo.iconBitmap;
+//            }
+//
+//            if (bitmap.compress(Bitmap.CompressFormat.PNG, 100, outStream)) {
+//                outStream.flush();
+//                outStream.close();
+//                appInfo.iconBitmap = null;
+//                return true;
+//            }
+//            appInfo.iconBitmap = null;
+//            return false;
+//        } catch (Exception e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//            appInfo.iconBitmap = null;
+//            return false;
+//        }
     }
 
     /**
@@ -746,9 +751,7 @@ public class Utils {
         // tmpInfo.iconBitmap = drawableToBitmap(packageInfo.applicationInfo.loadIcon(pManager));
         // tmpInfo.iconDrawable = packageInfo.applicationInfo.loadIcon(pManager);
         // tmpInfo.appIconBytes = Utilities.DrawableToByteArray(tmpInfo.iconDrawable);
-        // tmpInfo.firstTimeInstallDate = simpleDateFormat.format(new Date(packageInfo.firstInstallTime));
-        // tmpInfo.firstTimeInstallDate =
-        // dateformat.format(packageInfo.firstInstallTime);
+        tmpInfo.firstTimeInstallRaw = packageInfo.firstInstallTime;
         File tmpAPKfile = new File(packageInfo.applicationInfo.publicSourceDir);
         tmpInfo.appSizeStr = Utils.formatFileSize(tmpAPKfile.length()).toString();
         tmpInfo.appRawSize = tmpAPKfile.length();
@@ -1319,7 +1322,7 @@ public class Utils {
         if (!YearSection.equals("yyyy")) {
             datePatternStr = datePatternStr.replace(YearSection, "yyyy");
         }
-        datePatternStr += " hh:mm:ss";
+        datePatternStr += " HH:mm:ss";
         dateformat.applyPattern(datePatternStr);
 
         return dateformat;
