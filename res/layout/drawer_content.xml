@@ -42,7 +42,7 @@
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:layout_gravity="center"
-                android:src="@drawable/header_icon"
+                android:src="@drawable/app_icon"
                 app:border_color="@color/white"
                 app:border_width="3dp" />
         </app.mosn.zdepthshadowlayout.ZDepthShadowLayout>
