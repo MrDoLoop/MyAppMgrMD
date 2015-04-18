@@ -1491,7 +1491,7 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
                 dialogInfo[1] = tmpAppInfo.appName;
                 publishProgress(dialogInfo);
 
-                String sdAPKfileName = Utils.BackupApp(tmpAppInfo, BACK_UP_FOLDER);
+                String sdAPKfileName = Utils.BackupApp(thisActivityCtx, tmpAppInfo, BACK_UP_FOLDER);
                 if (sdAPKfileName != null) {
                     SuccAppList.add(tmpAppInfo);
                     if (SendAfterBackup) {
