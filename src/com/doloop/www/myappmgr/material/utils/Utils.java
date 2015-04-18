@@ -992,7 +992,18 @@ public class Utils {
      * @param destFilePath sd卡文件存储目录(/sd/MyAppMgr/)
      * @return 成功返回备份的文件位置(/sd/MyAppMgr/XXX.apk),失败返回null
      */
-    public static String BackupApp(AppInfo appInfo, String destFilePath) {
+    public static String BackupApp(Context ctx, AppInfo appInfo, String destFilePath) {
+        boolean fPkgName = forcePkgName(ctx,  appInfo,  destFilePath + appInfo.getBackupFileName_AppName());
+        if(fPkgName){
+            if (copyFile(appInfo.apkFilePath, destFilePath + appInfo.getBackupFileName_pkgName())) {
+                appInfo.backupFilePath = destFilePath + appInfo.getBackupFileName_pkgName();
+                return appInfo.backupFilePath;
+            }
+            else{
+                return null;
+            }
+        }
+        
         if (copyFile(appInfo.apkFilePath, destFilePath + appInfo.getBackupFileName_AppName())) {
             appInfo.backupFilePath = destFilePath + appInfo.getBackupFileName_AppName();
             return appInfo.backupFilePath;
@@ -1005,6 +1016,28 @@ public class Utils {
         }
     }
 
+    public static boolean forcePkgName(Context ctx, AppInfo appInfo, String apkFilePath){
+        File file = new File(apkFilePath);
+        if(file.exists()){
+            PackageManager mPackageManager = ctx.getPackageManager();
+            PackageInfo packageInfo = mPackageManager.getPackageArchiveInfo(apkFilePath, PackageManager.GET_ACTIVITIES);
+            ApplicationInfo applicationInfo = packageInfo.applicationInfo;
+            applicationInfo.sourceDir = apkFilePath;
+            applicationInfo.publicSourceDir = apkFilePath;
+            if(appInfo.packageName.equals(packageInfo.packageName) && appInfo.versionCode == packageInfo.versionCode){
+                return false;
+            }
+            else{
+                return true;
+            }
+        }
+        else{
+            return false;
+        }
+        
+    }
+    
+    
     public static void saveBackUpAPKfileDir(Context ctx, String path) {
         SharedPreferences.Editor shPrefEdit = ctx.getSharedPreferences("MyAppMgrSharedPreferences", 0).edit();
         shPrefEdit.putString("backupApkFileDir", path);
