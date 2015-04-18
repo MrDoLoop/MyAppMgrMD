@@ -14,6 +14,7 @@ public class PicassoTools {
         if (instance == null) 
         {  
             Picasso.Builder builder = new Picasso.Builder(ctx);
+            builder.addRequestHandler(new AppIconRequestHandler(ctx));
             picassoCache = new LruCache(ctx);
             builder.memoryCache(picassoCache);
             instance = builder.build();
