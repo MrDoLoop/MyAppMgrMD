@@ -344,7 +344,7 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
         @Override
         public void onBitmapFailed(Drawable bitmap) {
             // TODO Auto-generated method stub
-
+            AppIconImageView.setImageResource(R.drawable.icon_error);
         }
 
         @Override

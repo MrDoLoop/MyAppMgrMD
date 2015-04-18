@@ -600,6 +600,7 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
         @Override
         public void onBitmapFailed(Drawable bitmap) {
             // TODO Auto-generated method stub
+            AppIconImageView.setImageResource(R.drawable.icon_error);
         }
 
         @Override
