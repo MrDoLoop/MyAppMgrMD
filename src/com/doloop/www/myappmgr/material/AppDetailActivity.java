@@ -43,6 +43,7 @@ import com.doloop.www.myappmgr.material.filtermenu.FilterMenuLayout;
 import com.doloop.www.myappmgr.material.swipeback.lib.SwipeBackActivity;
 import com.doloop.www.myappmgr.material.unused.BackupAppDeletedEvent;
 import com.doloop.www.myappmgr.material.utils.Constants;
+import com.doloop.www.myappmgr.material.utils.PicassoTools;
 import com.doloop.www.myappmgr.material.utils.ScrimUtil;
 import com.doloop.www.myappmgr.material.utils.Utils;
 import com.doloop.www.myappmgr.material.widgets.CircularRevealView;
@@ -59,7 +60,6 @@ import com.nineoldandroids.view.ViewPropertyAnimator;
 import com.nispok.snackbar.Snackbar;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.readystatesoftware.systembartint.SystemBarTintManager.SystemBarConfig;
-import com.squareup.picasso.Picasso;
 
 import de.greenrobot.event.EventBus;
 
@@ -120,7 +120,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
         headerImgView = (KenBurnsSupportView) findViewById(R.id.header_image);
         headerImgView.setResourceIds(R.drawable.ic_user_background, R.drawable.background);
         appIcon = (ImageView) findViewById(R.id.app_icon);
-        Picasso.with(AppDetailActivity.this).load(curAppInfo.getAppIconCachePath(AppDetailActivity.this)).noFade().into(appIcon);
+        PicassoTools.getInstance().load(curAppInfo.getAppIconCachePath(AppDetailActivity.this)).error(R.drawable.icon_error).noFade().into(appIcon);
         switch (curAppType){
             case APP_TYPE_USER:
                 appIcon.setBackgroundResource(R.drawable.imageview_border_blue);

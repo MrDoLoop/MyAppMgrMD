@@ -85,6 +85,7 @@ import com.doloop.www.myappmgr.material.utils.ApkFileFilter;
 import com.doloop.www.myappmgr.material.utils.AppPinYinComparator;
 import com.doloop.www.myappmgr.material.utils.Constants;
 import com.doloop.www.myappmgr.material.utils.L;
+import com.doloop.www.myappmgr.material.utils.PicassoTools;
 import com.doloop.www.myappmgr.material.utils.ScrimUtil;
 import com.doloop.www.myappmgr.material.utils.SharpStringComparator;
 import com.doloop.www.myappmgr.material.utils.SysAppListItem;
@@ -98,7 +99,6 @@ import com.nineoldandroids.view.ViewHelper;
 import com.nispok.snackbar.Snackbar;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.readystatesoftware.systembartint.SystemBarTintManager.SystemBarConfig;
-import com.squareup.picasso.Picasso;
 
 import de.greenrobot.event.EventBus;
 
@@ -208,6 +208,7 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
 
         AppUpdateStaticReceiver.handleEvent = false;
         thisActivityCtx = MainActivity.this;
+        PicassoTools.init(thisActivityCtx);
         toast = Toast.makeText(thisActivityCtx, "", Toast.LENGTH_SHORT);
         screenWidth = getWindowManager().getDefaultDisplay().getWidth();
         EventBus.getDefault().register(this);
@@ -475,7 +476,7 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
         if (progDialog != null && progDialog.isShowing()) {
             progDialog.dismiss();
         }
-
+        PicassoTools.destroy();
         SysAppFullList.clear();
         UserAppFullList.clear();
         SysAppFullListWapper.clear();
@@ -822,7 +823,7 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
             SysAppFullList.clear();
             mSectionInListPosMap.clear();
             SysAppFullListWapper.clear();
-
+            PicassoTools.clearCache();
             // PackageManager pManager = getPackageManager();
             // List<PackageInfo> packages = pManager.getInstalledPackages(0);
 
@@ -1341,7 +1342,7 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
                     if (UserAppFullList.get(i).packageName.equals(RemovedPkgName)) {
                         targetAppInfo = UserAppFullList.get(i);
                         //Çå³ýPicassoµÄÍ¼±ê»º´æ
-                        Picasso.with(thisActivityCtx).invalidate(targetAppInfo.getAppIconCachePath(thisActivityCtx));
+                        PicassoTools.getInstance().invalidate(targetAppInfo.getAppIconCachePath(thisActivityCtx));
                         DaoUtils.deleteAppInfo(thisActivityCtx, targetAppInfo);
                         toast.setText(getString(R.string.app_removed_name) + " " + targetAppInfo.appName);
                         UserAppFullList.remove(i);

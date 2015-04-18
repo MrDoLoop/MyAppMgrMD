@@ -27,6 +27,7 @@ import com.doloop.www.myappmgr.material.fragments.BackupAppTabFragmentV2;
 import com.doloop.www.myappmgr.material.interfaces.IPopupMenuClickListener;
 import com.doloop.www.myappmgr.material.interfaces.IconClickListener;
 import com.doloop.www.myappmgr.material.utils.Constants;
+import com.doloop.www.myappmgr.material.utils.PicassoTools;
 import com.doloop.www.myappmgr.material.utils.PopupListMenu;
 import com.doloop.www.myappmgr.material.utils.PopupListMenu.POPUP_MENU_LIST_ITEM;
 import com.doloop.www.myappmgr.material.utils.Utils;
@@ -474,7 +475,7 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
             if (appInfo.iconBitmap == null) {
                 // ImageLoader.getInstance().displayImage(Scheme.FILE.wrap(appInfo.getAppIconCachePath(mCtx).getAbsolutePath()),
                 // holder.AppIconImageView, options);
-                Picasso.with(mCtx).load(appInfo.getAppIconCachePath(mCtx)).noFade().into(itemHolder);
+                PicassoTools.getInstance().load(appInfo.getAppIconCachePath(mCtx)).noFade().into(itemHolder);
                 // holder.AppIconImageView.setImageDrawable(Utils.getIconDrawable(mCtx, appInfo.packageName));
             } else {
                 itemHolder.AppIconImageView.setImageBitmap(appInfo.iconBitmap);

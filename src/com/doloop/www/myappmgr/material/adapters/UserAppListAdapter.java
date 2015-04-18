@@ -21,6 +21,7 @@ import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.fragments.UserAppsTabFragment;
 import com.doloop.www.myappmgr.material.interfaces.IconClickListener;
 import com.doloop.www.myappmgr.material.utils.Constants;
+import com.doloop.www.myappmgr.material.utils.PicassoTools;
 import com.doloop.www.myappmgr.material.R;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Picasso.LoadedFrom;
@@ -235,7 +236,7 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
         holder.AppIconImageView.setTag(position);
         holder.bgLayout.setTag(appInfo);
         if (appInfo.iconBitmap == null) {
-            Picasso.with(mCtx).load(appInfo.getAppIconCachePath(mCtx)).noFade().into(holder);//.memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
+            PicassoTools.getInstance().load(appInfo.getAppIconCachePath(mCtx)).noFade().into(holder);//.memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
         } else {
             holder.AppIconImageView.setImageBitmap(appInfo.iconBitmap);
         }

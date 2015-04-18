@@ -33,6 +33,7 @@ import com.doloop.www.myappmgr.material.interfaces.IconClickListener;
 import com.doloop.www.myappmgr.material.interfaces.IhoverMenuClickListener;
 import com.doloop.www.myappmgr.material.interfaces.ItemMenuClickListener;
 import com.doloop.www.myappmgr.material.utils.Constants;
+import com.doloop.www.myappmgr.material.utils.PicassoTools;
 import com.doloop.www.myappmgr.material.utils.SysAppListItem;
 import com.doloop.www.myappmgr.material.utils.Utils;
 import com.doloop.www.myappmgr.material.widgets.PinnedSectionListView.PinnedSectionListAdapter;
@@ -497,7 +498,7 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
             appItemHolder.RootLayout.setTag(appInfo);
 
             if (appInfo.iconBitmap == null) {
-                Picasso.with(mCtx).load(appInfo.getAppIconCachePath(mCtx)).noFade().into(appItemHolder);//.memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
+                PicassoTools.getInstance().load(appInfo.getAppIconCachePath(mCtx)).noFade().into(appItemHolder);//.memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
             } else {
                 appItemHolder.AppIconImageView.setImageBitmap(appInfo.iconBitmap);
             }
