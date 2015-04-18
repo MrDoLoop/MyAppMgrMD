@@ -66,12 +66,17 @@ public class DaoUtils {
     }
 
     public static boolean insert(Context context, AppInfo appInfo) {
-        if(getDaoSession(context, false).getAppInfoDao().insert(appInfo) != -1){
-            return true;
-        }
-        else{
+        try{
+            if(getDaoSession(context, false).getAppInfoDao().insert(appInfo) != -1){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }catch(Exception e){
             return false;
         }
+        
     }
 
     public static void destroy() {
