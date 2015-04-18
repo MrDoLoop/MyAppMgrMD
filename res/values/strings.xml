@@ -72,6 +72,8 @@
 	<string name="version">Version</string>
 	<string name="apk_info">APK</string>
 	<string name="last_updated_time">Last Updated Time</string>
+	<string name="time_info">Time Info.</string>
+	<string name="first_install_time">First install Time</string>
 	<string name="activity">Activity</string>
 	<string name="component">Component</string>
 	<string name="copied">Copied</string>

@@ -70,6 +70,8 @@
 	<string name="version">版本信息</string>
 	<string name="apk_info">APK信息</string>
 	<string name="last_updated_time">最后修改时间</string>
+	<string name="time_info">时间信息</string>
+	<string name="first_install_time">首次安装时间</string>
 	<string name="activity">启动Activity</string>
 	<string name="component">组件</string>
 	<string name="copied">已复制</string>
