@@ -247,7 +247,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                                 break;
                             case R.id.backupActionLayout:
                                 String mBackUpFolder = Utils.getBackUpAPKfileDir(getActivity());
-                                String sdAPKfileName = Utils.BackupApp(selectItem, mBackUpFolder);
+                                String sdAPKfileName = Utils.BackupApp(getActivity(), selectItem, mBackUpFolder);
                                 if (sdAPKfileName != null) {
                                     // MainActivity.T(R.string.backup_success);
                                     SpannableString spanString =

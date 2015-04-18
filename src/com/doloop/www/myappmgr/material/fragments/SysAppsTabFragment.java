@@ -499,7 +499,7 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
     // ±¸·Ýapp
     private void backupApp(AppInfo itemAppInfo) {
         String mBackUpFolder = Utils.getBackUpAPKfileDir(mContext);
-        String sdAPKfileName = Utils.BackupApp(itemAppInfo, mBackUpFolder);
+        String sdAPKfileName = Utils.BackupApp(mContext, itemAppInfo, mBackUpFolder);
         if (sdAPKfileName != null) {
             // MainActivity.T(R.string.backup_success);
             SpannableString spanString =
