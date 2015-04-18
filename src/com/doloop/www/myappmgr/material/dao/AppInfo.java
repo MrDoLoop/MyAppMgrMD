@@ -42,6 +42,7 @@ public class AppInfo {
     public Bitmap iconBitmap = null;
     
     public String backupFilePath = "";
+    public long firstTimeInstallRaw = 0;//一定要注意，该属性没有在数据库中生成相应的列
     public String lastBackUpTimeStr = "";
     public long lastBackUpRawTime = 0;
     

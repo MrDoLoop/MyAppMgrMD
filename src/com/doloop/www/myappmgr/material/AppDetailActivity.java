@@ -341,7 +341,10 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
             }
 
             view = rowContainer.findViewById(R.id.row_time_info);
-            fillRow(view, getString(R.string.last_updated_time),
+            fillRow(view, getString(R.string.time_info),
+                    getString(R.string.first_install_time)+"\n"+
+                    Utils.formatTimeDisplayFull(new Date(curAppInfo.firstTimeInstallRaw))+"\n\n"+
+                    getString(R.string.last_updated_time)+"\n"+
                     Utils.formatTimeDisplayFull(new Date(curAppInfo.lastModifiedRawTime)));
 
             view = rowContainer.findViewById(R.id.row_activity);
