@@ -751,7 +751,7 @@ public class Utils {
         // tmpInfo.iconBitmap = drawableToBitmap(packageInfo.applicationInfo.loadIcon(pManager));
         // tmpInfo.iconDrawable = packageInfo.applicationInfo.loadIcon(pManager);
         // tmpInfo.appIconBytes = Utilities.DrawableToByteArray(tmpInfo.iconDrawable);
-        tmpInfo.firstTimeInstallRaw = packageInfo.firstInstallTime;
+        //tmpInfo.firstTimeInstallRaw = packageInfo.firstInstallTime;
         File tmpAPKfile = new File(packageInfo.applicationInfo.publicSourceDir);
         tmpInfo.appSizeStr = Utils.formatFileSize(tmpAPKfile.length()).toString();
         tmpInfo.appRawSize = tmpAPKfile.length();
