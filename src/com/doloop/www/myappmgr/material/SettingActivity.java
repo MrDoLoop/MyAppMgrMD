@@ -86,7 +86,7 @@ public class SettingActivity extends SwipeBackActivity implements FolderSelectCa
             @Override
             public boolean onLongClick(View v) {
                 // TODO Auto-generated method stub
-                Utils.copyToClipboard(SettingActivity.this, "qq", emailTv.getText().toString().trim());
+                Utils.copyToClipboard(SettingActivity.this, "qq", qqTv.getText().toString().trim());
                 MainActivity.T("QQ "+getString(R.string.copied));
                 return true;
             }
