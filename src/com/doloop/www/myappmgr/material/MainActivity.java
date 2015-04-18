@@ -839,7 +839,7 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
                 for (int i = 0; i < fullAppListSize; i++) {
                     
                     packageInfo = packages.get(i);
-                    tmpInfo = Utils.buildAppInfoEntry(thisActivityCtx, packageInfo, pManager, false, true);
+                    tmpInfo = Utils.buildAppInfoEntry(thisActivityCtx, packageInfo, pManager, false, false);
                     if (tmpInfo.isSysApp) {
                         SysAppFullList.add(tmpInfo);
                     } else {
