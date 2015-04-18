@@ -65,8 +65,13 @@ public class DaoUtils {
                 .where(AppInfoDao.Properties.PackageName.eq(pName)).build().unique();
     }
 
-    public static void insert(Context context, AppInfo appInfo) {
-        getDaoSession(context, false).getAppInfoDao().insert(appInfo);
+    public static boolean insert(Context context, AppInfo appInfo) {
+        if(getDaoSession(context, false).getAppInfoDao().insert(appInfo) != -1){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
     public static void destroy() {
