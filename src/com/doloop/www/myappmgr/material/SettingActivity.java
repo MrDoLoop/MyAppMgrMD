@@ -145,7 +145,7 @@ public class SettingActivity extends SwipeBackActivity implements FolderSelectCa
             }
         });
         appInfoRow = findViewById(R.id.app_info);
-        fillTwoRowsIcon(appInfoRow, getString(R.string.app_info), Utils.getSelfVerName(this), R.drawable.icon);
+        fillTwoRowsIcon(appInfoRow, getString(R.string.app_info), Utils.getSelfVerName(this), R.drawable.app_icon);
         appInfoRow.setOnClickListener(new View.OnClickListener() {
 
             @Override
