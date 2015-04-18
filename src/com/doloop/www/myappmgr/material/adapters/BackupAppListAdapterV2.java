@@ -691,12 +691,12 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
         }
         else if(CUR_HEADER_DISPLAY == HEADER_DISPLAY_PERCENTAGE){
             DecimalFormat fnum = new DecimalFormat("##0.00"); 
-            
+            String[] sdFreeInfo = Utils.getSdFreeSpaceInfo();
             headerHolder.backupDirTv.setText(mCtx.getString(R.string.back_dir) + "\n" + 
                     fnum.format(Float.parseFloat(backupDirInfo[0]) / Float.parseFloat(sdTotalInfo[0]) * 100) + "%");
             headerHolder.sdUsedTv.setText(mCtx.getString(R.string.sd_used) + "\n" + 
                     fnum.format(Float.parseFloat(sdUsedInfo[0]) / Float.parseFloat(sdTotalInfo[0]) * 100) + "%");
-            headerHolder.sdTotalTv.setText(mCtx.getString(R.string.sd_total) + "\n" + sdTotalInfo[1]);
+            headerHolder.sdTotalTv.setText(mCtx.getString(R.string.sd_free) + "\n" + sdFreeInfo[1]);
         }
     }
     

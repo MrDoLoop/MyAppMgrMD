@@ -497,7 +497,7 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
             appItemHolder.RootLayout.setTag(appInfo);
 
             if (appInfo.iconBitmap == null) {
-                Picasso.with(mCtx).load(appInfo.getAppIconCachePath(mCtx)).noFade().into(appItemHolder);
+                Picasso.with(mCtx).load(appInfo.getAppIconCachePath(mCtx)).noFade().into(appItemHolder);//.memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
             } else {
                 appItemHolder.AppIconImageView.setImageBitmap(appInfo.iconBitmap);
             }
