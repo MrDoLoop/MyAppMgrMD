@@ -84,7 +84,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
     private static final String OPEN_ACTION = "OPEN_ACTION";
     private static final String INFO_ACTION = "INFO_ACTION";
     private static final String BACKUP_ACTION = "BACKUP_ACTION";
-    private static final String SEND_ACTION = "SEND_ACTION";
+    private static final String SHARE_ACTION = "SHARE_ACTION";
     private static final String UNINSTALL_ACTION = "UNINSTALL_ACTION";
     private static final String DELETE_ACTION = "DELETE_ACTION";
     private static final String INSTALL_ACTION = "INSTALL_ACTION";
@@ -464,7 +464,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                 itemsWapper.add(new FilterMenuItemWapper(R.drawable.info_white, INFO_ACTION));
                 itemsWapper.add(new FilterMenuItemWapper(R.drawable.backup_white, BACKUP_ACTION));
                 itemsWapper.add(new FilterMenuItemWapper(R.drawable.delete_white2, UNINSTALL_ACTION));
-                itemsWapper.add(new FilterMenuItemWapper(R.drawable.share_white, SEND_ACTION));
+                itemsWapper.add(new FilterMenuItemWapper(R.drawable.share_white, SHARE_ACTION));
                 break;
             case APP_TYPE_SYS:
                 if(canLaunch){
@@ -472,7 +472,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                 }
                 itemsWapper.add(new FilterMenuItemWapper(R.drawable.info_white, INFO_ACTION));
                 itemsWapper.add(new FilterMenuItemWapper(R.drawable.backup_white, BACKUP_ACTION));
-                itemsWapper.add(new FilterMenuItemWapper(R.drawable.share_white, SEND_ACTION));
+                itemsWapper.add(new FilterMenuItemWapper(R.drawable.share_white, SHARE_ACTION));
                 break;
             case APP_TYPE_BACKUP:
                 if(Utils.canBackupAppLaunch(AppDetailActivity.this, curAppInfo)) {
@@ -480,7 +480,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                 }
                 itemsWapper.add(new FilterMenuItemWapper(R.drawable.add_white, INSTALL_ACTION));
                 itemsWapper.add(new FilterMenuItemWapper(R.drawable.delete_white2, DELETE_ACTION));
-                itemsWapper.add(new FilterMenuItemWapper(R.drawable.share_white, SEND_ACTION));
+                itemsWapper.add(new FilterMenuItemWapper(R.drawable.share_white, SHARE_ACTION));
                 break;  
         }
         menuBuilder.addItemList(itemsWapper);
@@ -550,7 +550,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                                MainActivity.T(R.string.error);
                            }
                        }
-                        else if(itemWapper.MenuTag.equalsIgnoreCase(SEND_ACTION)) {
+                        else if(itemWapper.MenuTag.equalsIgnoreCase(SHARE_ACTION)) {
                             if(curAppType == APP_TYPE_BACKUP){
                                 Utils.chooseSendByApp(AppDetailActivity.this, Uri.parse("file://" + curAppInfo.backupFilePath));
                             }

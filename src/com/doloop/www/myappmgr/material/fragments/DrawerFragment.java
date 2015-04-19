@@ -14,6 +14,7 @@ import com.doloop.www.myappmgr.material.R;
 import com.doloop.www.myappmgr.material.SettingActivity;
 import com.doloop.www.myappmgr.material.events.DrawerItemClickEvent;
 import com.doloop.www.myappmgr.material.events.DrawerItemClickEvent.DrawerItem;
+import com.doloop.www.myappmgr.material.utils.AniUtils;
 import com.doloop.www.myappmgr.material.utils.NanAppMark;
 import com.doloop.www.myappmgr.material.utils.Utils;
 import com.nineoldandroids.animation.Animator;
@@ -78,19 +79,15 @@ public class DrawerFragment extends Fragment {
             
             @Override
             public void onClick(View v) {
-                ObjectAnimator ani = ObjectAnimator.ofFloat(headerImg, "rotationY", 0, 360).setDuration(1000);
+                headerImg.setEnabled(false);
+                ObjectAnimator ani = AniUtils.tada(headerImg);
+                //ObjectAnimator ani = ObjectAnimator.ofFloat(headerImg, "rotationY", 0, 360).setDuration(1000);
                 ani.addListener(new AnimatorListenerAdapter(){
 
                     @Override
                     public void onAnimationEnd(Animator arg0) {
                         // TODO Auto-generated method stub
                         headerImg.setEnabled(true);
-                    }
-
-                    @Override
-                    public void onAnimationStart(Animator arg0) {
-                        // TODO Auto-generated method stub
-                        headerImg.setEnabled(false);
                     }} );
                 ani.start();
             }
