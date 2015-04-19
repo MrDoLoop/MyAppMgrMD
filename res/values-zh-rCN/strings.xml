@@ -33,6 +33,7 @@
 	<string name="moving_akps">正在移动Apk文件&#8230;</string>
 	<string name="move_success">移动成功</string>
 	<string name="new_app_installed">新程序安装:</string>
+	<string name="app_changed">程序有改变:</string>
 	<string name="app_removed">程序移除.</string>
 	<string name="app_removed_name">程序移除:</string>
 	<string name="share_apps">分享程序</string>

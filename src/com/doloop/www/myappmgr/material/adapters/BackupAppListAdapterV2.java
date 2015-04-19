@@ -472,7 +472,8 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
                     + appInfo.lastBackUpTimeStr);
             itemHolder.AppFileNameTextView.setText(appInfo.getBackupApkFileName());
 
-            if (appInfo.iconBitmap == null) {
+            PicassoTools.getInstance().load(appInfo.getPicassoBackupScheme()).noFade().into(itemHolder);
+           /* if (appInfo.iconBitmap == null) {
                 // ImageLoader.getInstance().displayImage(Scheme.FILE.wrap(appInfo.getAppIconCachePath(mCtx).getAbsolutePath()),
                 // holder.AppIconImageView, options);
                 //PicassoTools.getInstance().load(appInfo.getAppIconCachePath(mCtx)).noFade().into(itemHolder);
@@ -480,7 +481,7 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
                 // holder.AppIconImageView.setImageDrawable(Utils.getIconDrawable(mCtx, appInfo.packageName));
             } else {
                 itemHolder.AppIconImageView.setImageBitmap(appInfo.iconBitmap);
-            }
+            }*/
             convertView.clearAnimation();
             itemHolder.AppIconImageView.setTag(position);
             itemHolder.RootLayout.setTag(position);
@@ -538,7 +539,7 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
                 // if (appInfo.iconBitmap == null)
                 // if(appInfo != null)
                 {
-                    appInfo.iconBitmap = bitmap;
+                    //appInfo.iconBitmap = bitmap;
                 }
             }
         }

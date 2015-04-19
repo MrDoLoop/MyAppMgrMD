@@ -234,21 +234,14 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
 
         holder.AppIconImageView.setTag(position);
         holder.bgLayout.setTag(appInfo);
-        if (appInfo.iconBitmap == null) {
+        PicassoTools.getInstance().load(appInfo.getPicassoScheme()).noFade().into(holder);
+        /*if (appInfo.iconBitmap == null) {
             //PicassoTools.getInstance().load(appInfo.getAppIconCachePath(mCtx)).noFade().into(holder);//.memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
             PicassoTools.getInstance().load(appInfo.getPicassoScheme()).noFade().into(holder);
         } else {
             holder.AppIconImageView.setImageBitmap(appInfo.iconBitmap);
-        }
-        /*
-         * if (MainActivity.isInActionMode()) { if (mSelectedItems.containsKey(position)) {
-         * holder.bgLayout.setBackgroundResource(R.drawable.list_row_item_pressed_bg);
-         * holder.AppIconImageView.setBackgroundResource(R.drawable.imageview_border_blue); } else {
-         * holder.bgLayout.setBackgroundResource(R.drawable.list_row_item_bg);
-         * holder.AppIconImageView.setBackgroundResource(R.drawable.user_app_icon_bg); } } else {
-         * holder.bgLayout.setBackgroundResource(R.drawable.list_row_item_bg);
-         * holder.AppIconImageView.setBackgroundResource(R.drawable.user_app_icon_bg); }
-         */
+        }*/
+        
         if (UserAppsTabFragment.isInActoinMode) {
             holder.AppIconImageView.setOnClickListener(null);
             holder.AppIconImageView.setClickable(false);
@@ -355,7 +348,7 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
                 // if (appInfo.iconBitmap == null)
                 // if(appInfo != null)
                 {
-                    appInfo.iconBitmap = bitmap;
+                    //appInfo.iconBitmap = bitmap;
                 }
             }
         }

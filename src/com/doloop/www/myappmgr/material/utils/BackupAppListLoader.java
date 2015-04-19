@@ -213,11 +213,11 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
                         appInfo.lastModifiedTimeStr = simpleDateFormat.format(new Date(file.lastModified()));   
                         entries.add(appInfo);
                         
-                        if(!Utils.isAppIconOnSd(getContext(),appInfo)){
+                        /*if(!Utils.isAppIconOnSd(getContext(),appInfo)){
                             appInfo.iconBitmap = Utils.drawableToBitmap(packageInfo.applicationInfo.loadIcon(pkgMgr));
                             Utils.saveAppIconOnSd(getContext(),appInfo);
                         }
-                        appInfo.iconBitmap = null;
+                        appInfo.iconBitmap = null;*/
                     }
                 }
                 mBaseList.clear();

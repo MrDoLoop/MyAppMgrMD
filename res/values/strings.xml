@@ -33,6 +33,7 @@
     <string name="loading_apps">Loading Apps&#8230;</string>
     <string name="moving_akps">Moving Apks&#8230;</string>
     <string name="new_app_installed">New App Installed:</string>
+    <string name="app_changed">App Changed:</string>
     <string name="app_removed">App Removed.</string>
     <string name="app_removed_name">App Removed:</string>
     <string name="share_apps">Share apps</string>

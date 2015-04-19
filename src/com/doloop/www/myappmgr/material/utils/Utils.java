@@ -489,31 +489,31 @@ public class Utils {
         }
     }
 
-    public static AppInfo createAppInfoCopy(AppInfo appInfo) {
-        AppInfo tmpInfo = new AppInfo();
-        tmpInfo.appName = new String(appInfo.appName);
-        if (tmpInfo.appName.startsWith("\u00a0")) {
-            tmpInfo.appName = tmpInfo.appName.replaceFirst("\u00a0", "");
-        }
-
-        tmpInfo.packageName = new String(appInfo.packageName);
-
-        tmpInfo.versionName = new String(appInfo.versionName);
-
-        tmpInfo.versionCode = Integer.valueOf(tmpInfo.versionCode);
-        tmpInfo.iconBitmap = null;
-
-        tmpInfo.appSizeStr = new String(appInfo.appSizeStr);
-        tmpInfo.appRawSize = Long.parseLong("" + appInfo.appRawSize);
-
-        tmpInfo.lastModifiedTimeStr = new String(appInfo.lastModifiedTimeStr);
-        tmpInfo.lastModifiedRawTime = Long.parseLong("" + appInfo.lastModifiedRawTime);
-        tmpInfo.apkFilePath = new String(appInfo.apkFilePath);
-        tmpInfo.appSortName = new String(appInfo.appSortName);
-        tmpInfo.appNamePinyin = new String(appInfo.appNamePinyin);
-        tmpInfo.isSysApp = Boolean.valueOf(appInfo.isSysApp);
-        return tmpInfo;
-    }
+//    public static AppInfo createAppInfoCopy(AppInfo appInfo) {
+//        AppInfo tmpInfo = new AppInfo();
+//        tmpInfo.appName = new String(appInfo.appName);
+//        if (tmpInfo.appName.startsWith("\u00a0")) {
+//            tmpInfo.appName = tmpInfo.appName.replaceFirst("\u00a0", "");
+//        }
+//
+//        tmpInfo.packageName = new String(appInfo.packageName);
+//
+//        tmpInfo.versionName = new String(appInfo.versionName);
+//
+//        tmpInfo.versionCode = Integer.valueOf(tmpInfo.versionCode);
+//        tmpInfo.iconBitmap = null;
+//
+//        tmpInfo.appSizeStr = new String(appInfo.appSizeStr);
+//        tmpInfo.appRawSize = Long.parseLong("" + appInfo.appRawSize);
+//
+//        tmpInfo.lastModifiedTimeStr = new String(appInfo.lastModifiedTimeStr);
+//        tmpInfo.lastModifiedRawTime = Long.parseLong("" + appInfo.lastModifiedRawTime);
+//        tmpInfo.apkFilePath = new String(appInfo.apkFilePath);
+//        tmpInfo.appSortName = new String(appInfo.appSortName);
+//        tmpInfo.appNamePinyin = new String(appInfo.appNamePinyin);
+//        tmpInfo.isSysApp = Boolean.valueOf(appInfo.isSysApp);
+//        return tmpInfo;
+//    }
 
     public static void sortBackUpAppList(Context ctx, ArrayList<AppInfo> list) {
         boolean foundDummy = false;
@@ -692,7 +692,7 @@ public class Utils {
      */
     @Deprecated
     public static boolean saveAppIconOnSd(Context context, AppInfo appInfo) {
-        appInfo.iconBitmap = null;
+        //appInfo.iconBitmap = null;
         return false;
 //        OutputStream outStream = null;
 //        // String extStorageDirectory = Environment.getExternalStorageDirectory().toString();

@@ -25,7 +25,7 @@ public class AppInfo {
     public String packageName = "";
     public String versionName = "";
     public int versionCode = -1;
-    public byte[] appIconBytes = null;
+    private byte[] appIconBytes = null;
     /** Not-null value. */
     public String appSizeStr = "";
     public long appRawSize = 0;

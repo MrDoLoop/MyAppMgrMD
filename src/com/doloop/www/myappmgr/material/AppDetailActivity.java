@@ -42,7 +42,6 @@ import com.doloop.www.myappmgr.material.filtermenu.FilterMenu;
 import com.doloop.www.myappmgr.material.filtermenu.FilterMenuItemWapper;
 import com.doloop.www.myappmgr.material.filtermenu.FilterMenuLayout;
 import com.doloop.www.myappmgr.material.swipeback.lib.SwipeBackActivity;
-import com.doloop.www.myappmgr.material.utils.AppIconRequestHandler;
 import com.doloop.www.myappmgr.material.utils.Constants;
 import com.doloop.www.myappmgr.material.utils.PicassoTools;
 import com.doloop.www.myappmgr.material.utils.ScrimUtil;
@@ -122,16 +121,21 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
         headerImgView = (KenBurnsSupportView) findViewById(R.id.header_image);
         headerImgView.setResourceIds(R.drawable.ic_user_background, R.drawable.background);
         appIcon = (ImageView) findViewById(R.id.app_icon);
-        PicassoTools.getInstance().load(AppIconRequestHandler.SCHEME_APP_ICON + ":" + curAppInfo.packageName)
-        .error(R.drawable.icon_error).noFade().into(appIcon);
+       
         switch (curAppType){
             case APP_TYPE_USER:
                 appIcon.setBackgroundResource(R.drawable.imageview_border_blue);
+                PicassoTools.getInstance().load(curAppInfo.getPicassoScheme())
+                .error(R.drawable.icon_error).noFade().into(appIcon);
                 break;
             case APP_TYPE_SYS:
+                PicassoTools.getInstance().load(curAppInfo.getPicassoScheme())
+                .error(R.drawable.icon_error).noFade().into(appIcon);
                 appIcon.setBackgroundResource(R.drawable.imageview_border_red);
                 break;
             case APP_TYPE_BACKUP:
+                PicassoTools.getInstance().load(curAppInfo.getPicassoBackupScheme())
+                .error(R.drawable.icon_error).noFade().into(appIcon);
                 appIcon.setBackgroundResource(R.drawable.imageview_border_orange);
                 break;
         }
@@ -329,27 +333,35 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
             view = rowContainer.findViewById(R.id.row_version);
             fillRow(view, getString(R.string.version), curAppInfo.versionName + " (" + curAppInfo.versionCode + ")");
 
-            view = rowContainer.findViewById(R.id.row_apk_info);
+            
+            
+            
             if(curAppType == APP_TYPE_BACKUP)
             {
+                view = rowContainer.findViewById(R.id.row_apk_info);
                 fillRow(view, getString(R.string.apk_info),
-                        curAppInfo.backupFilePath + "\n" + Utils.formatFileSize(curAppInfo.appRawSize));    
-            }
-            else{
-                fillRow(view, getString(R.string.apk_info),
-                        curAppInfo.apkFilePath + "\n" + Utils.formatFileSize(curAppInfo.appRawSize));
-            }
-
-            view = rowContainer.findViewById(R.id.row_time_info);
-            if(curAppType == APP_TYPE_BACKUP){
+                        curAppInfo.backupFilePath + "\n" + Utils.formatFileSize(curAppInfo.appRawSize)); 
+                view = rowContainer.findViewById(R.id.row_time_info);
                 fillRow(view, getString(R.string.time_info),
                         getString(R.string.last_updated_time)+"\n"+
                         Utils.formatTimeDisplayFull(new Date(curAppInfo.lastBackUpRawTime)));
             }
             else{
+                view = rowContainer.findViewById(R.id.row_apk_info);
+                fillRow(view, getString(R.string.apk_info),
+                        curAppInfo.apkFilePath + "\n" + Utils.formatFileSize(curAppInfo.appRawSize));
+                view = rowContainer.findViewById(R.id.row_time_info);
                 fillRow(view, getString(R.string.time_info),
                         getString(R.string.last_updated_time)+"\n"+
                         Utils.formatTimeDisplayFull(new Date(curAppInfo.lastModifiedRawTime)));
+            }
+
+            
+            if(curAppType == APP_TYPE_BACKUP){
+                
+            }
+            else{
+               
             }
             
            /* if(curAppType == APP_TYPE_BACKUP){
@@ -626,10 +638,6 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
     @Override
     protected void onDestroy() {
         // TODO Auto-generated method stub
-        if(curAppInfo != null){
-            curAppInfo.iconBitmap = null;
-        }
-        
         curAppInfo = null;
         EventBus.getDefault().unregister(this);
         super.onDestroy();
@@ -669,15 +677,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
             public boolean onLongClick(View v) {
                 // TODO Auto-generated method stub
                 String copiedStr = title + ":" + description;
-                /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                    ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-                    ClipData clip = ClipData.newPlainText(title, copiedStr);
-                    clipboard.setPrimaryClip(clip);
-                } else {
-                    android.text.ClipboardManager clipboardManager =
-                            (android.text.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-                    clipboardManager.setText(copiedStr);
-                }*/
+               
                 Utils.copyToClipboard(AppDetailActivity.this, title, copiedStr);
                 SpannableString spanString = new SpannableString(title + " " + getString(R.string.copied));
                 spanString.setSpan(new UnderlineSpan(), 0, title.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);

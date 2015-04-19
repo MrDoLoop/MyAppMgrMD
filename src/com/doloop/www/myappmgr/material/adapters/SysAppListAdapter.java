@@ -495,13 +495,13 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
             appItemHolder.hoverMenu.setTag(position);
             appItemHolder.AppIconImageView.setTag(position);
             appItemHolder.RootLayout.setTag(appInfo);
-
-            if (appInfo.iconBitmap == null) {
+            PicassoTools.getInstance().load(appInfo.getPicassoScheme()).noFade().into(appItemHolder);
+            /*if (appInfo.iconBitmap == null) {
                 //PicassoTools.getInstance().load(appInfo.getAppIconCachePath(mCtx)).noFade().into(appItemHolder);//.memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
                 PicassoTools.getInstance().load(appInfo.getPicassoScheme()).noFade().into(appItemHolder);
             } else {
                 appItemHolder.AppIconImageView.setImageBitmap(appInfo.iconBitmap);
-            }
+            }*/
 
             if (SysAppsTabFragment.isInActoinMode) {
                 resetHoverShowedPos();
@@ -611,7 +611,7 @@ public class SysAppListAdapter extends BaseAdapter implements PinnedSectionListA
                 // if (appInfo.iconBitmap == null)
                 // if(appInfo != null)
                 {
-                    appInfo.iconBitmap = bitmap;
+                    //appInfo.iconBitmap = bitmap;
                 }
             }
         }

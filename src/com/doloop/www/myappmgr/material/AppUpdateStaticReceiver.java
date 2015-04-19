@@ -30,7 +30,7 @@ public class AppUpdateStaticReceiver extends BroadcastReceiver {
                 //EventBus.getDefault().post(new AppUpdateEvent(intent.getAction(), PkgName, null));
                 DaoUtils.deleteAppInfo(context, PkgName);
                 DaoUtils.destroy();
-                Toast.makeText(context, "MD-removed:" + PkgName, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, context.getString(R.string.app_removed_name) + PkgName, Toast.LENGTH_SHORT).show();
                 
             } else if (intent.getAction().equals(Intent.ACTION_PACKAGE_ADDED)) {
                 Log.i("ttt", "AppUpdateStaticReceiver: added-- " + appName + " -- " + PkgName);
@@ -41,7 +41,7 @@ public class AppUpdateStaticReceiver extends BroadcastReceiver {
                 DaoUtils.insert(context, app);
                 DaoUtils.destroy();
                 
-                Toast.makeText(context, "MD-added:" + appName, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, context.getString(R.string.new_app_installed) + appName, Toast.LENGTH_SHORT).show();
             } else if (intent.getAction().equals(Intent.ACTION_PACKAGE_CHANGED)) {
                 Log.i("ttt", "AppUpdateStaticReceiver: changed-- " + PkgName);
                 
@@ -52,7 +52,7 @@ public class AppUpdateStaticReceiver extends BroadcastReceiver {
                     DaoUtils.insert(context, app);
                     DaoUtils.destroy();
                     //EventBus.getDefault().post(new AppUpdateEvent(intent.getAction(),PkgName, app));
-                    Toast.makeText(context, "MD-changed:" + appName, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, context.getString(R.string.app_changed) + appName, Toast.LENGTH_SHORT).show();
                 } 
             }
         }

@@ -917,7 +917,7 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
                             } catch (Exception e) {
                                 Log.e("ttt", "app error: " + tmpInfo.appName + ", error: " + e.toString());
                             } finally {
-                                tmpInfo.appIconBytes = null;
+                                //tmpInfo.appIconBytes = null;
                             }
                             
                             if (tmpInfo.isSysApp) {
@@ -966,7 +966,7 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
                         } catch (Exception e) {
                             Log.e("ttt", "app error: " + tmpInfo.appName + ", error: " + e.toString());
                         } finally {
-                            tmpInfo.appIconBytes = null;
+                            //tmpInfo.appIconBytes = null;
                         }
                     }
                     Utils.setAppListInDb(thisActivityCtx, true);
@@ -1261,10 +1261,6 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
                             DaoUtils.insert(thisActivityCtx, tmpAppInfo);
 
                             newAppInfo = DaoUtils.getByPackageName(thisActivityCtx, NewPkgName);
-                            if(!sIsSdcardReady){
-                                newAppInfo.iconBitmap = Utils.getIconBitmap(thisActivityCtx, NewPkgName);
-                            }
-                            
                             UserAppFullList.set(i, newAppInfo);
 
                             // ((ActionSlideExpandableListView) usrAppsFrg.getListView()).collapse(false);
@@ -1286,9 +1282,6 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
                                     DaoUtils.insert(thisActivityCtx, tmpAppInfo);
                                     
                                     newAppInfo = DaoUtils.getByPackageName(thisActivityCtx, NewPkgName);
-                                    if(!sIsSdcardReady){
-                                        newAppInfo.iconBitmap = Utils.getIconBitmap(thisActivityCtx, NewPkgName);
-                                    }
                                     SysAppFullListWapper.get(i).appinfo = newAppInfo;
 
                                     // ((ActionSlideExpandableListView) usrAppsFrg.getListView()).collapse(false);
@@ -1302,9 +1295,6 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
                     if(!foundTargetApp) {
                         newAppInfo = Utils.buildAppInfoEntry(thisActivityCtx, NewPkgName);
                         if(DaoUtils.insert(thisActivityCtx, newAppInfo)){
-                            if(!sIsSdcardReady){
-                                newAppInfo.iconBitmap = Utils.getIconBitmap(thisActivityCtx, NewPkgName);
-                            }
                             UserAppFullList.add(newAppInfo);
                             Utils.sortUserAppList(thisActivityCtx, UserAppFullList);
                             usrAppsFrg.notifyDataSetChanged();
@@ -1318,9 +1308,6 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
                     // startRefreshAppInfoList();
                     newAppInfo = Utils.buildAppInfoEntry(thisActivityCtx, NewPkgName);
                     if(DaoUtils.insert(thisActivityCtx, newAppInfo)){
-                        if(!sIsSdcardReady){
-                            newAppInfo.iconBitmap = Utils.getIconBitmap(thisActivityCtx, NewPkgName);
-                        }
                         UserAppFullList.add(newAppInfo);
                         Utils.sortUserAppList(thisActivityCtx, UserAppFullList);
                         usrAppsFrg.notifyDataSetChanged();
