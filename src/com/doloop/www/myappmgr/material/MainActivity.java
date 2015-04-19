@@ -154,7 +154,7 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
     public static ActionMode sActionMode = null;
     private static Toast toast;
 
-    public static boolean sIsSdcardReady = false;
+    //public static boolean sIsSdcardReady = false;
 
     private SortTypeDialogFragment SortTypeDialog;
     // private UserAppListMoreActionDialogFragment UserAppListMoreActionDialog;
@@ -489,7 +489,7 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
         mSnackbar = null;
         thisActivityCtx = null;
         mDrawerLayout = null;
-        sIsSdcardReady = false;
+        //sIsSdcardReady = false;
         DaoUtils.destroy();
     }
 
@@ -831,8 +831,9 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
             // List<ApplicationInfo> apps = pManager.getInstalledApplications(
             // PackageManager.GET_UNINSTALLED_PACKAGES |
             // PackageManager.GET_DISABLED_COMPONENTS);
-            sIsSdcardReady = Utils.existSDCard();
+            
             //sIsSdcardReady = Utils.getAppIconCacheDir(thisActivityCtx) == null ? false : true;
+            /*sIsSdcardReady = Utils.existSDCard();
             if (!sIsSdcardReady) {
                 PackageInfo packageInfo;
                 AppInfo tmpInfo;
@@ -849,7 +850,9 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
                     Log.i("ttt", "processing app " + (i + 1) + " / " + fullAppListSize + " "+curAppName);
                     publishProgress(i + 1);
                 }
-            } else {
+            } 
+            else */
+            {
                 boolean deleteAllAppInfoDone = false;
                 if (mClearDB) {
                     DaoUtils.deleteAllAppInfo(thisActivityCtx);
@@ -946,7 +949,7 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
 
                     if (!deleteAllAppInfoDone) {
                         appInfoSession.getAppInfoDao().deleteAll();
-                        Utils.deleteAppIconDir(Utils.getAppIconCacheDir(thisActivityCtx));
+                        //Utils.deleteAppIconDir(Utils.getAppIconCacheDir(thisActivityCtx));
                     }
 
                     for (int i = 0; i < fullAppListSize; i++) {

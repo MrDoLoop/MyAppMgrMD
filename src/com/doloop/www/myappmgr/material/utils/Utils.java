@@ -585,7 +585,7 @@ public class Utils {
 //        }
     }
 
-    public static boolean deleteAppIconInCache(Context context, AppInfo appInfo) {
+/*    public static boolean deleteAppIconInCache(Context context, AppInfo appInfo) {
         File file = appInfo.getAppIconCachePath(context);
         // File file = new File(Utils.getAppIconCacheDir(context), pkgName + ".png");
         if (file.exists()) {
@@ -630,7 +630,7 @@ public class Utils {
             }
         }
        
-    }
+    }*/
 
     public static boolean existSDCard() {  
         if (android.os.Environment.getExternalStorageState().equals(  
@@ -674,14 +674,14 @@ public class Utils {
         return theAppName;
     }
 
-    public static boolean isAppIconOnSd(Context ctx, AppInfo appInfo) {
-        File file = appInfo.getAppIconCachePath(ctx);
-        if (file.exists()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+//    public static boolean isAppIconOnSd(Context ctx, AppInfo appInfo) {
+//        File file = appInfo.getAppIconCachePath(ctx);
+//        if (file.exists()) {
+//            return true;
+//        } else {
+//            return false;
+//        }
+//    }
 
     /**废弃了，里面什么都没有做
      * save之后iconBitmap字段==null
