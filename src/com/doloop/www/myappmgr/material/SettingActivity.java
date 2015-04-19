@@ -102,8 +102,8 @@ public class SettingActivity extends SwipeBackActivity implements FolderSelectCa
 
             @Override
             public void onClick(View v) {
-                //if(Utils.existSDCard())
-                if(MainActivity.sIsSdcardReady)
+                if(Utils.existSDCard())
+                //if(MainActivity.sIsSdcardReady)
                 {
                     new FolderSelectorDialog().show(getSupportFragmentManager(), SettingActivity.this);
                 }
