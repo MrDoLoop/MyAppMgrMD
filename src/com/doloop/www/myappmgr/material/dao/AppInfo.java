@@ -115,6 +115,11 @@ public class AppInfo {
         return AppIconRequestHandler.SCHEME_APP_ICON + ":" + packageName;
     }
     
+    public String getPicassoBackupScheme()
+    {
+        return AppIconRequestHandler.SCHEME_BACKUP_APP_ICON + ":" + backupFilePath;
+    }
+    
     ////////////////
     
     public AppInfo() {
