@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">MyAppMgrMD</string>
+    <string name="app_name">MyAppMgr</string>
     <string name="sort">Sort</string>
     <string name="user_apps">USER APPs</string>
     <string name="sys_apps">SYS APPs</string>
@@ -90,8 +90,8 @@
 	<string name="open_soure_license">Open source licenses</string>
 	<string name="thx_github">Thanks all the guys on Github &amp; Stackoverflow !</string>
 	<string name="copy_right">Copyright \u00A9 2015 By Cao \u00B7 Chuang. All rights reserved</string>
-	<string name="launch_myself">You catch me!! NAN Made app</string>
-	
+	<string name="launch_myself">Present By Cao \u00B7 Chuang</string>
+	<string name="cao_chuang">Cao \u00B7 Chuang</string>
 	
 
 </resources>
