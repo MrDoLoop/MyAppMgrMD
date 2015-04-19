@@ -26,7 +26,6 @@ import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.fragments.BackupAppTabFragmentV2;
 import com.doloop.www.myappmgr.material.interfaces.IPopupMenuClickListener;
 import com.doloop.www.myappmgr.material.interfaces.IconClickListener;
-import com.doloop.www.myappmgr.material.utils.AppIconRequestHandler;
 import com.doloop.www.myappmgr.material.utils.Constants;
 import com.doloop.www.myappmgr.material.utils.PicassoTools;
 import com.doloop.www.myappmgr.material.utils.PopupListMenu;
@@ -305,6 +304,10 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
 
                     @Override
                     public void onClick(View v) {
+                        
+                        if(!Utils.existSDCard()){
+                            return ;
+                        }
                         
                         if(CUR_HEADER_DISPLAY == HEADER_DISPLAY_SIZE){
                             CUR_HEADER_DISPLAY = HEADER_DISPLAY_PERCENTAGE;
