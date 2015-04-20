@@ -1,11 +1,17 @@
 package com.doloop.www.myappmgr.material.utils;
 
 import android.view.View;
+
 import com.nineoldandroids.animation.Keyframe;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.animation.PropertyValuesHolder;
 
 public class AniUtils {
+    public static ObjectAnimator rotationY(View view, float degree) {
+        ObjectAnimator ani = ObjectAnimator.ofFloat(view, "rotationY", 0, degree).setDuration(1000);
+        return ani;
+    }
+    
     public static ObjectAnimator tada(View view) {
         return tada(view, 1f);
     }
