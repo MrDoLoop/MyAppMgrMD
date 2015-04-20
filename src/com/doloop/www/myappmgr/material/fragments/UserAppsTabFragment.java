@@ -900,7 +900,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
         // TODO Auto-generated method stub
         switch (selectType) {
             case SelectionDialogFragment.SELECT_ALL_ABOVE:
-                for (int i = 0; i < curPos; i++) {
+                for (int i = 0; i <= curPos; i++) {
                     if (!mAdapter.getItem(i).selected) {
                         //mAdapter.getItem(i).selected = true;
                         mAdapter.setSelectedItem(i, true, false);
@@ -908,7 +908,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                 }
                 break;
             case SelectionDialogFragment.DESELECT_ALL_ABOVE:
-                for (int i = 0; i < curPos; i++) {
+                for (int i = 0; i <= curPos; i++) {
                     if (mAdapter.getItem(i).selected) {
                         //mAdapter.getItem(i).selected = false;
                         mAdapter.setSelectedItem(i, false, false);
@@ -916,7 +916,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                 }
                 break;
             case SelectionDialogFragment.SELECT_ALL_BELOW:
-                for (int i = curPos + 1; i < mAdapter.getCount(); i++) {
+                for (int i = curPos; i < mAdapter.getCount(); i++) {
                     if (!mAdapter.getItem(i).selected) {
                         //mAdapter.getItem(i).selected = true;
                         mAdapter.setSelectedItem(i, true, false);
@@ -925,7 +925,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
                 }
                 break;
             case SelectionDialogFragment.DESELECT_ALL_BELOW:
-                for (int i = curPos + 1; i < mAdapter.getCount(); i++) {
+                for (int i = curPos; i < mAdapter.getCount(); i++) {
                     if (mAdapter.getItem(i).selected) {
                         mAdapter.setSelectedItem(i, false, false);
                         //mAdapter.getItem(i).selected = false;

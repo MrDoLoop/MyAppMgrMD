@@ -637,7 +637,7 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
         // TODO Auto-generated method stub
         switch (selectType) {
             case SelectionDialogFragment.SELECT_ALL_ABOVE:
-                for (int i = 0; i < curPos; i++) {
+                for (int i = 0; i <= curPos; i++) {
                     if(mAdapter.isAppItem(i)){
                         if (!mAdapter.getItem(i).appinfo.selected) {
                             //mAdapter.getItem(i).selected = true;
@@ -647,7 +647,7 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
                 }
                 break;
             case SelectionDialogFragment.DESELECT_ALL_ABOVE:
-                for (int i = 0; i < curPos; i++) {
+                for (int i = 0; i <= curPos; i++) {
                     if(mAdapter.isAppItem(i)){
                         if (mAdapter.getItem(i).appinfo.selected) {
                             //mAdapter.getItem(i).selected = false;
@@ -657,7 +657,7 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
                 }
                 break;
             case SelectionDialogFragment.SELECT_ALL_BELOW:
-                for (int i = curPos + 1; i < mAdapter.getCount(); i++) {
+                for (int i = curPos; i < mAdapter.getCount(); i++) {
                     if(mAdapter.isAppItem(i)){
                         if (!mAdapter.getItem(i).appinfo.selected) {
                             //mAdapter.getItem(i).selected = true;
@@ -668,7 +668,7 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
                 }
                 break;
             case SelectionDialogFragment.DESELECT_ALL_BELOW:
-                for (int i = curPos + 1; i < mAdapter.getCount(); i++) {
+                for (int i = curPos; i < mAdapter.getCount(); i++) {
                     if(mAdapter.isAppItem(i)){
                         if (mAdapter.getItem(i).appinfo.selected) {
                             mAdapter.setSelectedItem(i, false, false);
