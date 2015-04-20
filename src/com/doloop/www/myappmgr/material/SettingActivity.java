@@ -26,6 +26,9 @@ import com.doloop.www.myappmgr.material.fragments.FolderSelectorDialog.FolderSel
 import com.doloop.www.myappmgr.material.swipeback.lib.SwipeBackActivity;
 import com.doloop.www.myappmgr.material.utils.ScrimUtil;
 import com.doloop.www.myappmgr.material.utils.Utils;
+import com.nineoldandroids.animation.Animator;
+import com.nineoldandroids.animation.AnimatorListenerAdapter;
+import com.nineoldandroids.animation.ObjectAnimator;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.readystatesoftware.systembartint.SystemBarTintManager.SystemBarConfig;
 
@@ -40,6 +43,7 @@ public class SettingActivity extends SwipeBackActivity implements FolderSelectCa
     private View appInfoRow;
     private TextView emailTv;
     private TextView qqTv;
+    private boolean iconAniRunning = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,7 +156,18 @@ public class SettingActivity extends SwipeBackActivity implements FolderSelectCa
 
             @Override
             public void onClick(View v) {
-               
+                if(!iconAniRunning){
+                    iconAniRunning = true;
+                    ObjectAnimator ani = ObjectAnimator.ofFloat(appInfoRow.findViewById(R.id.icon), "rotationY", 0, 360).setDuration(1000);
+                    ani.addListener(new AnimatorListenerAdapter(){
+
+                        @Override
+                        public void onAnimationEnd(Animator arg0) {
+                            // TODO Auto-generated method stub
+                            iconAniRunning = false;
+                        }} );
+                    ani.start();
+                }
             }
         });
     }
