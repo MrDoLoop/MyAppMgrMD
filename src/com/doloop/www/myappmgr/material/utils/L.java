@@ -43,6 +43,10 @@ public class L {
 
     }
 
+    public static String getLogFile(){
+        return logFile;
+    }
+    
     /**
      * 获取logger实例
      * @return logger实例
