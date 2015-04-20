@@ -1316,9 +1316,32 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
                         usrAppsFrg.notifyDataSetChanged();
                     }
                 }
-                toast.setText(getString(R.string.new_app_installed) + " "
-                        + Utils.pkgNameToAppName(thisActivityCtx, NewPkgName));
-                toast.show();
+                
+               /* 新安装程序之后，新条目播放动画
+                 if(newAppInfo.isSysApp){
+                   
+                }
+                else{
+                    final ListView lv = usrAppsFrg.getListView();
+                    final int newPos = UserAppFullList.indexOf(newAppInfo);
+                    lv.setSelection(newPos);
+                    Handler mHandler = new Handler();
+                    mHandler.postDelayed(new Runnable(){
+                        @Override
+                        public void run() {
+                            View itemView = usrAppsFrg.getListView().getChildAt(newPos-lv.getFirstVisiblePosition());
+                            //View iconView = itemView.findViewById(R.id.app_icon);
+                            if(itemView != null){
+                                Animation ani = AnimationUtils.loadAnimation(thisActivityCtx, R.anim.shake);
+                                itemView.startAnimation(ani);
+                            }
+                        }},500);
+                }*/
+                
+                T(getString(R.string.new_app_installed) + " " + newAppInfo.appName);
+//                toast.setText(getString(R.string.new_app_installed) + " " +newAppInfo.appName);
+//                        //+ Utils.pkgNameToAppName(thisActivityCtx, NewPkgName));
+//                toast.show();
                 EventBus.getDefault().post(new AppUpdateEvent(AppState.APP_ADDED, NewPkgName, newAppInfo));
                 L.d("app---added: " + NewPkgName);
                 // startRefreshAppInfoList();
