@@ -1,7 +1,9 @@
 package com.doloop.www.myappmgr.material.utils;
 
 import android.view.View;
+import android.view.animation.LinearInterpolator;
 
+import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.Keyframe;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.animation.PropertyValuesHolder;
@@ -12,12 +14,23 @@ public class AniUtils {
         return ani;
     }
     
-    public static ObjectAnimator tada(View view) {
-        return tada(view, 1f);
+    public static AnimatorSet tada(View view){
+        AnimatorSet set = new AnimatorSet();
+        set.setInterpolator(new LinearInterpolator());
+        set.playTogether(
+                ObjectAnimator.ofFloat(view,"scaleX",1,0.9f,0.9f,1.1f,1.1f,1.1f,1.1f,1.1f,1.1f,1.1f,1f),
+                ObjectAnimator.ofFloat(view,"scaleY",1,0.9f,0.9f,1.1f,1.1f,1.1f,1.1f,1.1f,1.1f,1.1f,1f),
+                ObjectAnimator.ofFloat(view,"rotation",0 ,-3 , -3, 3, -3, 3, -3,3,-3,3,0));
+        set.setDuration(1000);
+        return set;
+    }
+    
+    //android 2.3”–Œ Ã‚
+    public static ObjectAnimator tadaAPI_11(View view) {
+        return tadaAPI_11(view, 1f);
     }
 
-    public static ObjectAnimator tada(View view, float shakeFactor) {
-
+    public static ObjectAnimator tadaAPI_11(View view, float shakeFactor) {
         PropertyValuesHolder pvhScaleX = PropertyValuesHolder.ofKeyframe("scaleX",
                 Keyframe.ofFloat(0f, 1f),
                 Keyframe.ofFloat(.1f, .9f),

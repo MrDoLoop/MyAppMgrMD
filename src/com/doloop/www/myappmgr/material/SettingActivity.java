@@ -24,6 +24,7 @@ import com.doloop.www.myappmgr.material.events.DrawerItemClickEvent.DrawerItem;
 import com.doloop.www.myappmgr.material.fragments.FolderSelectorDialog;
 import com.doloop.www.myappmgr.material.fragments.FolderSelectorDialog.FolderSelectCallback;
 import com.doloop.www.myappmgr.material.swipeback.lib.SwipeBackActivity;
+import com.doloop.www.myappmgr.material.utils.L;
 import com.doloop.www.myappmgr.material.utils.ScrimUtil;
 import com.doloop.www.myappmgr.material.utils.Utils;
 import com.nineoldandroids.animation.Animator;
@@ -259,14 +260,20 @@ public class SettingActivity extends SwipeBackActivity implements FolderSelectCa
 
     public void sendMail(String addr) {
         boolean handled = false;
-        
+        File logFile = new File(L.getLogFile());
         try{
             //http://stackoverflow.com/questions/6506637/only-email-apps-to-resolve-an-intent
             //有bug如果没有emial客户端就崩溃了
-            Intent intent = new Intent(Intent.ACTION_SENDTO);
-            intent.setData(Uri.parse("mailto:"+addr));
-            startActivity(intent);
-            return;
+            
+            if(logFile.exists()) {
+                handled = false;
+            }
+            else{
+                Intent intent = new Intent(Intent.ACTION_SENDTO);
+                intent.setData(Uri.parse("mailto:"+addr));
+                startActivity(intent);
+                handled = true;
+            }
         }
         catch(Exception e){
             e.printStackTrace();
@@ -278,6 +285,9 @@ public class SettingActivity extends SwipeBackActivity implements FolderSelectCa
             String mybody = "";  
             Intent myIntent = new Intent(android.content.Intent.ACTION_SEND);  
             myIntent.setType("plain/text");  
+            if(logFile.exists()){
+                myIntent.putExtra(android.content.Intent.EXTRA_STREAM, Uri.fromFile(logFile));   
+            }
             myIntent.putExtra(android.content.Intent.EXTRA_EMAIL, reciver);    
             myIntent.putExtra(android.content.Intent.EXTRA_TEXT, mybody);  
             startActivity(myIntent);  

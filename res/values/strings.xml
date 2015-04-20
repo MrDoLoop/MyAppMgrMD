@@ -38,10 +38,10 @@
     <string name="app_removed_name">App Removed:</string>
     <string name="share_apps">Share apps</string>
     <string name="email_body">Enjoy apps, thanks</string>
-    <string name="select_all_above">Sel. All Above</string>
-    <string name="deselect_all_above">Desel. All Above</string>
-    <string name="select_all_below">Sel. All Below</string>
-    <string name="deselect_all_below">Desel. All Below</string>
+    <string name="select_all_above">Sel. &amp; All Above</string>
+    <string name="deselect_all_above">Desel. &amp; All Above</string>
+    <string name="select_all_below">Sel. &amp; All Below</string>
+    <string name="deselect_all_below">Desel. &amp; All Below</string>
     <string name="unknown">unknown</string>
     <string name="drawer_open">Drawer Open</string>
     <string name="drawer_close">Drawer Close</string>

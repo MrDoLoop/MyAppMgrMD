@@ -55,8 +55,8 @@
         android:layout_below="@+id/header"
         android:background="@color/orange_light"
         android:gravity="center"
-        android:text="NAN MADE"
-        android:textColor="@color/snackbar_action_sel"
+        android:text="@string/cao_chuang"
+        android:textColor="@color/white_blue_sel"
         android:textSize="18sp"
         android:textStyle="bold" />
 

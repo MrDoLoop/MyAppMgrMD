@@ -19,8 +19,7 @@ import com.doloop.www.myappmgr.material.utils.NanAppMark;
 import com.doloop.www.myappmgr.material.utils.Utils;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.AnimatorListenerAdapter;
-import com.nineoldandroids.animation.ObjectAnimator;
-
+import com.nineoldandroids.animation.AnimatorSet;
 import de.greenrobot.event.EventBus;
 
 public class DrawerFragment extends Fragment {
@@ -80,8 +79,9 @@ public class DrawerFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 headerImg.setEnabled(false);
-                ObjectAnimator ani = AniUtils.tada(headerImg);
+                //ObjectAnimator ani = AniUtils.tada1(headerImg);
                 //ObjectAnimator ani = ObjectAnimator.ofFloat(headerImg, "rotationY", 0, 360).setDuration(1000);
+                AnimatorSet ani = AniUtils.tada(headerImg);
                 ani.addListener(new AnimatorListenerAdapter(){
 
                     @Override
