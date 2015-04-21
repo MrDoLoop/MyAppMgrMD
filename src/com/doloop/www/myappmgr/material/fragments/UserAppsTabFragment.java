@@ -536,6 +536,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
         MenuItem selItem = MainActivity.sActionMode.getMenu().findItem(R.id.menu_selection);
         if (mAdapter.getSelectedItemCnt() > 0) {
             MainActivity.sActionMode.setTitle(mAdapter.getSelectedItemCnt() + " / " + mAdapter.getCount());
+            MainActivity.sActionMode.setSubtitle(Utils.calculateTotalFileSizeStr(mAdapter.getSelectedItemList()));
             if (mAdapter.getSelectedItemCnt() == mAdapter.getCount()) {
                 selItem.setTitle(R.string.deselect_all);
                 selItem.setIcon(R.drawable.ic_deselect_all_white);
@@ -545,6 +546,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
             }
         } else {
             MainActivity.sActionMode.setTitle("");
+            MainActivity.sActionMode.setSubtitle("");
             selItem.setTitle(R.string.select_all);
             selItem.setIcon(R.drawable.ic_select_all_white);
         }

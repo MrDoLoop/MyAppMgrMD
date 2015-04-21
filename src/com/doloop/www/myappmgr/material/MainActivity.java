@@ -450,6 +450,12 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
             return true;
     }
 
+    public static void finishActionMode(){
+        if (sActionMode != null){
+            sActionMode.finish();
+        }
+    }
+    
     @Override
     public void onBackPressed() {
         if (isInActionMode()) {
@@ -1243,6 +1249,7 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
         @Override
         public void onReceive(Context context, Intent intent) {
             // TODO Auto-generated method stub
+            finishActionMode();
             closeDrawerMenu();
             DismissAllDialog();
             // usrAppsFrg.collapseLastOpenItem(false);
@@ -1557,9 +1564,7 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
             }
             registerReceivers();
             if (SuccAppList.size() > 0) {
-                if (sActionMode != null) {
-                    sActionMode.finish();
-                }
+                finishActionMode();
                 EventBus.getDefault().post(new AppBackupSuccEvent(SuccAppList));
             }
         }

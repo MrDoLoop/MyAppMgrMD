@@ -229,7 +229,7 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
         holder.AppNameTextView.setText(appInfo.appName);
         holder.AppVersionTextView.setText("v" + appInfo.versionName + " | " + appInfo.appSizeStr + " | "
                 + appInfo.lastModifiedTimeStr);
-        holder.AppVersionTextView.setSelected(false);
+        //holder.AppVersionTextView.setSelected(false);
         holder.AppPkgnameTextView.setText(appInfo.packageName);
 
         holder.AppIconImageView.setTag(position);
@@ -243,6 +243,7 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
         }*/
         
         if (UserAppsTabFragment.isInActoinMode) {
+            holder.moreItemBtn.setVisibility(View.GONE);
             holder.AppIconImageView.setOnClickListener(null);
             holder.AppIconImageView.setClickable(false);
             holder.AppIconImageView.setBackgroundResource(R.drawable.imageview_border_blue);
@@ -254,6 +255,7 @@ public class UserAppListAdapter extends ArrayAdapter<AppInfo> implements Filtera
                 //holder.AppIconImageView.setBackgroundResource(R.drawable.user_app_icon_bg);
             }
         } else {
+            holder.moreItemBtn.setVisibility(View.VISIBLE);
             holder.AppIconImageView.setOnClickListener(this);
             holder.AppIconImageView.setClickable(true);
             holder.bgLayout.setBackgroundResource(R.drawable.list_row_item_bg);
