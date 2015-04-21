@@ -438,7 +438,7 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
     public void updateActionModeTitle() {
         MenuItem selItem = MainActivity.sActionMode.getMenu().findItem(R.id.menu_selection);
         if (mAdapter.getSelectedItemCnt() > 0) {
-            MainActivity.sActionMode.setTitle(mAdapter.getSelectedItemCnt() + " / " + mAdapter.getAppItemsCount());
+            MainActivity.sActionMode.setTitle(BaseFrag.actionModeTitle(mAdapter.getSelectedItemCnt() + " / " + mAdapter.getAppItemsCount()));
             MainActivity.sActionMode.setSubtitle(Utils.calculateTotalFileSizeStr(mAdapter.getSelectedItemList()));
             if (mAdapter.getSelectedItemCnt() == mAdapter.getAppItemsCount()) {
                 selItem.setTitle(R.string.deselect_all);

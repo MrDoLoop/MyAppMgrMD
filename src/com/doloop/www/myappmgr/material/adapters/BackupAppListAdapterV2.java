@@ -79,11 +79,18 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
     public void selectAll() {
         // mSelectedItems.clear();
         int size = getCount();
+        selectedCnt = 0;
         for (int i = 0; i < size; i++) {
             // mSelectedItems.put(getItem(i).packageName, getItem(i));
-            getItem(i).selected = true;
+            if(AppInfo.DUMMY_APPINFO == getItem(i)){
+                getItem(i).selected = false;
+            }
+            else{
+                getItem(i).selected = true;
+                selectedCnt++;
+            }
+            
         }
-        selectedCnt = size;
         this.notifyDataSetChanged();
     }
 
@@ -133,7 +140,7 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
         ArrayList<AppInfo> retList = new ArrayList<AppInfo>();
         ArrayList<AppInfo> curList = getDisplayList();
         for (AppInfo appInfo : curList) {
-            if (appInfo.selected) {
+            if (appInfo != AppInfo.DUMMY_APPINFO && appInfo.selected) {
                 retList.add(appInfo);
             }
         }

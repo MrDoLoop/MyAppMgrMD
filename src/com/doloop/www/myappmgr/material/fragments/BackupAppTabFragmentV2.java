@@ -21,7 +21,6 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.view.ActionMode;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -596,7 +595,7 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
                             // TODO Auto-generated method stub
                             switch (menuItem.getItemId()) {
                                 case R.id.menu_selection:
-                                    if (mAdapter.getSelectedItemCnt() < mAdapter.getCount()) {// 选锟斤拷全锟斤拷
+                                    if (mAdapter.getSelectedItemCnt() < mAdapter.getAppItemCount()) {// 选锟斤拷全锟斤拷
                                         mAdapter.selectAll();
                                     } else {// 锟斤拷锟斤拷选
                                         mAdapter.deselectAll();
@@ -772,9 +771,9 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
     public void updateActionModeTitle() {
         MenuItem selItem = MainActivity.sActionMode.getMenu().findItem(R.id.menu_selection);
         if (mAdapter.getSelectedItemCnt() > 0) {
-            MainActivity.sActionMode.setTitle(mAdapter.getSelectedItemCnt() + " / " + mAdapter.getCount());
+            MainActivity.sActionMode.setTitle(BaseFrag.actionModeTitle(mAdapter.getSelectedItemCnt() + " / " + mAdapter.getAppItemCount()));
             MainActivity.sActionMode.setSubtitle(Utils.calculateTotalFileSizeStr(mAdapter.getSelectedItemList()));
-            if (mAdapter.getSelectedItemCnt() == mAdapter.getCount()) {
+            if (mAdapter.getSelectedItemCnt() == mAdapter.getAppItemCount()) {
                 selItem.setTitle(R.string.deselect_all);
                 selItem.setIcon(R.drawable.ic_deselect_all_white);
             } else {
@@ -939,8 +938,8 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
         if (mAdapter == null)
             return;
 
-        Log.i("ttt", "backup appList onScroll");
-        Log.i("ttt", "mListIsScrolling is " + mListIsScrolling);
+        //Log.i("ttt", "backup appList onScroll");
+        //Log.i("ttt", "mListIsScrolling is " + mListIsScrolling);
 
         if (mListIsScrolling) {
             AppInfo firstVisiableApp = mAdapter.getItem(firstVisibleItem);

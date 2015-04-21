@@ -20,7 +20,6 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.UnderlineSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -535,7 +534,7 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
     public void updateActionModeTitle() {
         MenuItem selItem = MainActivity.sActionMode.getMenu().findItem(R.id.menu_selection);
         if (mAdapter.getSelectedItemCnt() > 0) {
-            MainActivity.sActionMode.setTitle(mAdapter.getSelectedItemCnt() + " / " + mAdapter.getCount());
+            MainActivity.sActionMode.setTitle(BaseFrag.actionModeTitle(mAdapter.getSelectedItemCnt() + " / " + mAdapter.getCount()));
             MainActivity.sActionMode.setSubtitle(Utils.calculateTotalFileSizeStr(mAdapter.getSelectedItemList()));
             if (mAdapter.getSelectedItemCnt() == mAdapter.getCount()) {
                 selItem.setTitle(R.string.deselect_all);
@@ -558,8 +557,8 @@ public class UserAppsTabFragment extends BaseFrag implements ListView.OnScrollLi
         if (mAdapter == null)
             return;
 
-        Log.i("ttt", "user appList onScroll");
-        Log.i("ttt", "mListIsScrolling is " + mListIsScrolling);
+        //Log.i("ttt", "user appList onScroll");
+        //Log.i("ttt", "mListIsScrolling is " + mListIsScrolling);
 
         if (mListIsScrolling) {
             AppInfo firstVisiableApp = mAdapter.getItem(firstVisibleItem);
