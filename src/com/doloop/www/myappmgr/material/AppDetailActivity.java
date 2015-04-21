@@ -333,9 +333,6 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
             view = rowContainer.findViewById(R.id.row_version);
             fillRow(view, getString(R.string.version), curAppInfo.versionName + " (" + curAppInfo.versionCode + ")");
 
-            
-            
-            
             if(curAppType == APP_TYPE_BACKUP)
             {
                 view = rowContainer.findViewById(R.id.row_apk_info);
@@ -355,50 +352,7 @@ public class AppDetailActivity extends SwipeBackActivity implements ObservableSc
                         getString(R.string.last_updated_time)+"\n"+
                         Utils.formatTimeDisplayFull(new Date(curAppInfo.lastModifiedRawTime)));
             }
-
             
-            if(curAppType == APP_TYPE_BACKUP){
-                
-            }
-            else{
-               
-            }
-            
-           /* if(curAppType == APP_TYPE_BACKUP){
-                if(appResolveInfo != null){
-                    PackageInfo packageInfo;
-                    try {
-                        packageInfo = getPackageManager().getPackageInfo(curAppInfo.packageName, 0);
-                        fillRow(view, getString(R.string.time_info),
-                                getString(R.string.first_install_time)+"\n"+
-                                Utils.formatTimeDisplayFull(new Date(packageInfo.firstInstallTime))+"\n\n"+
-                                getString(R.string.last_updated_time)+"\n"+
-                                Utils.formatTimeDisplayFull(new Date(curAppInfo.lastModifiedRawTime)));
-                    } catch (NameNotFoundException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                        fillRow(view, getString(R.string.time_info),
-                                getString(R.string.last_updated_time)+"\n"+
-                                Utils.formatTimeDisplayFull(new Date(curAppInfo.lastModifiedRawTime)));
-                    }
-                }
-                else{
-                    fillRow(view, getString(R.string.time_info),
-                            getString(R.string.last_updated_time)+"\n"+
-                            Utils.formatTimeDisplayFull(new Date(curAppInfo.lastModifiedRawTime)));
-                }
-            }
-            else{
-                fillRow(view, getString(R.string.time_info),
-                        getString(R.string.first_install_time)+"\n"+
-                        Utils.formatTimeDisplayFull(new Date(curAppInfo.firstTimeInstallRaw))+"\n\n"+
-                        getString(R.string.last_updated_time)+"\n"+
-                        Utils.formatTimeDisplayFull(new Date(curAppInfo.lastModifiedRawTime)));
-            }*/
-            
-            
-            
-
             view = rowContainer.findViewById(R.id.row_activity);
             if (appResolveInfo != null) {
                 fillRow(view, getString(R.string.activity), appResolveInfo.activityInfo.name);
