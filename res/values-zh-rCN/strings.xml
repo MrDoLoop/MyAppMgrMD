@@ -38,10 +38,10 @@
 	<string name="app_removed_name">程序移除:</string>
 	<string name="share_apps">分享程序</string>
 	<string name="email_body">分享程序，谢谢。</string>
-	<string name="select_all_above">全选此项及以上</string>
-	<string name="deselect_all_above">取消选择此项及以上</string>
-	<string name="select_all_below">全选此项及以下</string>
-	<string name="deselect_all_below">取消选择此项及以下</string>
+	<string name="select_all_above">选择此项.及以上</string>
+	<string name="deselect_all_above">取消选择此项.及以上</string>
+	<string name="select_all_below">选择此项.及以下</string>
+	<string name="deselect_all_below">取消选择此项.及以下</string>
 	<string name="unknown">未知</string>
 	<string name="drawer_open">抽屉打开</string>
     <string name="drawer_close">抽屉关闭</string>
