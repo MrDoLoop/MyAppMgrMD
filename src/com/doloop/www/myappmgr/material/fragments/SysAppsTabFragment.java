@@ -688,7 +688,7 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
 
     private void finishActionMode(){
         if(android.os.Build.VERSION.SDK_INT >= 11){
-            MainActivity.sActionMode.finish();
+            MainActivity.finishActionMode();
         }
         else{//2.3系统的toolbar有bug
             //https://github.com/JakeWharton/ActionBarSherlock/issues/487
@@ -697,7 +697,7 @@ public class SysAppsTabFragment extends BaseFrag implements AdapterView.OnItemLo
                 @Override
                 public void run() {
                     // TODO Auto-generated method stub
-                    MainActivity.sActionMode.finish();
+                    MainActivity.finishActionMode();
                 }}, 500);
         }
     }
