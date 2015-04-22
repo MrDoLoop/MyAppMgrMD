@@ -7,6 +7,7 @@ import java.util.Locale;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.text.Html;
 import android.text.TextUtils;
@@ -404,6 +405,7 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
                 itemHolder.AppIconImageView = (ImageView) convertView.findViewById(R.id.app_icon);
                 itemHolder.AppIconImageView.setOnClickListener(this);
                 itemHolder.RootLayout = (RelativeLayout) convertView.findViewById(R.id.rootLayout);
+                itemHolder.uninstallTxt = (TextView) convertView.findViewById(R.id.uninstallTxt);
                 itemHolder.needInflate = false;
                 itemHolder.itemMenu = (TextView) convertView.findViewById(R.id.item_menu);
                 String menuTxt = itemHolder.itemMenu.getText().toString();
@@ -481,6 +483,42 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
             itemHolder.AppVersionTextView.setText("v" + appInfo.versionName + " | " + appInfo.appSizeStr + " | "
                     + appInfo.lastBackUpTimeStr);
             itemHolder.AppFileNameTextView.setText(appInfo.getBackupApkFileName());
+            
+//            if(appInfo.isBackupAppInstalledSameVer){
+//                itemHolder.uninstallTxt.setVisibility(View.GONE);
+//                itemHolder.uninstallTxt.setText("");
+//            }
+//            else if(appInfo.isBackupAppInstalledDiffVer){
+//                itemHolder.uninstallTxt.setVisibility(View.VISIBLE);
+//                itemHolder.uninstallTxt.setText("不同版本");
+//            }
+//            else{//未安装
+//                itemHolder.uninstallTxt.setVisibility(View.VISIBLE);
+//                itemHolder.uninstallTxt.setText(R.string.uninstalled);
+//            }
+            switch (appInfo.bkAppInstallStatus){
+                case UNKNOWN:
+                    itemHolder.uninstallTxt.setVisibility(View.GONE);
+                    itemHolder.uninstallTxt.setText("");
+                    break;
+                case NOT_INSTALLED:
+                    itemHolder.uninstallTxt.setVisibility(View.VISIBLE);
+                    itemHolder.uninstallTxt.setText(R.string.uninstalled);
+                    itemHolder.uninstallTxt.setBackgroundColor(Color.RED);
+                    break;
+                case INSTALLED_SAME_VER:
+                    itemHolder.uninstallTxt.setVisibility(View.GONE);
+                    itemHolder.uninstallTxt.setText("");
+                    //itemHolder.uninstallTxt.setVisibility(View.VISIBLE);
+                    //itemHolder.uninstallTxt.setText(R.string.same_ver);
+                    break;
+                case INSTALLED_DIFF_VER:
+                    itemHolder.uninstallTxt.setVisibility(View.VISIBLE);
+                    itemHolder.uninstallTxt.setText(R.string.diff_ver);
+                    itemHolder.uninstallTxt.setBackgroundColor(Color.BLACK);
+                    break;
+            }
+            
 
             PicassoTools.getInstance().load(appInfo.getPicassoBackupScheme()).noFade().into(itemHolder);
            /* if (appInfo.iconBitmap == null) {
@@ -532,6 +570,7 @@ public class BackupAppListAdapterV2 extends BaseAdapter implements View.OnClickL
         RelativeLayout RootLayout;
         TextView itemMenu;
         View hoverMenuCover;
+        TextView uninstallTxt;
         public boolean needInflate;
 
         @Override

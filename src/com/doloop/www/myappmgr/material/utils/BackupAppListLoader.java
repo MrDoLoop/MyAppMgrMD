@@ -20,6 +20,7 @@ import android.view.View;
 import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.dao.DaoSession;
 import com.doloop.www.myappmgr.material.dao.DaoUtils;
+import com.doloop.www.myappmgr.material.utils.Constants.BK_APP_INSTALL_STATUS;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.AnimatorListenerAdapter;
 import com.nineoldandroids.animation.ObjectAnimator;
@@ -181,7 +182,7 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
                 for (File file : files) {
 
                     packageInfo = pkgMgr.getPackageArchiveInfo(file.getAbsolutePath(), PackageManager.GET_ACTIVITIES);
-                    AppInfo appInfo;
+                    AppInfo appInfo = null;
                     if (packageInfo != null) {
 
                         ApplicationInfo applicationInfo = packageInfo.applicationInfo;
@@ -196,13 +197,44 @@ public class BackupAppListLoader extends AsyncTaskLoader<ArrayList<AppInfo>> {
                             break;
                         }
                         
-                        int appPos = Utils.isAppInfoInList(packageInfo, mBaseList);
+                        //int appPos = Utils.isAppInfoInList(packageInfo, mBaseList);
+                        BkAppInListSatus status = Utils.appInfoInListStatus(packageInfo, mBaseList);
+                        switch (status.mIN_LIST_STATUS){
+                            case NOT_IN_LIST:
+                                appInfo = Utils.buildAppInfoEntry(getContext(), packageInfo, pkgMgr, false, false);
+                                appInfo.bkAppInstallStatus = BK_APP_INSTALL_STATUS.NOT_INSTALLED;
+                                //appInfo.isBackupAppInstalledSameVer = false;
+                                //appInfo.isBackupAppInstalledDiffVer = false;
+                                break;
+                            case IN_LIST_SAME_VER:
+                                appInfo = mBaseList.get(status.inListPos);
+                                appInfo.bkAppInstallStatus = BK_APP_INSTALL_STATUS.INSTALLED_SAME_VER;
+                                //appInfo.isBackupAppInstalledSameVer = true;
+                                //appInfo.isBackupAppInstalledDiffVer = false;
+                                break;
+                            case IN_LIST_DIFF_VER:
+                                appInfo = Utils.buildAppInfoEntry(getContext(), packageInfo, pkgMgr, false, false);
+                                appInfo.bkAppInstallStatus = BK_APP_INSTALL_STATUS.INSTALLED_DIFF_VER;
+                                //appInfo.isBackupAppInstalledSameVer = false;
+                                //appInfo.isBackupAppInstalledDiffVer = true;
+                                break;        
+                        }
+                        
+                       /* if(status.mIN_LIST_STATUS == IN_LIST_STATUS.NOT_IN_LIST){
+                            appInfo = Utils.buildAppInfoEntry(getContext(), packageInfo, pkgMgr, false, false);
+                            appInfo.isBackupAppInstalledSameVer = false;
+                            appInfo.isBackupAppInstalledDiffVer = false;
+                        }
+                        
+                        
                         if(appPos != -1){
                             appInfo = mBaseList.get(appPos);
+                            appInfo.isBackupAppInstalledSameVer = true;
                         }
                         else{
                             appInfo = Utils.buildAppInfoEntry(getContext(), packageInfo, pkgMgr, false, false);
-                        }
+                            appInfo.isBackupAppInstalledSameVer = false;
+                        }*/
                         //appInfo = Utils.buildAppInfoEntry(getContext(), packageInfo, pkgMgr, false, false);
                         appInfo.apkFilePath = file.getAbsolutePath();
                         appInfo.backupFilePath = file.getAbsolutePath();

@@ -337,19 +337,21 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
                 }
 
                 if (position == Constants.USR_APPS_TAB_POS) {
+                    processSortMenuIcon(Utils.getUserAppListSortType(thisActivityCtx));
                     if (MenuItemCompat.isActionViewExpanded(searchMenuItem)) {
                         sortMenuItem.setVisible(false);
                     } else {
-                        processSortMenuIcon(Utils.getUserAppListSortType(thisActivityCtx));
+                        //processSortMenuIcon(Utils.getUserAppListSortType(thisActivityCtx));
                         sortMenuItem.setVisible(true);
                     }
                 } else if (position == Constants.SYS_APPS_TAB_POS) {
                     sortMenuItem.setVisible(false);
                 } else if (position == Constants.BACKUP_APPS_TAB_POS) {
+                    processSortMenuIcon(Utils.getBackUpAppListSortType(thisActivityCtx));
                     if (MenuItemCompat.isActionViewExpanded(searchMenuItem)) {
                         sortMenuItem.setVisible(false);
                     } else {
-                        processSortMenuIcon(Utils.getBackUpAppListSortType(thisActivityCtx));
+                        //processSortMenuIcon(Utils.getBackUpAppListSortType(thisActivityCtx));
                         sortMenuItem.setVisible(true);
                     }
                 }
@@ -619,6 +621,8 @@ public class MainActivity extends BaseActivity implements // UserAppListFilterRe
 
                 switch (mPager.getCurrentItem()) {
                     case Constants.USR_APPS_TAB_POS:
+                        sortMenuItem.setVisible(true);
+                        break;
                     case Constants.BACKUP_APPS_TAB_POS:
                         sortMenuItem.setVisible(true);
                         break;

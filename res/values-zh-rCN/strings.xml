@@ -90,4 +90,7 @@
 	<string name="copy_right">版权所有 \u00A9 2015 草 \u00B7 创 团队</string>
 	<string name="launch_myself">草 \u00B7 创 呈现</string>
 	<string name="cao_chuang">草 \u00B7 创</string>
+	<string name="uninstalled">未安装</string>
+	<string name="diff_ver">不同版本</string>
+	<string name="same_ver">相同版本</string>
 </resources>

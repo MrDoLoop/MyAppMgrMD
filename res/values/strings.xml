@@ -92,6 +92,8 @@
 	<string name="copy_right">Copyright \u00A9 2015 By Cao \u00B7 Chuang. All rights reserved</string>
 	<string name="launch_myself">Present By Cao \u00B7 Chuang</string>
 	<string name="cao_chuang">Cao \u00B7 Chuang</string>
-	
+	<string name="uninstalled">Uninstalled</string>
+	<string name="diff_ver">Diff. Ver</string>
+	<string name="same_ver">Same Ver</string>
 
 </resources>

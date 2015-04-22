@@ -46,14 +46,17 @@ import com.doloop.www.myappmgr.material.adapters.BackupAppListAdapterV2.ItemView
 import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.events.ActionModeToggleEvent;
 import com.doloop.www.myappmgr.material.events.AppBackupSuccEvent;
+import com.doloop.www.myappmgr.material.events.AppUpdateEvent;
 import com.doloop.www.myappmgr.material.events.BackupAppDeletedEvent;
 import com.doloop.www.myappmgr.material.events.ViewNewBackupAppEvent;
+import com.doloop.www.myappmgr.material.events.AppUpdateEvent.AppState;
 import com.doloop.www.myappmgr.material.fragments.SelectionDialogFragment.SelectionDialogClickListener;
 import com.doloop.www.myappmgr.material.interfaces.IPopupMenuClickListener;
 import com.doloop.www.myappmgr.material.interfaces.IconClickListener;
 import com.doloop.www.myappmgr.material.utils.BackupAppListLoader;
 import com.doloop.www.myappmgr.material.utils.Constants;
 import com.doloop.www.myappmgr.material.utils.BackupAppListLoader.LoaderBckgrdIsAboutToDeliverListener;
+import com.doloop.www.myappmgr.material.utils.Constants.BK_APP_INSTALL_STATUS;
 import com.doloop.www.myappmgr.material.utils.PopupListMenu.POPUP_MENU_LIST_ITEM;
 import com.doloop.www.myappmgr.material.utils.Utils;
 import com.nineoldandroids.animation.Animator;
@@ -75,7 +78,7 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
     private static final int LOADER_ID = 1;
     private BackupAppListLoader mBackupAppListLoader;
     private View mLoadingView;
-    private ArrayList<AppInfo> mPendingNewAppInfo = new ArrayList<AppInfo>();
+    private ArrayList<AppInfo> mPendingNewBackupAppInfo = new ArrayList<AppInfo>();
     public static boolean isInActoinMode = false;
     private boolean deleteAniIsRunning = false;
     private int currentSortType = SortTypeDialogFragment.LIST_SORT_TYPE_NAME_ASC;
@@ -386,7 +389,34 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
                 }},500);
         }
     }
-    
+    /**
+     * 有程序安装或者卸载
+     * @param ev
+     */
+    public void onEventMainThread(AppUpdateEvent ev){
+        if (!mBackupAppListLoader.isLoadingRunning()) {// loading 已经结束了
+            if(ev.mAppState == AppState.APP_ADDED){
+                if(Utils.verifyBkListWithNewAppInfo(ev.mAppInfo, mAppList)){
+                    mAdapter.notifyDataSetChanged();
+                }     
+            }
+            else if(ev.mAppState == AppState.APP_REMOVED){
+                if(Utils.verifyBkListWithRemovedAppInfo(ev.mAppInfo, mAppList)){
+                    mAdapter.notifyDataSetChanged();
+                }
+            }
+        }
+        else{// loading 没有结束
+            //sdgfdsg
+            if(ev.mAppState == AppState.APP_ADDED){
+                
+            }
+            else if(ev.mAppState == AppState.APP_REMOVED){
+                
+            }
+        }
+       
+    }
     
     public void onEventMainThread(AppBackupSuccEvent ev) {
 
@@ -396,35 +426,35 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
                 Date date = new Date();
                 aInfo.lastBackUpRawTime = date.getTime();
                 aInfo.lastBackUpTimeStr = Utils.formatTimeDisplay(date);
+                aInfo.bkAppInstallStatus = BK_APP_INSTALL_STATUS.INSTALLED_SAME_VER;
+                //aInfo.isBackupAppInstalledSameVer = true;
+                //aInfo.isBackupAppInstalledDiffVer = false;
                 if (pos == -1) {//没有找到
-//                    Date date = new Date();
-//                    aInfo.lastBackUpRawTime = date.getTime();
-//                    aInfo.lastBackUpTimeStr = Utils.formatTimeDisplay(date);
                     mAppList.add(aInfo);
                 }
                 else{
-//                    Date date = new Date();
-//                    aInfo.lastBackUpRawTime = date.getTime();
-//                    aInfo.lastBackUpTimeStr = Utils.formatTimeDisplay(date);
                     mAppList.set(pos, aInfo);
                 }
                 Utils.sortBackUpAppList(mContext, mAppList);
-                newBackupAppPos = mAppList.indexOf(aInfo);
+                newBackupAppPos = mAdapter.getDisplayList().indexOf(aInfo);
                 mAdapter.notifyDataSetChanged();
             }
             
         } else {// loading 没有结束
             for (AppInfo aInfo : ev.AppInfoList) {
                 
-                int pos = Utils.isAppInfoInList(aInfo, mPendingNewAppInfo);
+                int pos = Utils.isAppInfoInList(aInfo, mPendingNewBackupAppInfo);
                 Date date = new Date();
                 aInfo.lastBackUpRawTime = date.getTime();
                 aInfo.lastBackUpTimeStr = Utils.formatTimeDisplay(date);
+                aInfo.bkAppInstallStatus = BK_APP_INSTALL_STATUS.INSTALLED_SAME_VER;
+                //aInfo.isBackupAppInstalledSameVer = true;
+                //aInfo.isBackupAppInstalledDiffVer = false;
                 if (pos == -1) {
-                    mPendingNewAppInfo.add(aInfo);
+                    mPendingNewBackupAppInfo.add(aInfo);
                 }
                 else{
-                    mPendingNewAppInfo.set(pos,aInfo);
+                    mPendingNewBackupAppInfo.set(pos,aInfo);
                 }
             }
         }
@@ -511,15 +541,18 @@ public class BackupAppTabFragmentV2 extends BaseFrag implements LoaderManager.Lo
          /*try { Thread.sleep(10000); } catch (InterruptedException e) { // TODO Auto-generated catch block
          e.printStackTrace(); }*/
          
-        if (!mPendingNewAppInfo.isEmpty()) {
-            for (int i = 0; i < mPendingNewAppInfo.size(); i++) {
-                int pos = Utils.isAppInfoInList(mPendingNewAppInfo.get(i), listReadyToDeliver);
+        if (!mPendingNewBackupAppInfo.isEmpty()) {
+            for (int i = 0; i < mPendingNewBackupAppInfo.size(); i++) {
+                int pos = Utils.isAppInfoInList(mPendingNewBackupAppInfo.get(i), listReadyToDeliver);
                 if (pos == -1) {
                     //listReadyToDeliver.add(0, mPendingNewAppInfo.get(i));
-                    listReadyToDeliver.add(mPendingNewAppInfo.get(i));
+                    listReadyToDeliver.add(mPendingNewBackupAppInfo.get(i));
+                }
+                else{
+                    listReadyToDeliver.set(pos, mPendingNewBackupAppInfo.get(i));
                 }
             }
-            mPendingNewAppInfo.clear();
+            mPendingNewBackupAppInfo.clear();
         }
     }
     // LoaderBackgroundMoreWorkListener-end

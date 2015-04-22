@@ -156,15 +156,15 @@ public class BackupAppListAdapter extends RecyclerView.Adapter<RecyclerView.View
                     + appInfo.lastModifiedTimeStr);
             holder.AppFileNameTextView.setText(appInfo.getBackupApkFileName());
             holder.RootLayout.setTag(appInfo);
-
-            if (appInfo.iconBitmap == null) {
+            //Picasso.with(mCtx).load(appInfo.getAppIconCachePath(mCtx)).noFade().into(holder);
+            /*if (appInfo.iconBitmap == null) {
 //                ImageLoader.getInstance().displayImage(Scheme.FILE.wrap(appInfo.getAppIconCachePath(mCtx).getAbsolutePath()), 
 //                        holder.AppIconImageView, options);
                 Picasso.with(mCtx).load(appInfo.getAppIconCachePath(mCtx)).noFade().into(holder);
                 //holder.AppIconImageView.setImageDrawable(Utils.getIconDrawable(mCtx, appInfo.packageName));
             } else {
                 holder.AppIconImageView.setImageBitmap(appInfo.iconBitmap);
-            }
+            }*/
         }
     }
 
@@ -315,7 +315,7 @@ public class BackupAppListAdapter extends RecyclerView.Adapter<RecyclerView.View
                 // if (appInfo.iconBitmap == null)
                 // if(appInfo != null)
                 {
-                    appInfo.iconBitmap = bitmap;
+                    //appInfo.iconBitmap = bitmap;
                 }
             }
         }

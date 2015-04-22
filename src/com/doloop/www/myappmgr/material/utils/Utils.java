@@ -67,6 +67,8 @@ import android.widget.AbsListView;
 import com.doloop.www.myappmgr.material.R;
 import com.doloop.www.myappmgr.material.dao.AppInfo;
 import com.doloop.www.myappmgr.material.fragments.SortTypeDialogFragment;
+import com.doloop.www.myappmgr.material.utils.BkAppInListSatus.IN_LIST_STATUS;
+import com.doloop.www.myappmgr.material.utils.Constants.BK_APP_INSTALL_STATUS;
 
 public class Utils {
 
@@ -426,7 +428,81 @@ public class Utils {
             D_fragment.dismiss();
         }
     }
-
+    /**
+     * 
+     * @param appInfo
+     * @param list
+     * @return list中是否有数据变化
+     */
+    public static boolean verifyBkListWithRemovedAppInfo(AppInfo appInfo, ArrayList<AppInfo> list){
+        boolean retVel = false;
+        for (AppInfo aEntry : list) {
+            if (appInfo.packageName.equals(aEntry.packageName)) {
+                //aEntry.isBackupAppInstalledDiffVer = false;
+                //aEntry.isBackupAppInstalledSameVer = false;
+                aEntry.bkAppInstallStatus = BK_APP_INSTALL_STATUS.NOT_INSTALLED;
+                retVel = true;
+            }
+        }
+        return retVel;
+    }
+    /**
+     * 
+     * @param appInfo
+     * @param list
+     * @return list中是否有数据变化
+     */
+    public static boolean verifyBkListWithNewAppInfo(AppInfo appInfo, ArrayList<AppInfo> list){
+        boolean retVel = false;
+        for (AppInfo aEntry : list) {
+            if (appInfo.packageName.equals(aEntry.packageName) && (appInfo.versionCode == aEntry.versionCode)) {
+                //aEntry.isBackupAppInstalledDiffVer = false;
+                //aEntry.isBackupAppInstalledSameVer = true;
+                aEntry.bkAppInstallStatus = BK_APP_INSTALL_STATUS.INSTALLED_SAME_VER;
+                retVel = true;
+            }
+            else if(appInfo.packageName.equals(aEntry.packageName) && (appInfo.versionCode != aEntry.versionCode)){
+                //aEntry.isBackupAppInstalledDiffVer = true;
+                //aEntry.isBackupAppInstalledSameVer = false;
+                aEntry.bkAppInstallStatus = BK_APP_INSTALL_STATUS.INSTALLED_DIFF_VER;
+                retVel = true;
+            }
+            else{//未安装
+                //aEntry.isBackupAppInstalledDiffVer = false;
+                //aEntry.isBackupAppInstalledSameVer = false;
+            }
+        }
+        return retVel;
+    }
+    
+    public static BkAppInListSatus appInfoInListStatus(AppInfo appInfo, ArrayList<AppInfo> list) {
+        int i = 0;
+        for (AppInfo aEntry : list) {
+            if (appInfo.packageName.equals(aEntry.packageName) && (appInfo.versionCode == aEntry.versionCode)) {
+                return new BkAppInListSatus(IN_LIST_STATUS.IN_LIST_SAME_VER, i);
+            }
+            else if(appInfo.packageName.equals(aEntry.packageName) && (appInfo.versionCode != aEntry.versionCode)){
+                return new BkAppInListSatus(IN_LIST_STATUS.IN_LIST_DIFF_VER, i);
+            }
+            i++;
+        }
+        return new BkAppInListSatus(IN_LIST_STATUS.NOT_IN_LIST);
+    }
+    
+    public static BkAppInListSatus appInfoInListStatus(PackageInfo thePackageInfo, ArrayList<AppInfo> list) {
+        int i = 0;
+        for (AppInfo aEntry : list) {
+            if (thePackageInfo.packageName.equals(aEntry.packageName) && (thePackageInfo.versionCode == aEntry.versionCode)) {
+                return new BkAppInListSatus(IN_LIST_STATUS.IN_LIST_SAME_VER, i);
+            }
+            else if (thePackageInfo.packageName.equals(aEntry.packageName) && (thePackageInfo.versionCode != aEntry.versionCode)) {
+                return new BkAppInListSatus(IN_LIST_STATUS.IN_LIST_DIFF_VER, i);
+            }
+            i++;
+        }
+        return new BkAppInListSatus(IN_LIST_STATUS.NOT_IN_LIST);
+    }
+    
     
     /**
      * 返回这个app在list中的位置
