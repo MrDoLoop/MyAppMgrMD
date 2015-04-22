@@ -925,8 +925,8 @@ public class Utils {
             Intent sendIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
             sendIntent.setType("application/vnd.android.package-archive");
             sendIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, Uris);// 添加附件
-            sendIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Share apps");// 主题
-            sendIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Enjoy apps, thanks"); // 邮件主体
+            sendIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, ctx.getString(R.string.share_apps));// 主题
+            sendIntent.putExtra(android.content.Intent.EXTRA_TEXT, ctx.getString(R.string.email_body)); // 邮件主体
             sendIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             ctx.startActivity(Intent.createChooser(sendIntent, ctx.getString(R.string.send_by)));// Chooser的标题
         }
